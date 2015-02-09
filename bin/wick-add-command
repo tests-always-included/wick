@@ -1,0 +1,16 @@
+#!/bin/bash
+
+WICK_COMMANDS=()
+WICK_COMMAND_HELP=()
+
+wick-add-command() {
+    local LINE
+
+    WICK_COMMANDS=("${WICK_COMMANDS[@]}" "$1")
+    
+    if [[ ! -z "$2" ]]; then
+        printf -v LINE "  %-15s  %s" "$1" "$2"
+        WICK_COMMAND_HELP=("${WICK_COMMAND_HELP[@]}" "$LINE")
+    fi
+}
+

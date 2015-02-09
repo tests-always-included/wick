@@ -1,0 +1,52 @@
+#!/bin/bash
+set -e
+WICK_DIR="${0%/*}"
+
+CMD="$1"
+shift
+
+WICK_ON_LOAD_COMMANDS=()
+
+wick-argument-string() {
+    local ARG STRING
+
+    STRING=""
+
+    if [[ $# -gt 0 ]]; then
+        for ARG in "$@"; do
+            printf -v ARG "%q" "$ARG"
+            STRING="${STRING} $ARG"
+        done
+    fi
+
+    echo "${STRING:1}"
+}
+
+wick-on-load() {
+    WICK_ON_LOAD_COMMANDS=("${WICK_ON_LOAD_COMMANDS[@]}" "$(wick-argument-string "${1+"$@"}")")
+}
+
+# Load all functions into the current environment
+for F in "$WICK_DIR/"wick-*; do
+    if [[ -f "$F" ]]; then
+        . "$F"
+    fi
+done
+
+# Run all initialization functions
+if [[ ${#WICK_ON_LOAD_COMMANDS[@]} -gt 0 ]]; then
+    for LINE in "${WICK_ON_LOAD_COMMANDS[@]}"; do
+        eval "$LINE"
+    done
+fi
+
+if [[ -z "$CMD" ]]; then
+    CMD="help"
+fi
+
+if ! wick-in-array "$CMD" "${WICK_COMMANDS[@]}"; then
+    echo "No such command: $CMD"
+    echo "See 'wick help'"
+else
+    wick-$CMD "${1+"$@"}"
+fi

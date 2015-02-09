@@ -1,0 +1,44 @@
+#!/bin/bash
+
+if command-exists lsb_release; then
+    DISTRIBUTOR=$(lsb-release -s -i 2>&1)
+    wick-debug "Distributor: $DISTRIBUTOR"
+
+    case "$DISTRIBUTOR" in
+        RedHatEnterprise*)
+            echo "redhat"
+            exit
+            ;;
+
+        Ubuntu)
+            echo "ubuntu"
+            exit
+            ;;
+    esac
+fi
+
+wick-debug "MACHTYPE=$MACHTYPE"
+
+if [[ "$MACHTYPE" == *"-redhat-"* ]]; then
+    echo "redhat"
+    exit
+fi
+
+if [[ "$MACHTYPE" == *"-apple-"* ]]; then
+    echo "apple"
+    exit
+fi
+
+if command-exists uname; then
+    UNAME_V=$(uname -v 2>&1)
+    wick-debug "UNAME_V=$UNAME_V"
+
+    if [[ "$UNAME_V" == *"Ubuntu"* ]]; then
+        echo "ubuntu"
+        exit
+    fi
+fi
+
+wick-error "Unable to detect OS"
+echo "UNKNOWN"
+exit 1

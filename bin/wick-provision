@@ -1,0 +1,50 @@
+#!/bin/bash
+
+wick-on-load wick-add-command provision "Execute the formulas for a given role"
+
+wick-provision() {
+    local LOCATION ROLE
+
+    if [[ ${#@} -eq 0 ]]; then
+        echo "You must specify one or more roles to provision."
+
+        return 1
+    fi
+
+    while [[ ! -z "$1" ]]; do
+        if ! wick-find LOCATION "roles/$1"; then
+            echo "Unable to find role $1"
+
+            return 1
+        fi
+
+        echo "Using role $1 ($LOCATION)"
+        . "$LOCATION"
+        shift
+    done
+
+    if [[ ${#WICK_FORMULA_LIST} -eq 0 ]]; then
+        echo "No formulas listed or no run scripts found for the formulas."
+    else
+        wick-provision-formulas
+    fi
+}
+
+
+wick-provision-formulas() {
+    local FORMULA
+
+    for FORMULA in "${WICK_FORMULA_LIST[@]}"; do
+        echo "Executing formula: $FORMULA"
+        WICK_FORMULA_DIR=${FORMULA%/*}
+
+        (
+            . "$FORMULA"
+        ) || (
+            echo "FAILURE DETECTED"
+            return 1
+        )
+    done
+
+    echo "Provisioning complete"
+}

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+random-string() {
+    local LETTERS OUTPUT
+
+    LETTERS=${3:-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}
+
+    # This first eval is mostly for the brace expansion at the end
+    # Generate a string like "${LETTERS:22:1}${LETTERS:43:1}"
+    # Careful, there's ${#LETTERS} in there and it must be changed into
+    # a number in this step - do not escape its $.
+    eval "printf -v OUTPUT '\${LETTERS:\$RANDOM%%${#LETTERS}:1}%.0s' {1..$2}"
+
+    # Convert that string into the desired random letters
+    eval "OUTPUT=\"$OUTPUT\""
+
+    local "$1" && wick-indirect "$1" "$OUTPUT"
+}

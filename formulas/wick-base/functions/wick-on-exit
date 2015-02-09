@@ -1,0 +1,29 @@
+#!/bin/bash
+
+WICK_ON_EXIT_ITEMS=()
+
+wick-on-exit() {
+    local LEN
+
+    LEN=${#WICK_ON_EXIT_ITEMS[@]}
+    wick-debug "Adding on-exit item [$LEN] '$*'"
+    WICK_ON_EXIT_ITEMS[$LEN]=$*
+
+    if [[ "$LEN" == "0" ]]; then
+        trap wick-on-exit-trap EXIT
+        wick-debug "Set trap"
+    fi
+}
+
+wick-on-exit-trap() {
+    local CMD
+
+    wick-debug "Running exit traps"
+    
+    for CMD in "${WICK_ON_EXIT_ITEMS[@]}"; do
+        wick-debug "On-exit ommand:  $CMD"
+        eval $CMD
+    done
+
+    wick-debug "Done running exit traps"
+}

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+wick-indirect() {
+    unset -v "$1" || wick-error "Invalid identifer: $1"
+    printf -v "$1" '%s' "$2"
+}

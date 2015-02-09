@@ -1,0 +1,71 @@
+#!/bin/bash
+
+wick-package() {
+    local OS STATE
+
+    STATE="install"
+    parse-arguments UNPARSED "${1+"$@"}"
+
+    if [[ ! -z "$ARG_uninstall" ]]; then
+        mode="uninstall"
+    fi
+
+    wick-explorer OS wick-base os
+
+    case "$OS" in
+        centos|redhat)
+            wick-package-yum "$STATE" "${UNPARSED[@]}" && return 0
+            ;;
+
+        ubuntu|debian)
+            wick-package-apt "$STATE" "${UNPARSED[@]}" && return 0
+            ;;
+
+        *)
+            wick-error "Unable to determine package manager"
+            return 1
+            ;;
+    esac
+}
+
+wick-package-yum() {
+    local STATE
+
+    STATE=$1
+    shift
+
+    case "$STATE" in
+        install)
+            yum install -y "${1+"$@"}"
+            ;;
+
+        uninstall)
+            yum remove -y "${1+"$@"}"
+            ;;
+
+        *)
+            echo "Unknown package state: $STATE"
+            return 1
+    esac
+}
+
+wick-package-apt() {
+    local STATE
+
+    STATE=$1
+    shift
+
+    case "$STATE" in
+        install)
+            apt-get install -y "${1+"$@"}"
+            ;;
+
+        uninstall)
+            apt-get purge -y "${1+"$@"}"
+            ;;
+
+        *)
+            echo "Unknown package state: $STATE"
+            return 1
+    esac
+}

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+install-directory() {
+    local ARGS_MODE ARGS_OWNER DEST UNPARSED
+
+    ARGS_owner=""
+    ARGS_mode=""
+    parse-arguments UNPARSED "${@}"
+    DEST=${UNPARSED[0]}
+    wick-debug "Making directory: $DEST"
+    mkdir -p "$DEST"
+
+    if [ ! -z "$ARGS_owner" ]; then
+        wick-debug "Changing ownership: $ARGS_owner"
+        chown "$ARGS_owner" "$DEST"
+    fi
+
+    if [ ! -z "$ARGS_mode" ]; then
+        wick-debug "Changing mode: $ARGS_mode"
+        chmod "$ARGS_mode" "$DEST"
+    fi
+}

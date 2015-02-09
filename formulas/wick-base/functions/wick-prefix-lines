@@ -1,0 +1,13 @@
+#!/bin/bash
+
+wick-prefix-lines() {
+    local OUTPUT
+
+    OUTPUT=${3//$'\r\n'/$'\n'}
+    OUTPUT=${OUTPUT//$'\r'/$'\n'}
+    OUTPUT="$2$OUTPUT"
+    OUTPUT=${OUTPUT//$'\n'/$'\n'$2}
+
+    local "$1" && wick-indirect "$1" "$OUTPUT"
+}
+

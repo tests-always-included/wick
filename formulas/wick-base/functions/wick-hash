@@ -1,0 +1,5 @@
+#!/bin/bash
+
+wick-hash() {
+    local "$1" && wick-indirect "$1" "$(md5sum "$2" | cut -b -32)"
+}

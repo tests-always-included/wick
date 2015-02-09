@@ -1,0 +1,14 @@
+#!/bin/bash
+
+wick-in-array() {
+    local CHECK NEEDLE
+
+    NEEDLE="$1"
+    shift
+
+    for CHECK in "$@"; do
+        [[ "$NEEDLE" == "$CHECK" ]] && return 0
+    done
+
+    return 1
+}

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+wick-on-load wick-add-command help "This help screen"
+
+wick-help() {
+    echo "Specify a command:"
+    echo ""
+
+    for F in "${WICK_COMMAND_HELP[@]}"; do
+        echo "$F"
+    done
+}

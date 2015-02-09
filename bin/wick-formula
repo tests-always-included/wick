@@ -1,0 +1,53 @@
+#!/bin/bash
+
+WICK_FORMULA_LIST=()
+
+wick-formula() {
+    local FILE FORMULA FULL_COMMAND LOCATION TEMP
+
+    FORMULA="$1"
+    shift
+
+    if [[ -z "$FORMULA" ]]; then
+        echo "You must specify a formula name."
+
+        return 1
+    fi
+
+    if ! wick-find LOCATION "formulas/$FORMULA"; then
+        echo "Unable to find formula $FORMULA"
+
+        return 1
+    fi
+
+    FULL_COMMAND="$LOCATION/run"
+    echo "Adding formula $FORMULA ($LOCATION)"
+
+    if [[ -f "$FULL_COMMAND" ]]; then
+        if [[ $# -gt 0 ]]; then
+            FULL_COMMAND="$FULL_COMMAND $(wick-argument-string "${1+"$@"}")"
+        fi
+
+        WICK_FORMULA_LIST=("${WICK_FORMULA_LIST[@]}" "$FULL_COMMAND")
+    fi
+
+    if [[ -d "$LOCATION/functions" ]]; then
+        for FILE in "$LOCATION/functions/"*; do
+            if [[ -f "$FILE" ]]; then
+                echo "Loading function:  $FILE"
+                . "$FILE"
+            fi
+        done
+    fi
+
+    if [[ -d "$LOCATION/explorers" ]]; then
+        for FILE in "$LOCATION/explorers/"*; do
+            if [[ -f "$FILE" ]]; then
+                echo "Running explorer:  $FILE"
+                (
+                    wick-explorer TEMP "$FORMULA" "${FILE##*/}"
+                )
+            fi
+        done
+    fi
+}

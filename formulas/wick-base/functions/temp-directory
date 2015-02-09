@@ -1,0 +1,31 @@
+#!/bin/bash
+
+temp-directory() {
+    local BASE DIR
+
+    BASE="/tmp"
+
+    if [ ! -z "$TMPDIR" ] && [ -d "$TMPDIR" ]; then
+        BASE="$TMPDIR"
+    fi
+
+    BASE="${BASE}/wick."
+
+    while true; do
+        random-string DIR 16
+        DIR="$BASE$DIR"
+
+        if [ ! -e "$DIR" ]; then
+            if mkdir -m 0700 "$DIR" 2>/dev/null; then
+                wick-debug "Temporary directory created:  '$DIR'"
+                wick-on-exit "rm -rf '$DIR'"
+                local "$1" && wick-indirect "$1" "$DIR"
+                return 0
+            else
+                wick-debug "Temporary directory could not be created:  '$DIR'"
+            fi
+        else
+            wick-debug "Temporary directory already exists:  '$DIR'"
+        fi
+    done
+}

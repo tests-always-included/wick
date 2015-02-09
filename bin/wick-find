@@ -1,0 +1,17 @@
+#!/bin/bash
+
+wick-find() {
+    local BASE
+
+    BASE="."
+
+    while [[ ! -e "$BASE/$2" ]] && [[ -d "$BASE/parent/" ]]; do
+        BASE="$BASE/parent"
+    done
+
+    if [[ -e "$BASE/$2" ]]; then
+        local "$1" && wick-indirect "$1" "$BASE/$2" && return 0
+    fi
+
+    return 1
+}

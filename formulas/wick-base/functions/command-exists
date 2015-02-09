@@ -1,0 +1,27 @@
+#!/bin/bash
+
+command-exists() {
+    RESULT=$(which $* 2>&1)
+
+    # Command failed to execute or reported failure
+    if [[ $? -ne 0 ]]; then
+        return 1
+    fi
+
+    # Some OSs report "no PROGRAM_NAME"
+    if [[ "$RESULT" == "no "* ]]; then
+        return 2
+    fi
+
+    # Other OSs report "PROGRAM_NAME: no such program" or similar messages
+    if [[ "$RESULT" == *": no "* ]]; then
+        return 3
+    fi
+
+    # Other times you can get "command not found"
+    if [[ "$RESULT" == *"command not found"* ]]; then
+        return 4
+    fi
+
+    return 0
+}

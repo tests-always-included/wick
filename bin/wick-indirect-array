@@ -1,0 +1,6 @@
+#!/bin/bash
+
+wick-indirect-array() {
+    unset -v "$1"
+    eval $1=\(\"\${@:2}\"\)
+}

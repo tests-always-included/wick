@@ -1,0 +1,5 @@
+#!/bin/bash
+
+wick-service() {
+    service $1 $2
+}

@@ -1,0 +1,42 @@
+#!/bin/bash
+
+parse-arguments() {
+    local ARG LEN UNPARSED UNPARSED_DEST VALUE
+
+    UNPARSED_DEST="$1"
+    shift
+    UNPARSED=()
+    LEN=0
+
+    for ARG in "$@"; do
+        wick-debug "Parsing argument '$ARG'"
+        case "$ARG" in
+            --*)
+                VALUE=true
+                
+                if [[ "$ARG" == *=* ]]; then
+                    VALUE=${ARG#*=}
+                    ARG=${ARG%%=*}
+                fi
+
+                printf -v "ARGS_${ARG:2}" '%s' "$VALUE"
+                ;;
+
+            -*)
+                ARG="${ARG:1}"
+                
+                while [[ ! -z "$ARG" ]]; do
+                    printf -v "ARGS_${ARG:0:1}" 'true'
+                    ARG="${ARG:1}"
+                done
+                ;;
+
+            *)
+                UNPARSED[$LEN]="$ARG"
+                LEN=$(($LEN + 1))
+                ;;
+        esac
+    done
+
+    local "$UNPARSED_DEST" && wick-indirect-array "$UNPARSED_DEST" "${UNPARSED[@]}"
+}
