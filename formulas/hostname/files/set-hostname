@@ -1,0 +1,117 @@
+#!/bin/bash
+set -e
+
+. /usr/local/bin/wick-infect
+
+debug() {
+    if [[ -z "$ARG_verbose" ]]; then
+        echo $1;
+    fi
+}
+
+replace-in-file() {
+    local FN SEARCH WANTED
+
+    FN="$1"
+    WANTED="$2"
+    SEARCH="$3"
+
+    if ! grep -q "^$WANTED" "$FN"; then
+        if grep -q "^$SEARCH" "$FN"; then
+            debug "Updating $FN: $WANTED"
+            sed -i --follow-symlinks 's/^'"$SEARCH"'.*/'"$WANTED"'/' "$FN"
+        else
+            debug "Adding to $FN: $WANTED"
+            echo "$WANTED" >> "$FN"
+        fi
+        return 0
+    else
+        debug "$FN is already changed"
+        return 1
+    fi
+}
+
+show-help() {
+    cat <<EOF
+Set the hostname of the machine, with support for templates
+
+Usage:
+    set_hostname [OPTIONS] hostname.domain.name
+
+If no domain name is given, "localdomain" is used instead.
+You can use the following patterns:
+
+    {{IP}}      Replaced with the IP, such as 127-0-0-1.
+                Example:  apache-{{IP}}.internal
+                Result:   apache-192-168-0-3.internal
+
+Options:
+    --iface=IF  Detect the IP of this specific interface
+    --help      This help message
+    --reload    Reload if necessary
+    --verbose   Be verbose about what's going on
+EOF
+}
+
+ARG_help=""
+ARG_reload=""
+ARG_verbose=""
+ARG_iface=""
+wick-parse-arguments UNPARSED "${1+"$@"}"
+
+if [[ ! -z "$ARG_help" ]] || [[ ${#UNPARSED[@]} -lt 1 ]]; then
+    show-help
+    exit 1
+fi
+
+FULL=${UNPARSED[0]}
+HOST=$(echo "$FULL" | cut -d '.' -f 1)
+DOMAIN=$(echo "$FULL" | cut -d '.' -f 2- -s)
+DOMAIN=${DOMAIN:-localdomain}
+
+if [[ ! -z "$ARG_iface" ]]; then
+    printf -v ARG_iface "%q" "$ARG_iface"
+fi
+
+IP=$(ifconfig -v $ARG_iface | grep inet\ addr | head -n 1)
+IP=${IP#*:}
+IP=${IP%% *}
+IP=${IP//./-}
+HOST=${HOST//\{\{IP\}\}/$IP}
+FULL="${HOST}.${DOMAIN}"
+
+debug "Setting hostname to $FULL"
+
+#
+# Update hostname
+#
+RELOAD=false
+
+if replace-in-file /etc/sysconfig/network HOSTNAME=$FULL HOSTNAME=; then
+    RELOAD=true
+fi
+
+if replace-in-file /etc/sysctl.conf kernel.hostname=$HOST kernel.hostname=; then
+    RELOAD=true
+fi
+
+if replace-in-file /etc/hosts "127.0.0.1 $FULL $HOST localhost" "127.0.0.1"; then
+    RELOAD=true
+fi
+
+if [[ "$(hostname)" != "$HOST" ]]; then
+    debug "Setting hostname"
+    hostname "$HOST"
+    RELOAD=true
+else
+    debug "Hostname is already changed"
+fi
+
+if [[ ! -z "$ARG_reload" ]] && $RELOAD; then
+    debug "Restarting network to get hostname updated everywhere"
+    service network restart
+elif $RELOAD; then
+    debug "Not reloading even though changes were made"
+else
+    debug "Skipping network reload because no changes were made"
+fi
