@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# This file was created by the wick-infect formula
+
+# ./parent/lib/wick-in-array
+#!/bin/bash
+
+wick-in-array() {
+    local CHECK NEEDLE
+
+    NEEDLE="$1"
+    shift
+
+    for CHECK in "$@"; do
+        [[ "$NEEDLE" == "$CHECK" ]] && return 0
+    done
+
+    return 1
+}
+
+# ./parent/lib/wick-indirect
+#!/bin/bash
+
+wick-indirect() {
+    unset -v "$1" || wick-error "Invalid identifer: $1"
+    printf -v "$1" '%s' "$2"
+}
+
+# ./parent/lib/wick-indirect-array
+#!/bin/bash
+
+wick-indirect-array() {
+    unset -v "$1"
+    eval $1=\(\"\${@:2}\"\)
+}
+

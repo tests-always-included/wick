@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Starting in deepest parent, write lib/* with a header
+show-all-lib-functions() {
+    local FILE
+
+    if [[ -d "$1/parent" ]]; then
+        show-all-lib-functions "$1/parent"
+    fi
+
+    if [[ -d "$1/lib" ]]; then
+        for FILE in "$1/lib/"*; do
+            if [[ -f "$FILE" ]]; then
+                echo "# $FILE"
+                cat "$FILE"
+                echo ""
+            fi
+        done
+    fi
+}
+
+(
+    echo "#!/bin/bash"
+    echo "#"
+    echo "# This file was created by the wick-infect formula"
+    echo ""
+    show-all-lib-functions .
+) > "$WICK_FORMULA_DIR/files/wick-infect"
