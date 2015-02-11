@@ -1,5 +1,123 @@
 #!/bin/bash
 
 wick-service() {
-    service $1 $2
+    ACTION="$1"
+    shift
+
+    case "$ACTION" in
+        add)
+            ;;
+
+        disable)
+            wick-service-disable "${1+"$@"}"
+            ;;
+
+        enable)
+            wick-service-enable "${1+"$@"}"
+            ;;
+
+        make-override)
+            wick-service-make-override "${1+"$@"}"
+            ;;
+
+        override)
+            wick-service-override "${1+"$@"}"
+            ;;
+
+        reload)
+            wick-service-reload "${1+"$@"}"
+            ;;
+
+        restart)
+            wick-service-restart "${1+"$@"}"
+            ;;
+
+        start)
+            wick-service-start "${1+"$@"}"
+            ;;
+
+        stop)
+            wick-service-stop "${1+"$@"}"
+            ;;
+
+        *)
+            wick-error "Unknown service command:  $ACTION"
+            wick-error "Must be one of:  add, disable, enable, make-override, override, reload, restart, start, stop"
+            ;;
+    esac
 }
+
+
+wick-service-add() {
+    wick-info "Adding service:  $1"
+    install-formula-file "$2" /etc/init.d/"$1"
+    chkconfig --add "$1"
+}
+
+wick-service-disable() {
+    wick-info "Disabling service:  $1"
+    chkconfig "$1" off
+}
+
+wick-service-enable() {
+    wick-info "Enabling service:  $1"
+    chkconfig "$1" on
+}
+
+wick-service-make-override() {
+    local DEST LABEL LSB SERVICE SRC UNPARSED VALUE
+
+    ARG_force=""
+    parse-arguments UNPARSED
+    SERVICE="${UNPARSED[0]}"
+    SRC="/etc/init.d/$SERVICE"
+    DST="/etc/chkconfig.d/$SERVICE"
+    wick-info "Making override for service:  $SERViCE"
+
+    if [ -f "$DEST" ] && [ -z "$ARG_force" ]; then
+        return 0
+    fi
+
+    if [ ! -f "$SRC" ]; then
+        echo "Source service file does not exist:  $SRC" >> /dev/stderr
+        return 1
+    fi
+
+    LSB=$(sed '0,/^### BEGIN INIT INFO/ d; /^### END INIT INFO/,$ d' "$SRC")
+    grep '^# chkconfig:' "$SRC" | head -n 1 > "$DEST"
+    echo '### BEGIN INIT INFO' >> "$DEST"
+
+    for LABEL in Provides Default-Start Default-Stop Required-Start Required-Stop Should-Start Should-Stop; do
+        VALUE=$(echo "$LSB" | grep '^# '"$LABEL"':' || echo "")
+        echo "${VALUE:-# ${LABEL}:}" >> "$DEST"
+    done
+
+    echo '### END INIT INFO' >> "$DEST"
+    wick-service-override "$SERVICE"
+}
+
+wick-service-override() {
+    wick-info "Updating scripts with override for service:  $1"
+    chkconfig --override "$1"
+}
+
+wick-service-reload() {
+    wick-info "Reloading service:  $1"
+    service "$1" reload
+}
+
+wick-service-restart() {
+    wick-info "Restarting service:  $1"
+    service "$1" restart
+}
+
+wick-service-start() {
+    wick-info "Starting service:  $1"
+    service "$1" start
+}
+
+wick-service-stop() {
+    wick-info "Stopping service:  $1"
+    service "$1" stop
+}
+
