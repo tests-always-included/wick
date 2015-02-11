@@ -1,0 +1,3 @@
+#!/bin/bash
+
+install-formula-file wick-infect /usr/local/bin/
