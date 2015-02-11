@@ -1,0 +1,48 @@
+#!/bin/bash
+
+install-formula-template() {
+    local ARGS_MODE ARGS_OWNER DEST ENGINE SRC UNPARSED
+    
+    ARGS_mode=""
+    ARGS_owner=""
+    wick-parse-arguments UNPARSED "${1+"$@"}"
+    SRC="$WICK_FORMULA_DIR/templates/${UNPARSED[0]}"
+    ENGINE=${UNPARSED[0]%%*.}
+    DEST=${UNPARSED[1]}
+
+    if [ -z "$DEST" ]; then
+        wick-debug "Writing file to stdout: $SRC"
+        "install-formula-template-$ENGINE" "$SRC"
+    else
+        wick-debug "Copying $SRC to $DEST"
+
+        if [ -d "$DEST" ]; then
+            DEST="$DEST/${UNPARSED[0]%.*}"
+        fi
+
+        "install-formula-template-$ENGINE" "$SRC" > "$DEST"
+
+        if [ ! -z "$ARGS_owner" ]; then
+            wick-debug "Changing ownership: $ARGS_owner"
+            chown "$ARGS_owner" "$DEST"
+        fi
+
+        if [ ! -z "$ARGS_mode" ]; then
+            wick-debug "Changing mode: $ARGS_mode"
+            chmod "$ARGS_mode" "$DEST"
+        fi
+    fi
+}
+
+install-formula-template-sh() {
+    (
+        /bin/sh "$1"
+    )
+}
+
+install-formula-template-bash() {
+    (
+        . "$1"
+    )
+}
+
