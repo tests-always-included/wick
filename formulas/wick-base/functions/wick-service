@@ -6,6 +6,7 @@ wick-service() {
 
     case "$ACTION" in
         add)
+            wick-service-add "${1+"$@"}"
             ;;
 
         disable)
