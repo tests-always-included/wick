@@ -22,6 +22,22 @@ wick-argument-string() {
     echo "${STRING:1}"
 }
 
+wick-load-lib() {
+    local FILE
+
+    if [[ -d "$1/parent" ]]; then
+        wick-load-lib "$1/parent"
+    fi
+
+    if [[ -d "$1/lib" ]]; then
+        for FILE in "$1/lib/"*; do
+            if [[ -f "$FILE" ]]; then
+                . "$FILE"
+            fi
+        done
+    fi
+}
+
 wick-on-load() {
     WICK_ON_LOAD_COMMANDS=("${WICK_ON_LOAD_COMMANDS[@]}" "$(wick-argument-string "${1+"$@"}")")
 }
@@ -32,6 +48,9 @@ for F in "$WICK_DIR/"wick-*; do
         . "$F"
     fi
 done
+
+# Load all library functions
+wick-load-lib "."
 
 # Run all initialization functions
 if [[ ${#WICK_ON_LOAD_COMMANDS[@]} -gt 0 ]]; then
