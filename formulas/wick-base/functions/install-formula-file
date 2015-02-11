@@ -5,7 +5,7 @@ install-formula-file() {
     
     ARGS_mode=""
     ARGS_owner=""
-    parse-arguments UNPARSED "${@}"
+    wick-parse-arguments UNPARSED "${@}"
     SRC="$WICK_FORMULA_DIR/files/${UNPARSED[0]}"
     DEST="${UNPARSED[1]}"
 

@@ -4,7 +4,7 @@ wick-package() {
     local OS STATE
 
     STATE="install"
-    parse-arguments UNPARSED "${1+"$@"}"
+    wick-parse-arguments UNPARSED "${1+"$@"}"
 
     if [[ ! -z "$ARG_uninstall" ]]; then
         mode="uninstall"

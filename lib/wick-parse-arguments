@@ -1,6 +1,6 @@
 #!/bin/bash
 
-parse-arguments() {
+wick-parse-arguments() {
     local ARG LEN UNPARSED UNPARSED_DEST VALUE
 
     UNPARSED_DEST="$1"
@@ -9,7 +9,6 @@ parse-arguments() {
     LEN=0
 
     for ARG in "$@"; do
-        wick-debug "Parsing argument '$ARG'"
         case "$ARG" in
             --*)
                 VALUE=true
