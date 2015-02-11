@@ -6,12 +6,12 @@ wick-on-exit() {
     local LEN
 
     LEN=${#WICK_ON_EXIT_ITEMS[@]}
-    wick-debug "Adding on-exit item [$LEN] '$*'"
+    wick-debug "Adding on-exit item [$LEN]:  $*"
     WICK_ON_EXIT_ITEMS[$LEN]=$*
 
     if [[ "$LEN" == "0" ]]; then
+        wick-debug "Setting trap"
         trap wick-on-exit-trap EXIT
-        wick-debug "Set trap"
     fi
 }
 
