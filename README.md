@@ -1,7 +1,7 @@
 Wick - Configuration and Provisioning Tool
 ==========================================
 
-Wick is another alternative IT automation software package.  It provisions machines, configures software, sets up users and tasks, reloads services and does the rest of the mundane things that you would expect.  It's written in bash and requires bash and coreutils.  You probably have it installed, as even routers and minimal installations of cygwin on Windows will have enough.  Consider it a simmpler version of [Chef], [Ansible] or [Puppet], more along the lines of a [cdist] or [bash-booster].
+Wick is another alternative IT automation software package.  It provisions machines, configures software, sets up users and tasks, reloads services and does the rest of the mundane things that you would expect.  It's written in bash and requires bash and coreutils.  You probably have it installed, as even routers and minimal installations of cygwin on Windows will have enough.  Consider it a simpler version of [Chef], [Ansible] or [Puppet], more along the lines of a [cdist] or [bash-booster].
 
 The idea is that you would write installation scripts for individual tasks.  We call them formulas (like recipes, playbooks, types from other systems).  Then you would use Wick to run these scripts.  The whole task would be automated and repeatable.
 
