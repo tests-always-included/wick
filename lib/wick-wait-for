@@ -3,34 +3,35 @@
 wick-wait-for() {
     local LATCH_PROCESS RESULT SLEEP_PROCESS SLEEP_TIME
 
-    # Process 1 - the timeout
-    SLEEP_TIME=$1
-    shift
+    # Run everything in a subshell to automatically enable monitor mode (set +m)
     (
-        echo "sleeping $SLEEP_TIME"
-        sleep $SLEEP_TIME
-        echo "sleep done"
-        exit 127
-    ) &
-    SLEEP_PROCESS=$!
+        # Process 1 - the timeout
+        SLEEP_TIME=$1
+        shift
+        (
+            sleep $SLEEP_TIME
+            exit 127
+        ) > /dev/null 2>&1 &
+        SLEEP_PROCESS=$!
 
-    # Process 2 - the latch
-    (
-        while ! ${1+"$@"}; do
-            echo "latch fail"
-            sleep 1
-        done
-        echo "latch success"
-    ) &
-    LATCH_PROCESS=$!
+        # Process 2 - the latch
+        (
+            while ! ${1+"$@"}; do
+                echo "latch fail"
+                sleep 1
+            done
+            echo "latch success"
+        ) > /dev/null 2>&1 &
+        LATCH_PROCESS=$!
 
-    # Delay until one of the processes finish
-    wait -n $SLEEP_PROCESS $LATCH_PROCESS
-    RESULT=$?
+        # Delay until one of the processes finish
+        wait -n $SLEEP_PROCESS $LATCH_PROCESS
+        RESULT=$?
 
-    # Clean up and hide the "Terminated" message from killing bash
-    kill $SLEEP_PROCESS $LATCH_PROCESS > /dev/null 2>&1
-    wait $SLEEP_PROCESS $LATCH_PROCESS > /dev/null 2>&1
+        # Clean up and hide the "Terminated" message from killing bash
+        kill $SLEEP_PROCESS $LATCH_PROCESS > /dev/null 2>&1
+        wait $SLEEP_PROCESS $LATCH_PROCESS > /dev/null 2>&1
+    )
 
     return $RESULT
 }
