@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if getent hosts instance-data | grep "169.254.169.254 .*.compute.internal" > /dev/null 2>&1; then
+    wick-info "Detected Amazon"
+    echo "amazon"
+    exit
+fi
+
+echo "unknown"
