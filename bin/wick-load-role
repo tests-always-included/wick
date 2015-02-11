@@ -1,0 +1,23 @@
+#!/bin/bash
+
+wick-load-role() {
+    local LOCATION ROLE
+
+    if [[ ${#@} -eq 0 ]]; then
+        echo "You must specify one or more roles."
+
+        return 1
+    fi
+
+    while [[ ! -z "$1" ]]; do
+        if ! wick-find LOCATION "roles/$1"; then
+            echo "Unable to find role $1"
+
+            return 1
+        fi
+
+        echo "Using role $1 ($LOCATION)"
+        . "$LOCATION"
+        shift
+    done
+}
