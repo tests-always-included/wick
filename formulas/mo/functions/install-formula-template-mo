@@ -1,0 +1,7 @@
+#!/bin/bash
+
+install-formula-template-mo() {
+    (
+        . /usr/local/bin/mo "$1"
+    )
+}

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+install-formula-file mo /usr/local/bin/
