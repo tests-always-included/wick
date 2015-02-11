@@ -23,6 +23,13 @@ wick-formula() {
     FULL_COMMAND="$LOCATION/run"
     echo "Adding formula $FORMULA ($LOCATION)"
 
+    if [[ -f "$LOCATION/depends" ]]; then
+        WICK_FORMULA_DIR=$LOCATION
+        (
+            . "$LOCATION/depends"
+        )
+    fi
+
     if [[ -f "$FULL_COMMAND" ]]; then
         if [[ $# -gt 0 ]]; then
             FULL_COMMAND="$FULL_COMMAND $(wick-argument-string "${1+"$@"}")"
