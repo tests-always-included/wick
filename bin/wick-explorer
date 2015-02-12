@@ -14,12 +14,20 @@ wick-explorer() {
     # Run the explorer
     temp-directory TEMP
 
-    if ! "$EXPLORER" > "$TEMP/stdout" 2> "$TEMP/stderr"; then
+    (
+        . "$EXPLORER" > "$TEMP/stdout" 2> "$TEMP/stderr" || touch "$TEMP/fail"
+    )
+
+    cat "TEMP/stderr"
+
+    if [[ -f "$TEMP/fail" ]]; then
         wick-error "Explorer failed: $EXPLORER"
-        wick-debug "$(< "$TEMP/stderr" )"
 
         return 1
     fi
+
+    wick-debug "Explorer success"
+    wick-debug "$(< "$TEMP/stdout" )"
 
     local "$1" && wick-indirect "$1" "$(<"$TEMP/stdout")"
 }
