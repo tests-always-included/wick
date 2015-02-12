@@ -7,7 +7,7 @@ install-formula-template() {
     ARGS_owner=""
     wick-parse-arguments UNPARSED "${1+"$@"}"
     SRC="$WICK_FORMULA_DIR/templates/${UNPARSED[0]}"
-    ENGINE=${UNPARSED[0]%%*.}
+    ENGINE=${UNPARSED[0]##*.}
     DEST=${UNPARSED[1]}
 
     if [ -z "$DEST" ]; then
