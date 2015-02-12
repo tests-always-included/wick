@@ -7,3 +7,4 @@ if getent hosts instance-data | grep "169.254.169.254 .*.compute.internal" > /de
 fi
 
 echo "unknown"
+exit 1

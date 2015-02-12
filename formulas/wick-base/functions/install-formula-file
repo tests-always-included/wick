@@ -7,36 +7,40 @@ install-formula-file() {
     ARGS_owner=""
     ARGS_template=""
     wick-parse-arguments UNPARSED "${1+"$@"}"
-    SRC="$WICK_FORMULA_DIR/files/${UNPARSED[0]}"
+    SRC="${UNPARSED[0]}"
     DEST="${UNPARSED[1]}"
 
-    if [ -z "$DEST" ]; then
-        wick-debug "Writing file to stdout: $SRC"
+    if [[ -z "$ARGS_template" ]]; then
+        SRC="$WICK_FORMULA_DIR/files/$SRC"
+    fi
 
+    if [[ -z "$DEST" ]]; then
         if [[ -z "$ARGS_template" ]]; then
+            wick-debug "Writing file to stdout: $SRC"
             cat "$SRC"
         else
+            wick-debug "Writing template to stdout: $SRC"
             formula-template "$SRC"
         fi
     else
-        wick-debug "Copying $SRC to $DEST"
-
-        if [ -d "$DEST" ]; then
+        if [[ -d "$DEST" ]]; then
             DEST="$DEST/${UNPARSED[0]}"
         fi
 
         if [[ -z "$ARGS_template" ]]; then
+            wick-debug "Copying $SRC to $DEST"
             cp "$SRC" "$DEST"
         else
+            wick-debug "Converting template $SRC into $DEST"
             formula-template "$SRC" > "$DEST"
         fi
 
-        if [ ! -z "$ARGS_owner" ]; then
+        if [[ ! -z "$ARGS_owner" ]]; then
             wick-debug "Changing ownership: $ARGS_owner"
             chown "$ARGS_owner" "$DEST"
         fi
 
-        if [ ! -z "$ARGS_mode" ]; then
+        if [[ ! -z "$ARGS_mode" ]]; then
             wick-debug "Changing mode: $ARGS_mode"
             chmod "$ARGS_mode" "$DEST"
         fi

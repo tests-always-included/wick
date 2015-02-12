@@ -22,7 +22,7 @@ else
 
     CLOUD_FILE="/etc/cloud/cloud.cfg"
     if [ -f "$CLOUD_FILE" ]; then
-        wick-info "Updating cloud-init:  $CLOUD_FILE"
+        wick-info "Updating cloud-init: $CLOUD_FILE"
         wick-set-config-line "$CLOUD_FILE" "preserve_hostname: true"
     else
         wick-info "Cloud-init not detected"

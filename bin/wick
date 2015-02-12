@@ -17,6 +17,10 @@ wick-load-lib() {
     if [[ -d "$1/lib" ]]; then
         for FILE in "$1/lib/"*; do
             if [[ -f "$FILE" ]]; then
+                if [[ ! -z "$DEBUG" ]]; then
+                    echo "Loading library: $FILE"
+                fi
+
                 . "$FILE"
             fi
         done

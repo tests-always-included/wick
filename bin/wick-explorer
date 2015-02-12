@@ -6,7 +6,8 @@ wick-explorer() {
     EXPLORER="formulas/$2/explorers/$3"
 
     if ! wick-find EXPLORER "$EXPLORER"; then
-        wick-error "Unable to find explorer:  $EXPLORER"
+        wick-error "Unable to find explorer: $EXPLORER"
+
         return 1
     fi
 
@@ -14,7 +15,10 @@ wick-explorer() {
     temp-directory TEMP
 
     if ! "$EXPLORER" > "$TEMP/stdout" 2> "$TEMP/stderr"; then
-        wick-error "Explorer failed"
+        wick-error "Explorer failed: $EXPLORER"
+        wick-debug "$(< "$TEMP/stderr" )"
+
+        return 1
     fi
 
     local "$1" && wick-indirect "$1" "$(<"$TEMP/stdout")"

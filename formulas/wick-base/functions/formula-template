@@ -4,7 +4,7 @@ formula-template() {
     local ENGINE
     
     ENGINE=${1##*.}
-    "formula-template-$ENGINE" "$SRC"
+    "formula-template-$ENGINE" "$WICK_FORMULA_DIR/templates/$SRC"
 }
 
 formula-template-sh() {

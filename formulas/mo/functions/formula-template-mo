@@ -1,6 +1,7 @@
 #!/bin/bash
 
 formula-template-mo() {
+    wick-debug "Template parsing"
     (
         . /usr/local/bin/mo "$1"
     )

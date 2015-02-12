@@ -30,7 +30,7 @@ wick-formula() {
             wick-error "Formula specified multiple times with different arguments: $FORMULA"
             return 1
         else
-            wick-info "Formula is already in list:  $FORMULA"
+            wick-info "Formula is already in list: $FORMULA"
             return 0
         fi
     fi
@@ -51,7 +51,7 @@ wick-formula() {
     if [[ -d "$LOCATION/functions" ]]; then
         for FILE in "$LOCATION/functions/"*; do
             if [[ -f "$FILE" ]]; then
-                echo "Loading function:  $FILE"
+                echo "Loading function: $FILE"
                 . "$FILE"
             fi
         done
@@ -60,7 +60,7 @@ wick-formula() {
     if [[ -d "$LOCATION/explorers" ]]; then
         for FILE in "$LOCATION/explorers/"*; do
             if [[ -f "$FILE" ]]; then
-                echo "Running explorer:  $FILE"
+                echo "Running explorer: $FILE"
                 (
                     wick-explorer TEMP "$FORMULA" "${FILE##*/}"
                 )
