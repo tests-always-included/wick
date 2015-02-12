@@ -1,12 +1,16 @@
 #!/bin/bash
 
 WICK_FORMULA_LIST=()
+WIck_FORMULA_LIST_WITH_ARGS=()
+WICK_FORMULA_COMMANDS=()
 
 wick-formula() {
-    local FILE FORMULA FULL_COMMAND LOCATION TEMP
+    local ARGS FILE FORMULA FORMULA_ESCAPED LOCATION TEMP
 
     FORMULA="$1"
+    FORMULA_ESCAPED=$(wick-argument-string "$FORMULA")
     shift
+    ARGS=$(wick-argument-string "${1+"$@"}")
 
     if [[ -z "$FORMULA" ]]; then
         echo "You must specify a formula name."
@@ -20,22 +24,28 @@ wick-formula() {
         return 1
     fi
 
-    FULL_COMMAND="$LOCATION/run"
+    if wick-in-array "$FORMULA" "${WICK_FORMULA_LIST[@]}"; then
+        # Specifying the same formula is ok as long as the arguments are the same
+        if ! wick-in-array "$FORMULA_ESCAPED $ARGS" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"; then
+            wick-error "Formula specified multiple times with different arguments: $FORMULA"
+            return 1
+        else
+            wick-info "Formula is already in list:  $FORMULA"
+            return 0
+        fi
+    fi
+
     echo "Adding formula $FORMULA ($LOCATION)"
+    WICK_FORMULA_LIST=("${WICK_FORMULA_LIST[@]}" "$FORMULA")
+    WICK_FORMULA_LIST_WITH_ARGS=("${WICK_FORMULA_LIST_WITH_ARGS[@]}" "$FORMULA_ESCAPED $ARGS")
 
     if [[ -f "$LOCATION/depends" ]]; then
         WICK_FORMULA_DIR=$LOCATION
-        (
-            . "$LOCATION/depends"
-        )
+        . "$LOCATION/depends"
     fi
 
-    if [[ -f "$FULL_COMMAND" ]]; then
-        if [[ $# -gt 0 ]]; then
-            FULL_COMMAND="$FULL_COMMAND $(wick-argument-string "${1+"$@"}")"
-        fi
-
-        WICK_FORMULA_LIST=("${WICK_FORMULA_LIST[@]}" "$FULL_COMMAND")
+    if [[ -f "$LOCATION/run" ]]; then
+        WICK_FORMULA_COMMANDS=("${WICK_FORMULA_COMMANDS[@]}" "$(wick-argument-string "$LOCATION/run") $ARGS")
     fi
 
     if [[ -d "$LOCATION/functions" ]]; then

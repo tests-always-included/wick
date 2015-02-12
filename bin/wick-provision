@@ -13,7 +13,7 @@ wick-provision() {
 
     wick-load-role "${1+"$@"}"
 
-    if [[ ${#WICK_FORMULA_LIST} -eq 0 ]]; then
+    if [[ ${#WICK_FORMULA_COMMANDS[@]} -eq 0 ]]; then
         echo "No formulas listed or no run scripts found for the formulas."
     else
         wick-provision-formulas
@@ -21,15 +21,27 @@ wick-provision() {
 }
 
 
+wick-get-formula-run-command() {
+    local "$1" && wick-indirect "$1" "$2"
+}
+
 wick-provision-formulas() {
     local FORMULA
 
-    for FORMULA in "${WICK_FORMULA_LIST[@]}"; do
+    # Escaping note:
+    # 
+    # Formulas in this list are already quoted and must not be quoted if you are
+    # to run this properly.  See wick-formula for quoting.
+    for FORMULA in "${WICK_FORMULA_COMMANDS[@]}"; do
         echo "Executing formula: $FORMULA"
+
+        # See escaping note above
+        wick-get-formula-run-command WICK_FORMULA_DIR $FORMULA
         WICK_FORMULA_DIR=${FORMULA%/*}
 
         (
-            . "$FORMULA"
+            # See escaping note above
+            . $FORMULA
         ) || (
             echo "FAILURE DETECTED"
             return 1
