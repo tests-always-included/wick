@@ -7,21 +7,6 @@ shift
 
 WICK_ON_LOAD_COMMANDS=()
 
-wick-argument-string() {
-    local ARG STRING
-
-    STRING=""
-
-    if [[ $# -gt 0 ]]; then
-        for ARG in "$@"; do
-            printf -v ARG "%q" "$ARG"
-            STRING="${STRING} $ARG"
-        done
-    fi
-
-    echo "${STRING:1}"
-}
-
 wick-load-lib() {
     local FILE
 
@@ -42,15 +27,15 @@ wick-on-load() {
     WICK_ON_LOAD_COMMANDS=("${WICK_ON_LOAD_COMMANDS[@]}" "$(wick-argument-string "${1+"$@"}")")
 }
 
+# Load all library functions
+wick-load-lib "."
+
 # Load all functions into the current environment
 for F in "$WICK_DIR/"wick-*; do
     if [[ -f "$F" ]]; then
         . "$F"
     fi
 done
-
-# Load all library functions
-wick-load-lib "."
 
 # Run all initialization functions
 if [[ ${#WICK_ON_LOAD_COMMANDS[@]} -gt 0 ]]; then

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+wick-argument-string() {
+    local ARG STRING
+
+    STRING=""
+
+    if [[ $# -gt 0 ]]; then
+        for ARG in "$@"; do
+            printf -v ARG "%q" "$ARG"
+            STRING="${STRING} $ARG"
+        done
+    fi
+
+    echo "${STRING:1}"
+}
+
