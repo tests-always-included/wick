@@ -1,0 +1,16 @@
+#!/bin/bash
+
+wick-get-iface-ip() {
+    local IP
+
+    IP=$(ifconfig -v $2 | grep inet\ addr | head -n 1 || echo "")
+    IP=${IP#*:}
+    IP=${IP%% *}
+
+    if [[ -z "$IP" ]]; then
+        return 1
+    fi
+
+    local "$1" && wick-indirect $1 "$IP"
+}
+
