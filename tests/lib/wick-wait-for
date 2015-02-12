@@ -1,0 +1,33 @@
+#!/bin/bash
+
+cd "${0%/*}"
+. ../../lib/wick-wait-for
+
+echo "testing true"
+
+if wick-wait-for 3 true; then
+    echo "pass"
+else
+    echo "fail"
+fi
+
+echo "testing false (3 sec)"
+
+if wick-wait-for 3 false; then
+    echo "fail"
+else
+    echo "pass"
+fi
+
+echo "testing for -f /tmp/moocow"
+(
+     sleep 5
+     touch /tmp/moocow
+) &
+rm -f /tmp/moocow
+
+if wick-wait-for 10 [ -f /tmp/moocow ]; then
+    echo "pass"
+else
+    echo "fail"
+fi
