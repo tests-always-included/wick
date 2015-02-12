@@ -68,14 +68,14 @@ wick-service-enable() {
 wick-service-make-override() {
     local DEST LABEL LSB SERVICE SRC UNPARSED VALUE
 
-    ARG_force=""
+    ARGS_force=""
     wick-parse-arguments UNPARSED "${1+"$@"}"
     SERVICE="${UNPARSED[0]}"
     SRC="/etc/init.d/$SERVICE"
     DST="/etc/chkconfig.d/$SERVICE"
     wick-info "Making override for service:  $SERViCE"
 
-    if [ -f "$DEST" ] && [ -z "$ARG_force" ]; then
+    if [ -f "$DEST" ] && [ -z "$ARGS_force" ]; then
         return 0
     fi
 

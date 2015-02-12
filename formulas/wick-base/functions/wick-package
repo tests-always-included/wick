@@ -1,13 +1,14 @@
 #!/bin/bash
 
 wick-package() {
-    local OS STATE
+    local ARGS_uninstall OS STATE
 
     STATE="install"
+    ARGS_uninstall=""
     wick-parse-arguments UNPARSED "${1+"$@"}"
 
-    if [[ ! -z "$ARG_uninstall" ]]; then
-        mode="uninstall"
+    if [[ ! -z "$ARGS_uninstall" ]]; then
+        STATE"uninstall"
     fi
 
     wick-explorer OS wick-base os

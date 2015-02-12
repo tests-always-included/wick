@@ -4,7 +4,7 @@ set -e
 . /usr/local/bin/wick-infect
 
 debug() {
-    if [[ -z "$ARG_verbose" ]]; then
+    if [[ -z "$ARGS_verbose" ]]; then
         echo $1;
     fi
 }
@@ -53,13 +53,13 @@ Options:
 EOF
 }
 
-ARG_help=""
-ARG_reload=""
-ARG_verbose=""
-ARG_iface=""
+ARGS_help=""
+ARGS_reload=""
+ARGS_verbose=""
+ARGS_iface=""
 wick-parse-arguments UNPARSED "${1+"$@"}"
 
-if [[ ! -z "$ARG_help" ]] || [[ ${#UNPARSED[@]} -lt 1 ]]; then
+if [[ ! -z "$ARGS_help" ]] || [[ ${#UNPARSED[@]} -lt 1 ]]; then
     show-help
     exit 1
 fi
@@ -69,11 +69,11 @@ HOST=$(echo "$FULL" | cut -d '.' -f 1)
 DOMAIN=$(echo "$FULL" | cut -d '.' -f 2- -s)
 DOMAIN=${DOMAIN:-localdomain}
 
-if [[ ! -z "$ARG_iface" ]]; then
-    printf -v ARG_iface "%q" "$ARG_iface"
+if [[ ! -z "$ARGS_iface" ]]; then
+    printf -v ARGS_iface "%q" "$ARGS_iface"
 fi
 
-IP=$(ifconfig -v $ARG_iface | grep inet\ addr | head -n 1)
+IP=$(ifconfig -v $ARGS_iface | grep inet\ addr | head -n 1)
 IP=${IP#*:}
 IP=${IP%% *}
 IP=${IP//./-}
@@ -107,7 +107,7 @@ else
     debug "Hostname is already changed"
 fi
 
-if [[ ! -z "$ARG_reload" ]] && $RELOAD; then
+if [[ ! -z "$ARGS_reload" ]] && $RELOAD; then
     debug "Restarting network to get hostname updated everywhere"
     service network restart
 elif $RELOAD; then
