@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if command-exists lsb_release; then
+if wick-command-exists lsb_release; then
     DISTRIBUTOR=$(lsb-release -s -i 2>&1)
     wick-debug "Distributor: $DISTRIBUTOR"
 
@@ -29,7 +29,7 @@ if [[ "$MACHTYPE" == *"-apple-"* ]]; then
     exit
 fi
 
-if command-exists uname; then
+if wick-command-exists uname; then
     UNAME_V=$(uname -v 2>&1)
     wick-debug "UNAME_V=$UNAME_V"
 

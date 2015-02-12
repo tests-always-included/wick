@@ -1,6 +1,6 @@
 #!/bin/bash
 
-command-exists() {
+wick-command-exists() {
     RESULT=$(which $* 2>&1)
 
     # Command failed to execute or reported failure
