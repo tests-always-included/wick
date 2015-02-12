@@ -1,17 +1,23 @@
 #!/bin/bash
 
 install-formula-file() {
-    local ARGS_MODE ARGS_OWNER DEST SRC UNPARSED
+    local ARGS_mode ARGS_owner ARGS_template DEST SRC UNPARSED
     
     ARGS_mode=""
     ARGS_owner=""
+    ARGS_template=""
     wick-parse-arguments UNPARSED "${1+"$@"}"
     SRC="$WICK_FORMULA_DIR/files/${UNPARSED[0]}"
     DEST="${UNPARSED[1]}"
 
     if [ -z "$DEST" ]; then
         wick-debug "Writing file to stdout: $SRC"
-        cat "$SRC"
+
+        if [[ -z "$ARGS_template" ]]; then
+            cat "$SRC"
+        else
+            formula-template "$SRC"
+        fi
     else
         wick-debug "Copying $SRC to $DEST"
 
@@ -19,7 +25,11 @@ install-formula-file() {
             DEST="$DEST/${UNPARSED[0]}"
         fi
 
-        cp "$SRC" "$DEST"
+        if [[ -z "$ARGS_template" ]]; then
+            cp "$SRC" "$DEST"
+        else
+            formula-template "$SRC" > "$DEST"
+        fi
 
         if [ ! -z "$ARGS_owner" ]; then
             wick-debug "Changing ownership: $ARGS_owner"

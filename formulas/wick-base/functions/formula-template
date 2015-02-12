@@ -1,0 +1,21 @@
+#!/bin/bash
+
+formula-template() {
+    local ENGINE
+    
+    ENGINE=${1##*.}
+    "formula-template-$ENGINE" "$SRC"
+}
+
+formula-template-sh() {
+    (
+        /bin/sh "$1"
+    )
+}
+
+formula-template-bash() {
+    (
+        . "$1"
+    )
+}
+
