@@ -1,0 +1,46 @@
+#!/bin/bash
+
+wick-get-url() {
+    local ARGS_progress ARGS_timeout DEST UNPARSED URL
+
+    ARGS_progress=""
+    ARGS_timeout=""
+    wick-parse-arguments UNPARSED "${1+"$@"}"
+    URL="${UNPARSED[0]}"
+    DEST="${UNPARSED[1]}"
+
+    if wick-command-exists curl; then
+        wick-get-url-curl
+        return 0
+    fi
+
+    if wick-command-exists wget; then
+        wick-get-url-wget
+        return 0
+    fi
+
+    echo "Unable to download url - no suitable programs found" >> /dev/stderr
+    return 1
+}
+
+wick-get-url-curl() {
+    local ARGS
+    
+    ARGS=(curl)
+    [[ -z "$ARGS_progress" ]] && ARGS=("${ARGS[@]}" "-s")
+    [[ ! -z "$ARGS_timeout" ]] && ARGS=("${ARGS[@]}" "-m" "$ARGS_timeout")
+    [[ ! -z "$DEST" ]] && ARGS=("${ARGS[@]}" "-o" "$DEST")
+    ARGS=("${ARGS[@]}" "$URL")
+    "${ARGS[@]}"
+}
+
+wick-get-url-wget() {
+    local ARGS
+    
+    ARGS=(curl)
+    [[ -z "$ARGS_progress" ]] && ARGS=("${ARGS[@]}" "--quiet")
+    [[ ! -z "$ARGS_timeout" ]] && ARGS=("${ARGS[@]}" "--timeout" "$ARGS_timeout")
+    [[ ! -z "$DEST" ]] && ARGS=("${ARGS[@]}" "-O" "$DEST")
+    ARGS=("${ARGS[@]}" "$URL")
+    "${ARGS[@]}"
+}

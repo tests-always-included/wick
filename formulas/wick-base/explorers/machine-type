@@ -1,10 +1,16 @@
 #!/bin/bash
 
-if getent hosts instance-data | grep "169.254.169.254 .*.compute.internal" > /dev/null 2>&1; then
-    wick-info "Detected Amazon"
+if getent hosts instance-data | grep -q "169.254.169.254 .*.compute.internal"; then
+    wick-info "Detected Amazon (getent hosts)"
     echo "amazon"
     exit
 fi
 
+if wick-get-url http://169.254.169.254/latest/meta-data/ami-id > /dev/null; then
+    wick-info "Detected Amazon (url ami-id)"
+    echo "amazon"
+    exit
+fi
+
+wick-debug "Unable to determine machine type"
 echo "unknown"
-exit 1
