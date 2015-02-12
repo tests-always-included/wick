@@ -51,7 +51,7 @@ wick-service() {
 
 wick-service-add() {
     wick-info "Adding service:  $1"
-    install-formula-file "$2" /etc/init.d/"$1"
+    install-formula-file --mode=0755 --owner=root:root "$2" /etc/init.d/"$1"
     chkconfig --add "$1"
 }
 
