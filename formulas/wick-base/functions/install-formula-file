@@ -14,6 +14,11 @@ install-formula-file() {
         cat "$SRC"
     else
         wick-debug "Copying $SRC to $DEST"
+
+        if [ -d "$DEST" ]; then
+            DEST="$DEST/${UNPARSED[0]}"
+        fi
+
         cp "$SRC" "$DEST"
 
         if [ ! -z "$ARGS_owner" ]; then
