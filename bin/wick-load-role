@@ -17,6 +17,7 @@ wick-load-role() {
         fi
 
         echo "Using role $1 ($LOCATION)"
+        WICK_ROLE_DIR=${LOCATION%/*}
         . "$LOCATION"
         shift
     done
