@@ -26,3 +26,5 @@ show-all-lib-functions() {
     echo ""
     show-all-lib-functions .
 ) > "$WICK_FORMULA_DIR/files/wick-infect"
+
+wick-formula wick-base

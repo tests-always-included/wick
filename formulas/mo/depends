@@ -1,4 +1,3 @@
 #!/bin/bash
 
 wick-formula wick-base
-wick-formula wick-infect
