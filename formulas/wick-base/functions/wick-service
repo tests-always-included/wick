@@ -104,21 +104,21 @@ wick-service-override() {
 
 wick-service-reload() {
     wick-info "Reloading service:  $1"
-    service "$1" reload
+    nohup service "$1" reload
 }
 
 wick-service-restart() {
     wick-info "Restarting service:  $1"
-    service "$1" restart
+    nohup service "$1" restart
 }
 
 wick-service-start() {
     wick-info "Starting service:  $1"
-    service "$1" start
+    nohup service "$1" start
 }
 
 wick-service-stop() {
     wick-info "Stopping service:  $1"
-    service "$1" stop
+    nohup service "$1" stop
 }
 
