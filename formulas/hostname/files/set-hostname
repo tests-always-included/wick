@@ -107,6 +107,14 @@ else
     debug "Hostname is already changed"
 fi
 
+if [[ "$(domainname)" != "$DOMAIN" ]]; then
+    debug "Setting domainname"
+    domainname "$DOMAIN"
+    RELOAD=true
+else
+    debug "Domainname is already changed"
+fi
+
 if [[ ! -z "$ARGS_reload" ]] && $RELOAD; then
     debug "Restarting network to get hostname updated everywhere"
     service network restart
