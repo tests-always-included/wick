@@ -6,7 +6,7 @@ wick-provision() {
     local LOCATION ROLE
 
     if [[ ${#@} -eq 0 ]]; then
-        echo "You must specify one or more roles to provision."
+        echo "You must specify one or more roles to provision." >> /dev/stderr
 
         return 1
     fi
