@@ -73,7 +73,7 @@ wick-service-make-override() {
     SERVICE="${UNPARSED[0]}"
     SRC="/etc/init.d/$SERVICE"
     DEST="/etc/chkconfig.d/$SERVICE"
-    wick-info "Making override for service: $SERViCE"
+    wick-info "Making override for service: $SERVICE"
 
     if [ -f "$DEST" ] && [ -z "$ARGS_force" ]; then
         return 0
