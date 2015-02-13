@@ -8,11 +8,12 @@ wick-formula() {
     local ARGS FILE FORMULA FORMULA_ESCAPED LOCATION TEMP
 
     FORMULA="$1"
-    FORMULA_ESCAPED=$(wick-argument-string "$FORMULA")
+    wick-argument-string FORMULA_ESCAPED "$FORMULA"
     shift
 
     if [[ $# -gt 0 ]]; then
-        ARGS=" $(wick-argument-string "${1+"$@"}")"
+        wick-argument-string ARGS "$@"
+        ARGS=" $ARGS"
     else
         ARGS=""
     fi
@@ -50,7 +51,9 @@ wick-formula() {
     fi
 
     if [[ -f "$LOCATION/run" ]]; then
-        WICK_FORMULA_COMMANDS=("${WICK_FORMULA_COMMANDS[@]}" "$(wick-argument-string "$LOCATION/run")$ARGS")
+        wick-argument-string TEMP "$LOCATION/run"
+        echo "---------- adding formula "$TEMP$ARGS
+        WICK_FORMULA_COMMANDS=("${WICK_FORMULA_COMMANDS[@]}" "$TEMP$ARGS")
     fi
 
     if [[ -d "$LOCATION/functions" ]]; then

@@ -28,7 +28,9 @@ wick-load-lib() {
 }
 
 wick-on-load() {
-    WICK_ON_LOAD_COMMANDS=("${WICK_ON_LOAD_COMMANDS[@]}" "$(wick-argument-string "${1+"$@"}")")
+    local ARGS
+    wick-argument-string ARGS "$@"
+    WICK_ON_LOAD_COMMANDS=("${WICK_ON_LOAD_COMMANDS[@]}" "$ARGS")
 }
 
 # Load all library functions

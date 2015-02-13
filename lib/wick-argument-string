@@ -1,8 +1,10 @@
 #!/bin/bash
 
 wick-argument-string() {
-    local ARG STRING
+    local ARG ORIG STRING TARGET
 
+    TARGET="$1"
+    shift
     STRING=""
 
     if [[ $# -gt 0 ]]; then
@@ -12,6 +14,6 @@ wick-argument-string() {
         done
     fi
 
-    echo "${STRING:1}"
+    local "$TARGET" && wick-indirect "$TARGET" "${STRING:1}"
 }
 
