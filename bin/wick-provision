@@ -37,7 +37,7 @@ wick-provision-formulas() {
 
         # See escaping note above
         wick-get-formula-run-command WICK_FORMULA_DIR $FORMULA
-        WICK_FORMULA_DIR=${FORMULA%/*}
+        WICK_FORMULA_DIR=${WICK_FORMULA_DIR%/*}
 
         (
             # See escaping note above
