@@ -41,7 +41,13 @@ wick-provision-formulas() {
 
         (
             # See escaping note above
-            . $FORMULA
+            # Can't use `. $FORMULA` by itself because parameters get double-escaped.
+            # Test:
+            #     arg1() { printf "%q" "$1"; }
+            #     arg1 a\{b # prints "a\{b"
+            #     test="arg1 a\{b"
+            #     $test # prints "a\\\{b"
+            eval ". $FORMULA"
         ) || (
             echo "FAILURE DETECTED"
             return 1
