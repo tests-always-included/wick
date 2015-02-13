@@ -10,7 +10,12 @@ wick-formula() {
     FORMULA="$1"
     FORMULA_ESCAPED=$(wick-argument-string "$FORMULA")
     shift
-    ARGS=$(wick-argument-string "${1+"$@"}")
+
+    if [[ $# -gt 0 ]]; then
+        ARGS=" $(wick-argument-string "${1+"$@"}")"
+    else
+        ARGS=""
+    fi
 
     if [[ -z "$FORMULA" ]]; then
         echo "You must specify a formula name."
@@ -26,7 +31,7 @@ wick-formula() {
 
     if wick-in-array "$FORMULA" "${WICK_FORMULA_LIST[@]}"; then
         # Specifying the same formula is ok as long as the arguments are the same
-        if ! wick-in-array "$FORMULA_ESCAPED $ARGS" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"; then
+        if ! wick-in-array "$FORMULA_ESCAPED$ARGS" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"; then
             wick-error "Formula specified multiple times with different arguments: $FORMULA"
             return 1
         else
@@ -37,7 +42,7 @@ wick-formula() {
 
     echo "Adding formula $FORMULA ($LOCATION)"
     WICK_FORMULA_LIST=("${WICK_FORMULA_LIST[@]}" "$FORMULA")
-    WICK_FORMULA_LIST_WITH_ARGS=("${WICK_FORMULA_LIST_WITH_ARGS[@]}" "$FORMULA_ESCAPED $ARGS")
+    WICK_FORMULA_LIST_WITH_ARGS=("${WICK_FORMULA_LIST_WITH_ARGS[@]}" "$FORMULA_ESCAPED$ARGS")
 
     if [[ -f "$LOCATION/depends" ]]; then
         WICK_FORMULA_DIR=$LOCATION
@@ -45,7 +50,7 @@ wick-formula() {
     fi
 
     if [[ -f "$LOCATION/run" ]]; then
-        WICK_FORMULA_COMMANDS=("${WICK_FORMULA_COMMANDS[@]}" "$(wick-argument-string "$LOCATION/run") $ARGS")
+        WICK_FORMULA_COMMANDS=("${WICK_FORMULA_COMMANDS[@]}" "$(wick-argument-string "$LOCATION/run")$ARGS")
     fi
 
     if [[ -d "$LOCATION/functions" ]]; then
