@@ -6,7 +6,7 @@ install-formula-file() {
     ARGS_mode=""
     ARGS_owner=""
     ARGS_template=""
-    wick-parse-arguments UNPARSED "${1+"$@"}"
+    wick-parse-arguments UNPARSED "$@"
     SRC="${UNPARSED[0]}"
     DEST="${UNPARSED[1]}"
 

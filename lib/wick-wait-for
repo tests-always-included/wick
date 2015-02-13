@@ -10,7 +10,7 @@ wick-wait-for() {
     (
         # The latch
         (
-            while ! ${1+"$@"}; do
+            while ! "$@"; do
                 echo "latch fail"
                 sleep 1
             done

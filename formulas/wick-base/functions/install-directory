@@ -5,7 +5,7 @@ install-directory() {
 
     ARGS_owner=""
     ARGS_mode=""
-    wick-parse-arguments UNPARSED "${1+"$@"}"
+    wick-parse-arguments UNPARSED "$@"
     DEST=${UNPARSED[0]}
     wick-debug "Making directory: $DEST"
     mkdir -p "$DEST"

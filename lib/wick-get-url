@@ -5,7 +5,7 @@ wick-get-url() {
 
     ARGS_progress=""
     ARGS_timeout=""
-    wick-parse-arguments UNPARSED "${1+"$@"}"
+    wick-parse-arguments UNPARSED "$@"
     URL="${UNPARSED[0]}"
     DEST="${UNPARSED[1]}"
 

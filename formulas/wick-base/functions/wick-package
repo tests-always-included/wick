@@ -5,7 +5,7 @@ wick-package() {
 
     STATE="install"
     ARGS_uninstall=""
-    wick-parse-arguments UNPARSED "${1+"$@"}"
+    wick-parse-arguments UNPARSED "$@"
 
     if [[ ! -z "$ARGS_uninstall" ]]; then
         STATE"uninstall"
@@ -37,11 +37,11 @@ wick-package-yum() {
 
     case "$STATE" in
         install)
-            yum install -y "${1+"$@"}"
+            yum install -y "$@"
             ;;
 
         uninstall)
-            yum remove -y "${1+"$@"}"
+            yum remove -y "$@"
             ;;
 
         *)
@@ -58,11 +58,11 @@ wick-package-apt() {
 
     case "$STATE" in
         install)
-            apt-get install -y "${1+"$@"}"
+            apt-get install -y "$@"
             ;;
 
         uninstall)
-            apt-get purge -y "${1+"$@"}"
+            apt-get purge -y "$@"
             ;;
 
         *)

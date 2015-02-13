@@ -58,5 +58,5 @@ if ! wick-in-array "$CMD" "${WICK_COMMANDS[@]}"; then
     echo "No such command: $CMD"
     echo "See 'wick help'"
 else
-    wick-$CMD "${1+"$@"}"
+    wick-$CMD "$@"
 fi

@@ -6,39 +6,39 @@ wick-service() {
 
     case "$ACTION" in
         add)
-            wick-service-add "${1+"$@"}"
+            wick-service-add "$@"
             ;;
 
         disable)
-            wick-service-disable "${1+"$@"}"
+            wick-service-disable "$@"
             ;;
 
         enable)
-            wick-service-enable "${1+"$@"}"
+            wick-service-enable "$@"
             ;;
 
         make-override)
-            wick-service-make-override "${1+"$@"}"
+            wick-service-make-override "$@"
             ;;
 
         override)
-            wick-service-override "${1+"$@"}"
+            wick-service-override "$@"
             ;;
 
         reload)
-            wick-service-reload "${1+"$@"}"
+            wick-service-reload "$@"
             ;;
 
         restart)
-            wick-service-restart "${1+"$@"}"
+            wick-service-restart "$@"
             ;;
 
         start)
-            wick-service-start "${1+"$@"}"
+            wick-service-start "$@"
             ;;
 
         stop)
-            wick-service-stop "${1+"$@"}"
+            wick-service-stop "$@"
             ;;
 
         *)
@@ -69,7 +69,7 @@ wick-service-make-override() {
     local DEST LABEL LSB SERVICE SRC UNPARSED VALUE
 
     ARGS_force=""
-    wick-parse-arguments UNPARSED "${1+"$@"}"
+    wick-parse-arguments UNPARSED "$@"
     SERVICE="${UNPARSED[0]}"
     SRC="/etc/init.d/$SERVICE"
     DEST="/etc/chkconfig.d/$SERVICE"

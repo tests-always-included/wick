@@ -57,7 +57,7 @@ ARGS_help=""
 ARGS_reload=""
 ARGS_verbose=""
 ARGS_iface=""
-wick-parse-arguments UNPARSED "${1+"$@"}"
+wick-parse-arguments UNPARSED "$@"
 
 if [[ ! -z "$ARGS_help" ]] || [[ ${#UNPARSED[@]} -lt 1 ]]; then
     show-help
