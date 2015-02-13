@@ -23,14 +23,19 @@ install-formula-file() {
             formula-template "$SRC"
         fi
     else
-        if [[ -d "$DEST" ]]; then
-            DEST="$DEST/${UNPARSED[0]}"
-        fi
-
         if [[ -z "$ARGS_template" ]]; then
+            if [[ -d "$DEST" ]]; then
+                DEST="$DEST/${UNPARSED[0]}"
+            fi
+
             wick-debug "Copying $SRC to $DEST"
             cp "$SRC" "$DEST"
         else
+            if [[ -d "$DEST" ]]; then
+                # Remove templating extension
+                DEST="$DEST/${UNPARSED[0]%.*}"
+            fi
+
             wick-debug "Converting template $SRC into $DEST"
             formula-template "$SRC" > "$DEST"
         fi
