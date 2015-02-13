@@ -29,7 +29,7 @@ install-formula-file() {
             fi
 
             wick-debug "Copying $SRC to $DEST"
-            cp "$SRC" "$DEST"
+            cp "$SRC" "$DEST" || return 1
         else
             if [[ -d "$DEST" ]]; then
                 # Remove templating extension
@@ -37,17 +37,17 @@ install-formula-file() {
             fi
 
             wick-debug "Converting template $SRC into $DEST"
-            formula-template "$SRC" > "$DEST"
+            formula-template "$SRC" > "$DEST" || return 1
         fi
 
         if [[ ! -z "$ARGS_owner" ]]; then
             wick-debug "Changing ownership: $ARGS_owner"
-            chown "$ARGS_owner" "$DEST"
+            chown "$ARGS_owner" "$DEST" || return 1
         fi
 
         if [[ ! -z "$ARGS_mode" ]]; then
             wick-debug "Changing mode: $ARGS_mode"
-            chmod "$ARGS_mode" "$DEST"
+            chmod "$ARGS_mode" "$DEST" || return 1
         fi
     fi
 }
