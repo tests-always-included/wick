@@ -52,7 +52,6 @@ wick-formula() {
 
     if [[ -f "$LOCATION/run" ]]; then
         wick-argument-string TEMP "$LOCATION/run"
-        echo "---------- adding formula "$TEMP$ARGS
         WICK_FORMULA_COMMANDS=("${WICK_FORMULA_COMMANDS[@]}" "$TEMP$ARGS")
     fi
 
