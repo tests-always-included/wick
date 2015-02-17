@@ -1,0 +1,253 @@
+#!/bin/bash
+#
+# This file only contains functions that assist with writing service files
+# (/etc/init.d/* files).
+#
+# To use this properly, you would make your init.d/service-name file look
+# a bit like this:
+#
+#     #!/bin/bash
+#     #
+#     # Description of your service goes here
+#
+#     # Define NAME
+#     NAME=service-name
+#
+#     # Load functions and set some environment variables
+#     . /usr/local/bin/wick-init-d-lib
+#
+#     CMD="/usr/bin/service-name --pid-file '$PIDFILE'"
+#
+#     handle-command
+
+# Save a copy of the command we will handle
+COMMAND="$1"
+
+# Configurable settings
+LOGFILE="/var/log/$NAME.log"
+PIDFILE="/var/run/$NAME.pid"
+LOCKFILE="/var/lock/subsys/$NAME"
+
+cleanup-files() {
+    rm -f "$PIDFILE" "$LOCKFILE"
+}
+
+get-pid() {
+    cat "$PIDFILE"
+}
+
+handle-command() {
+    case "$COMMAND" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+        
+        restart)
+            restart
+            ;;
+
+        reload)
+            reload
+            ;;
+
+        status)
+            status
+            ;;
+
+        *)
+            help
+            ;;
+    esac
+
+    exit $?
+}
+
+help() {
+    echo "Usage: $NAME {start|stop|restart|reload|status}" >> /dev/stderr
+    exit 1
+}
+
+is-running() {
+    if [[ ! -f "$PIDFILE" ]]; then
+        return 1
+    fi
+
+    if ! ps `get-pid` > /dev/null 2>&1; then
+        cleanup-files
+        return 1
+    fi
+
+    return 0
+}
+
+process-reload() {
+    kill -HUP `get_pid`
+}
+
+process-start() {
+    echo "Misconfigured init script"
+    echo "This function must be overridden"
+    exit 1
+}
+
+process-stop() {
+    kill -INT `get_pid`
+}
+
+reload() {
+    if ! is-running; then
+        echo "$NAME is not running"
+        return 0
+    fi
+
+    echo -n "Reloading $NAME ..."
+    reload-before
+    process-reload
+
+    if ! is-running; then
+        echo " $NAME has died, see $LOGFILE"
+        reload-fail
+        return 1
+    fi
+
+    echo " ok"
+    reload-success
+}
+
+reload-before() {
+    :
+}
+
+reload-fail() {
+    :
+}
+
+reload-success() {
+    :
+}
+
+restart() {
+    restart-before
+    stop
+
+    if is-running; then
+        echo "Unable to stop $NAME, will not attempt to start."
+        restart-fail
+        return 1
+    fi
+
+    start
+    
+    if [[ $? -ne 0 ]]; then
+        restart-fail
+        return 2
+    fi
+
+    restart-success || return 3
+}
+
+restart-before() {
+    :
+}
+
+restart-fail() {
+    :
+}
+
+restart-success() {
+    :
+}
+
+start() {
+    local PID
+
+    if is-running; then
+        echo "$NAME already running"
+        return 1
+    fi
+
+    echo -n "Starting $NAME ..."
+    start-before
+    process-start >> "$LOGFILE" 2>&1 &
+    PID=$!
+    disown %+
+    echo "$PID" > "$PIDFILE"
+
+    if ! is-running; then
+        echo " unable to start $NAME, see $LOGFILE"
+        start-fail
+        return 1
+    fi
+
+    echo " ok"
+    touch "/var/lock/subsys/$NAME"
+    start-success || return 3
+}
+
+start-before() {
+    :
+}
+
+start-fail() {
+    :
+}
+
+start-success() {
+    :
+}
+
+status() {
+    if is-running; then
+        echo "$NAME is running"
+    else
+        echo "$NAME is stopped"
+        return 1
+    fi
+}
+
+stop() {
+    if ! is-running; then
+        echo "$NAME not running"
+        return 0
+    fi
+
+    echo -n "Stopping $NAME ..."
+    stop-before
+    process-stop
+
+    for I in {1..10}; do
+        if ! is-running; then
+            break
+        fi
+
+        sleep 1
+        echo -n "."
+    done
+
+    if is-running; then
+        echo " $NAME not stopped; may still be shutting down or shutdown may have failed - see $LOGFILE"
+        stop-fail
+        return 1
+    fi
+
+    echo " stopped"
+    cleanup-files
+    stop-success || return 3
+}
+
+stop-before() {
+    :
+}
+
+stop-fail() {
+    :
+}
+
+stop-success() {
+    :
+}
+
