@@ -31,7 +31,6 @@ wick-get-url-curl() {
     [[ ! -z "$ARGS_timeout" ]] && ARGS=("${ARGS[@]}" "-m" "$ARGS_timeout")
     [[ ! -z "$DEST" ]] && ARGS=("${ARGS[@]}" "-o" "$DEST")
     ARGS=("${ARGS[@]}" "$URL")
-    eval "wick-debug 'Download command:  ${ARGS[@]}'"
     "${ARGS[@]}"
 }
 
@@ -43,6 +42,5 @@ wick-get-url-wget() {
     [[ ! -z "$ARGS_timeout" ]] && ARGS=("${ARGS[@]}" "--timeout" "$ARGS_timeout")
     [[ ! -z "$DEST" ]] && ARGS=("${ARGS[@]}" "-O" "$DEST")
     ARGS=("${ARGS[@]}" "$URL")
-    eval "wick-debug 'Download command:  ${ARGS[@]}'"
     "${ARGS[@]}"
 }
