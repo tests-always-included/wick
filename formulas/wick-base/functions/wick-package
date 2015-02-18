@@ -8,7 +8,7 @@ wick-package() {
     wick-parse-arguments UNPARSED "$@"
 
     if [[ ! -z "$ARGS_uninstall" ]]; then
-        STATE"uninstall"
+        STATE="uninstall"
     fi
 
     wick-explorer OS wick-base os
