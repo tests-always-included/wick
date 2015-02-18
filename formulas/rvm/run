@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+wick-info "Installing RVM"
+
+wick-debug "Adding GPG key"
+gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
+
+wick-debug "Installing RVM"
+wick-get-url https://get.rvm.io | bash -s stable "$@"
