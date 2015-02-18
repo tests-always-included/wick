@@ -25,22 +25,24 @@ wick-get-url() {
 
 wick-get-url-curl() {
     local ARGS
-    
-    ARGS=(curl)
+
+    ARGS=(curl -L)
     [[ -z "$ARGS_progress" ]] && ARGS=("${ARGS[@]}" "-s")
     [[ ! -z "$ARGS_timeout" ]] && ARGS=("${ARGS[@]}" "-m" "$ARGS_timeout")
     [[ ! -z "$DEST" ]] && ARGS=("${ARGS[@]}" "-o" "$DEST")
     ARGS=("${ARGS[@]}" "$URL")
+    eval "wick-debug 'Download command:  ${ARGS[@]}'"
     "${ARGS[@]}"
 }
 
 wick-get-url-wget() {
     local ARGS
-    
-    ARGS=(curl)
+
+    ARGS=(wget)
     [[ -z "$ARGS_progress" ]] && ARGS=("${ARGS[@]}" "--quiet")
     [[ ! -z "$ARGS_timeout" ]] && ARGS=("${ARGS[@]}" "--timeout" "$ARGS_timeout")
     [[ ! -z "$DEST" ]] && ARGS=("${ARGS[@]}" "-O" "$DEST")
     ARGS=("${ARGS[@]}" "$URL")
+    eval "wick-debug 'Download command:  ${ARGS[@]}'"
     "${ARGS[@]}"
 }
