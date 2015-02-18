@@ -16,7 +16,12 @@
 #     # Load functions and set some environment variables
 #     . /usr/local/bin/wick-init-d-lib
 #
-#     CMD="/usr/bin/service-name --pid-file '$PIDFILE'"
+#     # Override the process-start command
+#     process-start() {
+#         /usr/bin/consul agent -config-dir /etc/consul.d >> "$1" 2>&1 &
+#         disown %+
+#         echo "$!" > "$2"
+*     }
 #
 #     handle-command
 
@@ -172,10 +177,7 @@ start() {
 
     echo -n "Starting $NAME ..."
     start-before
-    process-start >> "$LOGFILE" 2>&1 &
-    PID=$!
-    disown %+
-    echo "$PID" > "$PIDFILE"
+    process-start "$LOGFILE" "$PIDFILE"
 
     if ! is-running; then
         echo " unable to start $NAME, see $LOGFILE"
