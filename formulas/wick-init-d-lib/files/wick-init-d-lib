@@ -85,7 +85,7 @@ is-running() {
 }
 
 process-reload() {
-    kill -HUP `get_pid`
+    kill -HUP `get-pid`
 }
 
 process-start() {
@@ -95,7 +95,7 @@ process-start() {
 }
 
 process-stop() {
-    kill -INT `get_pid`
+    kill -INT `get-pid`
 }
 
 reload() {
