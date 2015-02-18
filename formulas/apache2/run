@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+
+wick-explorer OS wick-base os
+
+case "$OS" in
+    centos|redhat)
+        wick-package install httpd
+        wick-service enable httpd
+        wick-service restart httpd
+        ;;
+
+    *)
+        wick-package install apache2
+        wick-service enable apache2
+        wick-service restart apache2
+        ;;
+esac
