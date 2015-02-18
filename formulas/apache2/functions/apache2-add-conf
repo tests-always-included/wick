@@ -3,17 +3,17 @@
 apache2-add-conf() {
     local OS
 
-    wick-info "Adding Apache2 config: $1"
+    eval "wick-info 'Adding Apache2 config: $@'"
     wick-explorer OS wick-base os
 
     case "$OS" in
         redhat|centos)
-            install-formula-file "$1" /etc/httpd/conf.d/
+            install-formula-file "$@" /etc/httpd/conf.d/
             wick-service reload httpd
             ;;
 
         *)
-            install-formula-file "$1" /etc/apache2/conf-available
+            install-formula-file "$@" /etc/apache2/conf-available
             a2enconf "$1"
             wick-service reload apache2
             ;;
