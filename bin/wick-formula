@@ -19,13 +19,13 @@ wick-formula() {
     fi
 
     if [[ -z "$FORMULA" ]]; then
-        echo "You must specify a formula name." >> /dev/stderr
+        echo "You must specify a formula name." >&2
 
         return 1
     fi
 
     if ! wick-find LOCATION "formulas/$FORMULA"; then
-        echo "Unable to find formula $FORMULA" >> /dev/stderr
+        echo "Unable to find formula $FORMULA" >&2
 
         return 1
     fi
@@ -33,7 +33,7 @@ wick-formula() {
     if wick-in-array "$FORMULA" "${WICK_FORMULA_LIST[@]}"; then
         # Specifying the same formula is ok as long as the arguments are the same
         if ! wick-in-array "$FORMULA_ESCAPED$ARGS" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"; then
-            echo "Formula specified multiple times with different arguments: $FORMULA" >> /dev/stderr
+            echo "Formula specified multiple times with different arguments: $FORMULA" >&2
             return 1
         else
             echo "Formula is already in list: $FORMULA"

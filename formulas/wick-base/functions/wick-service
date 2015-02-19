@@ -80,7 +80,7 @@ wick-service-make-override() {
     fi
 
     if [ ! -f "$SRC" ]; then
-        echo "Source service file does not exist: $SRC" >> /dev/stderr
+        echo "Source service file does not exist: $SRC" >&2
         return 1
     fi
 

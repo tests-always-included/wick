@@ -3,6 +3,6 @@
 wick-warn() {
     local OUTPUT
     wick-prefix-lines OUTPUT "WARN: " "$1"
-    echo "$OUTPUT" >> /dev/stderr
+    echo "$OUTPUT" >&2
 }
 

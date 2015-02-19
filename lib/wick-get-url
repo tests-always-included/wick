@@ -19,7 +19,7 @@ wick-get-url() {
         return 0
     fi
 
-    echo "Unable to download url - no suitable programs found" >> /dev/stderr
+    echo "Unable to download url - no suitable programs found" >&2
     return 1
 }
 

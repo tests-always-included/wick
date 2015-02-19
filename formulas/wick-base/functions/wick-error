@@ -3,5 +3,5 @@
 wick-error() {
     local OUTPUT
     wick-prefix-lines OUTPUT "ERROR: " "$1"
-    echo "$OUTPUT" >> /dev/stderr
+    echo "$OUTPUT" >&2
 }

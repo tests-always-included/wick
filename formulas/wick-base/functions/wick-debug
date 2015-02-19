@@ -14,5 +14,5 @@ wick-debug() {
     local OUTPUT
 
     wick-prefix-lines OUTPUT "DEBUG: " "$1"
-    echo "$OUTPUT" >> /dev/stderr
+    echo "$OUTPUT" >&2
 }
