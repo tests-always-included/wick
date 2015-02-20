@@ -7,6 +7,13 @@ shift || :
 
 WICK_ON_LOAD_COMMANDS=()
 
+wick-is-valid-script() {
+    [[ -f "$1" ]] || return 1
+    [[ "${1##*.}" != "md" ]] || return 1
+    [[ "$(head -n 1 "$1")" == '#!'* ]] || return 1
+    return 0
+}
+
 wick-load-lib() {
     local FILE
 
@@ -16,7 +23,7 @@ wick-load-lib() {
 
     if [[ -d "$1/lib" ]]; then
         for FILE in "$1/lib/"*; do
-            if [[ -f "$FILE" ]]; then
+            if wick-is-valid-script "$FILE"; then
                 if [[ ! -z "$DEBUG" ]]; then
                     echo "Loading library: $FILE"
                 fi

@@ -10,7 +10,7 @@ show-all-lib-functions() {
 
     if [[ -d "$1/lib" ]]; then
         for FILE in "$1/lib/"*; do
-            if [[ -f "$FILE" ]]; then
+            if wick-is-valid-script "$FILE"; then
                 echo "# $FILE"
                 cat "$FILE"
                 echo ""
