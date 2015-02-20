@@ -11,7 +11,10 @@ wick-provision() {
         return 1
     fi
 
-    wick-load-role "$@"
+    while [[ ! -z "$1" ]]; do
+        wick-load-role "$1"
+        shift
+    done
 
     if [[ ${#WICK_FORMULA_COMMANDS[@]} -eq 0 ]]; then
         echo "No formulas listed or no run scripts found for the formulas."

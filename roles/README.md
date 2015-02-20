@@ -42,8 +42,8 @@ Unlike the `run` script of [formulas], roles are unable to take parameters from 
 
     #!/bin/bash
 
-    # This uses `wick-formula` to do a lot of basic stuff to the target machine    
-    . "$WICK_ROLE_DIR/our-base-formulas"
+    # This uses `wick-formula` to do a lot of basic stuff to the target machine
+    wick-load-role "our-base-formulas"
 
     wick-explorer OS wick-base os
     
