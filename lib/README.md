@@ -10,7 +10,7 @@ Libraries from all [parents] are loaded before the children, allowing children t
 Here is a sample `lib/sample-thing`:
 
     #!/bin/bash
-    
+
     sample-thing() {
         echo "I am a sample function"
     }
@@ -24,18 +24,18 @@ wick-argument-string
 Convert a string into a safely quoted string that's safe to pass around as an argument.  It is unlikely that this will be necessary for most scripting that's performed because one would need to use `eval` to parse this back to the original value.
 
     wick-argument-string DESTINATION VALUE
-    
+
 * `DESTINATION`: Name of the environment variable that should get the result.
 * `VALUE`: Value to escape
 
 Example:
 
     local LIST SAFE UNSAFE
-    
+
     UNSAFE="These words are all one argument"
     wick-argument-string SAFE "$UNSAFE"
     set | grep -E "^(UN)?SAFE="
-    
+
 Example output:
 
     SAFE='These\ words\ are\ all\ one\ argument'
@@ -48,7 +48,7 @@ wick-command-exists
 Tests to see if a command is in the path by calling `which`.  Because some systems report failure in different ways, this is an attempt to abstract away those alternate error messages and provide a consistent interface.
 
     wick-command-exists COMMAND
-    
+
 * `COMMAND`: Name of the command to execute.  Do not use a full path here; the intent is to search the `PATH` environment variable for the command.
 * Returns success if the command is found.
 
@@ -75,12 +75,12 @@ The the IP address associated with a given network interface.  If no interface i
 Example:
 
     local IP
-    
+
     if ! wick-get-iface-ip tun0; then
         echo "Tunnel is not yet established"
         exit 1
     fi
-    
+
     echo "Tunnel IP:  $IP"
 
 
@@ -100,7 +100,7 @@ Example:
 
     # Download shell script execute it
     wick-get-url --timeout=30 https://get.rvm.io/ | bash
-    
+
     # Download a large file and show progress information
     wick-get-url --progress http://example.com/large-file.tar.gz /tmp/large-file.tgz
 
@@ -119,18 +119,18 @@ Check if a value is in an array.  Returns success if it exists, failure otherwis
 Example:
 
     local LIST
-    
+
     LIST=(one two three "four four")
-    
+
     if wick-in-array one "${LIST[@]}"; then
         echo "one is found"
     fi
-    
+
     if wick-in-array four "${LIST[@]}"; then
         echo "four should not be found"
         echo "'four four' with a space would be found"
     fi
-    
+
 Example result:
 
     one is found
@@ -152,15 +152,15 @@ Example:
     # and stores the string result in the desired variable.
     temp-files() {
         local VALUE
-        
+
         VALUE=$(ls /tmp | head -n 5)
         local "$1" && wick-indirect "$1" "$VALUE"
     }
-    
+
     FILES=""
     temp-files FILES
     echo "$FILES"
-    
+
 Example result:
 
     a_9789
@@ -186,21 +186,21 @@ Example:
     # and stores the array result in the desired variable.
     temp-files-array() {
         local FILE VALUE
-        
+
         VALUE=()
-        
+
         for FILE in /tmp; do
             [[ "${#VALUE[@]}" -lt 5 ]] && VALUE=("${VALUE[@]}" "$FILE")
         done
-        
+
         local "$1" && wick-indirect-array "$1" "${VALUE[@]}"
     }
-    
+
     FILES=""
     temp-files-array FILES
     echo "Number of files returned:  ${#FILES}"
     echo "File #1:  ${FILES[0]}"
-    
+
 Example result:
 
     Number of files returned:  5
@@ -221,16 +221,16 @@ Example:
 
     test-parser() {
         local ARGS_a ARGS_b ARGS_verbose UNPARSED
-        
+
         ARGS_a="aaa"
         ARGS_b="bbb"
         ARGS_verbose="verbose"
         wick-parse-arguments UNPARSED "$@"
-        
+
         echo "a=$ARGS_a  b=$ARGS_b  verbose=$ARGS_verbose"
         echo "Unparsed: ${UNPARSED[@]}"
     }
-    
+
     test-parser -a --verbose non-option
     test-parser one two three -ab --verbose="moo"
 
@@ -257,7 +257,7 @@ Wait a given amount of time for a shell script to return success, waiting 1 seco
 Example:
 
     /usr/local/bin/some-other-process &
-    
+
     # Wait up to 30 seconds for a file to exist
     # You must use a shell command here.  Bash built-ins won't work,
     # so use `[` or `test` instead of `[[`.

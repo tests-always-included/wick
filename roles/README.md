@@ -15,27 +15,27 @@ Here is a fictional role that could stand up a web server running a copy of a PH
     wick-formula hostname app-demo.example.com  # Set the hostname and domain
     wick-formula apache2                        # Install Apache2
     wick-formula php5                           # Install PHP5
-    
+
     case "$ENVIRONMENT" in
         prod)
             # Production code, production data
             wick-formula app-demo --env=prod
             wick-formula app-data --env=test
             ;;
-            
+
         test)
             # Production code, testing data
             wick-formula app-demo --env=prod
             wick-formula app-data --env=test
             ;;
-        
+
         *)
             # Testing code, testing data
             wick-formula app-demo --env=test
             wick-formula app-data --env=test
             ;;
     esac
-    
+
 There you have it.  This role will trigger the execution of 6 other functions, passing appropriate parameters as needed.
 
 Unlike the `run` script of [formulas], roles are unable to take parameters from the command line.  If you need to pass information to them, it is suggested that you use an explorer or possibly an environment variable.  This next example does both.  One can also load another role using the `WICK_ROLE_DIR` variable.
@@ -46,11 +46,11 @@ Unlike the `run` script of [formulas], roles are unable to take parameters from 
     wick-load-role "our-base-formulas"
 
     wick-explorer OS wick-base os
-    
+
     if [[ ! -z "$NEEDS_APACHE" ]]; then
         wick-formula apache2
     fi
-    
+
     if [[ "$OS" == "unknown" ]]; then
         wick-formula install-a-known-flavor-of-linux
     fi

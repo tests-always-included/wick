@@ -50,7 +50,7 @@ This one is pretty easy.  You simply need to install a package.  The formula's `
 
     #!/bin/bash
     set -e
-    
+
     wick-package git
 
 And you're done.
@@ -65,14 +65,14 @@ And you're done.
 You can create a virtual host with three files in your formula.  First, the virtual host config would go in `files/` with a suitable name, such as `files/vhost.conf`.  Next, we have a dependency on Apache and need it installed and running before our formula starts to execute.
 
     #!/bin/bash
-    
+
     wick-formula apache2
 
 The bulk of the work is in the formula's `run` script.
 
     #!/bin/bash
     set -e
-    
+
     apache2-add-vhost vhost.conf
 
 There.  Now the vhost will be added to Apache, the server will be reloaded and everything will be ready.  This formula is complete.
