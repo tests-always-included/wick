@@ -1,44 +1,48 @@
 #!/bin/bash
 
 wick-service() {
-    ACTION="$1"
-    shift
+    local ARGS_force UNPARSED
+
+    ARGS_force=""
+    wick-parse-arguments UNPARSED "$@"
+    ACTION="$UNPARSED[0]"
+    UNPARSED=("${UNPARSED[@]:1}")
 
     case "$ACTION" in
         add)
-            wick-service-add "$@"
+            wick-service-add "${UNPARSED[@]}"
             ;;
 
         disable)
-            wick-service-disable "$@"
+            wick-service-disable "${UNPARSED[@]}"
             ;;
 
         enable)
-            wick-service-enable "$@"
+            wick-service-enable "${UNPARSED[@]}"
             ;;
 
         make-override)
-            wick-service-make-override "$@"
+            wick-service-make-override "${UNPARSED[@]}"
             ;;
 
         override)
-            wick-service-override "$@"
+            wick-service-override "${UNPARSED[@]}"
             ;;
 
         reload)
-            wick-service-reload "$@"
+            wick-service-reload "${UNPARSED[@]}"
             ;;
 
         restart)
-            wick-service-restart "$@"
+            wick-service-restart "${UNPARSED[@]}"
             ;;
 
         start)
-            wick-service-start "$@"
+            wick-service-start "${UNPARSED[@]}"
             ;;
 
         stop)
-            wick-service-stop "$@"
+            wick-service-stop "${UNPARSED[@]}"
             ;;
 
         *)
@@ -51,8 +55,13 @@ wick-service() {
 
 wick-service-add() {
     wick-info "Adding service: $1"
-    install-formula-file --mode=0755 --owner=root:root "$2" /etc/init.d/"$1"
-    chkconfig --add "$1"
+
+    if [[ ! -f "/etc/init.d/$1" ]] || [[ ! -z "$ARGS_force" ]]; then
+        install-formula-file --mode=0755 --owner=root:root "$2" /etc/init.d/"$1"
+        chkconfig --add "$1"
+    else
+        wick-info "Service already exists and --force flag was not specified"
+    fi
 }
 
 wick-service-disable() {
@@ -66,20 +75,18 @@ wick-service-enable() {
 }
 
 wick-service-make-override() {
-    local DEST LABEL LSB SERVICE SRC UNPARSED VALUE
+    local DEST LABEL LSB SERVICE SRC VALUE
 
-    ARGS_force=""
-    wick-parse-arguments UNPARSED "$@"
-    SERVICE="${UNPARSED[0]}"
+    SERVICE="$1"
     SRC="/etc/init.d/$SERVICE"
     DEST="/etc/chkconfig.d/$SERVICE"
     wick-info "Making override for service: $SERVICE"
 
-    if [ -f "$DEST" ] && [ -z "$ARGS_force" ]; then
+    if [[ -f "$DEST" ]] && [[ -z "$ARGS_force" ]]; then
         return 0
     fi
 
-    if [ ! -f "$SRC" ]; then
+    if [[ ! -f "$SRC" ]]; then
         echo "Source service file does not exist: $SRC" >&2
         return 1
     fi
