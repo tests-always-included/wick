@@ -21,7 +21,7 @@
 #         /usr/bin/consul agent -config-dir /etc/consul.d >> "$1" 2>&1 &
 #         disown %+
 #         echo "$!" > "$2"
-*     }
+#     }
 #
 #     handle-command
 
@@ -50,7 +50,7 @@ handle-command() {
         stop)
             stop
             ;;
-        
+
         restart)
             restart
             ;;
@@ -146,7 +146,7 @@ restart() {
     fi
 
     start
-    
+
     if [[ $? -ne 0 ]]; then
         restart-fail
         return 2
