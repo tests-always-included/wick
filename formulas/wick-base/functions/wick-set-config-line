@@ -3,6 +3,11 @@
 wick-set-config-line() {
     local KEY TEMPFILE
 
+    if [[ ! -f "$1" ]]; then
+        echo "$2" >> "$1"
+        return 0
+    fi
+
     KEY=${2/ *}
     KEY=${KEY/=*}
     KEY=${KEY/:*}
@@ -10,7 +15,7 @@ wick-set-config-line() {
     TEMPFILE="$TEMP/add-line"
     cat "$1" | grep -v "^$KEY[ =:]" > "$TEMPFILE"
     echo "$2" >> "$TEMPFILE"
-    
+
     # Avoid using cp as this preserves file ownership and permissions
     cat "$TEMPFILE" > "$1"
 }
