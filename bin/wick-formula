@@ -32,13 +32,22 @@ wick-formula() {
 
     if wick-in-array "$FORMULA" "${WICK_FORMULA_LIST[@]}"; then
         # Specifying the same formula is ok as long as the arguments are the same
-        if ! wick-in-array "$FORMULA_ESCAPED$ARGS" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"; then
-            echo "Formula specified multiple times with different arguments: $FORMULA" >&2
-            return 1
-        else
+        if wick-in-array "$FORMULA_ESCAPED$ARGS" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"; then
             echo "Formula is already in list: $FORMULA"
             return 0
         fi
+
+        # You can add the formula as a dependency with no arguments when it
+        # was already added with arguments
+        if [[ "$ARGS" == "" ]]; then
+            echo "Formula is already in list and has additional arguments: $FORMULA"
+            return 0
+        fi
+
+        # Mismatched arguments OR previously did not have arguments and current
+        # one has arguments.  Do not continue.
+        echo "Formula specified multiple times with different arguments: $FORMULA" >&2
+        return 1
     fi
 
     echo "Adding formula $FORMULA ($LOCATION)"
