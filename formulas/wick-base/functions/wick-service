@@ -5,7 +5,7 @@ wick-service() {
 
     ARGS_force=""
     wick-parse-arguments UNPARSED "$@"
-    ACTION="$UNPARSED[0]"
+    ACTION="${UNPARSED[0]}"
     UNPARSED=("${UNPARSED[@]:1}")
 
     case "$ACTION" in
@@ -48,6 +48,7 @@ wick-service() {
         *)
             wick-error "Unknown service command: $ACTION"
             wick-error "Must be one of: add, disable, enable, make-override, override, reload, restart, start, stop"
+            return 1
             ;;
     esac
 }
