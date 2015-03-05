@@ -2,7 +2,7 @@
 
 install-formula-file() {
     local ARGS_mode ARGS_owner ARGS_template DEST SRC UNPARSED
-    
+
     ARGS_mode=""
     ARGS_owner=""
     ARGS_template=""
@@ -10,8 +10,17 @@ install-formula-file() {
     SRC="${UNPARSED[0]}"
     DEST="${UNPARSED[1]}"
 
+    # For regular files, this function handles the filename
     if [[ -z "$ARGS_template" ]]; then
+        # Convert to a full path
         SRC="$WICK_FORMULA_DIR/files/$SRC"
+
+        # Make sure the file exists
+        if [[ ! -f "$SRC" ]]; then
+            wick-error "Unable to find template: $SRC"
+
+            return 1
+        fi
     fi
 
     if [[ -z "$DEST" ]]; then
