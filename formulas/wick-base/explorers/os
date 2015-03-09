@@ -25,7 +25,7 @@ if [[ "$MACHTYPE" == *"-redhat-"* ]]; then
 fi
 
 if [[ "$MACHTYPE" == *"-apple-"* ]]; then
-    echo "apple"
+    echo "osx"
     exit
 fi
 
