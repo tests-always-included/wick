@@ -32,7 +32,7 @@ wick-provision-formulas() {
     local FORMULA
 
     # Escaping note:
-    # 
+    #
     # Formulas in this list are already quoted and must not be quoted if you are
     # to run this properly.  See wick-formula for quoting.
     for FORMULA in "${WICK_FORMULA_COMMANDS[@]}"; do
@@ -55,6 +55,8 @@ wick-provision-formulas() {
             echo "FAILURE DETECTED"
             return 1
         )
+
+        echo "Formula success: $FORMULA"
     done
 
     echo "Provisioning complete"
