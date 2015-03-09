@@ -1,0 +1,20 @@
+#!/bin/bash
+
+UNAME_M=$(uname -m)
+wick-debug "uname -m: $UNAME_M"
+
+case "$UNAME_M" in
+    x86_64)
+        echo "amd64"
+        ;;
+
+    i686*|i386*)
+        echo "ia32"
+        ;;
+
+    *)
+        wick-error "Unable to detect architecture"
+        echo "UNKNOWN"
+        exit 1
+        ;;
+esac

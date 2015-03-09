@@ -1,0 +1,36 @@
+#!/bin/bash
+set -e
+
+wick-explorer OS wick-base os
+wick-explorer ARCH wick-base arch
+
+case "$OS" in
+    redhat|ubuntu)
+        DIR="linux"
+        ;;
+
+    osx)
+        DIR="osx"
+        ;;
+
+    *)
+        DIR="UNKNOWN_OS_$OS"
+esac
+
+case "$ARCH" in
+    amd64)
+        DIR="${DIR}64"
+        ;;
+
+    ia32)
+        DIR="${DIR}32"
+        ;;
+
+    *)
+        DIR="${DIR}UNKNOWN_ARCH_$ARCH"
+        ;;
+esac
+
+wick-info "Downloading and installing jq"
+wick-get-url "http://stedolan.github.io/jq/download/$DIR/jq" /usr/bin/jq
+chmod 755 /usr/bin/jq
