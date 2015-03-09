@@ -1,7 +1,7 @@
 Wick-Infect - Wick Formula
 ==========================
 
-Installs a Bash configuration at `/usr/local/bin/wick-infect` that shell scripts can source into their environment in order to get a copy of all of the [library] functions.
+Installs a Bash configuration at `/usr/local/lib/wick-infect` that shell scripts can source into their environment in order to get a copy of all of the [library] functions.
 
     wick-formula wick-infect
 
@@ -13,7 +13,7 @@ This example is for a shell script that can run on the target machine after prov
     set -e
 
     # Source the library of functions
-    . /usr/local/bin/wick-infect
+    . /usr/local/lib/wick-infect
 
     # Now the script can download URLs
     wick-get-url http://google.com/ google.html
