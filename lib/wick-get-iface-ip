@@ -1,20 +1,29 @@
 #!/bin/bash
 
 wick-get-iface-ip() {
-    local IP LIST
+    local IP LIST OLD_IFS
 
     if [[ "$2" == '*' ]]; then
-        IP=$(ifconfig -v | grep inet\ addr: || echo "")
-        IP=${IP#*:}
-        IP=${IP%% *}
-        LIST=($IP)
+        LIST=()
+        OLD_IFS=$IFS
+        IFS=$'\n'
+
+        for IP in $(ifconfig -v | grep inet\ || echo ""); do
+            IP=${IP#*inet addr:}
+            IP=${IP#*inet }
+            IP=${IP%% *}
+            LIST=("${LIST[@]}" "$IP")
+        done
+
+        IFS=$OLD_IFS
 
         local "$1" && wick-indirect-array "$1" "${LIST[@]}"
         return 0
     fi
 
-    IP=$(ifconfig -v $2 | grep inet\ addr: | head -n 1 || echo "")
-    IP=${IP#*:}
+    IP=$(ifconfig -v $2 | grep inet\ | head -n 1 || echo "")
+    IP=${IP#*inet addr:}
+    IP=${IP#*inet }
     IP=${IP%% *}
 
     if [[ -z "$IP" ]]; then
