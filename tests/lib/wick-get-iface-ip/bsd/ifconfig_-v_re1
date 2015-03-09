@@ -1,0 +1,9 @@
+#!/bin/bash
+cat <<EOF
+re1: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
+  options=8209b<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM,WOL_MAGIC,LINKSTATE>
+  ether 00:14:d1:2b:9c:b5
+  inet 192.168.0.103 netmask 0xffffffff broadcast 192.168.0.103
+  media: Ethernet autoselect (1000baseT <full-duplex>)
+  status: active
+EOF
