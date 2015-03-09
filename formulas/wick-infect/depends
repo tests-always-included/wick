@@ -24,6 +24,9 @@ show-all-lib-functions() {
     echo "#"
     echo "# This file was created by the wick-infect formula"
     echo ""
+    echo '[ ! -z "$BASH_VERSION" ] || return 1'
+    echo '[[ "$POSIXLY_CORRECT" != "y" ]] || return 1'
+    echo ""
     show-all-lib-functions .
 ) > "$WICK_FORMULA_DIR/files/wick-infect"
 
