@@ -79,7 +79,10 @@ ifconfig() {
 }
 
 @test "bsd - bad iface" {
-    skip "Unknown BSD output"
+    local RESULT
+
+    FLAVOR=bsd
+    ! wick-get-iface-ip RESULT asdf
 }
 
 @test "bsd - one iface" {
