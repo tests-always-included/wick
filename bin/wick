@@ -7,13 +7,25 @@ shift || :
 
 WICK_ON_LOAD_COMMANDS=()
 
+# Test if a given file could be a valid script that should be sourced.
+#
+# Parameters:
+#     $1:  Filename
+# Returns true on success
 wick-is-valid-script() {
     [[ -f "$1" ]] || return 1
     [[ "${1##*.}" != "md" ]] || return 1
     [[ "$(head -n 1 "$1")" == '#!'* ]] || return 1
+
     return 0
 }
 
+
+# Load library functions.  Starting at the highest parent, load all
+# scripts in lib/, then work down through all children.
+#
+# Parameters:
+#     $1: Directory to process1
 wick-load-lib() {
     local FILE
 
@@ -34,11 +46,18 @@ wick-load-lib() {
     fi
 }
 
+
+# Set an on-load hook, which will execute once all of the libraries and
+# binaries are loaded into Wick.
+#
+# Parameters:
+#     $*:  Command to execute when everything is loaded
 wick-on-load() {
     local ARGS
     wick-argument-string ARGS "$@"
     WICK_ON_LOAD_COMMANDS=("${WICK_ON_LOAD_COMMANDS[@]}" "$ARGS")
 }
+
 
 # Load all library functions
 wick-load-lib "."
@@ -57,10 +76,12 @@ if [[ ${#WICK_ON_LOAD_COMMANDS[@]} -gt 0 ]]; then
     done
 fi
 
+# If no command specified, show the help message
 if [[ -z "$CMD" ]]; then
     CMD="help"
 fi
 
+# Check if we have the listed command
 if ! wick-in-array "$CMD" "${WICK_COMMANDS[@]}"; then
     echo "No such command: $CMD"
     echo "See 'wick help'"
