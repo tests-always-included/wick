@@ -38,8 +38,11 @@ mock-command-internals() {
         FILE="${FILE}_$ARG"
     done
 
-    "$FILE"
+    (
+        cd "$BATS_TEST_DIRNAME"
+        "$FILE"
+    )
 }
 
 TEST_DIR=$(find-script-dir "$PWD/${1%/*}")
-WICK_DIR=${TEST_DIR%/*}
+WICK_DIR=${BATS_PREFIX%/*}
