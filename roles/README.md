@@ -20,7 +20,7 @@ Here is a fictional role that could stand up a web server running a copy of a PH
         prod)
             # Production code, production data
             wick-formula app-demo --env=prod
-            wick-formula app-data --env=test
+            wick-formula app-data --env=prod
             ;;
 
         test)
