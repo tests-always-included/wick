@@ -3,8 +3,8 @@
 # TODO: Check if debug is enabled.  Decide if debug levels, debug groups,
 # or something else is usable.
 #
-# eg.  DEBUG=3 wick provision ROLE   (debug 3 deep)
-# eg   DEBUG=module,module wick provision ROLE   (debug by module)
+# eg.  DEBUG=3 wick run ROLE   (debug 3 deep)
+# eg   DEBUG=module,module wick run ROLE   (debug by module)
 #
 # TODO: If debugging, add the function calls or look at call stack or
 # or do something intelligent to aid in debugging.  Can a line number be

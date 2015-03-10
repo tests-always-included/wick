@@ -16,7 +16,7 @@ This is not expected to be called from the command-line.
 * `NAME`: Name of the command to add
 * `[HELP]`: Help text to display.  Optional; if set then it is added to `wick-help`.
 
-Example, used in another binary:
+Example as used in another binary:
 
     wick-on-load wick-add-command help "This adds the help command to the help system"
 
@@ -33,7 +33,7 @@ Run an explorer on the target machine.  Provide the result (stdout) to the desti
 * `EXPLORER`: Exact name of the explorer shell script in the formula.
 * Returns success or failure depending on the explorer.  (See [Bash concepts] for return codes.)
 
-Example, used in a formula, role, depends or another binary:
+Example as used in a formula, role, depends or another binary:
 
     wick-explorer OS wick-base os
 
@@ -52,7 +52,7 @@ Locate a file in the [parent] chain.  Starts with the youngest descendant and wo
 * `NAME`: File or directory to find.
 * Returns success if a match was found, failure otherwise.  (See [Bash concepts] for return codes.)
 
-Example, used in a formula, role, depends or another binary:
+Example as used in a formula, role, depends or another binary:
 
     if ! wick-find LOCATION roles/test-role; then
         # Use wick-error instead of echo when possible
@@ -75,7 +75,7 @@ Mark another formula as being required.  Can specify arguments for the formula. 
 * `[ARGUMENT]`:  Any specified arguments are all passed to the formula's run file.  (See [formulas] for more about the run file.)
 * Returns failure if there was any problem adding the formula, success otherwise.  (See [Bash concepts] for return codes.)
 
-Example, used in a role, depends or another binary:
+Example as used in a role, depends or another binary:
 
     wick-formula wick-base
     wick-formula hostname --dynamic app-{{IP}}.example.com
@@ -90,7 +90,7 @@ Display a generated help message.  In order to add a command to this message, se
 
 * No arguments, does not report failure.
 
-Example, used in another binary to set up a help message:
+Example as used in another binary to set up a help message:
 
     wick-on-load wick-add-command "moo" "Moo like a cow"
 
@@ -99,7 +99,6 @@ Example command line usage:
     ~$ wick help
     ... this would display the help message
     ... including the "moo" command
-    ~$
 
 
 wick-load-role
@@ -113,7 +112,7 @@ Locates and loads a role.  If you would like to inherit from a base role, you ca
 * `[ARGUMENT]`:  Any specified arguments are all passed to the role.
 * Returns failure if there was an issue finding or loading the role.
 
-Example, used in a role, depends or another binary:
+Example as used in a role, depends or another binary:
 
     # Load another role
     wick-load-role base-role
@@ -122,19 +121,19 @@ Example, used in a role, depends or another binary:
     wick-load-role extra-clever-role --smartness=5
 
 
-wick-provision
---------------
+wick-run
+--------
 
 This applies the given roles to the current machine.  It is not yet able to target a remote machine.
 
-    wick-provision ROLE [...]
+    wick-run ROLE [...]
 
 * `ROLE`: Name of a [role], which defines the list of [formulas] to apply to a target.  Multiple roles can be passed.
-* Returns success if provisioning succeeded, failure otherwise.  (See [Bash concepts] for return codes.)
+* Returns success if the formulas succeeded, failure otherwise.  (See [Bash concepts] for return codes.)
 
 Example command line usage:
 
-    ~$ wick-provision my-sample-role
+    ~$ wick run my-sample-role
 
 
 [Bash concepts]: ../doc/bash-concepts.md

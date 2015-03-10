@@ -95,7 +95,7 @@ Usage
 
 Well, assuming you have created some formulas and at least one role, you are able to run `wick`.
 
-    wick provision your-role-name [role2 [...]]
+    wick run your-role-name [role2 [...]]
 
 Now all you need to know is how to make [roles] and [formulas].  While you are at it, writing [tests] can also help prove that the installers work in a variety of environments.
 

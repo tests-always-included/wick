@@ -7,7 +7,7 @@ Installs a Bash configuration at `/usr/local/lib/wick-infect` that shell scripts
 
 * There are no parameters.
 
-This example is for a shell script that can run on the target machine after provisioning and configuration has been performed.
+This example is for a shell script that can run on the target machine after configuring has been performed.
 
     #!/bin/bash
     set -e

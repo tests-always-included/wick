@@ -3,7 +3,7 @@ Libraries - Wick
 
 The `lib/` directory in a wick contains files that are intended to be sourced into Wick's environment.  (See [Bash concepts] for sourcing.)  Each file should contain only one function and the filename should match the function name.
 
-Library functions are loaded really early in the [execution order], so they must only use other library functions.  They can not reference anything defined in [formulas].  They are also used by [wick-infect] to generate a file that can be sourced into shell scripts on the target machine after provisioning.
+Library functions are loaded really early in the [execution order], so they must only use other library functions.  They can not reference anything defined in [formulas].  They are also used by [wick-infect] to generate a file that can be sourced into shell scripts on the target machine after configuring.
 
 Libraries from all [parents] are loaded before the children, allowing children to override functions.
 
@@ -15,7 +15,7 @@ Here is a sample `lib/sample-thing`:
         echo "I am a sample function"
     }
 
-Not too bad.  It also doesn't do much, but other functions exist and you can look at how they operate.  The function `wick-parse-arguments` provides a simple argument parser.  Other functions can manipulate strings (eg. trimming a string or removing all whitespace), generate random filenames, decompres an archive or even run multiple commands in parallel.  Anything you can do in shell is possible in a library function.
+Not too bad.  It also doesn't do much, but other functions exist and you can look at how they operate.  The function `wick-parse-arguments` provides a simple argument parser.  Other functions can manipulate strings (eg. triming a string or removing all whitespace), generate random filenames, decompress an archive or even run multiple commands in parallel.  Anything you can do in shell is possible in a library function.
 
 
 wick-argument-string

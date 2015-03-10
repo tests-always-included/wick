@@ -1,12 +1,20 @@
 #!/bin/bash
+#
+# Executes one or more roles
 
-wick-on-load wick-add-command provision "Execute the formulas for a given role"
+wick-on-load wick-add-command run "Execute the formulas for a given role"
 
-wick-provision() {
-    local LOCATION ROLE
+
+# Runs one or more roles.  Can not add arguments.
+#
+# Parameters:
+#     $*: Roles to execute
+# Returns true on success.
+wick-run() {
+    local FORMULA LOCATION ROLE
 
     if [[ ${#@} -eq 0 ]]; then
-        echo "You must specify one or more roles to provision." >&2
+        echo "You must specify one or more roles to execute." >&2
 
         return 1
     fi
@@ -18,18 +26,10 @@ wick-provision() {
 
     if [[ ${#WICK_FORMULA_COMMANDS[@]} -eq 0 ]]; then
         echo "No formulas listed or no run scripts found for the formulas."
-    else
-        wick-provision-formulas
+
+        # This is not an error with the script.
+        return 0
     fi
-}
-
-
-wick-get-formula-run-command() {
-    local "$1" && wick-indirect "$1" "$2"
-}
-
-wick-provision-formulas() {
-    local FORMULA
 
     # Escaping note:
     #
@@ -39,10 +39,10 @@ wick-provision-formulas() {
         echo "Executing formula: $FORMULA"
 
         # See escaping note above
-        wick-get-formula-run-command WICK_FORMULA_DIR $FORMULA
-        WICK_FORMULA_DIR=${WICK_FORMULA_DIR%/*}
+        WICK_FORMULA_DIR=($FORMULA)
+        WICK_FORMULA_DIR=${WICK_FORMULA_DIR[0]%/*}
 
-        (
+        if ! (
             # See escaping note above
             # Can't use `. $FORMULA` by itself because parameters get double-escaped.
             # Test:
@@ -51,13 +51,13 @@ wick-provision-formulas() {
             #     test="arg1 a\{b"
             #     $test # prints "a\\\{b"
             eval ". $FORMULA"
-        ) || (
+        ); then
             echo "FAILURE DETECTED"
             return 1
-        )
+        fi
 
         echo "Formula success: $FORMULA"
     done
 
-    echo "Provisioning complete"
+    echo "Done."
 }

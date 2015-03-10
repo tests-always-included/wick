@@ -18,8 +18,8 @@ wick help
 Nothing more is loaded for the help system.  This merely writes out messages to stdout.  (See [Bash concepts] for stdout.)
 
 
-wick provision
---------------
+wick run
+--------
 
 1.  Execute each of the [roles].  Each role will load more roles or use `wick-formula` to load [formulas].
 2.  `wick-formula` will do the following:
