@@ -12,10 +12,11 @@ wick-parse-arguments() {
         case "$ARG" in
             --*)
                 VALUE=true
-                
+
                 if [[ "$ARG" == *=* ]]; then
                     VALUE=${ARG#*=}
                     ARG=${ARG%%=*}
+                    ARG=${ARG//-/_}
                 fi
 
                 printf -v "ARGS_${ARG:2}" '%s' "$VALUE"
@@ -23,7 +24,7 @@ wick-parse-arguments() {
 
             -*)
                 ARG="${ARG:1}"
-                
+
                 while [[ ! -z "$ARG" ]]; do
                     printf -v "ARGS_${ARG:0:1}" 'true'
                     ARG="${ARG:1}"
