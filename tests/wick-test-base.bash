@@ -1,14 +1,6 @@
 #!/bin/bash
 set -e
 
-# Used to set TEST_DIR
-#
-# Outputs the directory of this file without "..".
-find-script-dir() {
-    cd "$1"
-    echo "$PWD"
-}
-
 # Simulates a command's presence by using a fixture
 #
 # Arguments are appended to the command with underscores, so a simulated
@@ -44,5 +36,4 @@ mock-command-internals() {
     )
 }
 
-TEST_DIR=$(find-script-dir "$PWD/${1%/*}")
 WICK_DIR=${BATS_PREFIX%/*}
