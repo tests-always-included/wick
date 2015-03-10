@@ -1,5 +1,14 @@
 #!/bin/bash
+#
+# Run explorers on the target machine
 
+# Run an explorer
+#
+# Parameters:
+#     $1:  Variable name for the result
+#     $2:  Formula name
+#     $3:  Explorer name
+# Returns true when explorer ran successfully, false otherwise
 wick-explorer() {
     local EXPLORER TEMP
 

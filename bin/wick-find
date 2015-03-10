@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Find a file in the parent chain.  Finds the lowest descendant that contains
+# the file.
+#
+# Parameters:
+#     $1: Variable name to store the result
+#     $2: Name of file to find
+# Returns true when file is found successfully.
 wick-find() {
     local BASE
 

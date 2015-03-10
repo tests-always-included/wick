@@ -1,7 +1,10 @@
 #!/bin/bash
+#
+# Shows the help message
 
 wick-on-load wick-add-command help "This help screen"
 
+# Show the help messages saved with wick-add-command
 wick-help() {
     echo "Specify a command:"
     echo ""

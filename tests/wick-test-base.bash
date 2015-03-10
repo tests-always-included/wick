@@ -15,8 +15,8 @@ find-script-dir() {
 # `ifconfig -v tun0` will become `ifconfig_-v_tun0`.
 #
 # Usage:
-#    $1: Command name
-#    $2: Fixture directory
+#     $1: Command name
+#     $2: Fixture directory
 mock-command() {
     eval "$1() { mock-command-internals '$2/$1' \"\$@\"; }"
 }
@@ -26,8 +26,8 @@ mock-command() {
 # Builds a filename from the parameters and executes it.
 #
 # Usage:
-#    $1: Initial directory and file to use
-#    $2-$*: Arguments passed to the command
+#     $1: Initial directory and file to use
+#     $2-$*: Arguments passed to the command
 mock-command-internals() {
     local ARG FILE
 

@@ -1,5 +1,14 @@
 #!/bin/bash
+#
+# Locates a role file in the ancestry chain and loads it.  This will provide
+# a list of formulas to execute.
 
+# Load a role
+#
+# Parameters:
+#     $1: Role to load
+#     $2-*: Extra arguments to pass to the role script
+# Returns true if there was no error loading the role
 wick-load-role() {
     local LOCATION ROLE
 

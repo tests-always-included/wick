@@ -1,13 +1,23 @@
 #!/bin/bash
+#
+# Add a command to the help system
+#
+# Usage:
+#     wick-on-load wick-add-command elephant "Make an elephant appear"
 
 WICK_COMMANDS=()
 WICK_COMMAND_HELP=()
 
+# Adds a command to the help system
+#
+# Parameters:
+#     $1: Name of command
+#     $2: Help description (optional)
 wick-add-command() {
     local LINE
 
     WICK_COMMANDS=("${WICK_COMMANDS[@]}" "$1")
-    
+
     if [[ ! -z "$2" ]]; then
         printf -v LINE "  %-15s  %s" "$1" "$2"
         WICK_COMMAND_HELP=("${WICK_COMMAND_HELP[@]}" "$LINE")
