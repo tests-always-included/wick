@@ -1,28 +1,26 @@
 #!/bin/bash
 #
-# Executes one or more roles
+# Executes one role
 
 wick-on-load wick-add-command run "Execute the formulas for a given role"
 
 
-# Runs one or more roles.  Can not add arguments.
+# Runs a single role and passes additional arguments to the role
 #
 # Parameters:
-#     $*: Roles to execute
+#     $1: Role to execute
+#     $2-*: Arguments to pass to the role's script.
 # Returns true on success.
 wick-run() {
     local FORMULA LOCATION ROLE
 
-    if [[ ${#@} -eq 0 ]]; then
-        echo "You must specify one or more roles to execute." >&2
+    if [[ -z "$1" ]]; then
+        echo "You must specify a role to execute." >&2
 
         return 1
     fi
 
-    while [[ ! -z "$1" ]]; do
-        wick-load-role "$1"
-        shift
-    done
+    wick-load-role "$@"
 
     if [[ ${#WICK_FORMULA_COMMANDS[@]} -eq 0 ]]; then
         echo "No formulas listed or no run scripts found for the formulas."
