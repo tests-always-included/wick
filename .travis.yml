@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+    - 0.10
+script: cd tests && run-tests
+notifications:
+    irc:
+        channels:
+            - "chat.freenode.net#tests-always-included"
+        skip_join: true
+        template:
+            - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
+        use_notice: true
