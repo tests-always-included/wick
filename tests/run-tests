@@ -1,3 +1,4 @@
 #!/bin/bash
 
+cd "${0%/*}"
 bats/bats $(find . -name \*.bats)
