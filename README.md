@@ -7,6 +7,8 @@ The idea is that you would write installation scripts for individual tasks.  We 
 
 This relies heavily on Bash concepts.  For help with understanding them, there is documentation covering the key [Bash concepts].
 
+[![Build Status][travis-image]][Travis CI]
+
 
 How do I get started?
 ---------------------
@@ -114,4 +116,6 @@ Now all you need to know is how to make [roles] and [formulas].  While you are a
 [Puppet]: http://puppetlabs.com/
 [Roles]: roles/README.md
 [Tests]: tests/README.md
+[Travis CI]: http://travis-ci.org/tests-always-included/wick
+[Travis-Image]: https://secure.travis-ci.rg/tests-always-included/wick.png
 [wick-infect]: formulas/wick-infect/README.md
