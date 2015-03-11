@@ -74,7 +74,7 @@ wick-formula() {
     if [[ -f "$LOCATION/depends" ]]; then
         WICK_FORMULA_DIR=$LOCATION
         PRESERVED_PWD=$PWD
-        . "$LOCATION/depends"
+        . "$LOCATION/depends" $ARGS
         cd "$PRESERVED_PWD"
     fi
 
