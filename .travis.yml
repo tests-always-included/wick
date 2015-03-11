@@ -10,3 +10,4 @@ notifications:
         template:
             - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
         use_notice: true
+        on_success: change
