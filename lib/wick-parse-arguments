@@ -16,9 +16,9 @@ wick-parse-arguments() {
                 if [[ "$ARG" == *=* ]]; then
                     VALUE=${ARG#*=}
                     ARG=${ARG%%=*}
-                    ARG=${ARG//-/_}
                 fi
 
+                ARG=${ARG//-/_}
                 printf -v "ARGS_${ARG:2}" '%s' "$VALUE"
                 ;;
 
