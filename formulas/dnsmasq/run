@@ -1,0 +1,6 @@
+#!/bin/bash
+
+wick-package dnsmasq
+wick-set-config-line /etc/dnsmasq.d "conf-dir=/etc/dnsmasq.d"
+wick-service enable dnsmasq
+wick-service start dnsmasq
