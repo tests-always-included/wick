@@ -47,7 +47,7 @@ While executing, the `depends` script will have `WICK_FORMULA_DIR` set to the pa
 Explorers
 ---------
 
-The shell scripts in `explorers/` are executed by `wick-explorer` (a function provided by [wick-base]).  Their mission is to identify some information about the target system.  This example will detect the Linux kernel version.
+The shell scripts in `explorers/` are executed by [wick-explorer], one of the main binaries provided by Wick.  Their mission is to identify some information about the target system.  This example will detect the Linux kernel version.
 
     #!/bin/bash
 
@@ -160,5 +160,6 @@ The files contained within the `templates/` folder are extremely similar to the 
 [rvm]: rvm/README.md
 [templates]: ../doc/templates.md
 [wick-base]: wick-base/README.md
+[wick-explorer]: ../bin/README.md
 [wick-infect]: wick-infect/README.md
 [wick-init-d-lib]: wick-init-d-lib/README.md

@@ -18,8 +18,8 @@ A little terminology will go a long way.
 * [Roles] are lists of formulas to be executed.  An example role might be "apache-web-server" or "mongodb-replica-set-member".  Roles do not take any configuration parameters.
 
 * [Formulas] are installation scripts or tasks.  They can come with all of the following:
-    * Dependencies, which is just a list of other formulas that are required
-    * Explorers that will inspect the target system and report information
+    * Dependencies, which is just a list of other formulas that are required (processed by [wick-formula])
+    * Explorers that will inspect the target system and report information (see [wick-explorer])
     * Files that could be installed on the target system
     * Functions, which are added to the environment so other formulas can leverage these tools
     * Run script to perform the installation action
@@ -118,4 +118,6 @@ Now all you need to know is how to make [roles] and [formulas].  While you are a
 [Tests]: tests/README.md
 [Travis CI]: http://travis-ci.org/tests-always-included/wick
 [Travis-Image]: https://secure.travis-ci.rg/tests-always-included/wick.png
+[wick-formula]: bin/README.md
+[wick-explorer]: bin/README.md
 [wick-infect]: formulas/wick-infect/README.md

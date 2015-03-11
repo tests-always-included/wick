@@ -27,7 +27,7 @@ wick run
     2.  Run the `depends` file to pick up additional formulas that need to be loaded before this formula.  This calls `wick-formula` and is recursive.
     3.  Add the formula's `run` script if one exists.
     4.  Loads all functions for the formula.
-    5.  Run all explorers for the formula.
+    5.  Run all explorers for the formula with [wick-explorer].
 3.  For each of the [formulas] that need to run:
     1.  Set up a clean subshell.
     2.  Run the formula's `run` script.
@@ -39,3 +39,4 @@ wick run
 [Libraries]: ../lib/README.md
 [Parents]: parents.md
 [Roles]: ../roles/README.md
+[wick-explorer]: ../bin/README.md
