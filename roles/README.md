@@ -38,21 +38,44 @@ Here is a fictional role that could stand up a web server running a copy of a PH
 
 There you have it.  This role will trigger the execution of 6 other functions, passing appropriate parameters as needed.
 
-Unlike the `run` script of [formulas], roles are unable to take parameters from the command line.  If you need to pass information to them, it is suggested that you use an explorer or possibly an environment variable.  This next example does both.  One can also load another role using the `WICK_ROLE_DIR` variable.
+Just like the `run` script of [formulas], roles can take parameters from the command line.  If that does not work you can use an explorer or use environment variables.  This next example does all three.  One can also load another role using the `WICK_ROLE_DIR` variable.
 
     #!/bin/bash
 
+    # Parse arguments
+    ARGS_extra=""  # This gets set if --extra is passed
+    wick-parse-arguments UNPARSED "$@"
+
+    # Load another role to do some basic setup
     # This uses `wick-formula` to do a lot of basic stuff to the target machine
     wick-load-role "our-base-formulas"
 
-    wick-explorer OS wick-base os
-
-    if [[ ! -z "$NEEDS_APACHE" ]]; then
-        wick-formula apache2
+    # Use the command-line argument
+    if [[ ! -z "$ARGS_extra" ]]; then
+        wick-load-role "our-extra-formulas"
     fi
 
-    if [[ "$OS" == "unknown" ]]; then
-        wick-formula install-a-known-flavor-of-linux
+    # Check the output of an explorer
+    wick-explorer ARCH wick-base arch
+
+    case "$ARCH" in
+        amd64)
+            wick-package ia32-libs
+            wick-formula special-package --64bit
+            ;;
+
+        ia32)
+            wick-formula special-package --32bit
+            ;;
+
+        *)
+            wick-error "Unknown architecture: $ARCH"
+            exit 1
+    esac
+
+    # Finally check an environment variable
+    if [[ ! -z "$NEEDS_APACHE" ]]; then
+        wick-formula apache2
     fi
 
 
