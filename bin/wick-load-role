@@ -18,14 +18,16 @@ wick-load-role() {
         return 1
     fi
 
-    if ! wick-find LOCATION "roles/$1"; then
-        echo "Unable to find role $1"
+    ROLE=$1
+    shift
+
+    if ! wick-find LOCATION "roles/$ROLE"; then
+        echo "Unable to find role $ROLE"
 
         return 1
     fi
 
-    echo "Using role $1 $@ ($LOCATION)"
-    shift
+    echo "Using role $ROLE ($LOCATION $@)"
     WICK_ROLE_DIR=${LOCATION%/*}
     . "$LOCATION" "$@"
 }
