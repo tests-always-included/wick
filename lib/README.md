@@ -76,7 +76,7 @@ Example:
 
     local IP
 
-    if ! wick-get-iface-ip tun0; then
+    if ! wick-get-iface-ip IP tun0; then
         echo "Tunnel is not yet established"
         exit 1
     fi
