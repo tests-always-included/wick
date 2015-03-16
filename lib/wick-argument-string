@@ -1,18 +1,11 @@
 #!/bin/bash
 
 wick-argument-string() {
-    local ARG ORIG STRING TARGET
+    local STRING TARGET
 
     TARGET="$1"
     shift
-    STRING=""
-
-    if [[ $# -gt 0 ]]; then
-        for ARG in "$@"; do
-            printf -v ARG "%q" "$ARG"
-            STRING="${STRING} $ARG"
-        done
-    fi
+    printf -v STRING " %q" "$@"
 
     local "$TARGET" && wick-indirect "$TARGET" "${STRING:1}"
 }
