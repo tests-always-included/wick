@@ -84,20 +84,32 @@ Example:
 
 Creates a directory on the target machine.
 
+*Only the last folder will have its ownership changed.*  See the examples for further information.
+
     install-directory [--mode=MODE] [--owner=OWNER] PATH
 
 * `[--mode=MODE]`: Specify a mode for the directory using `chmod` syntax.  When specified, the mode is always set, even if the directory already existed.  Optional; does not change the mode unless the option is set.
 * `[--owner=OWNER]`:  Designate an owner and possibly a group for the directory using `chown` syntax.  When specified, the ownership is always set even if the directory already existed.  Optional; does not change the ownership unless the option is set.
 * `PATH`: The directory to create.  Uses `mkdir -p` so all parents directories would be created if they do not exist.  Ownership and mode is only changed on the specified path, not all parents.
 
-Example:
+Examples:
 
+    # Creates /etc/consul.d (/etc already existed) with the mode 0755
+    # and make consul the owner.
     install-directory --mode=0755 --owner=consul:consul /etc/consul.d
+
+    # Creates a folder named /a/b/c/d/ and changes the ownership of
+    # /a/b/c/d/ to nobody:nogroup.  NOTE: All of the parent directories
+    # will be created automatically if they didn't already exist and
+    # they will be owned by root:root, NOT nobody:nogroup.
+    install-directory --owner nobody:nogroup /a/b/c/d/
 
 
 ### install-formula-file
 
 Copies a file from the formula to the target machine.  Files are stored in `files/` within the formula.  When `--template` is used, then files come from `templates/` instead.  (See [templates] for more about templates.)
+
+*It is good practice to have the destination either include the filename or else end in a slash (`/`) to avoid ambiguity.  See the examples for more information.*
 
     install-formula-file [--mode=MODE] [--owner=OWNER] [--template] FILE DESTINATION
 
@@ -109,13 +121,27 @@ Copies a file from the formula to the target machine.  Files are stored in `file
 
 If the destination is a directory, the file will keep its original name and be copied to the directory.  When using templates, the templating engine suffix will be stripped off.
 
-Example:
+If you want the destination directory to be created automatically, make sure you use a `/` at the end of the directory name.  It will be created with the installed file's owner and a default mode.  See the notes for the `install-directory` function regarding ownership of directories.
 
-    # Writes /etc/rc.local from a template
+Examples:
+
+    # Writes /etc/rc.local from a template.
     install-formula-file --mode=0755 --template rc.local.mo /etc/
 
-    # Writes a root-only configuration file, renaming it as it is written
+    # Writes a root-only configuration file, renaming it as it is written.
     install-formula-file --mode=0600 --owner=root:root secret.txt /root/super-secret-key.txt
+
+    # Installs a file into a directory that does not exist.
+    # The directory will be created and owned by "nobody", just like the file.
+    # Note the / at the end of the destination
+    install-formula-file --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d/
+
+    # The same as above but the directory will NOT be created automatically
+    # if it doesn't already exist.
+    # If /etc/a/b/c/d exists as a directory then config.ini will be written
+    # to that folder.  Otherwise, this will create the file /etc/a/b/c/d (not
+    # /etc/a/b/c/d/config.ini), so be careful.
+    install-formula-file --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d
 
 
 ### random-string
