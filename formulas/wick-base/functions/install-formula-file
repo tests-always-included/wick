@@ -46,8 +46,12 @@ install-formula-file() {
         fi
 
         if [[ -z "$ARGS_template" ]]; then
-            if [[ -d "$DEST" ]] && [[ "${DEST: -1}" != "/" ]]; then
-                DEST="$DEST/${UNPARSED[0]}"
+            if [[ -d "$DEST" ]]; then
+                if [[ "${DEST: -1}" != "/" ]]; then
+                    DEST="$DEST/"
+                fi
+
+                DEST="$DEST${UNPARSED[0]}"
             fi
 
             wick-debug "Copying $SRC to $DEST"
