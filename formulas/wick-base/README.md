@@ -144,27 +144,6 @@ Examples:
     install-formula-file --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d
 
 
-### random-string
-
-Generates a random alphanumeric string.
-
-    random-string DESTINATION LENGTH [CHARACTERS]
-
-* `DESTINATION`: Name of environment variable that should get the random string as its value.
-* `LENGTH`: Integer length of string to create.
-* `[CHARACTERS]`: When specified, this is the list of allowed characters.  Defaults to lowercase a-z, uppercase A-Z and the numbers 0-9.
-
-Example:
-
-    # Generate a random directory name
-    random-string DIRNAME 16
-    mkdir /tmp/$DIRNAME
-
-    # Create a hex byte
-    random-string HEX 2 0123456789ABCDEF
-    echo "Hex byte: $HEX"
-
-
 ### temp-directory
 
 Creates a temporary directory.  Automatically sets up a hook with `wick-on-exit` to delete the directory when the shell script is finished.
@@ -268,35 +247,6 @@ Example:
 
     wick-package --uninstall apache
     wick-package apache2
-
-
-### wick-prefix-lines
-
-Prepend a string before each line in a variable.  Also converts all newlines to Unix-style newlines in case they weren't that way before.
-
-    wick-prefix-lines DESTINATION PREFIX STRING
-
-* `DESTINATION`: Name of environment variable where the result will be stored.
-* `PREFIX`: String to add to the beginning of all lines.
-* `STRING`: Original string
-
-Example:
-
-    printf -v LINES "one\ntwo\n"
-    echo "$LINES"
-    echo "-----"
-    wick-prefix-lines RESULT "Look:  " "$LINES"
-    echo "$RESULT"
-
-Example output:
-
-    one
-    two
-
-    -----
-    Look:  one
-    Look:  two
-    Look:
 
 
 ### wick-service

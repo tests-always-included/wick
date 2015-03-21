@@ -12,7 +12,7 @@ temp-directory() {
     BASE="${BASE}/wick."
 
     while true; do
-        random-string DIR 16
+        wick-random-string DIR 16
         DIR="$BASE$DIR"
 
         if [ ! -e "$DIR" ]; then
