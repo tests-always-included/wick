@@ -21,7 +21,7 @@ wick-on-exit-trap() {
     wick-debug "Running exit traps"
     
     for CMD in "${WICK_ON_EXIT_ITEMS[@]}"; do
-        wick-debug "On-exit ommand: $CMD"
+        wick-debug "On-exit command: $CMD"
         eval $CMD
     done
 
