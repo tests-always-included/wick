@@ -18,7 +18,7 @@ temp-directory() {
         if [ ! -e "$DIR" ]; then
             if mkdir -m 0700 "$DIR" 2>/dev/null; then
                 wick-debug "Temporary directory created: $DIR"
-                wick-on-exit "rm -rf '$DIR'"
+                wick-on-exit rm -rf "$DIR"
                 local "$1" && wick-indirect "$1" "$DIR"
                 return 0
             else
