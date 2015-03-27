@@ -10,12 +10,12 @@ wick-get-url() {
     DEST="${UNPARSED[1]}"
 
     if wick-command-exists curl; then
-        wick-get-url-curl
+        wick-get-url-curl || return 1
         return 0
     fi
 
     if wick-command-exists wget; then
-        wick-get-url-wget
+        wick-get-url-wget || return 1
         return 0
     fi
 
