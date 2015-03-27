@@ -26,7 +26,7 @@ wick-get-url() {
 wick-get-url-curl() {
     local ARGS
 
-    ARGS=(curl -L)
+    ARGS=(curl -L -f)
     [[ -z "$ARGS_progress" ]] && ARGS=("${ARGS[@]}" "-s")
     [[ ! -z "$ARGS_timeout" ]] && ARGS=("${ARGS[@]}" "-m" "$ARGS_timeout")
     [[ ! -z "$DEST" ]] && ARGS=("${ARGS[@]}" "-o" "$DEST")
