@@ -8,6 +8,8 @@ wick-get-url() {
     wick-parse-arguments UNPARSED "$@"
     URL="${UNPARSED[0]}"
     DEST="${UNPARSED[1]}"
+    wick-debug "wick-get-url url: $URL"
+    wick-debug "wick-get-url dest: $DEST"
 
     if wick-command-exists curl; then
         wick-get-url-curl || return 1
@@ -19,7 +21,7 @@ wick-get-url() {
         return 0
     fi
 
-    echo "Unable to download url - no suitable programs found" >&2
+    wick-error "Unable to download url - no suitable programs found"
     return 1
 }
 
@@ -31,6 +33,7 @@ wick-get-url-curl() {
     [[ ! -z "$ARGS_timeout" ]] && ARGS=("${ARGS[@]}" "-m" "$ARGS_timeout")
     [[ ! -z "$DEST" ]] && ARGS=("${ARGS[@]}" "-o" "$DEST")
     ARGS=("${ARGS[@]}" "$URL")
+    wick-debug "wick-get-url: ${ARGS[*]}"
     "${ARGS[@]}"
 }
 
@@ -42,5 +45,6 @@ wick-get-url-wget() {
     [[ ! -z "$ARGS_timeout" ]] && ARGS=("${ARGS[@]}" "--timeout" "$ARGS_timeout")
     [[ ! -z "$DEST" ]] && ARGS=("${ARGS[@]}" "-O" "$DEST")
     ARGS=("${ARGS[@]}" "$URL")
+    wick-debug "wick-get-url: ${ARGS[*]}"
     "${ARGS[@]}"
 }
