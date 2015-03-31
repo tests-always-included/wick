@@ -174,24 +174,6 @@ Return a hash for a file.  The type of hash returned is based on what's availabl
 * `FILENAME`: File to hash.
 
 
-### wick-on-exit
-
-Run a command when the currently executing script or subshell ends.
-
-    wick-on-exit COMMAND [ARGUMENT [...]]
-
-* `COMMAND`: The command to execute.  Careful, as the current working directory may have changed.
-* `[ARGUMENT]`: Optional arguments to pass to the command.
-
-Example:
-
-    # Make a directory
-    mkdir /tmp/some-directory
-
-    # When done, clean it up
-    wick-on-exit rm -rf /tmp/some-directory
-
-
 ### wick-package
 
 Install or remove packages on the target system.  This handles the OS-specific tools that are used to install or remove the packages.  If the package is named differently on various systems, it is up to the formula to address that (see the [apache2] formula).

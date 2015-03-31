@@ -298,6 +298,25 @@ Examples:
     WICK_LOGFILE=syslog:daemon ./my-background-thing
 
 
+wick-on-exit
+------------
+
+Run a command when the currently executing script or subshell ends.
+
+    wick-on-exit COMMAND [ARGUMENT [...]]
+
+* `COMMAND`: The command to execute.  Careful, as the current working directory may have changed.
+* `[ARGUMENT]`: Optional arguments to pass to the command.
+
+Example:
+
+    # Download a file
+    wick-get-url http://example.com/installer.tar.gz /tmp/installer.tar.gz
+
+    # When done, clean it up
+    wick-on-exit rm -f /tmp/installer.tar.gz
+
+
 wick-parse-arguments
 --------------------
 
