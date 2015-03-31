@@ -58,7 +58,7 @@ wick-service-add() {
     wick-info "Adding service: $1"
 
     if [[ ! -f "/etc/init.d/$1" ]] || [[ ! -z "$ARGS_force" ]]; then
-        install-formula-file --mode=0755 --owner=root:root "$2" /etc/init.d/"$1"
+        wick-make-file --mode=0755 --owner=root:root "$2" /etc/init.d/"$1"
         chkconfig --add "$1"
     else
         wick-info "Service already exists and --force flag was not specified"

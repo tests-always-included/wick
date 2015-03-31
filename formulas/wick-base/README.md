@@ -67,9 +67,9 @@ Functions
 
 ### formula-template
 
-Process a formula's template file.  Automatically detects the template engine by the filename extension.  Writes results to stdout.  (See [Bash concepts] for stdout; [templates] about templating.)
+Process a formula's template file.  Automatically detects the template engine by the filename extension.  Writes results to stdout.  (See [Bash concepts] for stdout; [templates] about the template system.)
 
-This is what `install-formula-file` may use when processing templates.
+This is what `wick-make-file` may use when processing templates.
 
     formula-template TEMPLATE
 
@@ -80,13 +80,13 @@ Example:
     formula-template my-template-file.sh > /tmp/the-result
 
 
-### install-directory
+### wick-make-dir
 
 Creates a directory on the target machine.
 
 *Only the last folder will have its ownership changed.*  See the examples for further information.
 
-    install-directory [--mode=MODE] [--owner=OWNER] PATH
+    wick-make-dir [--mode=MODE] [--owner=OWNER] PATH
 
 * `[--mode=MODE]`: Specify a mode for the directory using `chmod` syntax.  When specified, the mode is always set, even if the directory already existed.  Optional; does not change the mode unless the option is set.
 * `[--owner=OWNER]`:  Designate an owner and possibly a group for the directory using `chown` syntax.  When specified, the ownership is always set even if the directory already existed.  Optional; does not change the ownership unless the option is set.
@@ -96,22 +96,22 @@ Examples:
 
     # Creates /etc/consul.d (/etc already existed) with the mode 0755
     # and make consul the owner.
-    install-directory --mode=0755 --owner=consul:consul /etc/consul.d
+    wick-make-dir --mode=0755 --owner=consul:consul /etc/consul.d
 
     # Creates a folder named /a/b/c/d/ and changes the ownership of
     # /a/b/c/d/ to nobody:nogroup.  NOTE: All of the parent directories
     # will be created automatically if they didn't already exist and
     # they will be owned by root:root, NOT nobody:nogroup.
-    install-directory --owner nobody:nogroup /a/b/c/d/
+    wick-make-dir --owner nobody:nogroup /a/b/c/d/
 
 
-### install-formula-file
+### wick-make-file
 
 Copies a file from the formula to the target machine.  Files are stored in `files/` within the formula.  When `--template` is used, then files come from `templates/` instead.  (See [templates] for more about templates.)
 
 *It is good practice to have the destination either include the filename or else end in a slash (`/`) to avoid ambiguity.  See the examples for more information.*
 
-    install-formula-file [--mode=MODE] [--owner=OWNER] [--template] FILE DESTINATION
+    wick-make-file [--mode=MODE] [--owner=OWNER] [--template] FILE DESTINATION
 
 * `[--mode=MODE]`: Specify a mode for the file using `chmod` syntax.  Optional; does not change the mode unless the option is set.
 * `[--owner=OWNER]`:  Designate an owner and possibly a group for the file using `chown` syntax.  Optional; does not change the ownership unless the option is set.
@@ -119,29 +119,29 @@ Copies a file from the formula to the target machine.  Files are stored in `file
 * `FILE`: The source file to use.  It must be in `files/` for normal files or `templates/` when using the template engine.
 * `DESTINATION`: The file to create or overwrite.  This file is always written, even if it exists.  Does not check to make sure the directory exists first.
 
-If the destination is a directory, the file will keep its original name and be copied to the directory.  When using templates, the templating engine suffix will be stripped off.
+If the destination is a directory, the file will keep its original name and be copied to the directory.  When using templates, the template engine suffix will be stripped off.
 
-If you want the destination directory to be created automatically, make sure you use a `/` at the end of the directory name.  It will be created with the installed file's owner and a default mode.  See the notes for the `install-directory` function regarding ownership of directories.
+If you want the destination directory to be created automatically, make sure you use a `/` at the end of the directory name.  It will be created with the installed file's owner and a default mode.  See the notes for the `wick-make-dir` function regarding ownership of directories.
 
 Examples:
 
     # Writes /etc/rc.local from a template.
-    install-formula-file --mode=0755 --template rc.local.mo /etc/
+    wick-make-file --mode=0755 --template rc.local.mo /etc/
 
     # Writes a root-only configuration file, renaming it as it is written.
-    install-formula-file --mode=0600 --owner=root:root secret.txt /root/super-secret-key.txt
+    wick-make-file --mode=0600 --owner=root:root secret.txt /root/super-secret-key.txt
 
     # Installs a file into a directory that does not exist.
     # The directory will be created and owned by "nobody", just like the file.
     # Note the / at the end of the destination
-    install-formula-file --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d/
+    wick-make-file --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d/
 
     # The same as above but the directory will NOT be created automatically
     # if it doesn't already exist.
     # If /etc/a/b/c/d exists as a directory then config.ini will be written
     # to that folder.  Otherwise, this will create the file /etc/a/b/c/d (not
     # /etc/a/b/c/d/config.ini), so be careful.
-    install-formula-file --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d
+    wick-make-file --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d
 
 
 ### wick-hash
@@ -180,7 +180,7 @@ Control services.  Add services, enable and disable them at boot up.  Start, sto
 
 Actions:
 
-* `add [--force] SERVICE FORMULA_FILE` - Use `install-formula-file` to copy the formula file to `/etc/init.d/` for the named service.  Does not enable nor start the service.  Does not add the service if the file already exists unless `--force` is also used.
+* `add [--force] SERVICE FORMULA_FILE` - Use `wick-make-file` to copy the formula file to `/etc/init.d/` for the named service.  Does not enable nor start the service.  Does not add the service if the file already exists unless `--force` is also used.
 * `disable SERVICE` - Disable the service from starting at boot.  Does not stop the service if it is already running.
 * `enable SERVICE` - Enable the service at boot.  Does not start the service.
 * `make-override [--force] SERVICE` - Creates `/etc/chkconfig.d/SERVICE` that is used by `chkconfig` to help determine order.  This override file can be modified to list additional dependencies to influence the boot order of scripts.  Make sure to call `wick-service override` when you update an override file.  When using `--force`, this will overwrite any override file that may already exist.

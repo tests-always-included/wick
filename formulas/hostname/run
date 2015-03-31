@@ -9,7 +9,7 @@ if [ -z "$ARGS_dynamic" ]; then
     "$WICK_FORMULA_DIR/files/set-hostname" --verbose "$DESIRED"
 else
     wick-info "Setting a dynamic hostname: $DESIRED"
-    install-formula-file set-hostname /usr/local/bin/ --mode=0755
+    wick-make-file set-hostname /usr/local/bin/ --mode=0755
 
     HOOK_FILE="/etc/dhcp/dhclient-exit-hooks"
     wick-info "Creating/updating hook file: $HOOK_FILE"

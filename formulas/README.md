@@ -13,7 +13,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 
 * [apache2] - Install and configure Apache2
 * [hostname] - Set the machine's host and domain
-* [mo] - Bash-only templating system that plugs into our templates
+* [mo] - Bash-only template system that plugs into our templates
 * [rvm] - Install RVM and can install Ruby as well as gems
 * [wick-base] - Handy functions for all of the other formulas
 * [wick-infect] - Creates a file that can be sourced by shell scripts
@@ -64,7 +64,7 @@ On success, information should be written to stdout.  Failure would cause Wick t
 Files
 -----
 
-Anything under `files/` is intended to be copied directly to the target system with `install-formula-file` (a function provided by [wick-base]).  They can also be used indirectly, such as with the `apache2-add-vhost` function (from [apache2]).
+Anything under `files/` is intended to be copied directly to the target system with `wick-make-file` (a function provided by [wick-base]).  They can also be used indirectly, such as with the `apache2-add-vhost` function (from [apache2]).
 
 
 Functions
@@ -122,7 +122,7 @@ Here is a sample run script that will download a copy of the application from an
     rm -rf /opt/application
 
     # Create directory
-    install-directory --owner=root:root --mode=0755 /opt/application
+    wick-make-dir --owner=root:root --mode=0755 /opt/application
 
     (
         # Use a subshell when changing directories so we don't need

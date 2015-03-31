@@ -16,7 +16,7 @@ Example:
 Templated Hostnames
 -------------------
 
-Templated hostnames can change "app1-{{IP}}.example.com" into "app1-192_168_0_1.example.com".  This is not the same templating system that formulas use; it is a simple string replacement.  Templated variables that are supported:
+Templated hostnames can change "app1-{{IP}}.example.com" into "app1-192_168_0_1.example.com".  This is not the same template system that formulas use; it is a simple string replacement.  Templated variables that are supported:
 
 * `{{IP}}`:  Results in a string of the current IP address of the machine, with dots replaced by underscores.
 

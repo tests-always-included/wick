@@ -8,12 +8,12 @@ apache2-add-vhost() {
 
     case "$OS" in
         redhat|centos)
-            install-formula-file "$1" /etc/httpd/conf.d/
+            wick-make-file "$1" /etc/httpd/conf.d/
             wick-service reload httpd
             ;;
 
         *)
-            install-formula-file "$1" /etc/apache2/sites-available
+            wick-make-file "$1" /etc/apache2/sites-available
             a2ensite "$1"
             wick-service reload apache2
             ;;

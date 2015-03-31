@@ -8,12 +8,12 @@ apache2-add-conf() {
 
     case "$OS" in
         redhat|centos)
-            install-formula-file "$@" /etc/httpd/conf.d/
+            wick-make-file "$@" /etc/httpd/conf.d/
             wick-service reload httpd
             ;;
 
         *)
-            install-formula-file "$@" /etc/apache2/conf-available
+            wick-make-file "$@" /etc/apache2/conf-available
             a2enconf "$1"
             wick-service reload apache2
             ;;

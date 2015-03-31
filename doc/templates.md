@@ -6,14 +6,14 @@ Templates
 
 The files contained within the `templates/` folder are extremely similar to the files that are copied verbatim to the target system, but they follow a naming convention and are processed by a template system.
 
-Templates can be used by any function that installs files via `install-formula-file` (from [wick-base]).  Typically you can just pass `--template` to enable template processing.
+Templates can be used by any function that installs files via `wick-make-file` (from [wick-base]).  Typically you can just pass `--template` to enable template processing.
 
     # This copies from files/filename.sh to /tmp/filename.sh
-    install-formula-file filename.sh /tmp/
+    wick-make-file filename.sh /tmp/
 
     # This uses a template in templates/filename.sh and the shell
     # template engine to generate /tmp/filename (no suffix)
-    install-formula-file --template filename.sh /tmp/
+    wick-make-file --template filename.sh /tmp/
 
 When the destination is a directory, the template engine suffix is removed before the file is saved.
 
@@ -54,7 +54,7 @@ Example result in `/tmp/name`:
 
 ### Shell (.sh, .bash)
 
-This is the only templating system that exists by default.  It is assumed that the files are shell scripts and the stdout from the shell script will be the contents of the file that will be saved.  If the shell script reports failure, the installation process is aborted.  (See [Bash concepts] for stdout and failure.)
+This is the only template system that exists by default.  It is assumed that the files are shell scripts and the stdout from the shell script will be the contents of the file that will be saved.  If the shell script reports failure, the installation process is aborted.  (See [Bash concepts] for stdout and failure.)
 
 The shell scripts can read from the environment or do anything that shell commands can normally do.
 

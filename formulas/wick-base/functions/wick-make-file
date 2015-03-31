@@ -1,6 +1,6 @@
 #!/bin/bash
 
-install-formula-file() {
+wick-make-file() {
     local ARGS_mode ARGS_owner ARGS_template DEST SRC TEMP UNPARSED
 
     ARGS_mode=""
@@ -42,7 +42,7 @@ install-formula-file() {
                 TEMP="--owner=$TEMP"
             fi
 
-            install-directory "$DEST" $TEMP
+            wick-make-dir "$DEST" $TEMP
         fi
 
         if [[ -z "$ARGS_template" ]]; then
@@ -63,7 +63,7 @@ install-formula-file() {
                     DEST="$DEST/"
                 fi
 
-                # Remove templating extension
+                # Remove template extension
                 DEST="${DEST}${UNPARSED[0]%.*}"
             fi
 

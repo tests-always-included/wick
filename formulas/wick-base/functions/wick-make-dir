@@ -1,6 +1,6 @@
 #!/bin/bash
 
-install-directory() {
+wick-make-dir() {
     local ARGS_MODE ARGS_OWNER DEST UNPARSED
 
     ARGS_owner=""
