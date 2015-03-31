@@ -55,7 +55,7 @@ wick-log() {
     fi
 
     if [[ ! -z "$WICK_LOGFILE" ]]; then
-        wick-prefix-lines OUTPUT "$(date -Iseconds) $PREFIX: " "$*"
+        wick-prefix-lines OUTPUT "$(date -Iseconds) $LOG_LEVEL: " "$*"
         echo "$OUTPUT" >> "$WICK_LOGFILE"
     fi
 }

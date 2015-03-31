@@ -32,16 +32,19 @@
 # Environment variables:
 #     DEBUG: Controls if logging is enabled and where it's enabled.
 wick-debug() {
-    local NAME
+    local NAME OUTPUT
 
     # Do not log unless the DEBUG environment variable is set
     if [[ -z "$DEBUG" ]]; then
         return
     fi
 
+    wick-prefix-lines OUTPUT "DEBUG: " "$*"
+
     # Check if debugging is enabled for everything
     if [[ "$DEBUG" == "*" ]] || [[ "$DEBUG" == "all" ]] || [[ "$DEBUG" == "true" ]]; then
-        wick-log "DEBUG" "$OUTPUT"
+        wick-log "DEBUG" "$*"
+        echo "$OUTPUT"
         return
     fi
 
@@ -52,7 +55,8 @@ wick-debug() {
         DEBUG=${DEBUG#* }
 
         if [[ ! -z "$NAME" ]] && wick-in-array "$NAME" "${FUNCNAME[@]}"; then
-            wick-log "DEBUG" "$OUTPUT"
+            wick-log "DEBUG" "$*"
+            echo "$OUTPUT"
             return
         fi
     done
