@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# Writes an error message to the logging system.
+#
+# This message is always written to stderr.
+#
+# Parameters:
+#     $*: The log message to write
+wick-error() {
+    local OUTPUT
+
+    wick-log "ERROR" "$OUTPUT"
+    wick-prefix-lines OUTPUT "ERROR: " "$*"
+    echo "$OUTPUT" >&2
+}

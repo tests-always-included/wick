@@ -1,8 +1,0 @@
-#!/bin/bash
-
-wick-info() {
-    local OUTPUT
-    wick-prefix-lines OUTPUT "INFO: " "$1"
-    echo "$OUTPUT" >&2
-}
-

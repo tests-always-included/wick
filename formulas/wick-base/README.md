@@ -164,34 +164,6 @@ Example:
     # Directory is automatically removed for you
 
 
-### wick-debug
-
-Logging function.  Use this to log every action that formulas can take.
-
-    wick-debug MESSAGE
-
-* `MESSAGE`: The text to log.
-
-Example:
-
-    wick-debug "Installing the-software"
-    wick-package the-software
-
-
-### wick-error
-
-Logging function.  Use this to log error messages right before you exit the program or return a failure.
-
-    wick-error MESSAGE
-
-* `MESSAGE`: The text to log.
-
-Example:
-
-    wick-error "Could not find some vital thing"
-    exit 1
-
-
 ### wick-hash
 
 Return a hash for a file.  The type of hash returned is based on what's available on the system.  You can use this to see if files change their contents.
@@ -200,20 +172,6 @@ Return a hash for a file.  The type of hash returned is based on what's availabl
 
 * `DESTINATION`: Name of environment variable that will get the resulting hash value
 * `FILENAME`: File to hash.
-
-
-### wick-info
-
-Logging function.  Use this to log major chunks of code that are executing.
-
-    wick-info MESSAGE
-
-* `MESSAGE`: The text to log.
-
-Example:
-
-    wick-info "Installing MongoDB"
-    wick-package mongodb
 
 
 ### wick-on-exit
@@ -313,22 +271,6 @@ Example:
     # Update cloud-init
     # Key is "preserve_hostname"
     wick-set-config-line /etc/cloud/cloud.cfg "preserve_hostname: true"
-
-
-### wick-warn
-
-Logging function.  Use this to log when you encounter a problem, but typically only warn for problems you can overcome.
-
-    wick-warn MESSAGE
-
-* `MESSAGE`: The text to log.
-
-Example:
-
-    if [[ -f /some/file ]]; then
-        wick-warn "File exists when it should not."
-        rm /some/file
-    fi
 
 
 [Apache]: ../apache2/README.md

@@ -1,7 +1,0 @@
-#!/bin/bash
-
-wick-error() {
-    local OUTPUT
-    wick-prefix-lines OUTPUT "ERROR: " "$1"
-    echo "$OUTPUT" >&2
-}

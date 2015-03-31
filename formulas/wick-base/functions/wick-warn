@@ -1,8 +1,0 @@
-#!/bin/bash
-
-wick-warn() {
-    local OUTPUT
-    wick-prefix-lines OUTPUT "WARN: " "$1"
-    echo "$OUTPUT" >&2
-}
-

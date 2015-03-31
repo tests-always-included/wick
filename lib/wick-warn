@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# Writes a warning to the logging system.
+#
+# This message always is written to stdout as well.
+#
+# Parameters:
+#     $*: The log message to write
+wick-warn() {
+    local OUTPUT
+
+    wick-log "WARN" "$*"
+    wick-prefix-lines OUTPUT "WARN: " "$*"
+    echo "$OUTPUT"
+}

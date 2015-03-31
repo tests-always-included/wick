@@ -1,0 +1,59 @@
+#!/bin/bash
+#
+# Writes a debug message to the logging system.
+#
+# When the DEBUG environment variable is not set, this does nothing.
+# If DEBUG is set to "*", "all" or "true", this always logs.
+# In all other cases, DEBUG is assumed to be either a name of a function
+# or a list of function names that should have debug logging enabled.
+# When FUNCNAME lists one of these functions, logging will happen.  This
+# means you can turn on logging for one function and logging is enabled for
+# all functions that are called by your chosen function.
+#
+# Examples of running a command-line program (./thing) with various
+# debug settings:
+#     # Disable all logging
+#     DEBUG= ./thing
+#
+#     # Enable all debugging
+#     DEBUG=true ./thing
+#     DEBUG="*" ./thing
+#     DEBUG=all ./thing
+#
+#     # Enable logging for a function named "do-magic"
+#     DEBUG=do-magic ./thing
+#
+#     # Enable logging for the functions "rainbow", "pony" and "unicorn"
+#     DEBUG="rainbow pony unicorn" ./thing
+#
+# Parameters:
+#     $*: The log message to write
+#
+# Environment variables:
+#     DEBUG: Controls if logging is enabled and where it's enabled.
+wick-debug() {
+    local NAME
+
+    # Do not log unless the DEBUG environment variable is set
+    if [[ -z "$DEBUG" ]]; then
+        return
+    fi
+
+    # Check if debugging is enabled for everything
+    if [[ "$DEBUG" == "*" ]] || [[ "$DEBUG" == "all" ]] || [[ "$DEBUG" == "true" ]]; then
+        wick-log "DEBUG" "$OUTPUT"
+        return
+    fi
+
+    # Here is the more complex checking if any value in the DEBUG variable
+    # is in the FUNCNAME array.
+    while [[ ! -z "$DEBUG" ]]; do
+        NAME=${DEBUG%% *}
+        DEBUG=${DEBUG#* }
+
+        if [[ ! -z "$NAME" ]] && wick-in-array "$NAME" "${FUNCNAME[@]}"; then
+            wick-log "DEBUG" "$OUTPUT"
+            return
+        fi
+    done
+}

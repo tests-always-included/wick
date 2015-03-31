@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+# Write a log message to something.
+#
+# Uses the environment variable WICK_LOGFILE to determine where to log
+# messages.  Will write a timestamped messsage to that file, creating the
+# file if necessary.
+#
+# If WICK_LOGFILE starts with "syslog:", this will use the `logger` command
+# to write a line to syslogd.  The facility defaults to user, but you can use
+# any facility; for example you can use the mail facility by setting
+# WICK_LOGFILE="syslog:mail".
+#
+# Parameters:
+#     $1: Log level (ERROR WARN INFO DEBUG)
+#     $2-$*: Message to log
+#
+# Environment variables:
+#     WICK_LOGFILE: controls where the log messages are sent.
+wick-log() {
+    local LOG_LEVEL OUTPUT PRIORITY
+
+    LOG_LEVEL="$1"
+    shift
+
+    if [[ "${WICK_LOGFILE:0:7}" == "syslog:" ]]; then
+        PRIORITY=${WICK_LOGFILE:8}
+
+        if [[ -z "$PRIORITY" ]]; then
+            PRIORITY="user"
+        fi
+
+        case "$LOG_LEVEL" in
+            ERROR)
+                PRIORITY="$PRIORITY.err"
+                ;;
+
+            WARN)
+                PRIORITY="$PRIORITY.warning"
+                ;;
+
+            INFO)
+                PRIORITY="$PRIORITY.info"
+                ;;
+
+            DEBUG)
+                PRIORITY="$PRIORITY.debug"
+                ;;
+        esac
+
+        logger -p "$PRIORITY" -- "$*"
+
+        # Eraser $LOGGER so we don't also write to a file
+        LOGGER=""
+    fi
+
+    if [[ ! -z "$WICK_LOGFILE" ]]; then
+        wick-prefix-lines OUTPUT "$(date -Iseconds) $PREFIX: " "$*"
+        echo "$OUTPUT" >> "$WICK_LOGFILE"
+    fi
+}

@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Writes an informational message to the logging system.
+#
+# This message is written to stdout as long as WICK_LOG_QUIET is not set to
+# a non-null value.
+#
+# Parameters:
+#     $*: The log message to write
+#
+# Environment variables:
+#     WICK_LOG_QUIET: If set to a value, does not write anything to stdout
+wick-info() {
+    local OUTPUT
+
+    wick-log INFO "$*"
+
+    if [[ ! -z "$WICK_LOG_QUIET" ]]; then
+        wick-prefix-lines OUTPUT "WARN: " "$*"
+        echo "$OUTPUT"
+    fi
+}

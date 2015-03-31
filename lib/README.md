@@ -15,7 +15,7 @@ Here is a sample `lib/sample-thing`:
         echo "I am a sample function"
     }
 
-Not too bad.  It also doesn't do much, but other functions exist and you can look at how they operate.  The function `wick-parse-arguments` provides a simple argument parser.  Other functions can manipulate strings (eg. triming a string or removing all whitespace), generate random filenames, decompress an archive or even run multiple commands in parallel.  Anything you can do in shell is possible in a library function.
+Not too bad.  It also doesn't do much, but other functions exist and you can look at how they operate.  The function `wick-parse-arguments` provides a simple argument parser.  Other functions can manipulate strings (eg. trimming a string or removing all whitespace), generate random filenames, decompress an archive or even run multiple commands in parallel.  Anything you can do in shell is possible in a library function.
 
 
 wick-argument-string
@@ -59,6 +59,50 @@ Example:
         echo 'How do you list your files?'
         exit 1
     fi
+
+
+wick-debug
+----------
+
+Logging function.  Use this to log every action that formulas can take.  Debug can be enabled by setting the `DEBUG` environment variable.  When enabled, log messages are written to stdout and also passed to the `wick-log` function so they could make it to a log file.  (See [Bash concepts] for more about stdout.)
+
+    wick-debug MESSAGE
+
+* `MESSAGE`: The text to log.
+
+When `DEBUG` is set to `*`, `all` or `true`, then debug logging is enabled for everything.  An empty value disables logging.  Otherwise `DEBUG` should be a string of function names (separated by spaces) where debug logging is enabled.  Debug logging will be enabled for those functions, including anything they call.
+
+Examples in formulas:
+
+    DEBUG=""  # Disable debug logging
+    wick-debug "This is not logged anywhere"
+
+    DEBUG="all" # Enable debug logging
+    wick-debug "Installing the-software"
+    wick-package the-software
+
+Examples for enabling debugging for command-line arguments:
+
+    # Enable all logging
+    DEBUG="true" ./run-my-program
+
+    # Log only wick-get-url and the-other-function
+    DEBUG="wick-get-url the-other-function" ./run-my-program
+
+
+wick-error
+----------
+
+Logging function.  Use this to log error messages right before you exit the program or return a failure.  All messages are written to stderr.  Log messages are also passed to the `wick-log` function to be logged to a file.  (See `wick-log` for information about log files.  See [Bash concepts] for more about stderr.)
+
+    wick-error MESSAGE
+
+* `MESSAGE`: The text to log.
+
+Example:
+
+    wick-error "Could not find some vital thing"
+    exit 1
 
 
 wick-get-iface-ip
@@ -207,6 +251,53 @@ Example result:
     File #1:  a_9789
 
 
+wick-info
+---------
+
+Logging function.  Use this to log major chunks of code that are executing.  Informational messages are written to stdout as long as `WICK_LOG_QUIET` is unset or set to an empty value.  See the `wick-log` function for information regarding logfiles.  (See [Bash concepts] for information about stdout.)
+
+    wick-info MESSAGE
+
+* `MESSAGE`: The text to log.
+
+Examples:
+
+    wick-info "Installing MongoDB"
+    wick-package mongodb
+
+    # Disable informational messages here
+    WICK_LOG_QUIET=true
+    wick-info "This will not get written to screen."
+    wick-info "Informational messages can still be written to the log file."
+    wick-info "See wick-log for information."
+
+
+wick-log
+--------
+
+Write a message to a file or to logging system.  Used by `wick-debug`, `wick-info`, `wick-warn`, `wick-error`.  Should not be used directly.
+
+    wick-log LOG_LEVEL MESSAGE
+
+* `LOG_LEVEL`: The log level of the message to write.  Supports `DEBUG`, `INFO`, `WARN`, `ERROR`.
+* `MESSAGE`: The message to write to the logging file or system.
+
+This uses the `WICK_LOGFILE` environment variable to determine if a message should be written and where it should be written.
+
+When `WICK_LOGFILE` starts with "syslog:", then the log is written to syslogd.  You can specify the syslog facility name after the colon, such as "syslog:mail".  If unspecified, the default facility is "user".
+
+Otherwise, `WICK_LOGFILE` should be set to a filename.  Messages are prefixed with a timestamp.
+
+Examples:
+
+    # Run a command that logs with other Wick functions.
+    # Send output to /var/log/messages
+    WICK_LOGFILE=/var/log/messages ./your-command
+
+    # Send messages to /var/log/syslog
+    WICK_LOGFILE=syslog:daemon ./my-background-thing
+
+
 wick-parse-arguments
 --------------------
 
@@ -316,6 +407,23 @@ Example:
     if ! wick-wait-for 30 [ -f /var/run/other-process/run.lock ]; then
         echo "file was never created"
         exit 1
+    fi
+
+
+wick-warn
+---------
+
+Logging function.  Use this to log when you encounter a problem, but typically only warn for problems you can overcome.  Warning messages are always written to stdout.  See `wick-log` for information about writing log messages to files.  (See [Bash concepts] regarding stdout.)
+
+    wick-warn MESSAGE
+
+* `MESSAGE`: The text to log.
+
+Example:
+
+    if [[ -f /some/file ]]; then
+        wick-warn "File exists when it should not."
+        rm /some/file
     fi
 
 
