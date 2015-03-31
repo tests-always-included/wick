@@ -3,12 +3,6 @@ set -e
 
 . /usr/local/lib/wick-infect
 
-debug() {
-    if [[ -z "$ARGS_verbose" ]]; then
-        echo $1;
-    fi
-}
-
 replace-in-file() {
     local FN SEARCH WANTED
 
@@ -18,15 +12,15 @@ replace-in-file() {
 
     if ! grep -q "^$WANTED" "$FN"; then
         if grep -q "^$SEARCH" "$FN"; then
-            debug "Updating $FN: $WANTED"
+            wick-debug "Updating $FN: $WANTED"
             sed -i --follow-symlinks 's/^'"$SEARCH"'.*/'"$WANTED"'/' "$FN"
         else
-            debug "Adding to $FN: $WANTED"
+            wick-debug "Adding to $FN: $WANTED"
             echo "$WANTED" >> "$FN"
         fi
         return 0
     else
-        debug "$FN is already changed"
+        wick-debug "$FN is already changed"
         return 1
     fi
 }
@@ -59,6 +53,10 @@ ARGS_verbose=""
 ARGS_iface=""
 wick-parse-arguments UNPARSED "$@"
 
+if [[ ! -z "$ARGS_verboxe" ]]; then
+    DEBUG=true
+fi
+
 if [[ ! -z "$ARGS_help" ]] || [[ ${#UNPARSED[@]} -lt 1 ]]; then
     show-help
     exit 1
@@ -80,7 +78,7 @@ IP=${IP//./-}
 HOST=${HOST//\{\{IP\}\}/$IP}
 FULL="${HOST}.${DOMAIN}"
 
-debug "Setting hostname to $FULL"
+wick-debug "Setting hostname to $FULL"
 
 #
 # Update hostname
@@ -100,26 +98,26 @@ if replace-in-file /etc/hosts "127.0.0.1 $FULL $HOST localhost" "127.0.0.1"; the
 fi
 
 if [[ "$(hostname)" != "$HOST" ]]; then
-    debug "Setting hostname"
+    wick-debug "Setting hostname"
     hostname "$HOST"
     RELOAD=true
 else
-    debug "Hostname is already changed"
+    wick-debug "Hostname is already changed"
 fi
 
 if [[ "$(domainname)" != "$DOMAIN" ]]; then
-    debug "Setting domainname"
+    wick-debug "Setting domainname"
     domainname "$DOMAIN"
     RELOAD=true
 else
-    debug "Domainname is already changed"
+    wick-debug "Domainname is already changed"
 fi
 
 if [[ ! -z "$ARGS_reload" ]] && $RELOAD; then
-    debug "Restarting network to get hostname updated everywhere"
+    wick-debug "Restarting network to get hostname updated everywhere"
     service network restart
 elif $RELOAD; then
-    debug "Not reloading even though changes were made"
+    wick-debug "Not reloading even though changes were made"
 else
-    debug "Skipping network reload because no changes were made"
+    wick-debug "Skipping network reload because no changes were made"
 fi
