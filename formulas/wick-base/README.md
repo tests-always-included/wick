@@ -144,26 +144,6 @@ Examples:
     install-formula-file --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d
 
 
-### temp-directory
-
-Creates a temporary directory.  Automatically sets up a hook with `wick-on-exit` to delete the directory when the shell script is finished.
-
-    temp-directory DESTINATION
-
-* `DESTINATION`: Name of environment variable that should get the path of the temporary directory that was created.
-
-Example:
-
-    temp-directory TEMPDIR
-    (
-        cd TEMPDIR
-        wick-get-url http://install.example.com/ installer-script
-        . installer-script
-    )
-
-    # Directory is automatically removed for you
-
-
 ### wick-hash
 
 Return a hash for a file.  The type of hash returned is based on what's available on the system.  You can use this to see if files change their contents.

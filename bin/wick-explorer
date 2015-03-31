@@ -21,7 +21,7 @@ wick-explorer() {
     fi
 
     # Run the explorer
-    temp-directory TEMP
+    wick-temp-dir TEMP
 
     (
         . "$EXPLORER" > "$TEMP/stdout" 2> "$TEMP/stderr" || touch "$TEMP/fail"

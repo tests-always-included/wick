@@ -11,7 +11,7 @@ wick-set-config-line() {
     KEY=${2/ *}
     KEY=${KEY/=*}
     KEY=${KEY/:*}
-    temp-directory TEMP
+    wick-temp-dir TEMP
     TEMPFILE="$TEMP/add-line"
     cat "$1" | grep -v "^$KEY[ =:]" > "$TEMPFILE"
     echo "$2" >> "$TEMPFILE"

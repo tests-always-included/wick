@@ -404,6 +404,27 @@ Example:
     echo "Hex byte: $HEX"
 
 
+wick-temp-dir
+-------------
+
+Creates a temporary directory.  Automatically sets up a hook with `wick-on-exit` to delete the directory when the shell script is finished.
+
+    wick-temp-dir DESTINATION
+
+* `DESTINATION`: Name of environment variable that should get the path of the temporary directory that was created.
+
+Example:
+
+    wick-temp-dir TEMPDIR
+    (
+        cd TEMPDIR
+        wick-get-url http://install.example.com/ installer-script
+        . installer-script
+    )
+
+    # Directory is automatically removed for you
+
+
 wick-wait-for
 -------------
 

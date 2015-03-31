@@ -1,6 +1,6 @@
 #!/bin/bash
 
-temp-directory() {
+wick-temp-dir() {
     local BASE DIR
 
     BASE="/tmp"
