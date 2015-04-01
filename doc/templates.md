@@ -73,3 +73,6 @@ Example `templates/name.sh`:
 Example result in `/tmp/name`:
 
     Your name is Andrew
+
+
+[mo]: ../formulas/mo/README.md
