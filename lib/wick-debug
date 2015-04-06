@@ -55,6 +55,10 @@ wick-debug() {
         NAME=${DEBUG%% *}
         DEBUG=${DEBUG#* }
 
+        if [[ "$DEBUG" == "$NAME" ]]; then
+            DEBUG=""
+        fi
+
         if [[ ! -z "$NAME" ]] && wick-in-array "$NAME" "${FUNCNAME[@]}"; then
             wick-log "DEBUG" "$*"
             echo "$OUTPUT" >&2
