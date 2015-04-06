@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# Enable extreme debug logging
+
+wick-debug-extreme() {
+    set -xT
+
+    trap ': $BASH_SOURCE:$LINENO : $BASH_COMMAND' DEBUG
+}
