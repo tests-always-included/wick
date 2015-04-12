@@ -8,9 +8,14 @@ wick-set-config-line() {
         return 0
     fi
 
-    KEY=${2/ *}
-    KEY=${KEY/=*}
-    KEY=${KEY/:*}
+    KEY=$3
+
+    if [[ -z "$KEY" ]]; then
+        KEY=${2/ *}
+        KEY=${KEY/=*}
+        KEY=${KEY/:*}
+    fi
+
     wick-temp-dir TEMP
     TEMPFILE="$TEMP/add-line"
     cat "$1" | grep -v "^$KEY[ =:]" > "$TEMPFILE"

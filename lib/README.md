@@ -64,13 +64,15 @@ Example:
 wick-debug
 ----------
 
-Logging function.  Use this to log every action that formulas can take.  Debug can be enabled by setting the `DEBUG` environment variable.  When enabled, log messages are written to stdout and also passed to the `wick-log` function so they could make it to a log file.  (See [Bash concepts] for more about stdout.)
+Logging function.  Use this to log every action that formulas can take.  Debug can be enabled by setting the `DEBUG` environment variable.  When enabled, log messages are written to stderr and also passed to the `wick-log` function so they could make it to a log file.  (See [Bash concepts] for more about stderr.)
 
     wick-debug MESSAGE
 
 * `MESSAGE`: The text to log.
 
 When `DEBUG` is set to `*`, `all` or `true`, then debug logging is enabled for everything.  An empty value disables logging.  Otherwise `DEBUG` should be a string of function names (separated by spaces) where debug logging is enabled.  Debug logging will be enabled for those functions, including anything they call.
+
+Writing to stderr instead of stdout is intentional.  This way you can still capture stdout and get the expected results even with debugging enabled.
 
 Examples in formulas:
 

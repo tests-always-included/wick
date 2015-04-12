@@ -208,14 +208,15 @@ Example:
 
 Adds or updates a line in a config file.  This is a very basic tool that ensures a line exists in a file, not that it is in any particular order.
 
-    wick-set-config-line FILE LINE
+    wick-set-config-line FILE LINE [KEY]
 
 * `FILE`: File to update.
 * `LINE`: Line to add.  This line will be placed at the end.
+* `KEY`: The "key" that we are setting.  Optional and defaults to a portion of `LINE`.
 
-The line is not repeatedly added to the config file.  First, we attempt to get the "key" for the line, which most config files use.  We take anything to the left of a space, colon, or equals and treat it as the key.  The file has any other line starting with that key removed, then the `LINE` is appended to the end.
+The line is not repeatedly added to the config file.  First, we attempt to get the "key" for the line, either automatically or use a value that is passed in.  Most config files use a key value of some sort and this script usually can detect them - more on this later.  Next, we remove any lines with the same key from the file and finally we append the line you want onto the file.
 
-If you are having difficulty understanding what is used as the key, check out the examples.  I have listed what `wick-set-config-line` uses as the key.
+The key can be automatically detected.  It is anything in LINE that is to the left of a space, colon, or equals.  If you are having difficulty understanding what is used as the key, check out the examples.  I have listed what `wick-set-config-line` uses as the key.
 
 This is not suitable for updating shell scripts and other similar-looking files.  For instance, if you tried to modify `/etc/rc.local` and add two lines (`bash /script1` and `bash /script2`) then only one would ever exist in the file because "bash" would be considered the key.
 
@@ -233,6 +234,12 @@ Example:
     # Update cloud-init
     # Key is "preserve_hostname"
     wick-set-config-line /etc/cloud/cloud.cfg "preserve_hostname: true"
+
+    # Update DHCP settings
+    # Key is "prepend nameservers" because we specify it as a third
+    # parameter.
+    wick-set-config-line /etc/dhcp/dhclient.conf \
+        "prepend nameservers 127.0.0.1" "prepend nameservers"
 
 
 [Apache]: ../apache2/README.md
