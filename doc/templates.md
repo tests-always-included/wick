@@ -76,3 +76,4 @@ Example result in `/tmp/name`:
 
 
 [mo]: ../formulas/mo/README.md
+[wick-base]: ../formulas/wick-base/README.md
