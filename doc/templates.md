@@ -35,7 +35,7 @@ Example `run` script:
     set -e
     export NAME="Betty"
     export LIST=(one two three)
-    install-formula-file --template name.mo /tmp
+    wick-make-file --template name.mo /tmp
 
 Example `templates/name.mo`:
 
@@ -63,7 +63,7 @@ Example `run` script:
     #!/bin/bash
     set -e
     export NAME="Andrew"
-    install-formula-file --template name.sh /tmp/
+    wick-make-file --template name.sh /tmp/
 
 Example `templates/name.sh`:
 
