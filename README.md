@@ -1,5 +1,9 @@
+<div style="float:right" markdown="1">
+    ![logo](doc/wick-logo.jpg)
+</div>
+
 Wick - IT Automation
-==========================================
+====================
 
 Wick is a Bash IT automation tool, which means it can provision machines, configures software, sets up users and tasks, reloads and does the rest of the mundane things that you would expect.  It's written in Bash and has extremely minimal requirements (Bash 3.x and coreutils).  You probably have enough already installed; even routers and minimal installations of [Cygwin] on Windows will have enough.
 
