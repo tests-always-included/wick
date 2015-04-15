@@ -18,7 +18,7 @@ wick-parse-arguments() {
                     ARG=${ARG%%=*}
                 fi
 
-                ARG=${ARG//-/_}
+                wick-safe-variable-name ARG "$ARG"
                 printf -v "ARGS_${ARG:2}" '%s' "$VALUE"
                 ;;
 

@@ -107,6 +107,29 @@ Example:
     exit 1
 
 
+wick-get-argument
+-----------------
+
+This retrieves a single argument from the list of arguments.  It's similar to `wick-parse-arguments` and does the same amount of work to get only a single value.  If you need more, it may be easier to use `wick-parse-arguments`.
+
+    wick-get-argument DESTINATION ARGUMENT_NAME [ARGUMENTS [...]]
+
+* `DESTINATION`: Name of the environment variable that should get the result.
+* `ARGUMENT_NAME`: This is assigned the argument value or is assigned an empty string.
+* `ARGUMENTS`: Command line arguments to parse.
+
+Example as used in a script that received arguments.
+
+    # Look for a --safe flag
+    wick-get-argument VALUE safe "$@"
+
+    if [[ -z "$VALUE" ]]; then
+        echo "The --safe flag was not passed"
+    else
+        echo "Safe mode enabled"
+    fi
+
+
 wick-get-iface-ip
 -----------------
 
@@ -404,6 +427,24 @@ Example:
     # Create a hex byte
     wick-random-string HEX 2 0123456789ABCDEF
     echo "Hex byte: $HEX"
+
+
+wick-safe-variable-name
+-----------------------
+
+Change a variable so it is a valid variable in bash.  This is used primarily by argument parsing functions.
+
+    wick-safe-variable-name DESTINATION STRING
+
+* `DESTINATION`: Name of the environment variable that should get the altered string.
+* `STRING`: This is the variable we intend to set.
+
+You can't set things like `$ABC-DEF` as a variable easily and so this function will turn that into something that could be an environment variable by replacing illegal characters with an underscore.
+
+Example:
+
+    wick-safe-variable-name FIXED "ABC-DEF"
+    echo "$FIXED"  # Outputs "ABC_DEF"
 
 
 wick-temp-dir
