@@ -24,7 +24,7 @@ wick-get-argument() {
                 wick-safe-variable-name ARG "$ARG"
 
                 if [[ "$ARG" == "$NAME" ]]; then
-                    local "$1" && wick-indirect "$1" "$VALUE"
+                    local "$TARGET" && wick-indirect "$TARGET" "$VALUE"
                     return
                 fi
                 ;;
@@ -34,7 +34,7 @@ wick-get-argument() {
 
                 while [[ ! -z "$ARG" ]]; do
                     if [[ "${ARG:0:1}" == "$NAME" ]]; then
-                        local "$1" && wick-indirect "$1" true
+                        local "$TARGET" && wick-indirect "$TARGET" true
                         return
                     fi
 
@@ -44,5 +44,5 @@ wick-get-argument() {
         esac
     done
 
-    local "$1" && wick-indirect "$1" ""
+    local "$TARGET" && wick-indirect "$TARGET" ""
 }
