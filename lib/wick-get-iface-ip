@@ -8,7 +8,7 @@ wick-get-iface-ip() {
         OLD_IFS=$IFS
         IFS=$'\n'
 
-        for IP in $(ifconfig -v | grep inet\ || echo ""); do
+        for IP in $(ifconfig -v 2>/dev/null | grep inet\ || echo ""); do
             IP=${IP#*inet addr:}
             IP=${IP#*inet }
             IP=${IP%% *}
@@ -21,7 +21,7 @@ wick-get-iface-ip() {
         return 0
     fi
 
-    IP=$(ifconfig -v $2 | grep inet\ | head -n 1 || echo "")
+    IP=$(ifconfig -v $2 2>/dev/null | grep inet\ | head -n 1 || echo "")
     IP=${IP#*inet addr:}
     IP=${IP#*inet }
     IP=${IP%% *}
