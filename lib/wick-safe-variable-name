@@ -3,7 +3,7 @@
 # Creates a safe variable name
 
 wick-safe-variable-name() {
-    var SAFE
+    local SAFE
 
     SAFE=${2//-/_}
     local "$1" && wick-indirect "$1" "$SAFE"
