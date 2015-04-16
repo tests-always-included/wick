@@ -1,0 +1,22 @@
+#!/bin/bash
+
+cron-add() {
+    local ARGS_template JOBNAME UNPARSED
+
+    ARGS_template=""
+    wick-parse-arguments UNPARSED "$@"
+    JOBNAME=${UNPARSED[0]}
+    ARGS=${UNPARSED[1]}
+
+    if [[ ! -z "$ARGS_template" ]]; then
+        ARGS_template="--template"
+    fi
+
+    if [[ -d /etc/cron.d/ ]]; then
+        wick-make-file $ARGS_TEMPLATE "${UNPARSED[1]}" "/etc/cron.d/$JOBNAME"
+    else
+        echo "# BEGIN: $JOBNAME" >> /etc/crontab
+        wick-make-file $ARGS_TEMPLATE "${UNPARSED[1]}" >> /etc/crontab
+        echo "# END: $JOBNAME" >> /etc/crontab
+    fi
+}
