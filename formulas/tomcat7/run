@@ -1,0 +1,16 @@
+#!/bin/bash
+
+wick-explorer OS wick-base os
+
+case "$OS" in
+    debian|ubuntu)
+        wick-package tomcat7
+        ;;
+
+    *)
+        wick-package tomcat
+        ;;
+esac
+
+wick-service enable tomcat
+wick-service restart tomcat
