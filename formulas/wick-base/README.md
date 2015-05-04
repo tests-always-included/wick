@@ -3,6 +3,8 @@ Wick-Base - Wick Formula
 
 This formula does not perform any action.  It exists only to add useful functions and explorers to the Wick environment.
 
+    wick-formula wick-base
+
 
 Explorers
 ---------
