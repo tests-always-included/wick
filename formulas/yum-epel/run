@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+wick-explorer OS wick-base os
+
+case "$OS" in
+    redhat|centos)
+        wick-info "Adding EPEL repository"
+        yum install epel-release
+        ;;
+esac

@@ -15,6 +15,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [hostname] - Set the machine's host and domain
 * [mo] - Bash-only template system that plugs into our templates
 * [rvm] - Install RVM and can install Ruby as well as gems
+* [yum-epel] - Add EPEL to the list of yum repositories
 * [wick-base] - Handy functions for all of the other formulas
 * [wick-infect] - Creates a file that can be sourced by shell scripts
 * [wick-init-d-lib] - Easily create init.d style services
@@ -159,6 +160,7 @@ The files contained within the `templates/` folder are extremely similar to the 
 [roles]: ../roles/README.md
 [rvm]: rvm/README.md
 [templates]: ../doc/templates.md
+[yum-epel]: yum-epel/README.md
 [wick-base]: wick-base/README.md
 [wick-explorer]: ../bin/README.md
 [wick-infect]: wick-infect/README.md
