@@ -12,6 +12,7 @@ Specific Formulas
 See the formula-specific documentation that explain what each of these do.  Formulas can reference each other in the chain of [parents] in the invocation of `wick`.
 
 * [apache2] - Install and configure Apache2
+* [dnsmasq] - Install dnsmasq and provide configuration functions
 * [hostname] - Set the machine's host and domain
 * [mo] - Bash-only template system that plugs into our templates
 * [rvm] - Install RVM and can install Ruby as well as gems
@@ -153,6 +154,7 @@ The files contained within the `templates/` folder are extremely similar to the 
 
 [apache2]: apache2/README.md
 [Bash Concepts]: ../doc/bash-concepts.md
+[dnsmasq]: dnsmasq/README.md
 [hostname]: hostname/README.md
 [Libraries]: ../lib/README.md
 [mo]: mo/README.md

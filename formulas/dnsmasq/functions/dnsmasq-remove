@@ -1,0 +1,8 @@
+#!/bin/bash
+
+dnsmasq-remove() {
+    if [[ -f "/etc/dnsmasq.d/$1" ]]; then
+        rm -f "/etc/dnsmasq.d/$1"
+        wick-service restart dnsmasq
+    fi
+}
