@@ -7,14 +7,14 @@ wick-explorer OS wick-base os
 
 case "$OS" in
     centos|redhat)
-        wick-package install httpd
+        wick-package httpd
         wick-service enable httpd
         wick-service restart httpd
         wick-set-config-line /etc/httpd/conf/httpd.conf "NameVirtualHost *:80"
         ;;
 
     *)
-        wick-package install apache2
+        wick-package apache2
         wick-service enable apache2
         wick-service restart apache2
         ;;
