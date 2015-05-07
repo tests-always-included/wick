@@ -81,5 +81,5 @@ wick-make-user() {
     fi
 
     USERHOME=$(getent passwd "$USERNAME" | cut -d : -f 6)
-    wick-make-dir --owner="$USERNAME:$USERNAME" "$USERHOME"
+    wick-make-dir --owner="$USERNAME:$USERNAME" --mode=0755 "$USERHOME"
 }
