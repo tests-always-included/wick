@@ -26,14 +26,14 @@ wick-make-user() {
         ARGS_system=true
     fi
 
-    PASSWD=$(getent passwd "$USERNAME")
+    PASSWD=$(getent passwd "$USERNAME" || true)
 
     if [[ -z "$PASSWD" ]]; then
         wick-info "Creating user: $USERNAME"
         ARGS=(useradd)
 
         if [[ ! -z "$ARGS_home" ]]; then
-            ARGS=("${ARGS[@]}" "-d" "$ARGS_name")
+            ARGS=("${ARGS[@]}" "-d" "$ARGS_home")
         fi
 
         if [[ ! -z "$ARGS_name" ]]; then
@@ -60,7 +60,7 @@ wick-make-user() {
         ARGS=(usermod)
 
         if [[ ! -z "$ARGS_home" ]]; then
-            ARGS=("${ARGS[@]}" "-d" "$ARGS_name")
+            ARGS=("${ARGS[@]}" "-d" "$ARGS_home")
         fi
 
         if [[ ! -z "$ARGS_move_home" ]]; then
