@@ -1,12 +1,13 @@
 #!/bin/bash
 
 wick-make-user() {
-    local ARGS PASSWD UNPARSED USERNAME
+    local ARGS PASSWD UNPARSED USERHOME USERNAME
 
-    ARGS_create_home=""
+    ARGS_daemon=""
     ARGS_home=""
     ARGS_move_home=""
     ARGS_name=""
+    ARGS_no_skel=""
     ARGS_shell=""
     ARGS_system=""
     wick-parse-arguments UNPARSED "$@"
@@ -17,23 +18,19 @@ wick-make-user() {
         return 1
     fi
 
+    # Set reasonable defaults for daemons
+    if [[ ! -z "$ARGS_daemon" ]]; then
+        ARGS_move_home=""
+        ARGS_no_skel=true
+        ARGS_shell=/bin/false
+        ARGS_system=true
+    fi
+
     PASSWD=$(getent passwd "$USERNAME")
 
     if [[ -z "$PASSWD" ]]; then
         wick-info "Creating user: $USERNAME"
         ARGS=(useradd)
-
-        if [[ ! -z "$ARGS_create_home" ]]; then
-            case "$ARGS_create_home" in
-                yes|true)
-                    ARGS=("${ARGS[@]}" "-m")
-                    ;;
-
-                *)
-                    ARGS=("${ARGS[@]}" "-m")
-                    ;;
-            esac
-        fi
 
         if [[ ! -z "$ARGS_home" ]]; then
             ARGS=("${ARGS[@]}" "-d" "$ARGS_name")
@@ -41,6 +38,10 @@ wick-make-user() {
 
         if [[ ! -z "$ARGS_name" ]]; then
             ARGS=("${ARGS[@]}" "-c" "$ARGS_name")
+        fi
+
+        if [[ ! -z "$ARGS_no_skel" ]]; then
+            ARGS=("${ARGS[@]}" "-M")
         fi
 
         if [[ ! -z "$ARGS_shell" ]]; then
@@ -78,4 +79,7 @@ wick-make-user() {
         wick-debug "Command: ${ARGS[@]}"
         "${ARGS[@]}"
     fi
+
+    USERHOME=$(getent passwd "$USERNAME" | cut -d : -f 6)
+    wick-make-dir --owner="$USERNAME:$USERNAME" "$USERHOME"
 }
