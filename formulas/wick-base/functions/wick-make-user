@@ -1,0 +1,81 @@
+#!/bin/bash
+
+wick-make-user() {
+    local ARGS PASSWD UNPARSED USERNAME
+
+    ARGS_create_home=""
+    ARGS_home=""
+    ARGS_move_home=""
+    ARGS_name=""
+    ARGS_shell=""
+    ARGS_system=""
+    wick-parse-arguments UNPARSED "$@"
+    USERNAME=${UNPARSED[0]}
+
+    if [[ -z "$USERNAME" ]]; then
+        wick-error "You must specify a username for wick-make-user"
+        return 1
+    fi
+
+    PASSWD=$(getent passwd "$USERNAME")
+
+    if [[ -z "$PASSWD" ]]; then
+        wick-info "Creating user: $USERNAME"
+        ARGS=(useradd)
+
+        if [[ ! -z "$ARGS_create_home" ]]; then
+            case "$ARGS_create_home" in
+                yes|true)
+                    ARGS=("${ARGS[@]}" "-m")
+                    ;;
+
+                *)
+                    ARGS=("${ARGS[@]}" "-m")
+                    ;;
+            esac
+        fi
+
+        if [[ ! -z "$ARGS_home" ]]; then
+            ARGS=("${ARGS[@]}" "-d" "$ARGS_name")
+        fi
+
+        if [[ ! -z "$ARGS_name" ]]; then
+            ARGS=("${ARGS[@]}" "-c" "$ARGS_name")
+        fi
+
+        if [[ ! -z "$ARGS_shell" ]]; then
+            ARGS=("${ARGS[@]}" "-s" "$ARGS_shell")
+        fi
+
+        if [[ ! -z "$ARGS_system" ]]; then
+            ARGS=("${ARGS[@]}" "-r")
+        fi
+
+        ARGS=("${ARGS[@]}" "$USERNAME")
+        wick-debug "Command: ${ARGS[@]}"
+        "${ARGS[@]}"
+    else
+        wick-info "Altering user: $USERNAME"
+        ARGS=(usermod)
+
+        if [[ ! -z "$ARGS_home" ]]; then
+            ARGS=("${ARGS[@]}" "-d" "$ARGS_name")
+        fi
+
+        if [[ ! -z "$ARGS_move_home" ]]; then
+            ARGS=("${ARGS[@]}" "-m")
+        fi
+
+        if [[ ! -z "$ARGS_name" ]]; then
+            ARGS=("${ARGS[@]}" "-c" "$ARGS_name")
+        fi
+
+        if [[ ! -z "$ARGS_shell" ]]; then
+            ARGS=("${ARGS[@]}" "-s" "$ARGS_shell")
+        fi
+
+        ARGS=("${ARGS[@]}" "$USERNAME")
+        wick-debug "Command: ${ARGS[@]}"
+        "${ARGS[@]}"
+    fi
+}

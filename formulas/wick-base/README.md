@@ -146,6 +146,35 @@ Examples:
     wick-make-file --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d
 
 
+### wick-make-user
+
+Create or manage a user on the system.
+
+    wick-make-user [--create-home=BOOL] [--home=DIR] [--move-home] \
+        [--name=NAME] [--shell=SHELL] [--system] USERNAME
+
+* `--create-home=BOOL`: Determines if the home directory should be created (`yes` or `true`) or if it should not be created (`no` or `false`).  Defaults to the system's setting.  Only is applied if the user is being created.
+* `--home=DIR`: Sets the home directory for the user.
+* `--move-home`: If the user already existed on the system and the home directory is changed, this flag will also move all of the files.
+* `--name=NAME`: Sets the full name field in the password entry.
+* `--shell=SHELL`: Sets the login shell for the new or updated user.
+* `--system`: Uses a lower UID when available to create the user.
+* `USERNAME`: Username to create on the system.
+
+Examples:
+
+    # Create a normal user
+    wick-make-user fidian
+    
+    # Update that same user with a new shell
+    wick-make-user --shell=/bin/zsh
+    
+    # Create a system account that can't login.  It is used to
+    # run a special server that's installed in /opt/myserver.
+    wick-make-user --home=/opt/myserver --name="Special Server" \
+        --shell=/bin/false --system myserver
+
+
 ### wick-hash
 
 Return a hash for a file.  The type of hash returned is based on what's available on the system.  You can use this to see if files change their contents.
