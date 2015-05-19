@@ -377,6 +377,23 @@ Example result:
     Unparsed: one two three
 
 
+wick-port-up
+------------
+
+Determines if a port is open or not.  Works with TCP and UDP ports.  The result is a string of "UP" or "DOWN".  On errors, this returns an error code and writes an error message to stderr.  (See [Bash concepts] for error codes and stderr.)
+
+    wick-port-up PROTOCOL PORT_NUMBER
+
+* `PROTOCOL`: `TCP` or `UDP` (lowercase versions allowed).
+* `PORT_NUMBER`: The port number to test.
+
+Example:
+
+    if [[ "$(wick-port-up TCP 80)" == "DOWN" ]]; then
+        echo "There is no web server listening on port 80."
+    fi
+
+
 wick-prefix-lines
 -----------------
 
