@@ -380,7 +380,7 @@ Example result:
 wick-port-up
 ------------
 
-Determines if a port is open or not.  Works with TCP and UDP ports.  The result is a string of "UP" or "DOWN".  On errors, this returns an error code and writes an error message to stderr.  (See [Bash concepts] for error codes and stderr.)
+Determines if a port is open or not.  Works with TCP and UDP ports.  If the port is open this returns an error code of 0.  If the port is not open it returns 1.  If there are any errors this returns 2 and writes an error message to stderr.  (See [Bash concepts] for error codes and stderr.)
 
     wick-port-up PROTOCOL PORT_NUMBER
 
@@ -389,8 +389,16 @@ Determines if a port is open or not.  Works with TCP and UDP ports.  The result 
 
 Example:
 
-    if [[ "$(wick-port-up TCP 80)" == "DOWN" ]]; then
+    # Confirm a web server is listening
+    if ! wick-port-up TCP 80; then
         echo "There is no web server listening on port 80."
+    fi
+
+    # Wait for a server to start
+    wick-service start my-web-server
+
+    if ! wick-wait-for 120 wick-port-up TCP 80; then
+        echo "Tried to wait for 2 minutes but nothing listened on port 80"
     fi
 
 

@@ -20,9 +20,7 @@ wick-port-up() {
     esac
 
     if [[ $RESULT == "" ]]; then
-        echo "DOWN"
-    else
-        echo "UP"
+        return 1
     fi
 
     return 0
