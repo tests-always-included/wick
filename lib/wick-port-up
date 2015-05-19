@@ -1,24 +1,29 @@
 #!/bin/bash
 wick-port-up() {
     local PORT RESULT
+
     PORT=$2
+
     case $1 in
-    tcp)
-        RESULT=$(netstat -ln | awk '$1 == "tcp" && $4 ~/:'$PORT'$/ && $6 == "LISTEN" {print $4}')
-        ;;
-    udp)
-        RESULT=$(netstat -ln | awk '$1 == "udp" && $4 ~/:'$PORT'$/ {print $4}')
-        ;;
-    *)
-        echo "Only accepting 'tcp' or 'udp' not '$2'"
-        return 2
-        ;;
+        tcp|TCP)
+            RESULT=$(netstat -ln | awk '$1 == "tcp" && $4 ~/:'$PORT'$/ && $6 == "LISTEN" {print $4}')
+            ;;
+
+        udp|UDP)
+            RESULT=$(netstat -ln | awk '$1 == "udp" && $4 ~/:'$PORT'$/ {print $4}')
+            ;;
+
+        *)
+            wick-error "Only accepts 'tcp' or 'udp', not '$2'"
+            return 2
+            ;;
     esac
+
     if [[ $RESULT == "" ]]; then
         echo "DOWN"
-        return 0
     else
         echo "UP"
-        return 0
     fi
+
+    return 0
 }
