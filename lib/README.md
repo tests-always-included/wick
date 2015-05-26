@@ -115,7 +115,7 @@ This retrieves a single argument from the list of arguments.  It's similar to `w
     wick-get-argument DESTINATION ARGUMENT_NAME [ARGUMENTS [...]]
 
 * `DESTINATION`: Name of the environment variable that should get the result.
-* `ARGUMENT_NAME`: This is assigned the argument value or is assigned an empty string.
+* `ARGUMENT_NAME`: The name of the argument we are seeking, without double hyphens.
 * `ARGUMENTS`: Command line arguments to parse.
 
 Example as used in a script that received arguments.
