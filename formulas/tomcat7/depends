@@ -1,3 +1,9 @@
 #!/bin/bash
 
-wick-formula openjdk7
+wick-get-argument JAVA8 java8 "#@"
+
+if [[ -z "$JAVA8" ]]; then
+    wick-formula openjdk7
+else
+    wick-formula openjdk8
+fi
