@@ -8,6 +8,15 @@ case "$OS" in
         ;;
 
     *)
+        # Install Java
         wick-package java-1.8.0-openjdk
+
+        # Manually update the priority - RHEL bug 1175457
+        # https://bugzilla.redhat.com/show_bug.cgi?id=1175457
+        ALT_PATH=$(alternatives --display java \
+            | grep "^/usr/lib/jvm/java-1.8.0-openjdk-1.8.0" \
+            | head -n 1 \
+            | sed "s/ - priority.*//")
+        alternatives --set java "$ALT_PATH"
         ;;
 esac
