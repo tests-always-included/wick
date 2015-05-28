@@ -17,7 +17,7 @@ wick-make-file() {
 
         # Make sure the file exists
         if [[ ! -f "$SRC" ]]; then
-            wick-error "Unable to find template: $SRC"
+            wick-error "Unable to find source file: $SRC"
 
             return 1
         fi
