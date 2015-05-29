@@ -8,7 +8,7 @@
 #     $2: Name of file to find
 # Returns true when file is found successfully.
 wick-find() {
-    local BASE
+    local BASE FILE FULL
 
     BASE="."
 
@@ -17,7 +17,11 @@ wick-find() {
     done
 
     if [[ -e "$BASE/$2" ]]; then
-        local "$1" && wick-indirect "$1" "$BASE/$2" && return 0
+        FILE="$BASE/$2"
+        FULL="${FILE%/*}"
+        FILE="${FILE:${#FULL}}"
+        FULL=$(cd "$FULL"; pwd)
+        local "$1" && wick-indirect "$1" "$FULL$FILE" && return 0
     fi
 
     return 1
