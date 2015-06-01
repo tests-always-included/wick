@@ -493,6 +493,32 @@ Example:
     # Directory is automatically removed for you
 
 
+wick-test-for-arguments
+-----------------------
+
+Guarantee that some arguments are passed to a script.  This is typically used within a role or a formula's `run` or `depends` script.  The error reporter can be overridden so the library function can be used in external scripts as well.  If any arguments are missing, this function returns an error status code.  (See [Bash concepts] for status codes.)
+
+    wick-test-for-arguments [REQUIRED_ARGS] -- [ARGUMENT_LIST]
+
+* `[REQUIRED_ARGS]`: Arguments that you require.  For any that are missing, the error program will be called.
+* `[ARGUMENT_LIST]`: These are the arguments that were passed to your function.  Normally you will use `"$@"` here.
+* Environment variable `WICK_TEST_FOR_ARGUMENTS_FAILURE`: To change the error reporting function, set this variable to the command that should be executed.  The one and only parameter to this will an argument that is required but is not specified.
+
+Examples:
+
+    # Test to make sure this function or file received both
+    # "access-key" and "secret-key"
+    wick-test-for-arguments access-key secret-key -- "$@"
+
+    # Use your own reporter and make sure that both --mom and --dad are set.
+    # This would get called once for each argument that is missing.
+    missing-argument() {
+        echo "Hey, you need to specify --$1 as an argument"
+    }
+    WICK_TEST_FOR_ARGUMENTS_FAILURE=missing-argument \
+        wick-test-for-arguments mom dad -- "$@"
+
+
 wick-wait-for
 -------------
 
