@@ -16,9 +16,11 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [erlang] - Install erlang
 * [hostname] - Set the machine's host and domain
 * [mo] - Bash-only template system that plugs into our templates
-* [openjdk7] - Installs OpenJDK 7 JRE
+* [openjdk-1.7] - Installs OpenJDK 1.7 JRE
+* [openjdk-1.7-jdk] - Installs OpenJDK 1.7 JDK
+* [openjdk-1.8] - Installs OpenJDK 1.8 JRE
 * [rvm] - Install RVM and can install Ruby as well as gems
-* [tomcat7] - Installs Tomcat 7
+* [tomcat-7] - Installs Tomcat 7
 * [yum-epel] - Add EPEL to the list of yum repositories
 * [wick-base] - Handy functions for all of the other formulas
 * [wick-infect] - Creates a file that can be sourced by shell scripts
@@ -162,12 +164,14 @@ The files contained within the `templates/` folder are extremely similar to the 
 [hostname]: hostname/README.md
 [Libraries]: ../lib/README.md
 [mo]: mo/README.md
-[openjdk7]: openjdk7/README.md
+[openjdk-1.7]: openjdk-1.7/README.md
+[openjdk-1.7-jdk]: openjdk-1.7-jdk/README.md
+[openjdk-1.8]: openjdk-1.8/README.md
 [parents]: ../doc/parents.md
 [roles]: ../roles/README.md
 [rvm]: rvm/README.md
 [templates]: ../doc/templates.md
-[tomcat7]: tomcat7/README.md
+[tomcat-7]: tomcat-7/README.md
 [yum-epel]: yum-epel/README.md
 [wick-base]: wick-base/README.md
 [wick-explorer]: ../bin/README.md
