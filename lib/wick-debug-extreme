@@ -3,7 +3,7 @@
 # Enable extreme debug logging
 
 wick-debug-extreme() {
+    export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): } $BASH_COMMAND\n -> '
+    trap ': Previous command returned error code $?' ERR
     set -xT
-
-    trap ': $BASH_SOURCE:$LINENO : $BASH_COMMAND' DEBUG
 }
