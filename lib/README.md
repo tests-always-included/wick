@@ -92,6 +92,28 @@ Examples for enabling debugging for command-line arguments:
     DEBUG="wick-get-url the-other-function" ./run-my-program
 
 
+wick-debug-extreme
+------------------
+
+Turn on extreme logging.  This will alert you to all commands that run.  When a command returns a non-zero exit code, that also will get reported.
+
+    wick-debug-extreme [stop]
+
+* `stop` - Optional parameter.  When specified, this disables the logging.
+
+Example:
+
+    # This script may have errors, so turn on debugging
+    wick-debug-extreme
+
+    if ! grep -q needle haystack.txt; then
+        echo "No needle in haystack.txt"
+    fi
+
+    # Stop the extreme logging
+    wick-debug-extreme stop
+
+
 wick-error
 ----------
 
