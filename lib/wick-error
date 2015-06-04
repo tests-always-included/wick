@@ -7,9 +7,12 @@
 # Parameters:
 #     $*: The log message to write
 wick-error() {
-    local OUTPUT
+    (
+        set +x
+        local OUTPUT
 
-    wick-log "ERROR" "$OUTPUT"
-    wick-prefix-lines OUTPUT "ERROR: " "$*"
-    echo "$OUTPUT" >&2
+        wick-log "ERROR" "$OUTPUT"
+        wick-prefix-lines OUTPUT "ERROR: " "$*"
+        echo "$OUTPUT" >&2
+    )
 }

@@ -33,36 +33,39 @@
 # Environment variables:
 #     DEBUG: Controls if logging is enabled and where it's enabled.
 wick-debug() {
-    local NAME OUTPUT
+    (
+        set +x
+        local NAME OUTPUT
 
-    # Do not log unless the DEBUG environment variable is set
-    if [[ -z "$DEBUG" ]]; then
-        return
-    fi
-
-    wick-prefix-lines OUTPUT "DEBUG: " "$*"
-
-    # Check if debugging is enabled for everything
-    if [[ "$DEBUG" == "*" ]] || [[ "$DEBUG" == "all" ]] || [[ "$DEBUG" == "true" ]]; then
-        wick-log "DEBUG" "$*"
-        echo "$OUTPUT" >&2
-        return
-    fi
-
-    # Here is the more complex checking if any value in the DEBUG variable
-    # is in the FUNCNAME array.
-    while [[ ! -z "$DEBUG" ]]; do
-        NAME=${DEBUG%% *}
-        DEBUG=${DEBUG#* }
-
-        if [[ "$DEBUG" == "$NAME" ]]; then
-            DEBUG=""
+        # Do not log unless the DEBUG environment variable is set
+        if [[ -z "$DEBUG" ]]; then
+            return
         fi
 
-        if [[ ! -z "$NAME" ]] && wick-in-array "$NAME" "${FUNCNAME[@]}"; then
+        wick-prefix-lines OUTPUT "DEBUG: " "$*"
+
+        # Check if debugging is enabled for everything
+        if [[ "$DEBUG" == "*" ]] || [[ "$DEBUG" == "all" ]] || [[ "$DEBUG" == "true" ]]; then
             wick-log "DEBUG" "$*"
             echo "$OUTPUT" >&2
             return
         fi
-    done
+
+        # Here is the more complex checking if any value in the DEBUG variable
+        # is in the FUNCNAME array.
+        while [[ ! -z "$DEBUG" ]]; do
+            NAME=${DEBUG%% *}
+            DEBUG=${DEBUG#* }
+
+            if [[ "$DEBUG" == "$NAME" ]]; then
+                DEBUG=""
+            fi
+
+            if [[ ! -z "$NAME" ]] && wick-in-array "$NAME" "${FUNCNAME[@]}"; then
+                wick-log "DEBUG" "$*"
+                echo "$OUTPUT" >&2
+                return
+            fi
+        done
+    )
 }
