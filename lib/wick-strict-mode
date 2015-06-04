@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# Enables something as close as possible to a "strict mode" in Bash.
+#
+# See http://redsymbol.net/articles/unofficial-bash-strict-mode/
+
+wick-strict-mode() {
+    set -euo pipefail
+    IFS=$'\n\t'
+}

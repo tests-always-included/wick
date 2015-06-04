@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+# Adds a way to get the result status or exit code from a function while
+# the rest of the code operates in strict mode (see `wick-strict-mode`).
+
+wick-strict-run() {
+    local DEST RESULT
+
+    DEST=$1
+    shift
+    set +e
+    "$@"
+    RESULT=$?
+    set -e
+
+    local "$DEST" && wick-indirect "$DEST" "$RESULT"
+}
