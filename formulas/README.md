@@ -27,6 +27,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [wick-base] - Handy functions for all of the other formulas
 * [wick-infect] - Creates a file that can be sourced by shell scripts
 * [wick-init-d-lib] - Easily create init.d style services
+* [zip] - Installs zip
 
 
 Dependencies
@@ -181,3 +182,4 @@ The files contained within the `templates/` folder are extremely similar to the 
 [wick-explorer]: ../bin/README.md
 [wick-infect]: wick-infect/README.md
 [wick-init-d-lib]: wick-init-d-lib/README.md
+[zip]: zip/README.md
