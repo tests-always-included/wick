@@ -1,0 +1,39 @@
+#!/bin/bash
+#
+# This exists so arguments passed to wick-run are not passed to formulas
+#
+# Parameters:
+#     $1: Formula command to execute, including arguments
+#
+# Returns the status code from the formula
+wick-run-formula() {
+    local FORMULA WICK_FORMULA_DIR
+
+    # Escaping note:
+    #
+    # Formulas that are passed in are already quoted and must not be quoted
+    # again if you want this to run properly.  See wick-formula for quoting.
+    FORMULA="$1"
+    shift
+    echo "Executing formula: $FORMULA"
+
+    # See escaping note above
+    WICK_FORMULA_DIR=($FORMULA)
+    WICK_FORMULA_DIR=${WICK_FORMULA_DIR[0]%/*}
+
+    if ! (
+        # See escaping note above
+        # Can't use `. $FORMULA` by itself because parameters get double-escaped.
+        # Test:
+        #     arg1() { printf "%q" "$1"; }
+        #     arg1 a\{b # prints "a\{b"
+        #     test="arg1 a\{b"
+        #     $test # prints "a\\\{b"
+        eval ". $FORMULA"
+    ); then
+        echo "FAILURE DETECTED"
+        return 1
+    fi
+
+    echo "Formula success: $FORMULA"
+}

@@ -67,7 +67,7 @@ wick-formula() {
         return 1
     fi
 
-    echo "Adding formula $FORMULA ($LOCATION)"
+    echo "Adding formula $FORMULA$ARGS ($LOCATION)"
     WICK_FORMULA_LIST=("${WICK_FORMULA_LIST[@]}" "$FORMULA")
     WICK_FORMULA_LIST_WITH_ARGS=("${WICK_FORMULA_LIST_WITH_ARGS[@]}" "$FORMULA_ESCAPED$ARGS")
 
