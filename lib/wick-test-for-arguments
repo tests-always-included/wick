@@ -7,7 +7,7 @@ wick-test-for-arguments() {
     RESULT=0
     FAILURE_CMD=${WICK_TEST_FOR_ARGUMENTS_FAILURE:-wick-test-for-arguments-failure}
 
-    while [[ ! -z "$1" ]] && [[ "$1" -ne "--" ]]; do
+    while [[ ! -z "$1" ]] && [[ "$1" != "--" ]]; do
         SEEKING=("${SEEKING[@]}" "$1")
         shift
     done
