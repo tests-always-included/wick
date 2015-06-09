@@ -1,0 +1,17 @@
+#!/bin/bash
+
+timezone-update-timezone() {
+    local AMENDED
+
+    wick-debug "Updating timezone using tzdata: $2"
+    rm "$2"
+    echo "$1" > "$2"
+    chown root:root "$2"
+    chmod 0644 "$2"
+    dpkg-reconfigure -f noninteractive tzdata
+    AMENDED=$(cat "$2")
+
+    if [[ "$1" != "$AMENDED" ]]; then
+        wick-warn "dpkg-reconfigure changed the timezone: $AMENDED"
+    fi
+}
