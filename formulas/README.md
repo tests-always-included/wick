@@ -15,6 +15,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [dnsmasq] - Install dnsmasq and provide configuration functions
 * [erlang] - Install erlang
 * [hostname] - Set the machine's host and domain
+* [kermit] - Installs a variant of Kermit for transferring files
 * [lsof] - Install lsof
 * [mo] - Bash-only template system that plugs into our templates
 * [openjdk-1.7] - Installs OpenJDK 1.7 JRE
@@ -29,6 +30,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [wick-infect] - Creates a file that can be sourced by shell scripts
 * [wick-init-d-lib] - Easily create init.d style services
 * [zip] - Installs zip
+* [zmodem] - Installs ZModem for transferring files
 
 
 Dependencies
@@ -166,6 +168,7 @@ The files contained within the `templates/` folder are extremely similar to the 
 [dnsmasq]: dnsmasq/README.md
 [erlang]: erlang/README.md
 [hostname]: hostname/README.md
+[kermit]: kermit/README.md
 [Libraries]: ../lib/README.md
 [lsof]: lsof/README.md
 [mo]: mo/README.md
@@ -185,3 +188,4 @@ The files contained within the `templates/` folder are extremely similar to the 
 [wick-infect]: wick-infect/README.md
 [wick-init-d-lib]: wick-init-d-lib/README.md
 [zip]: zip/README.md
+[zmodem]: zmodem/README.md
