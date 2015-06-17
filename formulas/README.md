@@ -23,6 +23,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [openjdk-1.7-jdk] - Installs OpenJDK 1.7 JDK
 * [openjdk-1.8] - Installs OpenJDK 1.8 JRE
 * [rvm] - Install RVM and can install Ruby as well as gems
+* [s3cmd] - Work with Amazon S3
 * [timezone] - Set the machine's timezone
 * [tomcat-7] - Installs Tomcat 7
 * [unzip] - Installs unzip
@@ -180,6 +181,7 @@ The files contained within the `templates/` folder are extremely similar to the 
 [parents]: ../doc/parents.md
 [roles]: ../roles/README.md
 [rvm]: rvm/README.md
+[s3cmd]: s3cmd/README.md
 [templates]: ../doc/templates.md
 [timezone]: timezone/README.md
 [tomcat-7]: tomcat-7/README.md
