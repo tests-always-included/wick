@@ -7,8 +7,7 @@ The idea is that you would write installation scripts for individual tasks.  We 
 
 This relies heavily on Bash concepts.  For help with understanding them, there is documentation covering the key [Bash concepts].
 
-[![Build Status][travis-image]][Travis CI]
-
+[![Build Status](https://travis-ci.org/tests-always-included/wick.svg?branch=master)](https://travis-ci.org/tests-always-included/wick)
 
 How do I get started?
 ---------------------
