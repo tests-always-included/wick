@@ -117,7 +117,7 @@ Now all you need to know is how to make [roles] and [formulas].  While you are a
 [Roles]: roles/README.md
 [Tests]: tests/README.md
 [Travis CI]: http://travis-ci.org/tests-always-included/wick
-[Travis-Image]: https://secure.travis-ci.rg/tests-always-included/wick.png
+[Travis-Image]: https://secure.travis-ci.org/tests-always-included/wick.png
 [wick-formula]: bin/README.md
 [wick-explorer]: bin/README.md
 [wick-infect]: formulas/wick-infect/README.md
