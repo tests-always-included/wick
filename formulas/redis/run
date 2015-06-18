@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+wick-explorer OS wick-base os
+
+case "$OS" in
+    debian|ubuntu)
+        wick-package redis-server
+        ;;
+
+    *)
+        wick-package redis
+        ;;
+esac

@@ -22,6 +22,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [openjdk-1.7] - Installs OpenJDK 1.7 JRE
 * [openjdk-1.7-jdk] - Installs OpenJDK 1.7 JDK
 * [openjdk-1.8] - Installs OpenJDK 1.8 JRE
+* [redis] - Installs the redis server
 * [rvm] - Install RVM and can install Ruby as well as gems
 * [s3cmd] - Work with Amazon S3
 * [timezone] - Set the machine's timezone
@@ -179,6 +180,7 @@ The files contained within the `templates/` folder are extremely similar to the 
 [openjdk-1.7-jdk]: openjdk-1.7-jdk/README.md
 [openjdk-1.8]: openjdk-1.8/README.md
 [parents]: ../doc/parents.md
+[redis]: redis/README.md
 [roles]: ../roles/README.md
 [rvm]: rvm/README.md
 [s3cmd]: s3cmd/README.md
