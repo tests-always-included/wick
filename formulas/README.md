@@ -17,6 +17,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [hostname] - Set the machine's host and domain
 * [kermit] - Installs a variant of Kermit for transferring files
 * [lsof] - Install lsof
+* [md5deep] - Sets up md5deep
 * [mo] - Bash-only template system that plugs into our templates
 * [openjdk-1.7] - Installs OpenJDK 1.7 JRE
 * [openjdk-1.7-jdk] - Installs OpenJDK 1.7 JDK
@@ -172,6 +173,7 @@ The files contained within the `templates/` folder are extremely similar to the 
 [kermit]: kermit/README.md
 [Libraries]: ../lib/README.md
 [lsof]: lsof/README.md
+[md5deep]: md5deep/README.md
 [mo]: mo/README.md
 [openjdk-1.7]: openjdk-1.7/README.md
 [openjdk-1.7-jdk]: openjdk-1.7-jdk/README.md

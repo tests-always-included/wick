@@ -5,7 +5,7 @@
 # of them if it was set.
 
 wick-get-argument() {
-    local NAME TARGET VALUE
+    local ARG NAME TARGET VALUE
 
     TARGET=$1
     wick-safe-variable-name NAME "$2"

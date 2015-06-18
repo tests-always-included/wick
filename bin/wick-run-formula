@@ -32,6 +32,7 @@ wick-run-formula() {
         eval ". $FORMULA"
     ); then
         echo "FAILURE DETECTED"
+        echo "Formula failure: $FORMULA"
         return 1
     fi
 
