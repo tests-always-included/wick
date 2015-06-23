@@ -1,6 +1,5 @@
-Redis Formula
-=============
+# Redis
 
-Installs the redis server.
+Quick formula to install redis onto the box.
 
-    wick-formula redis
+redis is added to the system init and started as part of the role.
