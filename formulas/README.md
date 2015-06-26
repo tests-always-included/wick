@@ -29,6 +29,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [tomcat-7] - Installs Tomcat 7
 * [unzip] - Installs unzip
 * [yum-epel] - Add EPEL to the list of yum repositories
+* [yum-remi] - Adds the Remi repository to yum
 * [wick-base] - Handy functions for all of the other formulas
 * [wick-infect] - Creates a file that can be sourced by shell scripts
 * [wick-init-d-lib] - Easily create init.d style services
@@ -189,6 +190,7 @@ The files contained within the `templates/` folder are extremely similar to the 
 [tomcat-7]: tomcat-7/README.md
 [unzip]: unzip/README.md
 [yum-epel]: yum-epel/README.md
+[yum-remi]: yum-remi/README.md
 [wick-base]: wick-base/README.md
 [wick-explorer]: ../bin/README.md
 [wick-infect]: wick-infect/README.md
