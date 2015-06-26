@@ -25,6 +25,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [redis] - Installs the redis server
 * [rvm] - Install RVM and can install Ruby as well as gems
 * [s3cmd] - Work with Amazon S3
+* [sysctl] - Change kernel properties and persist them for after reboots
 * [timezone] - Set the machine's timezone
 * [tomcat-7] - Installs Tomcat 7
 * [unzip] - Installs unzip
@@ -185,6 +186,7 @@ The files contained within the `templates/` folder are extremely similar to the 
 [roles]: ../roles/README.md
 [rvm]: rvm/README.md
 [s3cmd]: s3cmd/README.md
+[sysctl]: sysctl/README.md
 [templates]: ../doc/templates.md
 [timezone]: timezone/README.md
 [tomcat-7]: tomcat-7/README.md
