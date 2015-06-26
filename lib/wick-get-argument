@@ -26,7 +26,7 @@ wick-get-argument() {
                 wick-safe-variable-name ARG "$ARG"
 
                 if [[ "$ARG" == "$NAME" ]]; then
-                    RETuRN_VALUE="$VALUE"
+                    RETURN_VALUE="$VALUE"
                 fi
                 ;;
 
