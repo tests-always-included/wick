@@ -1,7 +1,12 @@
 #!/bin/bash
 set -e
 
+# There are many other settings you can tweak for better performance.  Each
+# one should be tested to determine if they are applicable to the situation.
+# http://shokunin.co/blog/2014/11/11/operational_redis.html
 wick-info "Installing redis"
-wick-package redis
+sysctl-set vm.overcommit_memory 1
+sysctl-set net.core.somaxconn 512
+YUM_ENABLE_REPO=remi wick-package redis
+wick-service restart redis
 wick-service enable redis
-wick-service start redis
