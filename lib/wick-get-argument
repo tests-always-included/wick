@@ -5,9 +5,10 @@
 # of them if it was set.
 
 wick-get-argument() {
-    local ARG NAME TARGET VALUE
+    local ARG NAME TARGET RETURN_VALUE VALUE
 
     TARGET=$1
+    RETURN_VALUE=""
     wick-safe-variable-name NAME "$2"
     shift 2
 
@@ -25,9 +26,7 @@ wick-get-argument() {
                 wick-safe-variable-name ARG "$ARG"
 
                 if [[ "$ARG" == "$NAME" ]]; then
-                    local "$TARGET" && wick-indirect "$TARGET" "$VALUE"
-
-                    return
+                    RETuRN_VALUE="$VALUE"
                 fi
                 ;;
 
@@ -36,9 +35,7 @@ wick-get-argument() {
 
                 while [[ ! -z "$ARG" ]]; do
                     if [[ "${ARG:0:1}" == "$NAME" ]]; then
-                        local "$TARGET" && wick-indirect "$TARGET" true
-
-                        return
+                        RETURN_VALUE=true
                     fi
 
                     ARG="${ARG:1}"
@@ -47,5 +44,5 @@ wick-get-argument() {
         esac
     done
 
-    local "$TARGET" && wick-indirect "$TARGET" ""
+    local "$TARGET" && wick-indirect "$TARGET" "$RETURN_VALUE"
 }
