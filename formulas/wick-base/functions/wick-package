@@ -30,14 +30,19 @@ wick-package() {
 }
 
 wick-package-yum() {
-    local STATE
+    local ARGS STATE
 
+    ARGS=()
     STATE=$1
     shift
 
     case "$STATE" in
         install)
-            yum install -y "$@"
+            if [[ ! -z "$YUM_ENABLE_REPO" ]]; then
+                ARGS=("${ARGS[@]}" "--enablerepo=$YUM_ENABLE_REPO")
+            fi
+
+            yum "${ARGS[@]}" install -y "$@"
             ;;
 
         uninstall)

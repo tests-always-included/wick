@@ -202,10 +202,16 @@ Install or remove packages on the target system.  This handles the OS-specific t
 * `[--uninstall]`: Remove the packages instead of installing it.
 * `PACKAGE`: Name of package to install
 
-Example:
+Uses the `YUM_ENABLE_REPO` environment variable if you need to enable additional yum repositories, such as [Remi's Repository](../yum-remi/README.md), which can sometimes be a little dangerous.  This is only used with yum-based systems.
+
+Examples:
 
     wick-package --uninstall apache
     wick-package apache2
+
+    # Enable Remi's repository for this one package so we install a
+    # significantly newer version of Redis.
+    YUM_ENABLE_REPO=remi wick-package redis
 
 
 ### wick-service
