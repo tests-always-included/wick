@@ -1,12 +1,12 @@
 #!/bin/bash
 
 wick-service() {
-    local ARGS_force UNPARSED
+    local ACTION FORCE UNPARSED
 
-    ARGS_force=""
-    wick-parse-arguments UNPARSED "$@"
-    ACTION="${UNPARSED[0]}"
-    UNPARSED=("${UNPARSED[@]:1}")
+    wick-get-option FORCE force "$@"
+    wick-get-argument ACTION 0 "$@"
+    wick-get-arguments UNPARSED "$@"
+    UNPARSED=("${UNPARSED[@]:1}")  # Remove action
 
     case "$ACTION" in
         add)

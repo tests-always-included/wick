@@ -2,9 +2,7 @@
 
 set -e
 wick-explorer OS wick-base os
-wick-parse-arguments UNPARSED "$@"
-
-TZ=${UNPARSED[0]}
+wick-get-argument TZ 0 "$@"
 
 case "$OS" in
     debian|ubuntu)

@@ -1,84 +1,85 @@
 #!/bin/bash
 
 wick-make-file() {
-    local ARGS_mode ARGS_owner ARGS_template DEST SRC TEMP UNPARSED
+    local DEST DEST_FILE OWNER SET_MODE SET_OWNER SRC SRC_FILE USE_FORMULA USE_TEMPLATE
 
-    ARGS_mode=""
-    ARGS_owner=""
-    ARGS_template=""
-    wick-parse-arguments UNPARSED "$@"
-    SRC="${UNPARSED[0]}"
-    DEST="${UNPARSED[1]}"
+    wick-get-option USE_FORMULA formula "$@"
+    wick-get-option SET_MODE mode "$@"
+    wick-get-option SET_OWNER owner "$@"
+    wick-get-option USE_TEMPLATE template "$@"
+    wick-get-argument SRC_FILE 0 "$@"
+    wick-get-argument DEST 1 "$@"
+    SRC="$WICK_FORMULA_DIR"
 
-    # For regular files, this function handles the filename
-    if [[ -z "$ARGS_template" ]]; then
-        # Convert to a full path
-        SRC="$WICK_FORMULA_DIR/files/$SRC"
-
-        # Make sure the file exists
-        if [[ ! -f "$SRC" ]]; then
-            wick-error "Unable to find source file: $SRC"
-
-            return 1
-        fi
+    if [[ ! -z "$USE_FORMULA" ]]; then
+        wick-find SRC "formulas/$USE_FORMULA"
     fi
 
-    if [[ -z "$DEST" ]]; then
-        if [[ -z "$ARGS_template" ]]; then
+    if [[ -z "$USE_TEMPLATE" ]]; then
+        SRC="$SRC/files"
+    else
+        SRC="$SRC/templates"
+    fi
+
+    SRC="$SRC/$SRC_FILE"
+
+    # Make sure the file exists
+    if [[ ! -f "$SRC" ]]; then
+        wick-error "Unable to find source file: $SRC"
+
+        return 1
+    fi
+
+    # Write to stdout if there is no destination
+    if [[ -z "$DEST" ]] || [[ "$DEST" == "-" ]]; then
+        if [[ -z "$USE_TEMPLATE" ]]; then
             wick-debug "Writing file to stdout: $SRC"
             cat "$SRC"
         else
             wick-debug "Writing template to stdout: $SRC"
             formula-template "$SRC"
         fi
+
+        return 0
+    fi
+
+    # Make the directory if it does not exist
+    if [[ ! -d "${DEST%/*}" ]]; then
+        # Preserve the owner
+        OWNER=
+
+        if [[ ! -z "$SET_OWNER" ]]; then
+            wick-argument-string OWNER "--owner=$SET_OWNER"
+        fi
+
+        wick-make-dir "${DEST%/*}" "$OWNER"
+    fi
+
+    # If the destination is a directory, make sure there is exactly
+    # one slash at the end and then add the filename.  If this is a
+    # template, the extension is still at the end and is removed later
+    if [[ -d "$DEST" ]]; then
+        DEST="${DEST%%/}/$SRC_FILE"
+    fi
+
+    # If not a template
+    if [[ -z "$USE_TEMPLATE" ]]; then
+        wick-debug "Copying $SRC to $DEST"
+        cp "$SRC" "$DEST" || return 1
     else
-        # Make the directory if it does not exist
-        if [[ "${DEST: -1}" == "/" ]] && [[ ! -d "${DEST}" ]]; then
-            # Preserve the owner
-            TEMP=
+        # Remove template extension
+        DEST="${DEST}${SRC_FILE%.*}"
+        wick-debug "Converting template $SRC into $DEST"
+        formula-template "$SRC" > "$DEST" || return 1
+    fi
 
-            if [[ ! -z "$ARGS_owner" ]]; then
-                printf -v TEMP "%q" "$ARGS_owner"
-                TEMP="--owner=$TEMP"
-            fi
+    if [[ ! -z "$SET_OWNER" ]]; then
+        wick-debug "Changing ownership: $SET_OWNER"
+        chown "$SET_OWNER" "$DEST" || return 1
+    fi
 
-            wick-make-dir "$DEST" $TEMP
-        fi
-
-        if [[ -z "$ARGS_template" ]]; then
-            if [[ -d "$DEST" ]]; then
-                if [[ "${DEST: -1}" != "/" ]]; then
-                    DEST="$DEST/"
-                fi
-
-                DEST="$DEST${UNPARSED[0]}"
-            fi
-
-            wick-debug "Copying $SRC to $DEST"
-            cp "$SRC" "$DEST" || return 1
-        else
-            if [[ -d "$DEST" ]]; then
-                # Add slash if needed
-                if [[ "${DEST: -1}" != "/" ]]; then
-                    DEST="$DEST/"
-                fi
-
-                # Remove template extension
-                DEST="${DEST}${UNPARSED[0]%.*}"
-            fi
-
-            wick-debug "Converting template $SRC into $DEST"
-            formula-template "$SRC" > "$DEST" || return 1
-        fi
-
-        if [[ ! -z "$ARGS_owner" ]]; then
-            wick-debug "Changing ownership: $ARGS_owner"
-            chown "$ARGS_owner" "$DEST" || return 1
-        fi
-
-        if [[ ! -z "$ARGS_mode" ]]; then
-            wick-debug "Changing mode: $ARGS_mode"
-            chmod "$ARGS_mode" "$DEST" || return 1
-        fi
+    if [[ ! -z "$SET_MODE" ]]; then
+        wick-debug "Changing mode: $SET_MODE"
+        chmod "$SET_MODE" "$DEST" || return 1
     fi
 }

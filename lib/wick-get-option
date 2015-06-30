@@ -1,0 +1,52 @@
+#!/bin/bash
+
+wick-get-option() {
+    local ARG NAME TARGET RETURN_VALUE VALUE
+
+    TARGET="$1"
+    NAME="$2"
+    shift 2
+
+    while [[ "${NAME:0:1}" == "-" ]]; do
+        NAME="${NAME:1}"
+    done
+
+    RETURN_VALUE=""
+    wick-safe-variable-name NAME "$NAME"
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --*)
+                VALUE=true
+                ARG=${1:2}
+
+                if [[ "$ARG" == *=* ]]; then
+                    VALUE=${ARG#*=}
+                    ARG=${ARG%%=*}
+                fi
+
+                wick-safe-variable-name ARG "$ARG"
+
+                if [[ "$ARG" == "$NAME" ]]; then
+                    RETURN_VALUE="$VALUE"
+                fi
+                ;;
+
+            -*)
+                ARG="${1:1}"
+
+                while [[ ! -z "$ARG" ]]; do
+                    if [[ "${ARG:0:1}" == "$NAME" ]]; then
+                        RETURN_VALUE=true
+                    fi
+
+                    ARG="${ARG:1}"
+                done
+                ;;
+        esac
+
+        shift
+    done
+
+    local "$TARGET" && wick-indirect "$TARGET" "$RETURN_VALUE"
+}

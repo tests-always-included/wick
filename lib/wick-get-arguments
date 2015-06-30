@@ -1,0 +1,19 @@
+#!/bin/bash
+
+wick-get-arguments() {
+    local ARGS TARGET
+
+    ARGS=()
+    TARGET=$1
+    shift
+
+    while [[ $# -gt 0 ]]; do
+        if [[ "${1:0:1}" != "-" ]]; then
+            ARGS=("${ARGS[@]}" "$1")
+        fi
+
+        shift
+    done
+
+    local "$TARGET" && wick-indirect-array "$TARGET" "${ARGS[@]}"
+}

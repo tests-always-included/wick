@@ -1,6 +1,6 @@
 #!/bin/bash
 
-wick-get-argument JAVA8 java-1.8 "#@"
+wick-get-option JAVA8 java-1.8 "$@"
 
 if [[ -z "$JAVA8" ]]; then
     wick-formula openjdk-1.7

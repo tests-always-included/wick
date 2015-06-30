@@ -20,19 +20,17 @@ This example is for a shell script that can run on the target machine after conf
 
     # Define a function
     call-my-function() {
-        local ARGS_verbose UNPARSED
+        local TARGET VERBOSE
 
-        ARGS_verbose=""
+        wick-get-option VERBOSE verbose "$@"
+        wick-get-argument TARGET 0 "$@"
 
-        # Arguments can be parsed
-        wick-parse-arguments UNPARSED "$@"
-
-        if [[ ! -z "$ARGS_VERBOSE" ]]; then
+        if [[ ! -z "$VERBOSE" ]]; then
             echo "Verbose mode enabled"
         fi
 
         # Can pass back values as well
-        local "${UNPARSED[0]}" && wick-indirect "${UNPARSED[0]}" "data"
+        local "$TARGET" && wick-indirect "$TARGET" "data"
     }
 
     call-my-function --verbose RESULT

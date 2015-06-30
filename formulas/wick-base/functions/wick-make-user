@@ -1,17 +1,16 @@
 #!/bin/bash
 
 wick-make-user() {
-    local ARGS PASSWD UNPARSED USERHOME USERNAME
+    local ARGS DAEMON_FLAG MOVE_HOME_FLAG NO_SKEL_FLAG PASSWD SET_HOME SET_NAME SET_SHELL SYSTEM_FLAG USERHOME USERNAME
 
-    ARGS_daemon=""
-    ARGS_home=""
-    ARGS_move_home=""
-    ARGS_name=""
-    ARGS_no_skel=""
-    ARGS_shell=""
-    ARGS_system=""
-    wick-parse-arguments UNPARSED "$@"
-    USERNAME=${UNPARSED[0]}
+    wick-get-option DAEMON_FLAG daemon "$@"
+    wick-get-option SET_HOME home "$@"
+    wick-get-option MOVE_HOME_FLAG move-home "$@"
+    wick-get-option SET_NAME name "$@"
+    wick-get-option NO_SKEL_FLAG no-skel "$@"
+    wick-get-option SET_SHELL shell "$@"
+    wick-get-option SYSTEM_FLAG system "$@"
+    wick-get-argument USERNAME 0 "$@"
 
     if [[ -z "$USERNAME" ]]; then
         wick-error "You must specify a username for wick-make-user"
@@ -19,11 +18,11 @@ wick-make-user() {
     fi
 
     # Set reasonable defaults for daemons
-    if [[ ! -z "$ARGS_daemon" ]]; then
-        ARGS_move_home=""
-        ARGS_no_skel=true
-        ARGS_shell=/bin/false
-        ARGS_system=true
+    if [[ ! -z "$DAEMON_FLAG" ]]; then
+        MOVE_HOME_FLAG=""
+        NO_SKEL_FLAG=true
+        SET_SHELL=/bin/false
+        SYSTEM_FLAG=true
     fi
 
     PASSWD=$(getent passwd "$USERNAME" || true)
@@ -32,23 +31,23 @@ wick-make-user() {
         wick-info "Creating user: $USERNAME"
         ARGS=(useradd)
 
-        if [[ ! -z "$ARGS_home" ]]; then
-            ARGS=("${ARGS[@]}" "-d" "$ARGS_home")
+        if [[ ! -z "$SET_HOME" ]]; then
+            ARGS=("${ARGS[@]}" "-d" "$SET_HOME")
         fi
 
-        if [[ ! -z "$ARGS_name" ]]; then
-            ARGS=("${ARGS[@]}" "-c" "$ARGS_name")
+        if [[ ! -z "$SET_NAME" ]]; then
+            ARGS=("${ARGS[@]}" "-c" "$SET_NAME")
         fi
 
-        if [[ ! -z "$ARGS_no_skel" ]]; then
+        if [[ ! -z "$NO_SKEL_FLAG" ]]; then
             ARGS=("${ARGS[@]}" "-M")
         fi
 
-        if [[ ! -z "$ARGS_shell" ]]; then
-            ARGS=("${ARGS[@]}" "-s" "$ARGS_shell")
+        if [[ ! -z "$SET_SHELL" ]]; then
+            ARGS=("${ARGS[@]}" "-s" "$SET_SHELL")
         fi
 
-        if [[ ! -z "$ARGS_system" ]]; then
+        if [[ ! -z "$SYSTEM_FLAG" ]]; then
             ARGS=("${ARGS[@]}" "-r")
         fi
 
@@ -59,20 +58,20 @@ wick-make-user() {
         wick-info "Altering user: $USERNAME"
         ARGS=(usermod)
 
-        if [[ ! -z "$ARGS_home" ]]; then
-            ARGS=("${ARGS[@]}" "-d" "$ARGS_home")
+        if [[ ! -z "$SET_HOME" ]]; then
+            ARGS=("${ARGS[@]}" "-d" "$SET_HOME")
         fi
 
-        if [[ ! -z "$ARGS_move_home" ]]; then
+        if [[ ! -z "$MOVE_HOME_FLAG" ]]; then
             ARGS=("${ARGS[@]}" "-m")
         fi
 
-        if [[ ! -z "$ARGS_name" ]]; then
-            ARGS=("${ARGS[@]}" "-c" "$ARGS_name")
+        if [[ ! -z "$SET_NAME" ]]; then
+            ARGS=("${ARGS[@]}" "-c" "$SET_NAME")
         fi
 
-        if [[ ! -z "$ARGS_shell" ]]; then
-            ARGS=("${ARGS[@]}" "-s" "$ARGS_shell")
+        if [[ ! -z "$SET_SHELL" ]]; then
+            ARGS=("${ARGS[@]}" "-s" "$SET_SHELL")
         fi
 
         ARGS=("${ARGS[@]}" "$USERNAME")

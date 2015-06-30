@@ -1,48 +1,11 @@
 #!/bin/bash
-#
-# This is a complement to `wick-parse-args` but instead of setting a lot of
-# environment variables, this will parse the arguments and return just one
-# of them if it was set.
 
 wick-get-argument() {
-    local ARG NAME TARGET RETURN_VALUE VALUE
+    local ARGS INDEX TARGET
 
     TARGET=$1
-    RETURN_VALUE=""
-    wick-safe-variable-name NAME "$2"
+    INDEX=$2
     shift 2
-
-    for ARG in "$@"; do
-        case "$ARG" in
-            --*)
-                VALUE=true
-                ARG=${ARG:2}
-
-                if [[ "$ARG" == *=* ]]; then
-                    VALUE=${ARG#*=}
-                    ARG=${ARG%%=*}
-                fi
-
-                wick-safe-variable-name ARG "$ARG"
-
-                if [[ "$ARG" == "$NAME" ]]; then
-                    RETURN_VALUE="$VALUE"
-                fi
-                ;;
-
-            -*)
-                ARG="${ARG:1}"
-
-                while [[ ! -z "$ARG" ]]; do
-                    if [[ "${ARG:0:1}" == "$NAME" ]]; then
-                        RETURN_VALUE=true
-                    fi
-
-                    ARG="${ARG:1}"
-                done
-                ;;
-        esac
-    done
-
-    local "$TARGET" && wick-indirect "$TARGET" "$RETURN_VALUE"
+    wick-get-arguments ARGS "$@"
+    local "$TARGET" && wick-indirect "$TARGET" "${ARGS[$INDEX]}"
 }

@@ -104,7 +104,7 @@ The run script should run with `set -e` to make sure that errors cause the scrip
 
 Then the `run` script for the [hostname] formula will get "server1.example.com" as `$1` in the script.
 
-Here is a sample run script that will download a copy of the application from an internal server.  It uses `wick-parse-arguments` to simplify command-line argument parsing (available in [Libraries]).
+Here is a sample run script that will download a copy of the application from an internal server.  It uses `wick-get-option` and `wick-get-argument` to simplify command-line arguments (available in [Libraries] and detailed in [argument processing]).
 
     #!/bin/bash
     #
@@ -116,12 +116,18 @@ Here is a sample run script that will download a copy of the application from an
     # Options:
     #     --version:  Version number to download (default: "latest")
     set -e                              # Fail if any command fails
-    ARGS_version=""                     # Set a default that's empty
-    wick-parse-arguments UNPARSED "$@"  # Parse command-line arguments
+
+    # If `--version=VALUE` was used then VERSION is set to VALUE.
+    # If `--version` was used, then VERSION will be set to "true".
+    # If `--version` is not used, VERSION will be set to "".
+    wick-get-option VERSION version "$@"
+
+    # Get the first non-option argument.  Use this syntax instead of $1
+    # because $1 might be the --version option.
+    wick-get-argument NAME 0 "$@"
 
     # Check to make sure the codebase was passed.
-    # Use ${UNPARSED[0]} instead of $1 because $1 might be the --version option.
-    if [[ -z "${UNPARSED[0]}" ]]; then
+    if [[ -z "$NAME" ]]; then
         # Write a message with wick-error
         wick-error "You must specify a codebase to download"
 
@@ -129,11 +135,8 @@ Here is a sample run script that will download a copy of the application from an
         exit 1
     fi
 
-    # Set names to be used elsewhere
-    NAME=${UNPARSED[0]}
-    VERSION=${ARGS_version:-latest}
+    : ${VERSION:=latest}
     URL="http://10.0.0.1/installer-files/${NAME}-${VERSION}.tar.gz"
-
     wick-info "Installing $NAME ($VERSION)"
 
     # Remove a previous installation if one exists
@@ -169,6 +172,7 @@ The files contained within the `templates/` folder are extremely similar to the 
 
 
 [apache2]: apache2/README.md
+[argument parsing]: ../doc/argument-processing.md
 [Bash Concepts]: ../doc/bash-concepts.md
 [dnsmasq]: dnsmasq/README.md
 [erlang]: erlang/README.md

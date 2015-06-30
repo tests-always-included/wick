@@ -1,0 +1,19 @@
+#!/bin/bash
+
+wick-get-options() {
+    local OPTIONS TARGET
+
+    OPTIONS=()
+    TARGET=$1
+    shift
+
+    while [[ $# -gt 0 ]]; do
+        if [[ "${1:0:1}" == "-" ]]; then
+            OPTIONS=("${OPTIONS[@]}" "$1")
+        fi
+
+        shift
+    done
+
+    local "$TARGET" && wick-indirect-array "$TARGET" "${OPTIONS[@]}"
+}

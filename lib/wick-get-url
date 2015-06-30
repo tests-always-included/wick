@@ -1,13 +1,12 @@
 #!/bin/bash
 
 wick-get-url() {
-    local ARGS_progress ARGS_timeout DEST UNPARSED URL
+    local DEST PROGRESS TIMEOUT URL
 
-    ARGS_progress=""
-    ARGS_timeout=""
-    wick-parse-arguments UNPARSED "$@"
-    URL="${UNPARSED[0]}"
-    DEST="${UNPARSED[1]}"
+    wick-get-option PROGRESS progress "$@"
+    wick-get-option TIMEOUT timeout "$@"
+    wick-get-argument URL 0 "$@"
+    wick-get-argument DEST 1 "$@"
     wick-debug "wick-get-url url: $URL"
     wick-debug "wick-get-url dest: $DEST"
 
@@ -29,8 +28,8 @@ wick-get-url-curl() {
     local ARGS
 
     ARGS=(curl -L -f)
-    [[ -z "$ARGS_progress" ]] && ARGS=("${ARGS[@]}" "-s")
-    [[ ! -z "$ARGS_timeout" ]] && ARGS=("${ARGS[@]}" "-m" "$ARGS_timeout")
+    [[ -z "$PROGRESS" ]] && ARGS=("${ARGS[@]}" "-s")
+    [[ ! -z "$TIMEOUT" ]] && ARGS=("${ARGS[@]}" "-m" "$TIMEOUT")
     [[ ! -z "$DEST" ]] && ARGS=("${ARGS[@]}" "-o" "$DEST")
     ARGS=("${ARGS[@]}" "$URL")
     wick-debug "wick-get-url: ${ARGS[*]}"
@@ -41,8 +40,8 @@ wick-get-url-wget() {
     local ARGS
 
     ARGS=(wget)
-    [[ -z "$ARGS_progress" ]] && ARGS=("${ARGS[@]}" "--quiet")
-    [[ ! -z "$ARGS_timeout" ]] && ARGS=("${ARGS[@]}" "--timeout" "$ARGS_timeout")
+    [[ -z "$PROGRESS" ]] && ARGS=("${ARGS[@]}" "--quiet")
+    [[ ! -z "$TIMEOUT" ]] && ARGS=("${ARGS[@]}" "--timeout" "$TIMEOUT")
     [[ ! -z "$DEST" ]] && ARGS=("${ARGS[@]}" "-O" "$DEST")
     ARGS=("${ARGS[@]}" "$URL")
     wick-debug "wick-get-url: ${ARGS[*]}"

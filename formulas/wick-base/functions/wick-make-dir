@@ -1,22 +1,21 @@
 #!/bin/bash
 
 wick-make-dir() {
-    local ARGS_MODE ARGS_OWNER DEST UNPARSED
+    local DEST MODE OWNER
 
-    ARGS_owner=""
-    ARGS_mode=""
-    wick-parse-arguments UNPARSED "$@"
-    DEST=${UNPARSED[0]}
+    wick-get-option MODE mode "$@"
+    wick-get-option OWNER owner "$@"
+    wick-get-argument DEST 0 "$@"
     wick-debug "Making directory: $DEST"
     mkdir -p "$DEST"
 
-    if [ ! -z "$ARGS_owner" ]; then
-        wick-debug "Changing ownership: $ARGS_owner"
-        chown "$ARGS_owner" "$DEST"
+    if [ ! -z "$OWNER" ]; then
+        wick-debug "Changing ownership: $OWNER"
+        chown "$OWNER" "$DEST"
     fi
 
-    if [ ! -z "$ARGS_mode" ]; then
-        wick-debug "Changing mode: $ARGS_mode"
-        chmod "$ARGS_mode" "$DEST"
+    if [ ! -z "$MODE" ]; then
+        wick-debug "Changing mode: $MODE"
+        chmod "$MODE" "$DEST"
     fi
 }

@@ -1,0 +1,47 @@
+#!/bin/bash
+
+wick-test-for-options() {
+    local ARG FAILURE_CMD RESULT SEEKING VALUE
+
+    SEEKING=()
+    RESULT=0
+    FAILURE_CMD=${WICK_TEST_FOR_OPTIONS_FAILURE:-wick-test-for-options-failure}
+
+    while [[ ! -z "$1" ]] && [[ "$1" != "--" ]]; do
+        ARG="$1"
+
+        # Remove hyphens
+        while [[ "${ARG:0:1}" == "-" ]]; do
+            ARG="${ARG:1}"
+        done
+
+        SEEKING=("${SEEKING[@]}" "$1")
+        shift
+    done
+
+    shift
+
+    for ARG in "${SEEKING[@]}"; do
+        VALUE=""
+        wick-get-option VALUE "$ARG" "$@"
+
+        if [[ -z "$VALUE" ]]; then
+            "$FAILURE_CMD" "$ARG"
+            RESULT=1
+        fi
+    done
+
+    return $RESULT
+}
+
+wick-test-for-options-failure() {
+    if [[ ! -z "$FORMULA" ]]; then
+        wick-error "Formula $FORMULA requires option: --$ARG"
+    else
+        if [[ ! -z "$ROLE" ]]; then
+            wick-error "Role $ROLE requires option: --$ARG"
+        else
+            wick-error "Missing required option:  --$ARG"
+        fi
+    fi
+}

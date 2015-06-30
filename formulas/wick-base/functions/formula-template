@@ -1,18 +1,17 @@
 #!/bin/bash
 
 formula-template() {
-    local ENGINE TEMPLATE
+    local ENGINE
 
     ENGINE=${1##*.}
-    TEMPLATE="$WICK_FORMULA_DIR/templates/$SRC"
 
-    if [[ ! -f "$TEMPLATE" ]]; then
-        wick-error "Template not found: $TEMPLATE"
+    if [[ ! -f "$1" ]]; then
+        wick-error "Template not found: $1"
 
         return 1
     fi
 
-    "formula-template-$ENGINE" "$WICK_FORMULA_DIR/templates/$SRC"
+    "formula-template-$ENGINE" "$1"
 }
 
 formula-template-sh() {

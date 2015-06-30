@@ -75,7 +75,7 @@ This is what `wick-make-file` may use when processing templates.
 
     formula-template TEMPLATE
 
-* `TEMPLATE`: Name of template file inside the formula's `templates/` folder.
+* `TEMPLATE`: Path to a template file.
 
 Example:
 
@@ -113,8 +113,10 @@ Copies a file from the formula to the target machine.  Files are stored in `file
 
 *It is good practice to have the destination either include the filename or else end in a slash (`/`) to avoid ambiguity.  See the examples for more information.*
 
-    wick-make-file [--mode=MODE] [--owner=OWNER] [--template] FILE DESTINATION
+    wick-make-file [--formula=FORMULA] [--mode=MODE] [--owner=OWNER]
+        [--template] FILE DESTINATION
 
+* `[--formula=FORMULA]`: Indicate that the source file comes from a different formula than the current one.
 * `[--mode=MODE]`: Specify a mode for the file using `chmod` syntax.  Optional; does not change the mode unless the option is set.
 * `[--owner=OWNER]`:  Designate an owner and possibly a group for the file using `chown` syntax.  Optional; does not change the ownership unless the option is set.
 * `[--template]`: Switch to using a template as the source.  (See [templates].)
@@ -144,6 +146,10 @@ Examples:
     # to that folder.  Otherwise, this will create the file /etc/a/b/c/d (not
     # /etc/a/b/c/d/config.ini), so be careful.
     wick-make-file --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d
+
+    # Get a file from other-formula, no matter where it is located in the
+    # parent hierarchy in relation to the current formula.
+    wick-make-file --formula=other-formula motd.txt /etc/motd
 
 
 ### wick-make-user

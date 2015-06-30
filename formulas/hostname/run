@@ -1,10 +1,9 @@
 #!/bin/bash
 
-ARGS_dynamic=""
-wick-parse-arguments UNPARSED "$@"
-DESIRED="${UNPARSED[0]}"
+wick-get-option DYNAMIC dynamic "$@"
+wick-get-argument DESIRED 0 "$@"
 
-if [ -z "$ARGS_dynamic" ]; then
+if [ -z "$DYNAMIC" ]; then
     wick-info "Setting the hostname: $DESIRED"
     "$WICK_FORMULA_DIR/files/set-hostname" --verbose "$DESIRED"
 else

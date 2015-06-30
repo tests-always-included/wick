@@ -1,0 +1,20 @@
+#!/bin/bash
+
+wick-array-filter() {
+    local FILTER RESULT TARGET
+
+    TARGET=$1
+    FILTER=$2
+    RESULT=()
+    shift 2
+
+    while [[ $# -gt 0 ]]; do
+        if "$FILTER" "$1"; then
+            RESULT=("${RESULT[@]}" "$1")
+        fi
+
+        shift
+    done
+
+    local "$TARGET" && wick-indirect-array "$TARGET" "${RESULT[@]}"
+}
