@@ -65,7 +65,13 @@ fi
 HOST=$(echo "$FULL" | cut -d '.' -f 1)
 DOMAIN=$(echo "$FULL" | cut -d '.' -f 2- -s)
 DOMAIN=${DOMAIN:-localdomain}
-IP=$(ifconfig -v "$IFACE" | grep inet\ addr | head -n 1)
+IFCONFIG_ARGS=("-v")
+
+if [[ ! -z "$IFACE" ]]; then
+    IFCONFIG_ARGS=("${IFCONFIG_ARGS[@]}" "$IFACE")
+fi
+
+IP=$(ifconfig "${IFCONFIG_ARGS[@]}" | grep inet\ addr | head -n 1)
 IP=${IP#*:}
 IP=${IP%% *}
 IP=${IP//./-}
@@ -107,7 +113,7 @@ else
     wick-debug "Domainname is already changed"
 fi
 
-if [[ ! -z "$RELOAD" ]] && $RELOAD; then
+if [[ ! -z "$RELOAD_FLAG" ]] && $RELOAD; then
     wick-debug "Restarting network to get hostname updated everywhere"
     service network restart
 elif $RELOAD; then

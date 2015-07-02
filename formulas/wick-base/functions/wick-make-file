@@ -43,32 +43,47 @@ wick-make-file() {
         return 0
     fi
 
-    # Make the directory if it does not exist
+    # Possible destinations, organized by how they are handled.
+    # "unknown" means that there's no directory nor file with that
+    # name so it is impossible to tell if the destination should be
+    # a new directory or file.
+    #
+    # (A) /dir/that/exists/
+    # (A) /dir/missing/
+    # (A) /missing/dir/
+    # (B) /dir/that/exists
+    # (C) /dir/unknown
+    # (C) /unknown/some-name
+    #
+    # A = Treat as a directory, append filename, treat as (C)
+    # B = Add a slash then treat as (A)
+    # C = Treat as a file, ensure the parent directory exists
+
+    # First change (B) into (A)
+    if [[ "${DEST: -1}" != "/" ]] && [[ -d "${DEST}" ]]; then
+        DEST="${DEST}/"
+    fi
+
+    # Change (A) into (C)
+    # Add the full filename.  If this is a template, the extension shall
+    # be removed later.
+    if [[ "${DEST: -1}" == "/" ]]; then
+        DEST="${DEST}${SRC_FILE}"
+    fi
+
+    # Ensure the directory exists
     if [[ ! -d "${DEST%/*}" ]]; then
-        # Preserve the owner
-        OWNER=
-
-        if [[ ! -z "$SET_OWNER" ]]; then
-            wick-argument-string OWNER "--owner=$SET_OWNER"
-        fi
-
-        wick-make-dir "${DEST%/*}" "$OWNER"
+        # Preserve the owner if one was passed
+        wick-make-dir "${DEST%/*}" "--owner=$SET_OWNER"
     fi
 
-    # If the destination is a directory, make sure there is exactly
-    # one slash at the end and then add the filename.  If this is a
-    # template, the extension is still at the end and is removed later
-    if [[ -d "$DEST" ]]; then
-        DEST="${DEST%%/}/$SRC_FILE"
-    fi
-
-    # If not a template
     if [[ -z "$USE_TEMPLATE" ]]; then
+        # Not a template - just copy
         wick-debug "Copying $SRC to $DEST"
         cp "$SRC" "$DEST" || return 1
     else
-        # Remove template extension
-        DEST="${DEST}${SRC_FILE%.*}"
+        # Use a template - remove the extension first
+        DEST="${DEST%.*}"
         wick-debug "Converting template $SRC into $DEST"
         formula-template "$SRC" > "$DEST" || return 1
     fi

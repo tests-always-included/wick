@@ -51,7 +51,7 @@ Just like the `run` script of [formulas], roles can take parameters from the com
     wick-load-role "our-base-formulas"
 
     # Use the command-line argument
-    if [[ ! -z "$ARGS_extra" ]]; then
+    if [[ ! -z "$EXTRA" ]]; then
         wick-load-role "our-extra-formulas"
     fi
 
