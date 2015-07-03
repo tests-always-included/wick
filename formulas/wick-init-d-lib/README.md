@@ -14,7 +14,7 @@ This is a sample `/etc/init.d` script that uses the library.
     #!/bin/bash
 
     # Source in the init.d library
-    . /usr/local/bin/wick-init-d-lib
+    . /usr/local/lib/wick-init-d-lib
 
     # This is the one function that MUST exist.  It starts the process.
     # It takes two parameters: the log file and the PID file.
