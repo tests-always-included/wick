@@ -17,8 +17,8 @@ wick-info() {
 
         wick-log INFO "$*"
 
-        if [[ ! -z "$WICK_LOG_QUIET" ]]; then
-            wick-prefix-lines OUTPUT "WARN: " "$*"
+        if [[ -z "$WICK_LOG_QUIET" ]]; then
+            wick-prefix-lines OUTPUT "INFO: " "$*"
             echo "$OUTPUT"
         fi
     )
