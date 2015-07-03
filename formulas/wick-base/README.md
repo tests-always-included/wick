@@ -231,7 +231,7 @@ Control services.  Add services, enable and disable them at boot up.  Start, sto
 
 Actions:
 
-* `add [--force] SERVICE FORMULA_FILE` - Use `wick-make-file` to copy the formula file to `/etc/init.d/` for the named service.  Does not enable nor start the service.  Does not add the service if the file already exists unless `--force` is also used.
+* `add [--force] [--*] SERVICE FORMULA_FILE` - Use `wick-make-file` to copy the formula file to `/etc/init.d/` for the named service.  Does not enable nor start the service.  Does not add the service if the file already exists unless `--force` is also used.  You can also use any additional options that `wick-make-file` supports.
 * `disable SERVICE` - Disable the service from starting at boot.  Does not stop the service if it is already running.
 * `enable SERVICE` - Enable the service at boot.  Does not start the service.
 * `make-override [--force] SERVICE` - Creates `/etc/chkconfig.d/SERVICE` that is used by `chkconfig` to help determine order.  This override file can be modified to list additional dependencies to influence the boot order of scripts.  Make sure to call `wick-service override` when you update an override file.  When using `--force`, this will overwrite any override file that may already exist.
