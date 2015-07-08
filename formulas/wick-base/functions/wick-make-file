@@ -65,10 +65,13 @@ wick-make-file() {
     fi
 
     # Change (A) into (C)
-    # Add the full filename.  If this is a template, the extension shall
-    # be removed later.
+    # Add the filename.
     if [[ "${DEST: -1}" == "/" ]]; then
-        DEST="${DEST}${SRC_FILE}"
+        if [[ -z "$USE_TEMPLATE" ]]; then
+            DEST="${DEST}${SRC_FILE}"
+        else
+            DEST="${DEST}${SRC_FILE%.*}"
+        fi
     fi
 
     # Ensure the directory exists
@@ -82,8 +85,7 @@ wick-make-file() {
         wick-debug "Copying $SRC to $DEST"
         cp "$SRC" "$DEST" || return 1
     else
-        # Use a template - remove the extension first
-        DEST="${DEST%.*}"
+        # Use a template
         wick-debug "Converting template $SRC into $DEST"
         formula-template "$SRC" > "$DEST" || return 1
     fi
