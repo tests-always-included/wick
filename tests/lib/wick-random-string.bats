@@ -6,7 +6,7 @@ setup() {
     . "$WICK_DIR/lib/wick-random-string"
 }
 
-@test "right length" {
+@test "lib/wick-random-string: right length" {
     local OUT
     wick-random-string OUT
     [ "${#OUT}" -eq 1 ]
@@ -16,14 +16,14 @@ setup() {
     [ "${#OUT}" -eq 10 ]
 }
 
-@test "randomized" {
+@test "lib/wick-random-string: randomized" {
     local ONE TWO
     wick-random-string ONE
     wick-random-string TWO
     [ "$ONE" != "$TWO" ]
 }
 
-@test "right characters" {
+@test "lib/wick-random-string: right characters" {
     local OUT
     wick-random-string OUT 10 A
     [ "$OUT" == "AAAAAAAAAA" ]

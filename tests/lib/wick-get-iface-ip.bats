@@ -7,7 +7,7 @@ setup() {
     . "$WICK_DIR/lib/wick-get-iface-ip"
 }
 
-@test "gnu - first iface" {
+@test "lib/wick-get-iface-ip: gnu - first iface" {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
@@ -15,7 +15,7 @@ setup() {
     [ "$RESULT" == "172.17.42.1" ]
 }
 
-@test "gnu - all ifaces" {
+@test "lib/wick-get-iface-ip: gnu - all ifaces" {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
@@ -26,14 +26,14 @@ setup() {
     [ "${RESULT[2]}" == "192.168.0.32" ]
 }
 
-@test "gnu - bad iface" {
+@test "lib/wick-get-iface-ip: gnu - bad iface" {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
     ! wick-get-iface-ip RESULT asdf
 }
 
-@test "gnu - one iface" {
+@test "lib/wick-get-iface-ip: gnu - one iface" {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
@@ -41,14 +41,14 @@ setup() {
     [ "$RESULT" == $'127.0.0.1' ]
 }
 
-@test "gnu - iface without ip" {
+@test "lib/wick-get-iface-ip: gnu - iface without ip" {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
     ! wick-get-iface-ip RESULT noip
 }
 
-@test "bsd - first iface" {
+@test "lib/wick-get-iface-ip: bsd - first iface" {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
@@ -56,7 +56,7 @@ setup() {
     [ "$RESULT" == "192.168.0.103" ]
 }
 
-@test "bsd - all ifaces" {
+@test "lib/wick-get-iface-ip: bsd - all ifaces" {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
@@ -67,14 +67,14 @@ setup() {
     [ "${RESULT[2]}" == "192.168.254.9" ]
 }
 
-@test "bsd - bad iface" {
+@test "lib/wick-get-iface-ip: bsd - bad iface" {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
     ! wick-get-iface-ip RESULT asdf
 }
 
-@test "bsd - one iface" {
+@test "lib/wick-get-iface-ip: bsd - one iface" {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
@@ -82,7 +82,7 @@ setup() {
     [ "$RESULT" == "192.168.0.103" ]
 }
 
-@test "bsd - iface without ip" {
+@test "lib/wick-get-iface-ip: bsd - iface without ip" {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
