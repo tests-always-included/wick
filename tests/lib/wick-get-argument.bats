@@ -25,6 +25,7 @@ setup() {
 @test "lib/wick-get-argument: mixed with options" {
     local X
 
-    wick-get-argument X 0 --one=two -a -b --c moo cow
-    [[ "$X" == moo ]]
+    # Options after -- are treated as arguments
+    wick-get-argument X 1 --one=two -a -b --c moo -- --not-an-option cow
+    [[ "$X" == "--not-an-option" ]]
 }

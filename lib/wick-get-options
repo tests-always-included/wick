@@ -1,15 +1,20 @@
 #!/bin/bash
 
 wick-get-options() {
-    local OPTIONS TARGET
+    local OPTIONS PREFIX TARGET
 
     OPTIONS=()
     TARGET=$1
+    PREFIX="-"
     shift
 
     while [[ $# -gt 0 ]]; do
-        if [[ "${1:0:1}" == "-" ]]; then
-            OPTIONS=("${OPTIONS[@]}" "$1")
+        if [[ "${1:0:1}" == "$PREFIX" ]]; then
+            if [[ "$1" == "--" ]]; then
+                PREFIX="DO NOT MATCH"
+            else
+                OPTIONS=("${OPTIONS[@]}" "$1")
+            fi
         fi
 
         shift

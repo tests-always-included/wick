@@ -16,7 +16,14 @@ Options versus Arguments
 
 An option is a command-line parameter that looks like `--option-name`, `-v` or `--thing=value`.  They all have a hyphen at the beginning.
 
-Arguments can be options, which can be confusing.  To keep things consistent inside the codebase, `wick-get-argument` and `wick-get-arguments` return only non-option arguments.
+Arguments can be options, which can be confusing.  To keep things consistent inside the codebase, `wick-get-argument` and `wick-get-arguments` return only non-option arguments, with one caveat:  any options (eg. --thing) is an argument when it occurs after a double-hyphen argument.
+
+Example:
+
+    # This shows options (opt) and arguments (arg)
+    # Note how the double hyphen will change everything after it into
+    # arguments.
+    script-name --opt -o arg1 --opt2=value arg2 -- --arg3=value -a
 
 
 Retrieving Single Options

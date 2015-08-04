@@ -16,6 +16,10 @@ wick-get-option() {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
+            --)
+                break
+                ;;
+
             --*)
                 VALUE=true
                 ARG=${1:2}
