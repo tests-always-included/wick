@@ -67,6 +67,9 @@ wick-formula() {
         return 1
     fi
 
+    # Only use echo - do not log this to the file because the arguments
+    # may contain secret keys.  Logging just the formula's name would be
+    # acceptable.
     echo "Adding formula $FORMULA$ARGS ($LOCATION)"
     WICK_FORMULA_LIST=("${WICK_FORMULA_LIST[@]}" "$FORMULA")
     WICK_FORMULA_LIST_WITH_ARGS=("${WICK_FORMULA_LIST_WITH_ARGS[@]}" "$FORMULA_ESCAPED$ARGS")

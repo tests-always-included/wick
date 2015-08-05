@@ -15,6 +15,10 @@ wick-run-formula() {
     # again if you want this to run properly.  See wick-formula for quoting.
     FORMULA="$1"
     shift
+
+    # Only use echo - do not log this to the file because the arguments
+    # may contain secret keys.  Logging just the formula's name would be
+    # acceptable.
     echo "Executing formula: $FORMULA"
 
     # See escaping note above
@@ -32,9 +36,15 @@ wick-run-formula() {
         eval ". $FORMULA"
     ); then
         echo "FAILURE DETECTED"
+        # Only use echo - do not log this to the file because the arguments
+        # may contain secret keys.  Logging just the formula's name would be
+        # acceptable.
         echo "Formula failure: $FORMULA"
         return 1
     fi
 
+    # Only use echo - do not log this to the file because the arguments
+    # may contain secret keys.  Logging just the formula's name would be
+    # acceptable.
     echo "Formula success: $FORMULA"
 }
