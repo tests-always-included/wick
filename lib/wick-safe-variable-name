@@ -6,5 +6,6 @@ wick-safe-variable-name() {
     local SAFE
 
     SAFE=${2//-/_}
+    SAFE=${SAFE// /_}
     local "$1" && wick-indirect "$1" "$SAFE"
 }
