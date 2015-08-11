@@ -12,7 +12,7 @@ wick-on-load wick-add-command run "Execute the formulas for a given role"
 #     $2-*: Arguments to pass to the role's script.
 # Returns true on success.
 wick-run() {
-    local FORMULA LOCATION ROLE
+    local FORMULA I LOCATION ROLE
 
     if [[ -z "$1" ]]; then
         echo "You must specify a role to execute." >&2
@@ -28,6 +28,13 @@ wick-run() {
         # This is not an error with the script.
         return 0
     fi
+
+    I=0
+
+    while [[ $I -lt ${#WICK_FORMULA_LIST[@]} ]]; do
+        echo "Order of formulas to execute [$I]: ${WICK_FORMULA_LIST[$I]}"
+        I=$(($I + 1))
+    done
 
     for FORMULA in "${WICK_FORMULA_COMMANDS[@]}"; do
         # CAREFUL - keep the formula quoted here.
