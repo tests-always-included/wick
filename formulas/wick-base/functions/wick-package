@@ -3,13 +3,22 @@
 wick-package() {
     local OS STATE UNINSTALL UNPARSED
 
-    STATE="install"
+    wick-get-option EXISTS exists "$@"
     wick-get-option UNINSTALL uninstall "$@"
     wick-get-arguments UNPARSED "$@"
 
-    if [[ ! -z "$UNINSTALL" ]]; then
-        STATE="uninstall"
+    # Intentionally append to STATE to flag errors
+    STATE=""
+
+    if [[ ! -z "$EXISTS" ]]; then
+        STATE="exists$STATE"
     fi
+
+    if [[ ! -z "$UNINSTALL" ]]; then
+        STATE="uninstall$STATE"
+    fi
+
+    : ${STATE:=install}
 
     wick-explorer OS wick-base os
 
@@ -37,6 +46,16 @@ wick-package-yum() {
     shift
 
     case "$STATE" in
+        exists)
+            if rpm -q "$@" > /dev/null 2>&1; then
+                wick-debug "Package exists: $@"
+                return 0
+            fi
+
+            wick-debug "Package does not exist: $@"
+            return 1
+            ;;
+
         install)
             if [[ ! -z "$YUM_ENABLE_REPO" ]]; then
                 ARGS=("${ARGS[@]}" "--enablerepo=$YUM_ENABLE_REPO")
@@ -62,6 +81,16 @@ wick-package-apt() {
     shift
 
     case "$STATE" in
+        exists)
+            if apt-cache show "$@" > /dev/null 2>&1; then
+                wick-debug "Package exists: $@"
+                return 0
+            fi
+
+            wick-debug "Package does not exist: $@"
+            return 1
+            ;;
+
         install)
             apt-get install -y "$@"
             ;;
