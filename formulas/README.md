@@ -12,6 +12,7 @@ Specific Formulas
 See the formula-specific documentation that explain what each of these do.  Formulas can reference each other in the chain of [parents] in the invocation of `wick`.
 
 * [apache2] - Install and configure Apache2
+* [at] - Ensures the `at` program is installed
 * [dnsmasq] - Install dnsmasq and provide configuration functions
 * [erlang] - Install erlang
 * [hostname] - Set the machine's host and domain
@@ -173,6 +174,7 @@ The files contained within the `templates/` folder are extremely similar to the 
 
 [apache2]: apache2/README.md
 [argument parsing]: ../doc/argument-processing.md
+[at]: at/README.md
 [Bash Concepts]: ../doc/bash-concepts.md
 [dnsmasq]: dnsmasq/README.md
 [erlang]: erlang/README.md
