@@ -1,12 +1,24 @@
 #!/bin/bash
 
+is-really-centos() {
+    rpm -q centos-release > /dev/null 2>&1
+}
+
+detect-real-redhat() {
+    if is-really-centos; then
+        echo "centos"
+    else
+        echo "redhat"
+    fi
+}
+
 if wick-command-exists lsb_release; then
     DISTRIBUTOR=$(lsb-release -s -i 2>&1)
     wick-debug "Distributor: $DISTRIBUTOR"
 
     case "$DISTRIBUTOR" in
         RedHatEnterprise*)
-            echo "redhat"
+            detect-real-redhat
             exit
             ;;
 
@@ -20,7 +32,7 @@ fi
 wick-debug "MACHTYPE=$MACHTYPE"
 
 if [[ "$MACHTYPE" == *"-redhat-"* ]]; then
-    echo "redhat"
+    detect-real-redhat
     exit
 fi
 
