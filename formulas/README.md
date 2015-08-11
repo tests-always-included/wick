@@ -20,6 +20,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [lsof] - Install lsof
 * [md5deep] - Sets up md5deep
 * [mo] - Bash-only template system that plugs into our templates
+* [nscd] - Installs unscd or nscd to cache name server queries
 * [openjdk-1.7] - Installs OpenJDK 1.7 JRE
 * [openjdk-1.7-jdk] - Installs OpenJDK 1.7 JDK
 * [openjdk-1.8] - Installs OpenJDK 1.8 JRE
@@ -184,6 +185,7 @@ The files contained within the `templates/` folder are extremely similar to the 
 [lsof]: lsof/README.md
 [md5deep]: md5deep/README.md
 [mo]: mo/README.md
+[nscd]: nscd/README.md
 [openjdk-1.7]: openjdk-1.7/README.md
 [openjdk-1.7-jdk]: openjdk-1.7-jdk/README.md
 [openjdk-1.8]: openjdk-1.8/README.md
