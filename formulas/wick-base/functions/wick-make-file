@@ -43,35 +43,10 @@ wick-make-file() {
         return 0
     fi
 
-    # Possible destinations, organized by how they are handled.
-    # "unknown" means that there's no directory nor file with that
-    # name so it is impossible to tell if the destination should be
-    # a new directory or file.
-    #
-    # (A) /dir/that/exists/
-    # (A) /dir/missing/
-    # (A) /missing/dir/
-    # (B) /dir/that/exists
-    # (C) /dir/unknown
-    # (C) /unknown/some-name
-    #
-    # A = Treat as a directory, append filename, treat as (C)
-    # B = Add a slash then treat as (A)
-    # C = Treat as a file, ensure the parent directory exists
-
-    # First change (B) into (A)
-    if [[ "${DEST: -1}" != "/" ]] && [[ -d "${DEST}" ]]; then
-        DEST="${DEST}/"
-    fi
-
-    # Change (A) into (C)
-    # Add the filename.
-    if [[ "${DEST: -1}" == "/" ]]; then
-        if [[ -z "$USE_TEMPLATE" ]]; then
-            DEST="${DEST}${SRC_FILE}"
-        else
-            DEST="${DEST}${SRC_FILE%.*}"
-        fi
+    if [[ -z "$USE_TEMPLATE" ]]; then
+        wick-get-dest DEST "$DEST" "$SRC_FILE"
+    else
+        wick-get-dest DEST "$DEST" "${SRC_FILE%.*}"
     fi
 
     # Ensure the directory exists

@@ -198,6 +198,48 @@ Example:
     wick-get-arguments ARGUMENTS "$@"
 
 
+wick-get-dest
+-------------
+
+Converts a destination (either a filename or a folder) into a standard format.
+
+    wick-get-dest VARIABLE DEST_PATH [FILENAME]
+
+* `VARIABLE`: Name of the environment variable where the result is stored.
+* `DEST_PATH`: The destination folder or filename.
+* `FILENAME`: When the destination is a folder, this is the desired filename.
+
+The returned value will always have a "/" at the end if it signifies a directory and if `FILENAME` was empty.
+
+Examples:
+
+    # Anything ending in a slash is a folder.
+    #
+    # Result: OUT is "/etc/server.config"
+    wick-get-dest OUT /etc/ server.config
+
+    # RESULT: OUT is "/etc/"
+    wick-get-dest OUT /etc/
+
+    # When DEST_PATH has no slash and it exists on the filesystem
+    # as a folder, this operates the same as above.  Note that a slash
+    #
+    # Result: OUT is "/etc/server.config"
+    wick-get-dest OUT /etc server.config
+
+    # RESULT: OUT is "/etc/"
+    wick-get-dest OUT /etc
+
+    # When DEST_PATH has no slash at the end and does not exist
+    # as a directory, it is assumed to be a destination file.
+    #
+    # Result: OUT is "/some/thing/here"
+    wick-get-dest OUT /some/thing/here server.config
+
+    # Result: OUT is "/some/thing/here"
+    wick-get-dest OUT /some/thing/here
+
+
 wick-get-iface-ip
 -----------------
 
