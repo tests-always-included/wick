@@ -1,3 +1,4 @@
 #!/bin/bash
 
+set -e
 wick-make-file mo /usr/local/bin/
