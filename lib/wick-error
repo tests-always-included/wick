@@ -11,7 +11,7 @@ wick-error() {
         set +x
         local OUTPUT
 
-        wick-log "ERROR" "$OUTPUT"
+        wick-log "ERROR" "$*"
         wick-prefix-lines OUTPUT "ERROR: " "$*"
         echo "$OUTPUT" >&2
     )
