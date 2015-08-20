@@ -1,4 +1,4 @@
 #!/bin/bash
-wick-info "Bash $BASH_VERSION"
+wick-debug "Bash $BASH_VERSION"
 wick-debug "$(bash --version)"
 echo "$BASH_VERSION"

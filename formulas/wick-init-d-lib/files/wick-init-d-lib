@@ -14,7 +14,7 @@
 #     NAME=service-name
 #
 #     # Load functions and set some environment variables
-#     . /usr/local/bin/wick-init-d-lib
+#     . /usr/local/lib/wick-init-d-lib
 #
 #     # Override the process-start command
 #     process-start() {

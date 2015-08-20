@@ -5,7 +5,7 @@ wick-explorer OS wick-base os
 wick-explorer ARCH wick-base arch
 
 case "$OS" in
-    redhat|ubuntu)
+    centos|redhat|ubuntu)
         DIR="linux"
         ;;
 

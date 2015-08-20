@@ -12,21 +12,33 @@ Specific Formulas
 See the formula-specific documentation that explain what each of these do.  Formulas can reference each other in the chain of [parents] in the invocation of `wick`.
 
 * [apache2] - Install and configure Apache2
+* [at] - Ensures the `at` program is installed
 * [dnsmasq] - Install dnsmasq and provide configuration functions
 * [erlang] - Install erlang
 * [hostname] - Set the machine's host and domain
+* [kermit] - Installs a variant of Kermit for transferring files
 * [lsof] - Install lsof
+* [md5deep] - Sets up md5deep
 * [mo] - Bash-only template system that plugs into our templates
+* [nc] - Adds Netcat
+* [nscd] - Installs unscd or nscd to cache name server queries
 * [openjdk-1.7] - Installs OpenJDK 1.7 JRE
 * [openjdk-1.7-jdk] - Installs OpenJDK 1.7 JDK
 * [openjdk-1.8] - Installs OpenJDK 1.8 JRE
+* [redis] - Installs the redis server
 * [rvm] - Install RVM and can install Ruby as well as gems
+* [s3cmd] - Work with Amazon S3
+* [sysctl] - Change kernel properties and persist them for after reboots
+* [timezone] - Set the machine's timezone
 * [tomcat-7] - Installs Tomcat 7
 * [unzip] - Installs unzip
 * [yum-epel] - Add EPEL to the list of yum repositories
+* [yum-remi] - Adds the Remi repository to yum
 * [wick-base] - Handy functions for all of the other formulas
 * [wick-infect] - Creates a file that can be sourced by shell scripts
 * [wick-init-d-lib] - Easily create init.d style services
+* [zip] - Installs zip
+* [zmodem] - Installs ZModem for transferring files
 
 
 Dependencies
@@ -95,7 +107,7 @@ The run script should run with `set -e` to make sure that errors cause the scrip
 
 Then the `run` script for the [hostname] formula will get "server1.example.com" as `$1` in the script.
 
-Here is a sample run script that will download a copy of the application from an internal server.  It uses `wick-parse-arguments` to simplify command-line argument parsing (available in [Libraries]).
+Here is a sample run script that will download a copy of the application from an internal server.  It uses `wick-get-option` and `wick-get-argument` to simplify command-line arguments (available in [Libraries] and detailed in [argument processing]).
 
     #!/bin/bash
     #
@@ -107,12 +119,18 @@ Here is a sample run script that will download a copy of the application from an
     # Options:
     #     --version:  Version number to download (default: "latest")
     set -e                              # Fail if any command fails
-    ARGS_version=""                     # Set a default that's empty
-    wick-parse-arguments UNPARSED "$@"  # Parse command-line arguments
+
+    # If `--version=VALUE` was used then VERSION is set to VALUE.
+    # If `--version` was used, then VERSION will be set to "true".
+    # If `--version` is not used, VERSION will be set to "".
+    wick-get-option VERSION version "$@"
+
+    # Get the first non-option argument.  Use this syntax instead of $1
+    # because $1 might be the --version option.
+    wick-get-argument NAME 0 "$@"
 
     # Check to make sure the codebase was passed.
-    # Use ${UNPARSED[0]} instead of $1 because $1 might be the --version option.
-    if [[ -z "${UNPARSED[0]}" ]]; then
+    if [[ -z "$NAME" ]]; then
         # Write a message with wick-error
         wick-error "You must specify a codebase to download"
 
@@ -120,11 +138,8 @@ Here is a sample run script that will download a copy of the application from an
         exit 1
     fi
 
-    # Set names to be used elsewhere
-    NAME=${UNPARSED[0]}
-    VERSION=${ARGS_version:-latest}
+    : ${VERSION:=latest}
     URL="http://10.0.0.1/installer-files/${NAME}-${VERSION}.tar.gz"
-
     wick-info "Installing $NAME ($VERSION)"
 
     # Remove a previous installation if one exists
@@ -160,24 +175,37 @@ The files contained within the `templates/` folder are extremely similar to the 
 
 
 [apache2]: apache2/README.md
+[argument parsing]: ../doc/argument-processing.md
+[at]: at/README.md
 [Bash Concepts]: ../doc/bash-concepts.md
 [dnsmasq]: dnsmasq/README.md
 [erlang]: erlang/README.md
 [hostname]: hostname/README.md
+[kermit]: kermit/README.md
 [Libraries]: ../lib/README.md
 [lsof]: lsof/README.md
+[md5deep]: md5deep/README.md
 [mo]: mo/README.md
+[nc]: nc/README.md
+[nscd]: nscd/README.md
 [openjdk-1.7]: openjdk-1.7/README.md
 [openjdk-1.7-jdk]: openjdk-1.7-jdk/README.md
 [openjdk-1.8]: openjdk-1.8/README.md
 [parents]: ../doc/parents.md
+[redis]: redis/README.md
 [roles]: ../roles/README.md
 [rvm]: rvm/README.md
+[s3cmd]: s3cmd/README.md
+[sysctl]: sysctl/README.md
 [templates]: ../doc/templates.md
+[timezone]: timezone/README.md
 [tomcat-7]: tomcat-7/README.md
 [unzip]: unzip/README.md
 [yum-epel]: yum-epel/README.md
+[yum-remi]: yum-remi/README.md
 [wick-base]: wick-base/README.md
 [wick-explorer]: ../bin/README.md
 [wick-infect]: wick-infect/README.md
 [wick-init-d-lib]: wick-init-d-lib/README.md
+[zip]: zip/README.md
+[zmodem]: zmodem/README.md

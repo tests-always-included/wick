@@ -15,7 +15,7 @@ Here is a sample `lib/sample-thing`:
         echo "I am a sample function"
     }
 
-Not too bad.  It also doesn't do much, but other functions exist and you can look at how they operate.  The function `wick-parse-arguments` provides a simple argument parser.  Other functions can manipulate strings (eg. trimming a string or removing all whitespace), generate random filenames, decompress an archive or even run multiple commands in parallel.  Anything you can do in shell is possible in a library function.
+Not too bad.  It also doesn't do much, but other functions exist and you can look at how they operate.  There are helper functions that do [argument processing].  Other functions can manipulate strings (eg. trimming a string or removing all whitespace), generate random filenames, decompress an archive or even run multiple commands in parallel.  Anything you can do in shell is possible in a library function.
 
 
 wick-argument-string
@@ -40,6 +40,36 @@ Example output:
 
     SAFE='These\ words\ are\ all\ one\ argument'
     UNSAFE='These words are all one argument'
+
+
+wick-array-filter
+-----------------
+
+Run a list of values through a filter.  When the filter function returns an error, remove that element from the list.
+
+    wick-array-filter DESTINATION FILTER [ELEMENT [...]]
+
+* `DESTINATION`: Variable name where the final list will be placed.
+* `FILTER`: Function or command to run.  Receives the single argument of the list item's value.
+* `ELEMENT`: The elements in the list.
+
+Example:
+
+    remove-animals() {
+        case $1 in
+            dog|cat|cow|moose)
+                # Return failure and the elements will be removed
+                return 1
+        esac
+
+        return 0
+    }
+
+    WORDS=(a dog and a cat chased a cow)
+    wick-array-filter FILTERED remove-animals "${WORDS[@]}"
+
+    # Prints "a and a chased a"
+    echo "${FILTERED[@]}"
 
 
 wick-command-exists
@@ -132,24 +162,82 @@ Example:
 wick-get-argument
 -----------------
 
-This retrieves a single argument from the list of arguments.  It's similar to `wick-parse-arguments` and does the same amount of work to get only a single value.  If you need more, it may be easier to use `wick-parse-arguments`.
+This retrieves a single argument from the list of arguments.  It's similar to `wick-get-option`.  This returns non-options that were passed to a function.
 
-    wick-get-argument DESTINATION ARGUMENT_NAME [ARGUMENTS [...]]
+    wick-get-argument DESTINATION INDEX [ARGUMENTS [...]]
 
 * `DESTINATION`: Name of the environment variable that should get the result.
-* `ARGUMENT_NAME`: The name of the argument we are seeking, without double hyphens.
-* `ARGUMENTS`: Command line arguments to parse.
+* `INDEX`: The index of the non-option argument.  The first one has the index of `0`.
+* `ARGUMENTS`: Command line arguments to parse.  Typically you use `"$0"` in this place.
 
-Example as used in a script that received arguments.
+Significantly better examples are explained in [argument processing].
 
-    # Look for a --safe flag
-    wick-get-argument VALUE safe "$@"
+Example:
 
-    if [[ -z "$VALUE" ]]; then
-        echo "The --safe flag was not passed"
-    else
-        echo "Safe mode enabled"
-    fi
+    # Get the first non-option and place it into $NAME
+    # If the argument does not exist, sets $NAME to ""
+    wick-get-argument NAME 0 "$@"
+
+
+wick-get-arguments
+------------------
+
+Grab all non-option arguments and return them as an array.
+
+    wick-get-argument DESTINATION [ARGUMENTS [...]]
+
+* `DESTINATION`: Name of the environment variable that should get the result.
+* `ARGUMENTS`: Command line arguments to parse.  Typically you use `"$0"` in this place.
+
+Significantly better examples are explained in [argument processing].
+
+Example:
+
+    # Any non-option arguments are placed into $ARGUMENTS.
+    # If there were none, $ARGUMENTS is set to an empty list.
+    wick-get-arguments ARGUMENTS "$@"
+
+
+wick-get-dest
+-------------
+
+Converts a destination (either a filename or a folder) into a standard format.
+
+    wick-get-dest VARIABLE DEST_PATH [FILENAME]
+
+* `VARIABLE`: Name of the environment variable where the result is stored.
+* `DEST_PATH`: The destination folder or filename.
+* `FILENAME`: When the destination is a folder, this is the desired filename.
+
+The returned value will always have a "/" at the end if it signifies a directory and if `FILENAME` was empty.
+
+Examples:
+
+    # Anything ending in a slash is a folder.
+    #
+    # Result: OUT is "/etc/server.config"
+    wick-get-dest OUT /etc/ server.config
+
+    # RESULT: OUT is "/etc/"
+    wick-get-dest OUT /etc/
+
+    # When DEST_PATH has no slash and it exists on the filesystem
+    # as a folder, this operates the same as above.  Note that a slash
+    #
+    # Result: OUT is "/etc/server.config"
+    wick-get-dest OUT /etc server.config
+
+    # RESULT: OUT is "/etc/"
+    wick-get-dest OUT /etc
+
+    # When DEST_PATH has no slash at the end and does not exist
+    # as a directory, it is assumed to be a destination file.
+    #
+    # Result: OUT is "/some/thing/here"
+    wick-get-dest OUT /some/thing/here server.config
+
+    # Result: OUT is "/some/thing/here"
+    wick-get-dest OUT /some/thing/here
 
 
 wick-get-iface-ip
@@ -173,6 +261,53 @@ Example:
     fi
 
     echo "Tunnel IP:  $IP"
+
+
+wick-get-option
+---------------
+
+Retrieve a named option from the list of arguments.
+
+    wick-get-option DESTINATION NAME [ARGUMENTS [...]]
+
+* `DESTINATION`: Name of variable where the value will be stored.
+* `NAME`: Option's name.  Can optionally have leading hyphens (eg. `--option-name` and `option-name` are both valid).
+* `ARGUMENTS`: Arguments that are to be parsed.  Typically this will be `"$@"`.
+
+This splits up single-hyphen options.  Significantly better examples are explained in [argument processing].
+
+Examples:
+
+    # If --verbose=XYZ is passed, VERBOSE will be set to "XYZ".
+    # If --verbose= is passed (empty vallue), VERBOSE is set to "".
+    # If --verbose is passed without a value, VERBOSE is set to "true".
+    # If --verbose is not passed at all, VERBOSE is set to "".
+    wick-get-option VERBOSE verbose "$@"
+
+    # Split single-hyphen options:
+    # Assuming that -abc is passed in ...
+    wick-get-option LETTER_C c "$@"
+    wick-get-option LETTER_D d "$@"
+    echo "$LETTER_C" # Echos "true"
+    echo "$LETTER_D" # Echos nothing
+
+
+wick-get-options
+----------------
+
+Get all options from a list of arguments and return a list without any processing.
+
+    wick-get-options DESTINATION [ARGUMENTS [...]]
+
+* `DESTINATION`: Name of variable where the value will be stored.
+* `ARGUMENTS`: Arguments that are to be parsed.  Typically this will be `"$@"`.
+
+This does not split up single-hyphen options.  Significantly better examples are explained in [argument processing].
+
+Examples:
+
+    wick-get-options OPTIONS "$@"
+    # OPTIONS is now a list of all options that were passed to the script
 
 
 wick-get-url
@@ -364,41 +499,6 @@ Example:
     wick-on-exit rm -f /tmp/installer.tar.gz
 
 
-wick-parse-arguments
---------------------
-
-Parses a list of arguments from the command line.  Sets environment variables for any short (`-a -b` or `-ab`) and long (`--option`) options.  Returns non-option values in an array.  Long options may take a value, such as `--option=value`.
-
-    wick-parse-arguments DESTINATION [ARGUMENT [...]]
-
-* `DESTINATION`: Name of environment variable to assign as an array of non-option values.
-* `[ARGUMENT]`: Each argument that you wish to parse
-
-Example:
-
-    test-parser() {
-        local ARGS_a ARGS_b ARGS_verbose UNPARSED
-
-        ARGS_a="aaa"
-        ARGS_b="bbb"
-        ARGS_verbose="verbose"
-        wick-parse-arguments UNPARSED "$@"
-
-        echo "a=$ARGS_a  b=$ARGS_b  verbose=$ARGS_verbose"
-        echo "Unparsed: ${UNPARSED[@]}"
-    }
-
-    test-parser -a --verbose non-option
-    test-parser one two three -ab --verbose="moo"
-
-Example result:
-
-    a=true  b=bbb  verbose=true
-    Unparsed: non-option
-    a=true  b=true  verbose=moo
-    Unparsed: one two three
-
-
 wick-port-up
 ------------
 
@@ -515,30 +615,34 @@ Example:
     # Directory is automatically removed for you
 
 
-wick-test-for-arguments
------------------------
+wick-test-for-options
+---------------------
 
-Guarantee that some arguments are passed to a script.  This is typically used within a role or a formula's `run` or `depends` script.  The error reporter can be overridden so the library function can be used in external scripts as well.  If any arguments are missing, this function returns an error status code.  (See [Bash concepts] for status codes.)
+Guarantee that some options are passed to a script.  This is typically used within a role or a formula's `run` or `depends` script.  The error reporter can be overridden so the library function can be used in external scripts as well.  If any options are missing, this function returns an error status code.  (See [Bash concepts] for status codes.)
 
-    wick-test-for-arguments [REQUIRED_ARGS] -- [ARGUMENT_LIST]
+    wick-test-for-options [REQUIRED] -- [ARGUMENT_LIST]
 
-* `[REQUIRED_ARGS]`: Arguments that you require.  For any that are missing, the error program will be called.
+* `[REQUIRED]`: Arguments that you require.  For any that are missing, the error program will be called.  You may omit they hyphens before the option name.
 * `[ARGUMENT_LIST]`: These are the arguments that were passed to your function.  Normally you will use `"$@"` here.
-* Environment variable `WICK_TEST_FOR_ARGUMENTS_FAILURE`: To change the error reporting function, set this variable to the command that should be executed.  The one and only parameter to this will an argument that is required but is not specified.
+* Environment variable `WICK_TEST_FOR_OPTIONS_FAILURE`: To change the error reporting function, set this variable to the command that should be executed.  The one and only parameter to this will an option that is required but is not specified.
 
 Examples:
 
     # Test to make sure this function or file received both
     # "access-key" and "secret-key"
-    wick-test-for-arguments access-key secret-key -- "$@"
+    wick-test-for-options access-key secret-key -- "$@"
+
+    # Same as above - you may specify hyphens before options.
+    # Either "--" or "" can be used to mark the end of the required options.
+    wick-test-for-options --access-key --secret-key "" "$@"
 
     # Use your own reporter and make sure that both --mom and --dad are set.
-    # This would get called once for each argument that is missing.
-    missing-argument() {
+    # This would get called once for each option that is missing.
+    missing-option() {
         echo "Hey, you need to specify --$1 as an argument"
     }
-    WICK_TEST_FOR_ARGUMENTS_FAILURE=missing-argument \
-        wick-test-for-arguments mom dad -- "$@"
+    WICK_TEST_FOR_OPTIONS_FAILURE=missing-option \
+        wick-test-for-options mom dad -- "$@"
 
 
 wick-wait-for
@@ -583,6 +687,7 @@ Example:
     fi
 
 
+[argument processing]: ../doc/argument-processing.md
 [Bash concepts]: ../doc/bash-concepts.md
 [execution order]: ../doc/execution-order.md
 [formulas]: ../formulas/README.md

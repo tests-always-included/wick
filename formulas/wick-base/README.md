@@ -75,7 +75,7 @@ This is what `wick-make-file` may use when processing templates.
 
     formula-template TEMPLATE
 
-* `TEMPLATE`: Name of template file inside the formula's `templates/` folder.
+* `TEMPLATE`: Path to a template file.
 
 Example:
 
@@ -113,8 +113,10 @@ Copies a file from the formula to the target machine.  Files are stored in `file
 
 *It is good practice to have the destination either include the filename or else end in a slash (`/`) to avoid ambiguity.  See the examples for more information.*
 
-    wick-make-file [--mode=MODE] [--owner=OWNER] [--template] FILE DESTINATION
+    wick-make-file [--formula=FORMULA] [--mode=MODE] [--owner=OWNER]
+        [--template] FILE DESTINATION
 
+* `[--formula=FORMULA]`: Indicate that the source file comes from a different formula than the current one.
 * `[--mode=MODE]`: Specify a mode for the file using `chmod` syntax.  Optional; does not change the mode unless the option is set.
 * `[--owner=OWNER]`:  Designate an owner and possibly a group for the file using `chown` syntax.  Optional; does not change the ownership unless the option is set.
 * `[--template]`: Switch to using a template as the source.  (See [templates].)
@@ -144,6 +146,10 @@ Examples:
     # to that folder.  Otherwise, this will create the file /etc/a/b/c/d (not
     # /etc/a/b/c/d/config.ini), so be careful.
     wick-make-file --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d
+
+    # Get a file from other-formula, no matter where it is located in the
+    # parent hierarchy in relation to the current formula.
+    wick-make-file --formula=other-formula motd.txt /etc/motd
 
 
 ### wick-make-user
@@ -202,10 +208,16 @@ Install or remove packages on the target system.  This handles the OS-specific t
 * `[--uninstall]`: Remove the packages instead of installing it.
 * `PACKAGE`: Name of package to install
 
-Example:
+Uses the `YUM_ENABLE_REPO` environment variable if you need to enable additional yum repositories, such as [Remi's Repository](../yum-remi/README.md), which can sometimes be a little dangerous.  This is only used with yum-based systems.
+
+Examples:
 
     wick-package --uninstall apache
     wick-package apache2
+
+    # Enable Remi's repository for this one package so we install a
+    # significantly newer version of Redis.
+    YUM_ENABLE_REPO=remi wick-package redis
 
 
 ### wick-service
@@ -219,7 +231,7 @@ Control services.  Add services, enable and disable them at boot up.  Start, sto
 
 Actions:
 
-* `add [--force] SERVICE FORMULA_FILE` - Use `wick-make-file` to copy the formula file to `/etc/init.d/` for the named service.  Does not enable nor start the service.  Does not add the service if the file already exists unless `--force` is also used.
+* `add [--force] [--*] SERVICE FORMULA_FILE` - Use `wick-make-file` to copy the formula file to `/etc/init.d/` for the named service.  Does not enable nor start the service.  Does not add the service if the file already exists unless `--force` is also used.  You can also use any additional options that `wick-make-file` supports.
 * `disable SERVICE` - Disable the service from starting at boot.  Does not stop the service if it is already running.
 * `enable SERVICE` - Enable the service at boot.  Does not start the service.
 * `make-override [--force] SERVICE` - Creates `/etc/chkconfig.d/SERVICE` that is used by `chkconfig` to help determine order.  This override file can be modified to list additional dependencies to influence the boot order of scripts.  Make sure to call `wick-service override` when you update an override file.  When using `--force`, this will overwrite any override file that may already exist.

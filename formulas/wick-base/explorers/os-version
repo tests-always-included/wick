@@ -1,0 +1,32 @@
+#!/bin/bash
+
+wick-explorer OS wick-base os || true
+
+case "$OS" in
+    centos)
+        rpm -q centos-release | cut -d - -f 3- | cut -d . -f 1 | tr - .
+        ;;
+
+    osx)
+        echo "Unsupported OS: $OS"
+        exit 1
+        ;;
+
+    redhat)
+        rpm -q redhat-release | cut -d - -f 3- | cut -d . -f 1 | tr - .
+        ;;
+
+    ubuntu)
+        lsb-release -d | rev | cut -d ' ' -f 1 | rev
+        ;;
+
+    UNKNOWN)
+        echo "UNKNOWN"
+        exit 1
+        ;;
+
+    *)
+        echo "Unsupported OS: $OS"
+        exit 1
+        ;;
+esac

@@ -1,0 +1,46 @@
+#!/bin/bash
+#
+# Possible destinations, organized by how they are handled.
+# "unknown" means that there's no directory nor file with that
+# name so it is impossible to tell if the destination should be
+# a new directory or file.
+#
+# (A) /dir/that/exists/
+# (A) /dir/missing/
+# (A) /missing/dir/
+# (B) /dir/that/exists
+# (C) /dir/unknown
+# (C) /unknown/some-name
+#
+# A = Treat as a directory, append optional filename and be done
+# B = Add a slash then treat as (A)
+# C = Treat as a filename and do not append the optional filename parameter
+#
+# $1 = Variable for the resolved path
+# $2 = Destination to resolve (required)
+# $3 = Filename as a target (optional)
+
+wick-get-dest() {
+    local DEST FILE TARGET
+
+    TARGET=$1
+    DEST=$2
+    FILE=$3
+
+    if [[ -z "$DEST" ]]; then
+        wick-error "A destination path is required for wick-absolute-destination"
+        return 1
+    fi
+
+    # First change (B) into (A)
+    if [[ "${DEST: -1}" != "/" ]] && [[ -d "${DEST}" ]]; then
+        DEST="${DEST}/"
+    fi
+
+    # Handle all (A) situations and append the optional filename
+    if [[ "${DEST: -1}" == "/" ]]; then
+        DEST="$DEST$FILE"
+    fi
+
+    local "$TARGET" && wick-indirect "$TARGET" "$DEST"
+}

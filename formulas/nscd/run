@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+wick-explorer OS wick-base os
+NSCD_PACKAGE=unscd
+
+if wick-package --exists unscd; then
+    wick-package unscd
+    wick-service start unscd
+    wick-service enable unscd
+else
+    wick-package nscd
+    wick-service start nscd
+    wick-service enable nscd
+fi

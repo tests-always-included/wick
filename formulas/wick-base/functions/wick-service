@@ -1,48 +1,50 @@
 #!/bin/bash
 
 wick-service() {
-    local ARGS_force UNPARSED
+    local ACTION FORCE OPTIONS UNPARSED
 
-    ARGS_force=""
-    wick-parse-arguments UNPARSED "$@"
-    ACTION="${UNPARSED[0]}"
-    UNPARSED=("${UNPARSED[@]:1}")
+    wick-get-option FORCE force "$@"
+    wick-get-options OPTIONS "$@"
+    wick-array-filter OPTIONS wick-service-filter-options "${OPTIONS[@]}"
+    wick-get-argument ACTION 0 "$@"
+    wick-get-arguments UNPARSED "$@"
+    UNPARSED=("${UNPARSED[@]:1}")  # Remove action
 
     case "$ACTION" in
         add)
-            wick-service-add "${UNPARSED[@]}"
+            wick-service-add "${OPTIONS[@]}" "${UNPARSED[@]}"
             ;;
 
         disable)
-            wick-service-disable "${UNPARSED[@]}"
+            wick-service-disable "${OPTIONS[@]}" "${UNPARSED[@]}"
             ;;
 
         enable)
-            wick-service-enable "${UNPARSED[@]}"
+            wick-service-enable "${OPTIONS[@]}" "${UNPARSED[@]}"
             ;;
 
         make-override)
-            wick-service-make-override "${UNPARSED[@]}"
+            wick-service-make-override "${OPTIONS[@]}" "${UNPARSED[@]}"
             ;;
 
         override)
-            wick-service-override "${UNPARSED[@]}"
+            wick-service-override "${OPTIONS[@]}" "${UNPARSED[@]}"
             ;;
 
         reload)
-            wick-service-reload "${UNPARSED[@]}"
+            wick-service-reload "${OPTIONS[@]}" "${UNPARSED[@]}"
             ;;
 
         restart)
-            wick-service-restart "${UNPARSED[@]}"
+            wick-service-restart "${OPTIONS[@]}" "${UNPARSED[@]}"
             ;;
 
         start)
-            wick-service-start "${UNPARSED[@]}"
+            wick-service-start "${OPTIONS[@]}" "${UNPARSED[@]}"
             ;;
 
         stop)
-            wick-service-stop "${UNPARSED[@]}"
+            wick-service-stop "${OPTIONS[@]}" "${UNPARSED[@]}"
             ;;
 
         *)
@@ -55,11 +57,16 @@ wick-service() {
 
 
 wick-service-add() {
-    wick-info "Adding service: $1"
+    local OPTIONS SERVICE SOURCE
 
-    if [[ ! -f "/etc/init.d/$1" ]] || [[ ! -z "$ARGS_force" ]]; then
-        wick-make-file --mode=0755 --owner=root:root "$2" /etc/init.d/"$1"
-        chkconfig --add "$1"
+    wick-get-argument SERVICE 0 "$@"
+    wick-get-argument SOURCE 1 "$@"
+    wick-get-options OPTIONS "$@"
+    wick-info "Adding service: $SERVICE"
+
+    if [[ ! -f "/etc/init.d/$SERVICE" ]] || [[ ! -z "$FORCE" ]]; then
+        wick-make-file --mode=0755 --owner=root:root "$SOURCE" "/etc/init.d/$SERVICE" "${OPTIONS[@]}"
+        chkconfig --add "$SERVICE"
     else
         wick-info "Service already exists and --force flag was not specified"
     fi
@@ -75,6 +82,16 @@ wick-service-enable() {
     chkconfig "$1" on
 }
 
+wick-service-filter-options() {
+    case "$1" in
+        --force|--force=*)
+            return 1
+            ;;
+    esac
+
+    return 0
+}
+
 wick-service-make-override() {
     local DEST LABEL LSB SERVICE SRC VALUE
 
@@ -83,7 +100,7 @@ wick-service-make-override() {
     DEST="/etc/chkconfig.d/$SERVICE"
     wick-info "Making override for service: $SERVICE"
 
-    if [[ -f "$DEST" ]] && [[ -z "$ARGS_force" ]]; then
+    if [[ -f "$DEST" ]] && [[ -z "$FORCE" ]]; then
         return 0
     fi
 

@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -e
+wick-explorer OS wick-base os
+wick-get-argument TZ 0 "$@"
+
+case "$OS" in
+    debian|ubuntu)
+        TZ=${TZ:-Etc/UTC}
+        ;;
+
+    *)
+        TZ=${TZ:-UTC}
+esac
+
+wick-info "Updating timezone: $TZ"
+TIMEZONE=/etc/timezone
+TZDATA_DIR=/usr/share/zoneinfo
+LOCALTIME=/etc/localtime
+USE_SYMLINK=false
+
+case "$OS" in
+    amazon)
+        timezone-update-localtime "$LOCALTIME" "$TZDATA_DIR/$TZ" "$USE_SYMLINK"
+        timezone-update-sysconfig-clock "$TZ"
+        ;;
+
+    fedora|redhat|centos)
+        timezone-update-sysconfig-clock "$TZ"
+        ;;
+
+    debian|ubuntu)
+        timezone-update-timezone "$TZ" "$TIMEZONE"
+        ;;
+
+    pld)
+        timezone-update-sysconfig-timezone "$TZ" "$TZDATA_DIR"
+        ;;
+
+    *)
+        wick-warn "Unknown OS: $OS"
+        wick-warn "Updating the timezone with a generic method"
+        timezone-update-localtime "$LOCALTIME" "$TZDATA_DIR/$TZ" "$USE_SYMLINK"
+esac

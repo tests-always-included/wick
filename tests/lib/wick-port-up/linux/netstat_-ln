@@ -1,0 +1,31 @@
+#!/bin/bash
+
+cat <<EOF
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 127.0.1.1:53            0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN
+tcp6       0      0 :::3689                 :::*                    LISTEN
+tcp6       0      0 :::22                   :::*                    LISTEN
+tcp6       0      0 ::1:631                 :::*                    LISTEN
+udp        0      0 127.0.1.1:53            0.0.0.0:*
+udp        0      0 0.0.0.0:68              0.0.0.0:*
+udp        0      0 0.0.0.0:5353            0.0.0.0:*
+udp6       0      0 fe80::be85:56ff:fea:123 :::*
+udp6       0      0 ::1:123                 :::*
+udp6       0      0 :::123                  :::*
+raw6       0      0 :::58                   :::*                    7
+Active UNIX domain sockets (only servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ACC ]     STREAM     LISTENING     23921    @/tmp/.ICE-unix/1692
+unix  2      [ ACC ]     STREAM     LISTENING     63738    /tmp/qtsingleapp-hipcha-2c5e-3e8
+unix  2      [ ACC ]     STREAM     LISTENING     23580    @/tmp/dbus-xXG2S6DH
+unix  2      [ ACC ]     STREAM     LISTENING     25869    /run/user/1000/pulse/native
+unix  2      [ ACC ]     STREAM     LISTENING     21525    /var/run/NetworkManager/private
+unix  2      [ ACC ]     STREAM     LISTENING     21782    /run/user/116/systemd/private
+unix  2      [ ACC ]     STREAM     LISTENING     22560    @/tmp/.X11-unix/X0
+unix  2      [ ACC ]     STREAM     LISTENING     20098    @/tmp/dbus-BInkBAc9KK
+unix  2      [ ACC ]     STREAM     LISTENING     24880    /run/user/1000/keyring/pkcs11
+unix  2      [ ACC ]     STREAM     LISTENING     2912667  @/tmp/dbus-aIEkpHLM
+unix  2      [ ACC ]     STREAM     LISTENING     24884    /run/user/1000/keyring/gpg
+EOF

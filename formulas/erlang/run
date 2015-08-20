@@ -1,4 +1,14 @@
 #!/bin/bash
 set -e
 
-wick-package erlang
+wick-explorer OS wick-base os
+
+case "$OS" in
+    debian|ubuntu)
+        wick-package erlang-nox
+        ;;
+
+    *)
+        wick-package erlang
+        ;;
+esac

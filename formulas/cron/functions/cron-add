@@ -1,22 +1,17 @@
 #!/bin/bash
 
 cron-add() {
-    local ARGS_template JOBNAME UNPARSED
+    local FILENAME JOBNAME OPTIONS
 
-    ARGS_template=""
-    wick-parse-arguments UNPARSED "$@"
-    JOBNAME=${UNPARSED[0]}
-    ARGS=${UNPARSED[1]}
-
-    if [[ ! -z "$ARGS_template" ]]; then
-        ARGS_template="--template"
-    fi
+    wick-get-argument JOBNAME 0 "$@"
+    wick-get-argument FILENAME 1 "$@"
+    wick-get-options OPTIONS "$@"
 
     if [[ -d /etc/cron.d/ ]]; then
-        wick-make-file $ARGS_TEMPLATE "${UNPARSED[1]}" "/etc/cron.d/$JOBNAME"
+        wick-make-file "$FILENAME" "/etc/cron.d/$JOBNAME" "${OPTIONS[@]}"
     else
         echo "# BEGIN: $JOBNAME" >> /etc/crontab
-        wick-make-file $ARGS_TEMPLATE "${UNPARSED[1]}" >> /etc/crontab
+        wick-make-file "$FILENAME" - "${OPTIONS[@]}" >> /etc/crontab
         echo "# END: $JOBNAME" >> /etc/crontab
     fi
 }

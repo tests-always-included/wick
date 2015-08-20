@@ -1,20 +1,22 @@
 #!/bin/bash
 
 apache2-add-vhost() {
-    local OS
+    local OPTIONS OS SITE
 
-    wick-info "Adding Apache2 vhost: $1"
+    wick-get-argument SITE 0 "$@"
+    wick-get-options OPTIONS "$@"
+    wick-info "Adding Apache2 vhost: ${OPTIONS[@]} $SITE"
     wick-explorer OS wick-base os
 
     case "$OS" in
         redhat|centos)
-            wick-make-file "$1" /etc/httpd/conf.d/
+            wick-make-file "${OPTIONS[@]}" /etc/httpd/conf.d/
             wick-service reload httpd
             ;;
 
         *)
-            wick-make-file "$1" /etc/apache2/sites-available
-            a2ensite "$1"
+            wick-make-file "${OPTIONS[@]}" /etc/apache2/sites-available
+            a2ensite "$SITE"
             wick-service reload apache2
             ;;
     esac

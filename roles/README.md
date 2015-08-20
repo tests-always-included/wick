@@ -43,15 +43,15 @@ Just like the `run` script of [formulas], roles can take parameters from the com
     #!/bin/bash
 
     # Parse arguments
-    ARGS_extra=""  # This gets set if --extra is passed
-    wick-parse-arguments UNPARSED "$@"
+    # This gets set to a non-empty string if --extra is passed
+    wick-get-option EXTRA extra "$@"
 
     # Load another role to do some basic setup
     # This uses `wick-formula` to do a lot of basic stuff to the target machine
     wick-load-role "our-base-formulas"
 
     # Use the command-line argument
-    if [[ ! -z "$ARGS_extra" ]]; then
+    if [[ ! -z "$EXTRA" ]]; then
         wick-load-role "our-extra-formulas"
     fi
 

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+timezone-update-sysconfig-clock() {
+    if wick-command-exists timedatectl; then
+        wick-debug "Using timedatectl to set timezone"
+        timedatectl --no-ask-password set-timezone "$1"
+    else
+        wick-debug "Updating /etc/sysconfig/clock"
+        rm /etc/sysconfig/clock
+        echo "ZONE=$TZ" > /etc/sysconfig/clock
+        chown root:root /etc/sysconfig/clock
+        chmod 0644 /etc/sysconfig/clock
+
+        if [[ -x /usr/sbin/tzdata-update ]]; then
+            /usr/sbin/tzdata-update
+        fi
+    fi
+}
