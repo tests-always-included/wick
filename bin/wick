@@ -1,5 +1,6 @@
 #!/bin/bash
-set -e
+# Enable "strict mode" - see lib/wick-strict-mode for a better version
+set -euo pipefail
 WICK_DIR="${0%/*}"
 
 CMD="$1"
@@ -55,12 +56,15 @@ wick-load-lib() {
 wick-on-load() {
     local ARGS
     wick-argument-string ARGS "$@"
-    WICK_ON_LOAD_COMMANDS=("${WICK_ON_LOAD_COMMANDS[@]}" "$ARGS")
+    wick-array-append WICK_ON_LOAD_COMMANDS "$ARGS"
 }
 
 
 # Load all library functions
 wick-load-lib "."
+
+# Enable the full strict mode
+wick-strict-mode
 
 # Load all functions into the current environment
 for F in "$WICK_DIR/"wick-*; do
@@ -82,7 +86,9 @@ if [[ -z "$CMD" ]]; then
 fi
 
 # Check if we have the listed command
-if ! wick-in-array "$CMD" "${WICK_COMMANDS[@]}"; then
+if [[ "${#WICK_COMMANDS[@]}" -eq 0 ]]; then
+    echo "No commands loaded."
+elif ! wick-in-array "$CMD" "${WICK_COMMANDS[@]}"; then
     echo "No such command: $CMD"
     echo "See 'wick help'"
 else

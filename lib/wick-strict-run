@@ -4,14 +4,15 @@
 # the rest of the code operates in strict mode (see `wick-strict-mode`).
 
 wick-strict-run() {
-    local DEST RESULT
+    local DEST RESULT SET_OPTIONS
 
     DEST=$1
     shift
-    set +e
+    SET_OPTIONS=$-
+    set +eE
     "$@"
     RESULT=$?
-    set -e
+    set -"$SET_OPTIONS"
 
     local "$DEST" && wick-indirect "$DEST" "$RESULT"
 }

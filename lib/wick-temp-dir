@@ -5,7 +5,7 @@ wick-temp-dir() {
 
     BASE="/tmp"
 
-    if [ ! -z "$TMPDIR" ] && [ -d "$TMPDIR" ]; then
+    if [ ! -z "${TMPDIR:-}" ] && [ -d "$TMPDIR" ]; then
         BASE="$TMPDIR"
     fi
 

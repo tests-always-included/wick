@@ -9,6 +9,11 @@ wick-help() {
     echo "Specify a command:"
     echo ""
 
+    if [[ "${#WICK_COMMAND_HELP[@]}" -eq 0 ]]; then
+        echo "No commands defined"
+        return
+    fi
+
     for F in "${WICK_COMMAND_HELP[@]}"; do
         echo "$F"
     done

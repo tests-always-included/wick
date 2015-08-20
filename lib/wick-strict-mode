@@ -5,6 +5,21 @@
 # See http://redsymbol.net/articles/unofficial-bash-strict-mode/
 
 wick-strict-mode() {
-    set -euo pipefail
+    set -eEuo pipefail
     IFS=$'\n\t'
+    trap 'wick-strict-mode-fail $?' ERR
+}
+
+wick-strict-mode-fail() {
+    local I
+    echo "Error detected - status code $1"
+    echo "Command:  $BASH_COMMAND"
+    echo "Location:  ${BASH_SOURCE[0]}, line ${BASH_LINENO[0]}"
+    echo "Stack Trace:"
+    I=0
+
+    while [[ $I -lt ${#BASH_LINENO} ]]; do
+        echo "    [$I] ${FUNCNAME[$I]:+${FUNCNAME[$I]}(): }${BASH_SOURCE[$I]}, line ${BASH_LINENO[$I]}"
+        I=$(($I + 1))
+    done
 }

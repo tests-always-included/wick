@@ -25,7 +25,7 @@ wick-run() {
     if [[ ${#WICK_FORMULA_COMMANDS[@]} -eq 0 ]]; then
         echo "No formulas listed or no run scripts found for the formulas."
 
-        # This is not an error with the script.
+        # This is not an error with Wick.
         return 0
     fi
 

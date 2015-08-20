@@ -47,7 +47,7 @@ wick-formula() {
         return 1
     fi
 
-    if wick-in-array "$FORMULA" "${WICK_FORMULA_LIST[@]}"; then
+    if [[ "${#WICK_FORMULA_LIST[@]}" -gt 0 ]] && wick-in-array "$FORMULA" "${WICK_FORMULA_LIST[@]}"; then
         # Specifying the same formula is ok as long as the arguments are the same
         if wick-in-array "$FORMULA_ESCAPED$ARGS" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"; then
             echo "Formula is already in list: $FORMULA"
@@ -71,8 +71,8 @@ wick-formula() {
     # may contain secret keys.  Logging just the formula's name would be
     # acceptable.
     echo "Adding formula $FORMULA$ARGS ($LOCATION)"
-    WICK_FORMULA_LIST=("${WICK_FORMULA_LIST[@]}" "$FORMULA")
-    WICK_FORMULA_LIST_WITH_ARGS=("${WICK_FORMULA_LIST_WITH_ARGS[@]}" "$FORMULA_ESCAPED$ARGS")
+    wick-array-append WICK_FORMULA_LIST "$FORMULA"
+    wick-array-append WICK_FORMULA_LIST_WITH_ARGS "$FORMULA_ESCAPED$ARGS"
 
     if [[ -f "$LOCATION/depends" ]]; then
         WICK_FORMULA_DIR=$LOCATION
@@ -83,7 +83,7 @@ wick-formula() {
 
     if [[ -f "$LOCATION/run" ]]; then
         wick-argument-string TEMP "$LOCATION/run"
-        WICK_FORMULA_COMMANDS=("${WICK_FORMULA_COMMANDS[@]}" "$TEMP$ARGS")
+        wick-array-append WICK_FORMULA_COMMANDS "$TEMP$ARGS"
     fi
 
     if [[ -d "$LOCATION/functions" ]]; then

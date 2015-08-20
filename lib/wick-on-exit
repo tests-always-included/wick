@@ -6,19 +6,29 @@ wick-on-exit() {
     local COMMAND LEN NAME
 
     NAME="WICK_ON_EXIT_$BASHPID"
+    eval "declare -a $NAME"
     eval "LEN=\${#$NAME[@]}"
-    printf -v COMMAND " %q" "$@"
+    wick-argument-string COMMAND "$@"
     wick-debug "Adding wick-on-exit item [$BASHPID $LEN]: ${COMMAND:1}"
-    eval "$NAME=(\"\${$NAME[@]}\" \"\${COMMAND:1}\")"
+    wick-array-append "$NAME" "$COMMAND"
 
     # Always set or reset the trap
     trap wick-on-exit-trap EXIT
 }
 
 wick-on-exit-trap() {
-    local CMD ITEM_ARRAY
+    local CMD ITEM_ARRAY LEN NAME
 
-    ITEM_ARRAY="WICK_ON_EXIT_$BASHPID[@]"
+    NAME="WICK_ON_EXIT_$BASHPID"
+    ITEM_ARRAY="$NAME[@]"
+    eval "declare -a $NAME"
+    eval "LEN=\${#$ITEM_ARRAY}"
+
+    if [[ "$LEN" == 0 ]]; then
+        echo "No wick-on-exit traps [$BASHPID]"
+        return
+    fi
+
     wick-debug "Running wick-on-exit trap [$BASHPID]"
 
     for CMD in "${!ITEM_ARRAY}"; do

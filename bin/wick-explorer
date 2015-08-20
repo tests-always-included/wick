@@ -36,7 +36,7 @@ wick-explorer() {
     fi
 
     wick-debug "Explorer success"
-    wick-debug "$(< "$TEMP/stdout" )"
+    wick-debug "$(<"$TEMP/stdout")"
 
     local "$1" && wick-indirect "$1" "$(<"$TEMP/stdout")"
 }

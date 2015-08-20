@@ -6,13 +6,11 @@
 #
 # Parameters:
 #     $*: The log message to write
-wick-warn() {
-    (
-        set +x
-        local OUTPUT
+wick-warn() (
+    set +x
+    local OUTPUT
 
-        wick-log "WARN" "$*"
-        wick-prefix-lines OUTPUT "WARN: " "$*"
-        echo "$OUTPUT"
-    )
-}
+    wick-log "WARN" "$*"
+    wick-prefix-lines OUTPUT "WARN: " "$*"
+    echo "$OUTPUT"
+)

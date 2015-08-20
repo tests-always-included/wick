@@ -10,16 +10,14 @@
 #
 # Environment variables:
 #     WICK_LOG_QUIET: If set to a value, does not write anything to stdout
-wick-info() {
-    (
-        set +x
-        local OUTPUT
+wick-info() (
+    set +x
+    local OUTPUT
 
-        wick-log INFO "$*"
+    wick-log INFO "$*"
 
-        if [[ -z "$WICK_LOG_QUIET" ]]; then
-            wick-prefix-lines OUTPUT "INFO: " "$*"
-            echo "$OUTPUT"
-        fi
-    )
-}
+    if [[ -z "$WICK_LOG_QUIET" ]]; then
+        wick-prefix-lines OUTPUT "INFO: " "$*"
+        echo "$OUTPUT"
+    fi
+)
