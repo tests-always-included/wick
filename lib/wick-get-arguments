@@ -10,7 +10,7 @@ wick-get-arguments() {
 
     while [[ $# -gt 0 ]]; do
         if [[ "${1:0:1}" != "$PREFIX" ]]; then
-            wick-array-append ARGS "$1"
+            ARGS[${#ARGS[@]}]=$1
         else
             if [[ "$1" == "--" ]]; then
                 PREFIX="DO NOT MATCH"
@@ -20,7 +20,7 @@ wick-get-arguments() {
         shift
     done
 
-    if [[ "${#ARGS[@]}" == "0" ]]; then
+    if [[ ${#ARGS[@]} -eq 0 ]]; then
         local "$TARGET" && wick-indirect-array "$TARGET"
         return
     fi

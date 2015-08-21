@@ -34,10 +34,10 @@
 #     DEBUG: Controls if logging is enabled and where it's enabled.
 wick-debug() (
     set +x
-    local NAME OUTPUT
+    local LIST NAME OUTPUT
 
     # Do not log unless the DEBUG environment variable is set
-    if [[ -z "$DEBUG" ]]; then
+    if [[ -z "${DEBUG-}" ]]; then
         return
     fi
 
@@ -52,15 +52,16 @@ wick-debug() (
 
     # Here is the more complex checking if any value in the DEBUG variable
     # is in the FUNCNAME array.
-    while [[ ! -z "$DEBUG" ]]; do
+    LIST="$DEBUG"
+    while [[ ! -z "$LIST" ]]; do
         NAME=${DEBUG%% *}
-        DEBUG=${DEBUG#* }
+        LIST=${LIST#* }
 
-        if [[ "$DEBUG" == "$NAME" ]]; then
-            DEBUG=""
+        if [[ "$LIST" == "$NAME" ]]; then
+            LIST=""
         fi
 
-        if [[ ! -z "$NAME" ]] && wick-in-array "$NAME" "${FUNCNAME[@]}"; then
+        if [[ ! -z "$NAME" ]] && [[ ${#FUNCNAME[@]} -gt 0 ]] && wick-in-array "$NAME" "${FUNCNAME[@]}"; then
             wick-log "DEBUG" "$*"
             echo "$OUTPUT" >&2
             return

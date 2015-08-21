@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 # Install Apache 2 and enable named virtual hosts
 

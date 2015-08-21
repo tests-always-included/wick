@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Get current recursor
-set -e
 wick-package dnsmasq
 wick-make-dir /etc/dnsmasq.d/
 wick-set-config-line /etc/dnsmasq.conf "conf-dir=/etc/dnsmasq.d"

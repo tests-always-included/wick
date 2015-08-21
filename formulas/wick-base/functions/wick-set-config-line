@@ -8,7 +8,7 @@ wick-set-config-line() {
         return 0
     fi
 
-    KEY=$3
+    KEY=${3-}
 
     if [[ -z "$KEY" ]]; then
         KEY=${2/ *}

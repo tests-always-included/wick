@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 wick-explorer OS wick-base os
 wick-get-argument TZ 0 "$@"
 

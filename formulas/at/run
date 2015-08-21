@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 wick-package at
 
 # On CentOS 6.5 these folders may not exist.  First, confirm that

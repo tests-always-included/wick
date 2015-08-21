@@ -38,11 +38,9 @@ Consider the times when you want a simple flag that would enable features, such 
 
 Checking if a flag was passed in seems easy.  It's not any harder to also look for particular values.
 
-    # Exit on any errors.
-    set -e
-
     # The --user and --role options are mandatory.
-    # Because "set -e" is enabled, this will exit if there are errors.
+    # Because "set -e" is enabled by default when running scripts,
+    # this will exit if there are errors.
     wick-test-for-options user role -- "$@"
 
     # Get the user and role.

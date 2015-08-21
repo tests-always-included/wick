@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 wick-explorer OS wick-base os
 wick-explorer ARCH wick-base arch

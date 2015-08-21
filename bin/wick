@@ -56,7 +56,7 @@ wick-load-lib() {
 wick-on-load() {
     local ARGS
     wick-argument-string ARGS "$@"
-    wick-array-append WICK_ON_LOAD_COMMANDS "$ARGS"
+    WICK_ON_LOAD_COMMANDS[${#WICK_ON_LOAD_COMMANDS[@]}]=$ARGS
 }
 
 

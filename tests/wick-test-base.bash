@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 # Simulates a command's presence by using a fixture
 #

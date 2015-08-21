@@ -7,5 +7,6 @@ wick-get-argument() {
     INDEX=$2
     shift 2
     wick-get-arguments ARGS "$@"
-    local "$TARGET" && wick-indirect "$TARGET" "${ARGS[$INDEX]}"
+
+    local "$TARGET" && wick-indirect "$TARGET" "${ARGS[$INDEX]-}"
 }

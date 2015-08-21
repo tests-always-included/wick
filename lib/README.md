@@ -69,7 +69,9 @@ Example:
     wick-array-filter FILTERED remove-animals "${WORDS[@]}"
 
     # Prints "a and a chased a"
-    echo "${FILTERED[@]}"
+    # The hyphen is intentional so you can print the array when there
+    # are no elements in the array and when `set -u` is enabled.
+    echo "${FILTERED[@]-}"
 
 
 wick-command-exists
@@ -416,8 +418,14 @@ Example:
         VALUE=()
 
         for FILE in /tmp; do
-            [[ "${#VALUE[@]}" -lt 5 ]] && VALUE=("${VALUE[@]}" "$FILE")
+            [[ "${#VALUE[@]}" -lt 5 ]] && VALUE[${#VALUE[@]}]=$FILE
         done
+
+        # Be careful when `set -u` is enabled
+        if [[ ${#VALUE[@]} -eq 0 ]]; then
+            local "$1" && wick-indirect-array "$1"
+            return
+        fi
 
         local "$1" && wick-indirect-array "$1" "${VALUE[@]}"
     }

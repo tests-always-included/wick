@@ -32,7 +32,6 @@ Example `depends` file:
 Example `run` script:
 
     #!/bin/bash
-    set -e
     export NAME="Betty"
     export LIST=(one two three)
     wick-make-file --template name.mo /tmp
@@ -61,7 +60,6 @@ The shell scripts can read from the environment or do anything that shell comman
 Example `run` script:
 
     #!/bin/bash
-    set -e
     export NAME="Andrew"
     wick-make-file --template name.sh /tmp/
 

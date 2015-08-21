@@ -1,4 +1,3 @@
 #!/bin/bash
 
-set -e
 wick-make-file wick-init-d-lib /usr/local/lib/ --mode=0644 --owner=root:root

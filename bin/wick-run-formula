@@ -33,7 +33,7 @@ wick-run-formula() {
         #     arg1 a\{b # prints "a\{b"
         #     test="arg1 a\{b"
         #     $test # prints "a\\\{b"
-        eval ". $FORMULA"
+        eval "wick-strict-mode ; . $FORMULA"
     ); then
         echo "FAILURE DETECTED"
         # Only use echo - do not log this to the file because the arguments

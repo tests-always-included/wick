@@ -15,9 +15,14 @@ wick-test-for-options() {
             ARG="${ARG:1}"
         done
 
-        SEEKING=("${SEEKING[@]}" "$1")
+        SEEKING[${#SEEKING[@]}]=$ARG
         shift
     done
+
+    if [[ ${#SEEKING[@]} -eq 0 ]]; then
+        # No arguments are required
+        return 0
+    fi
 
     shift
 

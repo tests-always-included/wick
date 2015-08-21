@@ -5,17 +5,17 @@ apache2-add-conf() {
 
     wick-get-argument CONF 0 "$@"
     wick-get-options OPTIONS "$@"
-    wick-info "Adding Apache2 config: ${OPTIONS[@]} $CONF"
+    wick-info "Adding Apache2 config: ${OPTIONS[@]-} $CONF"
     wick-explorer OS wick-base os
 
     case "$OS" in
         redhat|centos)
-            wick-make-file "${OPTIONS[@]}" /etc/httpd/conf.d/
+            wick-make-file "${OPTIONS[@]-}" /etc/httpd/conf.d/
             wick-service reload httpd
             ;;
 
         *)
-            wick-make-file "${OPTIONS[@]}" /etc/apache2/conf-available
+            wick-make-file "${OPTIONS[@]-}" /etc/apache2/conf-available
             a2enconf "$CONF"
             wick-service reload apache2
             ;;

@@ -16,11 +16,11 @@ WICK_COMMAND_HELP=()
 wick-add-command() {
     local LINE
 
-    wick-array-append WICK_COMMANDS "$1"
+    WICK_COMMANDS[${#WICK_COMMANDS[@]}]=$1
 
     if [[ ! -z "$2" ]]; then
         printf -v LINE "  %-15s  %s" "$1" "$2"
-        wick-array-append WICK_COMMAND_HELP "$LINE"
+        WICK_COMMAND_HELP[${#WICK_COMMAND_HELP[@]}]=$LINE
     fi
 }
 

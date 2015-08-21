@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 wick-formula yum-epel
 wick-formula yum-remi
 wick-formula sysctl

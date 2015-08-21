@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# Note:  I am not a fan of eval.  If you have a better way to do this
+# that uses fewer evaluated statements that also works from Bash 3 through
+# the latest release and with "set -eu", then I'd LOVE to know.
 
 WICK_ON_EXIT_ITEMS=()
 
@@ -6,11 +10,15 @@ wick-on-exit() {
     local COMMAND LEN NAME
 
     NAME="WICK_ON_EXIT_$BASHPID"
-    eval "declare -a $NAME"
+
+    if ! declare -p $NAME > /dev/null 2>&1; then
+        eval "$NAME=()"
+    fi
+
     eval "LEN=\${#$NAME[@]}"
     wick-argument-string COMMAND "$@"
-    wick-debug "Adding wick-on-exit item [$BASHPID $LEN]: ${COMMAND:1}"
-    wick-array-append "$NAME" "$COMMAND"
+    wick-debug "Adding wick-on-exit item [$BASHPID $LEN]: ${COMMAND}"
+    eval "$NAME[$LEN]=\$COMMAND"
 
     # Always set or reset the trap
     trap wick-on-exit-trap EXIT
@@ -20,12 +28,17 @@ wick-on-exit-trap() {
     local CMD ITEM_ARRAY LEN NAME
 
     NAME="WICK_ON_EXIT_$BASHPID"
+
+    if ! declare -p "$NAME" > /dev/null 2>&1; then
+        wick-debug "No array of wick-on-exit-traps [$BASHPID]"
+        return
+    fi
+
     ITEM_ARRAY="$NAME[@]"
-    eval "declare -a $NAME"
     eval "LEN=\${#$ITEM_ARRAY}"
 
     if [[ "$LEN" == 0 ]]; then
-        echo "No wick-on-exit traps [$BASHPID]"
+        wick-debug "Empty list of wick-on-exit traps [$BASHPID]"
         return
     fi
 

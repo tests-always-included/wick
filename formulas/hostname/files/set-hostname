@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 . /usr/local/lib/wick-infect
 
 replace-in-file() {
@@ -68,7 +67,7 @@ DOMAIN=${DOMAIN:-localdomain}
 IFCONFIG_ARGS=("-v")
 
 if [[ ! -z "$IFACE" ]]; then
-    IFCONFIG_ARGS=("${IFCONFIG_ARGS[@]}" "$IFACE")
+    IFCONFIG_ARGS[${#IFCONFIG_ARGS[@]}]=$IFACE
 fi
 
 IP=$(ifconfig "${IFCONFIG_ARGS[@]}" | grep inet\ addr | head -n 1)

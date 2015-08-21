@@ -1,5 +1,4 @@
 #!/bin/bash
 
-set -e
 wick-formula yum-epel
 wick-formula wick-base

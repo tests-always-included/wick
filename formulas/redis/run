@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 # There are many other settings you can tweak for better performance.  Each
 # one should be tested to determine if they are applicable to the situation.

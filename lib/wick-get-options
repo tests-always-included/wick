@@ -13,12 +13,17 @@ wick-get-options() {
             if [[ "$1" == "--" ]]; then
                 PREFIX="DO NOT MATCH"
             else
-                OPTIONS=("${OPTIONS[@]}" "$1")
+                OPTIONS[${#OPTIONS[@]}]=$1
             fi
         fi
 
         shift
     done
+
+    if [[ "${#OPTIONS[@]}" -eq 0 ]]; then
+        local "$TARGET" && wick-indirect-array "$TARGET"
+        return
+    fi
 
     local "$TARGET" && wick-indirect-array "$TARGET" "${OPTIONS[@]}"
 }

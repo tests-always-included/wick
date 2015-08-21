@@ -12,10 +12,15 @@ wick-get-iface-ip() {
             IP=${IP#*inet addr:}
             IP=${IP#*inet }
             IP=${IP%% *}
-            LIST=("${LIST[@]}" "$IP")
+            LIST[${#LIST[@]}]=$IP
         done
 
         IFS=$OLD_IFS
+
+        if [[ ${#LIST[@]} -eq 0 ]]; then
+            local "$1" && wick-indirect-array "$1"
+            return
+        fi
 
         local "$1" && wick-indirect-array "$1" "${LIST[@]}"
         return 0

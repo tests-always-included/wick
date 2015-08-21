@@ -1,4 +1,3 @@
 #!/bin/bash
 
-set -e
 wick-make-file --mode=0644 wick-infect /usr/local/lib/

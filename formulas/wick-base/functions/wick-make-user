@@ -32,26 +32,29 @@ wick-make-user() {
         ARGS=(useradd)
 
         if [[ ! -z "$SET_HOME" ]]; then
-            ARGS=("${ARGS[@]}" "-d" "$SET_HOME")
+            ARGS[${#ARGS[@]}]=-d
+            ARGS[${#ARGS[@]}]=$SET_HOME
         fi
 
         if [[ ! -z "$SET_NAME" ]]; then
-            ARGS=("${ARGS[@]}" "-c" "$SET_NAME")
+            ARGS[${#ARGS[@]}]=-c
+            ARGS[${#ARGS[@]}]=$SET_NAME
         fi
 
         if [[ ! -z "$NO_SKEL_FLAG" ]]; then
-            ARGS=("${ARGS[@]}" "-M")
+            ARGS[${#ARGS[@]}]=-M
         fi
 
         if [[ ! -z "$SET_SHELL" ]]; then
-            ARGS=("${ARGS[@]}" "-s" "$SET_SHELL")
+            ARGS[${#ARGS[@]}]=-s
+            ARGS[${#ARGS[@]}]=$SET_SHELL
         fi
 
         if [[ ! -z "$SYSTEM_FLAG" ]]; then
-            ARGS=("${ARGS[@]}" "-r")
+            ARGS[${#ARGS[@]}]=-r
         fi
 
-        ARGS=("${ARGS[@]}" "$USERNAME")
+        ARGS[${#ARGS[@]}]=$USERNAME
         wick-debug "Command: ${ARGS[@]}"
         "${ARGS[@]}"
     else
@@ -59,22 +62,25 @@ wick-make-user() {
         ARGS=(usermod)
 
         if [[ ! -z "$SET_HOME" ]]; then
-            ARGS=("${ARGS[@]}" "-d" "$SET_HOME")
+            ARGS[${#ARGS[@]}]=-d
+            ARGS[${#ARGS[@]}]=$SET_HOME
         fi
 
         if [[ ! -z "$MOVE_HOME_FLAG" ]]; then
-            ARGS=("${ARGS[@]}" "-m")
+            ARGS[${#ARGS[@]}]=-m
         fi
 
         if [[ ! -z "$SET_NAME" ]]; then
-            ARGS=("${ARGS[@]}" "-c" "$SET_NAME")
+            ARGS[${#ARGS[@]}]=-c
+            ARGS[${#ARGS[@]}]=$SET_NAME
         fi
 
         if [[ ! -z "$SET_SHELL" ]]; then
-            ARGS=("${ARGS[@]}" "-s" "$SET_SHELL")
+            ARGS[${#ARGS[@]}]=-s
+            ARGS[${#ARGS[@]}]=$SET_SHELL
         fi
 
-        ARGS=("${ARGS[@]}" "$USERNAME")
+        ARGS[${#ARGS[@]}]=$USERNAME
         wick-debug "Command: ${ARGS[@]}"
         "${ARGS[@]}"
     fi

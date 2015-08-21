@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 wick-get-option DYNAMIC dynamic "$@"
 wick-get-argument DESIRED 0 "$@"
 

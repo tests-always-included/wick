@@ -10,7 +10,6 @@ Sample Role
 Here is a fictional role that could stand up a web server running a copy of a PHP application.  There's comments added to explain what each formula should be doing.
 
     #!/bin/bash
-    set -e
     wick-formula wick-base                      # Useful functions and explorers
     wick-formula hostname app-demo.example.com  # Set the hostname and domain
     wick-formula apache2                        # Install Apache2

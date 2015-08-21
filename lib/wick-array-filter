@@ -10,11 +10,16 @@ wick-array-filter() {
 
     while [[ $# -gt 0 ]]; do
         if "$FILTER" "$1"; then
-            RESULT=("${RESULT[@]}" "$1")
+            RESULT[${#RESULT[@]}]=$1
         fi
 
         shift
     done
+
+    if [[ ${#RESULT[@]} -eq 0 ]]; then
+        local "$TARGET" && wick-indirect-array "$TARGET"
+        return
+    fi
 
     local "$TARGET" && wick-indirect-array "$TARGET" "${RESULT[@]}"
 }

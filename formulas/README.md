@@ -72,7 +72,6 @@ The shell scripts in `explorers/` are executed by [wick-explorer], one of the ma
 
     #!/bin/bash
 
-    set -e
     uname -r
 
 When executed, the output of this will be something like "3.16.0-30-generic".  You can use explorers to determine the currently running operating system, versions of software, if files exist in specific locations or see if some packages are installed (among many other things).  Take a look at the ones provided in [wick-base] to see some that already exist.
@@ -118,7 +117,6 @@ Here is a sample run script that will download a copy of the application from an
     #
     # Options:
     #     --version:  Version number to download (default: "latest")
-    set -e                              # Fail if any command fails
 
     # If `--version=VALUE` was used then VERSION is set to VALUE.
     # If `--version` was used, then VERSION will be set to "true".

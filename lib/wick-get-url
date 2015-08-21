@@ -28,11 +28,17 @@ wick-get-url-curl() {
     local ARGS
 
     ARGS=(curl -L -f)
-    [[ -z "$PROGRESS" ]] && ARGS=("${ARGS[@]}" "-s")
-    [[ ! -z "$TIMEOUT" ]] && ARGS=("${ARGS[@]}" "-m" "$TIMEOUT")
-    [[ ! -z "$DEST" ]] && ARGS=("${ARGS[@]}" "-o" "$DEST")
-    ARGS=("${ARGS[@]}" "$URL")
-    wick-debug "wick-get-url: ${ARGS[*]}"
+    [[ -z "$PROGRESS" ]] && ARGS[${#ARGS[@]}]="-s"
+    [[ ! -z "$TIMEOUT" ]] && {
+        ARGS[${#ARGS[@]}]="-m"
+        ARGS[${#ARGS[@]}]=$TIMEOUT
+    }
+    [[ ! -z "$DEST" ]] && {
+        ARGS[${#ARGS[@]}]="-o"
+        ARGS[${#ARGS[@]}]=$DEST
+    }
+    ARGS[${#ARGS[@]}]=$URL
+    wick-debug "wick-get-url: ${ARGS[@]}"
     "${ARGS[@]}"
 }
 
@@ -40,10 +46,16 @@ wick-get-url-wget() {
     local ARGS
 
     ARGS=(wget)
-    [[ -z "$PROGRESS" ]] && ARGS=("${ARGS[@]}" "--quiet")
-    [[ ! -z "$TIMEOUT" ]] && ARGS=("${ARGS[@]}" "--timeout" "$TIMEOUT")
-    [[ ! -z "$DEST" ]] && ARGS=("${ARGS[@]}" "-O" "$DEST")
-    ARGS=("${ARGS[@]}" "$URL")
-    wick-debug "wick-get-url: ${ARGS[*]}"
+    [[ -z "$PROGRESS" ]] && ARGS[${#ARGS[@]}]="--quiet"
+    [[ ! -z "$TIMEOUT" ]] && {
+        ARGS[${#ARGS[@]}]="--timeout"
+        ARGS[${#ARGS[@]}]=$TIMEOUT
+    }
+    [[ ! -z "$DEST" ]] && {
+        ARGS[${#ARGS[@]}]="-O"
+        ARGS[${#ARGS[@]}]=$DEST
+    }
+    ARGS[${#ARGS[@]}]=$URL
+    wick-debug "wick-get-url: ${ARGS[@]}"
     "${ARGS[@]}"
 }

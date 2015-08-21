@@ -51,13 +51,10 @@ To give you a good understanding of the function of formulas, here are a couple 
 This one is pretty easy.  You simply need to install a package.  The formula's `run` script would look like this:
 
     #!/bin/bash
-    set -e
 
     wick-package git
 
 And you're done.
-
-`set -e` turns on error catching, so that if there was any sort of error then the script reports it immediately instead of continuing with the script (*highly recommended*).
 
 `wick-package` is a function that the `wick-base` formula exposes.  It provides an OS-agnostic way to install packages.  Just list the name of the package afterwards and you're set.
 
@@ -73,7 +70,6 @@ You can create a virtual host with three files in your formula.  First, the virt
 The bulk of the work is in the formula's `run` script.
 
     #!/bin/bash
-    set -e
 
     apache2-add-vhost vhost.conf
 

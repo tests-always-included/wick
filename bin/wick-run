@@ -33,7 +33,7 @@ wick-run() {
 
     while [[ $I -lt ${#WICK_FORMULA_LIST[@]} ]]; do
         echo "Order of formulas to execute [$I]: ${WICK_FORMULA_LIST[$I]}"
-        I=$(($I + 1))
+        I=$((I + 1))
     done
 
     for FORMULA in "${WICK_FORMULA_COMMANDS[@]}"; do

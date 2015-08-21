@@ -24,13 +24,12 @@ wick-explorer() {
     wick-temp-dir TEMP
 
     (
-        . "$EXPLORER" > "$TEMP/stdout" 2> "$TEMP/stderr" || touch "$TEMP/fail"
+        . "$EXPLORER" > "$TEMP/stdout" 2> "$TEMP/stderr" || echo "$" > "$TEMP/fail"
     )
-
-    cat "$TEMP/stderr"
 
     if [[ -f "$TEMP/fail" ]]; then
         wick-error "Explorer failed: $EXPLORER"
+        wick-error "Status code:  $(<"$TEMP/fail")"
 
         return 1
     fi

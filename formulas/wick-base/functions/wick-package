@@ -24,11 +24,11 @@ wick-package() {
 
     case "$OS" in
         centos|redhat)
-            wick-package-yum "$STATE" "${UNPARSED[@]}" && return 0
+            wick-package-yum "$STATE" "${UNPARSED[@]-}"
             ;;
 
         ubuntu|debian)
-            wick-package-apt "$STATE" "${UNPARSED[@]}" && return 0
+            wick-package-apt "$STATE" "${UNPARSED[@]-}"
             ;;
 
         *)
@@ -57,11 +57,15 @@ wick-package-yum() {
             ;;
 
         install)
-            if [[ ! -z "$YUM_ENABLE_REPO" ]]; then
-                ARGS=("${ARGS[@]}" "--enablerepo=$YUM_ENABLE_REPO")
+            if [[ ! -z "${YUM_ENABLE_REPO-}" ]]; then
+                ARGS[${#ARGS[@]}]="--enablerepo=$YUM_ENABLE_REPO"
             fi
 
-            yum "${ARGS[@]}" install -y "$@"
+            if [[ ${#ARGS[@]} -eq 0 ]]; then
+                yum install -y "$@"
+            else
+                yum "${ARGS[@]}" install -y "$@"
+            fi
             ;;
 
         uninstall)

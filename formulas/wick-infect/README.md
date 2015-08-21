@@ -10,10 +10,12 @@ Installs a Bash configuration at `/usr/local/lib/wick-infect` that shell scripts
 This example is for a shell script that can run on the target machine after configuring has been performed.
 
     #!/bin/bash
-    set -e
 
     # Source the library of functions
     . /usr/local/lib/wick-infect
+
+    # Enable strict mode to be safe
+    wick-strict-mode
 
     # Now the script can download URLs
     wick-get-url http://google.com/ google.html

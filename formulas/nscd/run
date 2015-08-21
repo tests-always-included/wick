@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 wick-explorer OS wick-base os
 NSCD_PACKAGE=unscd
 
