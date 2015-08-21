@@ -18,6 +18,11 @@ wick-info() (
 
     if [[ -z "${WICK_LOG_QUIET-}" ]]; then
         wick-prefix-lines OUTPUT "INFO: " "$*"
+
+        if [[ ! -z "${WICK_COLOR-}" ]]; then
+            OUTPUT=$'\E[32m'"$OUTPUT"$'\E[0m'
+        fi
+
         echo "$OUTPUT"
     fi
 )

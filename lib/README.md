@@ -98,6 +98,8 @@ wick-debug
 
 Logging function.  Use this to log every action that formulas can take.  Debug can be enabled by setting the `DEBUG` environment variable.  When enabled, log messages are written to stderr and also passed to the `wick-log` function so they could make it to a log file.  (See [Bash concepts] for more about stderr.)
 
+This also will colorize the output when the `WICK_COLOR` environment variable is set to anything.
+
     wick-debug MESSAGE
 
 * `MESSAGE`: The text to log.
@@ -150,6 +152,8 @@ wick-error
 ----------
 
 Logging function.  Use this to log error messages right before you exit the program or return a failure.  All messages are written to stderr.  Log messages are also passed to the `wick-log` function to be logged to a file.  (See `wick-log` for information about log files.  See [Bash concepts] for more about stderr.)
+
+This also will colorize the output when the `WICK_COLOR` environment variable is set to anything.
 
     wick-error MESSAGE
 
@@ -446,6 +450,8 @@ wick-info
 
 Logging function.  Use this to log major chunks of code that are executing.  Informational messages are written to stdout as long as `WICK_LOG_QUIET` is unset or set to an empty value.  See the `wick-log` function for information regarding logfiles.  (See [Bash concepts] for information about stdout.)
 
+This also will colorize the output when the `WICK_COLOR` environment variable is set to anything.
+
     wick-info MESSAGE
 
 * `MESSAGE`: The text to log.
@@ -682,6 +688,8 @@ wick-warn
 ---------
 
 Logging function.  Use this to log when you encounter a problem, but typically only warn for problems you can overcome.  Warning messages are always written to stdout.  See `wick-log` for information about writing log messages to files.  (See [Bash concepts] regarding stdout.)
+
+This also will colorize the output when the `WICK_COLOR` environment variable is set to anything.
 
     wick-warn MESSAGE
 

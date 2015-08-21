@@ -43,6 +43,10 @@ wick-debug() (
 
     wick-prefix-lines OUTPUT "DEBUG: " "$*"
 
+    if [[ ! -z "${WICK_COLOR-}" ]]; then
+        OUTPUT=$'\E[30;1m'"$OUTPUT"$'\E[0m'
+    fi
+
     # Check if debugging is enabled for everything
     if [[ "$DEBUG" == "*" ]] || [[ "$DEBUG" == "all" ]] || [[ "$DEBUG" == "true" ]]; then
         wick-log "DEBUG" "$*"

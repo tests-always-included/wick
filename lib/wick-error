@@ -12,5 +12,10 @@ wick-error() (
 
     wick-log "ERROR" "$*"
     wick-prefix-lines OUTPUT "ERROR: " "$*"
+
+    if [[ ! -z "${WICK_COLOR-}" ]]; then
+        OUTPUT=$'\E[41;37;1m'"$OUTPUT"$'\E[0m'
+    fi
+
     echo "$OUTPUT" >&2
 )

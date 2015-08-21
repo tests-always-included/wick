@@ -12,5 +12,10 @@ wick-warn() (
 
     wick-log "WARN" "$*"
     wick-prefix-lines OUTPUT "WARN: " "$*"
+
+    if [[ ! -z "${WICK_COLOR-}" ]]; then
+        OUTPUT=$'\E[33;1m'"$OUTPUT"$'\E[0m'
+    fi
+
     echo "$OUTPUT"
 )
