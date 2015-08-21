@@ -88,7 +88,7 @@ wick-service-add() {
         wick-make-file --mode=0755 --owner=root:root "$SOURCE" "/etc/init.d/$SERVICE" "${OPTIONS[@]-}"
         chkconfig --add "$SERVICE"
     else
-        wick-info "Service already exists and --force flag was not specified"
+        wick-warn "Service already exists and --force flag was not specified"
     fi
 }
 
@@ -119,12 +119,12 @@ wick-service-make-override() {
     SRC="/etc/init.d/$SERVICE"
     DEST="/etc/chkconfig.d/$SERVICE"
 
+    wick-info "Making override for service: $SERVICE"
+
     if [[ -f "$DEST" ]] && [[ -z "${FORCE-}" ]]; then
-        wick-info "Service override already exists: $SERVICE"
+        wick-warn "Override already exists and --force flag was not specified"
         return 0
     fi
-
-    wick-info "Making override for service: $SERVICE"
 
     if [[ ! -f "$SRC" ]]; then
         echo "Source service file does not exist: $SRC" >&2
