@@ -3,6 +3,8 @@
 formula-template-mo() {
     wick-debug "Template parsing with mo: $1"
     (
-        /usr/local/bin/mo "$1"
+        set +eu
+        . /usr/local/bin/mo
+        mo "$1"
     )
 }
