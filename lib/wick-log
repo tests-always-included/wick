@@ -21,7 +21,6 @@ wick-log() {
     local LOG_LEVEL OUTPUT PRIORITY
 
     LOG_LEVEL="$1"
-    shift
 
     if [[ "${WICK_LOGFILE:0:7}" == "syslog:" ]]; then
         PRIORITY=${WICK_LOGFILE:8}
