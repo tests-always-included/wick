@@ -75,9 +75,14 @@ wick-formula() {
     WICK_FORMULA_LIST_WITH_ARGS[${#WICK_FORMULA_LIST_WITH_ARGS[@]}]=$FORMULA_ESCAPED$ARGS
 
     if [[ -f "$LOCATION/depends" ]]; then
+        # Can't run this in a subshell because subshells won't be able to
+        # modify parent variables, like WICK_FORMULA_LIST.
         WICK_FORMULA_DIR=$LOCATION
         PRESERVED_PWD=$PWD
-        . "$LOCATION/depends" $ARGS
+
+        # See escaping note in wick-run-formula for why we are unable to use
+        #     . "$LOCATION/depends" $ARGS
+        eval "wick-strict-mode ; . \"$LOCATION/depends\" $ARGS"
         cd "$PRESERVED_PWD"
     fi
 
