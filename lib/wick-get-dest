@@ -25,7 +25,7 @@ wick-get-dest() {
 
     TARGET=$1
     DEST=$2
-    FILE=$3
+    FILE=${3-}
 
     if [[ -z "$DEST" ]]; then
         wick-error "A destination path is required for wick-absolute-destination"

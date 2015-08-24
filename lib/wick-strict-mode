@@ -5,7 +5,7 @@
 # See http://redsymbol.net/articles/unofficial-bash-strict-mode/
 
 wick-strict-mode() {
-    set -eEu -o pipefail -o errtrace
+    set -eEu -o pipefail
     IFS=$'\n\t'
     trap 'wick-strict-mode-fail $?' ERR
 }

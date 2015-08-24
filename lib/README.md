@@ -73,6 +73,8 @@ Example:
     # are no elements in the array and when `set -u` is enabled.
     echo "${FILTERED[@]-}"
 
+That last line looks weird but it is to help you work with [strict mode].  There are other coding techniques that should be kept in mind; see [strict mode] for a full explanation.
+
 
 wick-command-exists
 -------------------
@@ -437,12 +439,17 @@ Example:
     FILES=""
     temp-files-array FILES
     echo "Number of files returned:  ${#FILES}"
-    echo "File #1:  ${FILES[0]}"
+
+    if [[ ${#FILES} -gt 0 ]]; then
+        echo "File #1:  ${FILES[0]}"
+    fi
 
 Example result:
 
     Number of files returned:  5
     File #1:  a_9789
+
+There's some interesting syntax in that example, such as using `VALUE[${#VALUE[@]}]=$FILE` to append to the array.  This is so the code does not fail, as it will run in [strict mode] by default.
 
 
 wick-info
@@ -608,6 +615,50 @@ Example:
     echo "$FIXED"  # Outputs "ABC_DEF"
 
 
+wick-strict-mode
+----------------
+
+Enables [strict mode] for Bash.  Errors will kill the program.  Accessing undefined variables will cause errors (and exit the program).  Commands in pipelines that return a non-zero status code will also cause errors and kill the program.  An ERR trap is also enabled that will produce a stack trace when errors happen.
+
+    wick-strict-mode
+
+This is intended to be used at the beginning of your shell scripts in order to ensure correctness in your programming.
+
+Example:
+
+    #!/bin/bash
+    . /usr/local/lib/wick-infect
+    wick-strict-mode
+
+
+wick-strict-run
+---------------
+
+Runs a command and captures its return code, even when [strict mode] is enabled.  The variable name you specify is set to the return code of the command.
+
+    wick-strict-run DESTINATION COMMAND [ARGUMENT [...]]
+
+* `DESTINATION`: Name of environment variable that should get the return value from the executed command.
+* `COMMAND`: The command to execute.
+* `ARGUMENT`: Additional arguments to pass to a script.
+
+This is intended to be used along with `wick-strict-mode`.
+
+Example:
+
+    #!/bin/bash
+    . /usr/local/lib/wick-infect
+    wick-strict-mode
+
+    wick-strict-run RESULT grep "some-string" /etc/some-file.cfg > /dev/null 2>&1
+
+    if [[ $RESULT -eq 0 ]]; then
+        wick-info "some-string was found"
+    else
+        wick-info "some-string was not found"
+    fi
+
+
 wick-temp-dir
 -------------
 
@@ -708,4 +759,5 @@ Example:
 [execution order]: ../doc/execution-order.md
 [formulas]: ../formulas/README.md
 [parents]: ../doc/parents.md
+[strict mode]: ../doc/bash-strict-mode.md
 [wick-infect]: ../formulas/wick-infect/README.md

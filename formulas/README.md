@@ -5,6 +5,8 @@ Formulas are sets of instructions that result in a specific state.  You use them
 
 Formulas should be idempotent, which means that running them once or running them a hundred times will result in the exact same state.  Let's take a formula that adds a line to `/etc/rc.local`.  When executed once, the line should be added.  When executed again, the formula should check to see if the line already exists and will add the line only if it is missing.
 
+All formulas run in a [strict mode].  This means you won't be able to reference undefined variables nor commit other minor infractions.  Further implications and code examples are documented with [strict mode].
+
 
 Specific Formulas
 -----------------
@@ -74,6 +76,8 @@ The shell scripts in `explorers/` are executed by [wick-explorer], one of the ma
 
     uname -r
 
+Please remember that all explorers run in [strict mode] and all errors in running will cause the programs to abort.
+
 When executed, the output of this will be something like "3.16.0-30-generic".  You can use explorers to determine the currently running operating system, versions of software, if files exist in specific locations or see if some packages are installed (among many other things).  Take a look at the ones provided in [wick-base] to see some that already exist.
 
 Explorer scripts have the full Wick environment, so functions like wick-debug, wick-info (both from [wick-base]) and any other functions defined by earlier formulas are available during script execution.
@@ -100,11 +104,17 @@ Run Script
 
 The `run` file is the meat of your formula.  It performs whatever actions are necessary in order to complete the desired action.  Typically you will leverage existing functions as much as possible in order to keep the size of your code down and to reduce duplication.
 
-The run script should run with `set -e` to make sure that errors cause the script to immediately fail.  It can also be passed arguments.  For instance, the [hostname] formula accepts the desired name for the target machine.  Arguments are set in another function's dependencies or in [roles].  They use the command `wick-formula`, like this:
+All `run` scripts automatically start in [strict mode], so any error that is encountered will cause the script to immediately fail.
 
+These scripts can also be passed arguments.  For instance, the [hostname] formula accepts the desired name for the target machine.  Arguments are set in another function's dependencies or in [roles].  They use the command `wick-formula`, like this:
+
+    # This is how a role would pass arguments to the run script
     wick-formula hostname server1.example.com
 
-Then the `run` script for the [hostname] formula will get "server1.example.com" as `$1` in the script.
+    # The run script would act like it was called this way:
+    # ./formulas/hostname/run server1.example.com
+
+In the above example, the `run` script for the [hostname] formula will get "server1.example.com" as `$1` in the script.
 
 Here is a sample run script that will download a copy of the application from an internal server.  It uses `wick-get-option` and `wick-get-argument` to simplify command-line arguments (available in [Libraries] and detailed in [argument processing]).
 
@@ -194,6 +204,7 @@ The files contained within the `templates/` folder are extremely similar to the 
 [roles]: ../roles/README.md
 [rvm]: rvm/README.md
 [s3cmd]: s3cmd/README.md
+[strict mode]: ../doc/bash-strict-mode.md
 [sysctl]: sysctl/README.md
 [templates]: ../doc/templates.md
 [timezone]: timezone/README.md
