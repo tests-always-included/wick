@@ -5,13 +5,17 @@
 # This message always is written to stdout as well.
 #
 # Parameters:
-#     $*: The log message to write
+#     $@: The log messages to write (they get joined into one line)
+#
+# Environment variables:
+#     WICK_COLOR: When set to non-empty string, ANSI color is enabled.
 wick-warn() (
     set +x
-    local OUTPUT
+    local CONTENT OUTPUT
 
-    wick-log "WARN" "$*"
-    wick-prefix-lines OUTPUT "WARN: " "$*"
+    wick-array-join CONTENT " " "$@"
+    wick-log "WARN" "$CONTENT"
+    wick-prefix-lines OUTPUT "WARN: " "$CONTENT"
 
     if [[ ! -z "${WICK_COLOR-}" ]]; then
         OUTPUT=$'\E[33;1m'"$OUTPUT"$'\E[0m'

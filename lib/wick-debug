@@ -28,20 +28,22 @@
 #     DEBUG="rainbow pony unicorn" ./thing
 #
 # Parameters:
-#     $*: The log message to write
+#     $@: The log messages to write (they get joined into one line)
 #
 # Environment variables:
 #     DEBUG: Controls if logging is enabled and where it's enabled.
+#     WICK_COLOR: When set to non-empty string, ANSI color is enabled.
 wick-debug() (
     set +x
-    local LIST NAME OUTPUT
+    local CONTENT LIST NAME OUTPUT
 
     # Do not log unless the DEBUG environment variable is set
     if [[ -z "${DEBUG-}" ]]; then
         return
     fi
 
-    wick-prefix-lines OUTPUT "DEBUG: " "$*"
+    wick-array-join CONTENT " " "$@"
+    wick-prefix-lines OUTPUT "DEBUG: " "$CONTENT"
 
     if [[ ! -z "${WICK_COLOR-}" ]]; then
         OUTPUT=$'\E[30;1m'"$OUTPUT"$'\E[0m'
@@ -49,7 +51,7 @@ wick-debug() (
 
     # Check if debugging is enabled for everything
     if [[ "$DEBUG" == "*" ]] || [[ "$DEBUG" == "all" ]] || [[ "$DEBUG" == "true" ]]; then
-        wick-log "DEBUG" "$*"
+        wick-log "DEBUG" "$CONTENT"
         echo "$OUTPUT" >&2
         return
     fi
@@ -66,7 +68,7 @@ wick-debug() (
         fi
 
         if [[ ! -z "$NAME" ]] && [[ ${#FUNCNAME[@]} -gt 0 ]] && wick-in-array "$NAME" "${FUNCNAME[@]}"; then
-            wick-log "DEBUG" "$*"
+            wick-log "DEBUG" "$CONTENT"
             echo "$OUTPUT" >&2
             return
         fi

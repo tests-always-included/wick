@@ -76,6 +76,26 @@ Example:
 That last line looks weird but it is to help you work with [strict mode].  There are other coding techniques that should be kept in mind; see [strict mode] for a full explanation.
 
 
+wick-array-join
+---------------
+
+Combine an array of strings together into one string.
+
+    wick-array-join DESTINATION JOINER [VALUE [...]]
+
+* `DESTINATION`: Name of environment variable that should hold the resulting string.
+* `JOINER`: String to use for joining elements in the array.
+* `VALUE`: Array values.
+
+Example:
+
+    ARR=(one two "three four" five)
+    wick-array-join DEST "+" "${ARR[@]}"
+
+    # Result: one+two+three four+five
+    echo "$DEST"
+
+
 wick-command-exists
 -------------------
 
@@ -102,7 +122,7 @@ Logging function.  Use this to log every action that formulas can take.  Debug c
 
 This also will colorize the output when the `WICK_COLOR` environment variable is set to anything.
 
-    wick-debug MESSAGE
+    wick-debug MESSAGE [...]
 
 * `MESSAGE`: The text to log.
 
@@ -157,7 +177,7 @@ Logging function.  Use this to log error messages right before you exit the prog
 
 This also will colorize the output when the `WICK_COLOR` environment variable is set to anything.
 
-    wick-error MESSAGE
+    wick-error MESSAGE [...]
 
 * `MESSAGE`: The text to log.
 
@@ -459,7 +479,7 @@ Logging function.  Use this to log major chunks of code that are executing.  Inf
 
 This also will colorize the output when the `WICK_COLOR` environment variable is set to anything.
 
-    wick-info MESSAGE
+    wick-info MESSAGE [...]
 
 * `MESSAGE`: The text to log.
 
@@ -742,7 +762,7 @@ Logging function.  Use this to log when you encounter a problem, but typically o
 
 This also will colorize the output when the `WICK_COLOR` environment variable is set to anything.
 
-    wick-warn MESSAGE
+    wick-warn MESSAGE [...]
 
 * `MESSAGE`: The text to log.
 

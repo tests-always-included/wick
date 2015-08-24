@@ -102,6 +102,16 @@ When you run `echo-first` with no arguments, the above will fail.  To adapt this
         fi
     }
 
+Strangely enough, `$@` will never give an error even in strict mode.
+
+    # This always works
+    function show-args() {
+        echo "$@"
+    }
+
+    show-args one two three
+    show-args  # I would expect this to fail and it does not
+
 
 ### `Unbound variable ${ARRAY[@]}`
 

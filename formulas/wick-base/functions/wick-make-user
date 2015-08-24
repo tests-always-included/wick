@@ -55,7 +55,7 @@ wick-make-user() {
         fi
 
         ARGS[${#ARGS[@]}]=$USERNAME
-        wick-debug "Command: ${ARGS[@]}"
+        wick-debug "Command:" "${ARGS[@]}"
         "${ARGS[@]}"
     else
         wick-info "Altering user: $USERNAME"
@@ -81,7 +81,7 @@ wick-make-user() {
         fi
 
         ARGS[${#ARGS[@]}]=$USERNAME
-        wick-debug "Command: ${ARGS[@]}"
+        wick-debug "Command:" "${ARGS[@]}"
         "${ARGS[@]}"
     fi
 

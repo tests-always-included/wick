@@ -52,7 +52,7 @@ wick-load-lib() {
 # binaries are loaded into Wick.
 #
 # Parameters:
-#     $*:  Command to execute when everything is loaded
+#     $@:  Command to execute when everything is loaded
 wick-on-load() {
     local ARGS
     wick-argument-string ARGS "$@"

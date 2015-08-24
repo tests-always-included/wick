@@ -1,0 +1,22 @@
+#!/bin/bash
+
+wick-array-join() {
+    local JOINER RESULT TARGET
+
+    TARGET=$1
+    JOINER=$2
+    RESULT=""
+    shift 2
+
+    if [[ $# -gt 0 ]]; then
+        RESULT="$1"
+        shift
+    fi
+
+    while [[ $# -gt 0 ]]; do
+        RESULT="$RESULT$JOINER$1"
+        shift
+    done
+
+    local "$TARGET" && wick-indirect "$TARGET" "$RESULT"
+}

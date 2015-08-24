@@ -6,18 +6,20 @@
 # a non-null value.
 #
 # Parameters:
-#     $*: The log message to write
+#     $@: The log messages to write (they get joined into one line)
 #
 # Environment variables:
+#     WICK_COLOR: When set to non-empty string, ANSI color is enabled.
 #     WICK_LOG_QUIET: If set to a value, does not write anything to stdout
 wick-info() (
     set +x
-    local OUTPUT
+    local CONTENT OUTPUT
 
-    wick-log INFO "$*"
+    wick-array-join CONTENT " " "$@"
+    wick-log INFO "$CONTENT"
 
     if [[ -z "${WICK_LOG_QUIET-}" ]]; then
-        wick-prefix-lines OUTPUT "INFO: " "$*"
+        wick-prefix-lines OUTPUT "INFO: " "$CONTENT"
 
         if [[ ! -z "${WICK_COLOR-}" ]]; then
             OUTPUT=$'\E[32m'"$OUTPUT"$'\E[0m'

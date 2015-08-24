@@ -13,7 +13,7 @@
 #
 # Parameters:
 #     $1: Log level (ERROR WARN INFO DEBUG)
-#     $2-$*: Message to log
+#     $2: The message to write
 #
 # Environment variables:
 #     WICK_LOGFILE: controls where the log messages are sent.
@@ -48,14 +48,14 @@ wick-log() {
                 ;;
         esac
 
-        logger -p "$PRIORITY" -- "$*"
+        logger -p "$PRIORITY" -- "$2"
 
         # Eraser $LOGGER so we don't also write to a file
         LOGGER=""
     fi
 
     if [[ ! -z "$WICK_LOGFILE" ]]; then
-        wick-prefix-lines OUTPUT "$(date -Iseconds) $LOG_LEVEL: " "$*"
+        wick-prefix-lines OUTPUT "$(date -Iseconds) $LOG_LEVEL: " "$2"
         echo "$OUTPUT" >> "$WICK_LOGFILE"
     fi
 }

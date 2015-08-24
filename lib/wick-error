@@ -5,13 +5,17 @@
 # This message is always written to stderr.
 #
 # Parameters:
-#     $*: The log message to write
+#     $@: The log messages to write (they get joined into one line)
+#
+# Environment variables:
+#     WICK_COLOR: When set to non-empty string, ANSI color is enabled.
 wick-error() (
     set +x
-    local OUTPUT
+    local CONTENT OUTPUT
 
-    wick-log "ERROR" "$*"
-    wick-prefix-lines OUTPUT "ERROR: " "$*"
+    wick-array-join CONTENT " " "$@"
+    wick-log "ERROR" "$CONTENT"
+    wick-prefix-lines OUTPUT "ERROR: " "$CONTENT"
 
     if [[ ! -z "${WICK_COLOR-}" ]]; then
         OUTPUT=$'\E[41;37;1m'"$OUTPUT"$'\E[0m'

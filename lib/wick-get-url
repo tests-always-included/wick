@@ -38,7 +38,7 @@ wick-get-url-curl() {
         ARGS[${#ARGS[@]}]=$DEST
     }
     ARGS[${#ARGS[@]}]=$URL
-    wick-debug "wick-get-url: ${ARGS[@]}"
+    wick-debug "wick-get-url:" "${ARGS[@]}"
     "${ARGS[@]}"
 }
 
@@ -56,6 +56,6 @@ wick-get-url-wget() {
         ARGS[${#ARGS[@]}]=$DEST
     }
     ARGS[${#ARGS[@]}]=$URL
-    wick-debug "wick-get-url: ${ARGS[@]}"
+    wick-debug "wick-get-url:" "${ARGS[@]}"
     "${ARGS[@]}"
 }
