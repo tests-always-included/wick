@@ -14,12 +14,12 @@ wick-strict-mode-fail() {
     local I
     echo "Error detected - status code $1"
     echo "Command:  $BASH_COMMAND"
-    echo "Location:  ${BASH_SOURCE[1]}, line ${BASH_LINENO[1]}"
+    echo "Location:  ${BASH_SOURCE[1]}, line ${BASH_LINENO[0]}"
     echo "Stack Trace:"
     I=1
 
     while [[ $I -lt ${#BASH_LINENO[@]} ]]; do
-        echo "    [$I] ${FUNCNAME[$I]:+${FUNCNAME[$I]}(): }${BASH_SOURCE[$I]}, line ${BASH_LINENO[$I]}"
+        echo "    [$I] ${FUNCNAME[$I]:+${FUNCNAME[$I]}(): }${BASH_SOURCE[$I]}, line ${BASH_LINENO[$(($I - 1))]}"
         I=$((I + 1))
     done
 }
