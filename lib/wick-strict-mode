@@ -16,6 +16,11 @@ wick-strict-mode-fail() (
     echo "Error detected - status code $1"
     echo "Command:  $BASH_COMMAND"
     echo "Location:  ${BASH_SOURCE[1]}, line ${BASH_LINENO[0]}"
+
+    if [[ ${#PIPESTATUS[@]} -gt 1 ]]; then
+        echo "Pipe status: " "${PIPESTATUS[@]}"
+    fi
+
     echo "Stack Trace:"
     I=1
 
