@@ -22,6 +22,10 @@ wick-log() {
 
     LOG_LEVEL="$1"
 
+    if [[ -z "${WICK_LOGFILE-}" ]]; then
+        return
+    fi
+
     if [[ "${WICK_LOGFILE:0:7}" == "syslog:" ]]; then
         PRIORITY=${WICK_LOGFILE:8}
 
