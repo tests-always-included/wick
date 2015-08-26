@@ -4,6 +4,7 @@ Bash Strict Mode
 As found on [another website](http://redsymbol.net/articles/unofficial-bash-strict-mode/), there is a combination of flags that you can enable to enable a sort of strict mode.  This project is using this combination:
 
     set -eEu -o pipefail
+    shopt -s extdebug
     IFS=$'\n\t'
     trap 'wick-strict-mode-fail $?' ERR
 
@@ -13,6 +14,7 @@ A brief summary of what each option does:
 * `set -E`: The ERR trap is inherited by shell functions, command substitutions and commands in subshells.  This helps us use `wick-strict-mode-fail` wherever `set -e` is enabled.
 * `set -u`: Exit and trigger the ERR trap when accessing an unset variable.  This helps catch typos in variable names.
 * `set -o pipefail`: The return value of a pipeline is the value of the last (rightmost) command to exit with a non-zero status.  So, `a | b | c` can return `a`'s status when `b` and `c` both return a zero status.  It is easier to catch problems during the middle of processing a pipeline this way.
+* `shopt -s extdebug`: Enable extended debugging.  Bash will track the parameters to all of the functions in the call stack, allowing the stack trace to also display the parameters that were used.
 * `IFS=$'\n\t'`: Set the "internal field separator", which is a list of characters use for word splitting after expansion and to split lines into words with the `read` builtin command.  Normally this is `$' \t\n'` and we're removing the space.  This helps us catch other issues when we may rely on IFS or accidentally use it incorrectly.
 * `trap 'wick-strict-mode-fail $?' ERR`:  The ERR trap is triggered when a script catches an error.  `wick-strict-mode-fail` attempts to produce a stack trace to aid in debugging.  We pass `$?` as the first argument so we have access to the return code of the failed command.
 
@@ -29,6 +31,18 @@ So why use this?
 For the same reason that you use `jslint` for testing if JavaScript is good enough or `-Wall` when compiling C code, you want to know when there are problems and you want those problems exposed very early in the process.  Because this software is responsible for configuring
 
 It is important to make sure that we know about and handle all potential errors because this software will be relied upon to automate an administrator's tasks.
+
+For an example of what the stack trace looks like, here is one from a test program I used:
+
+    Error detected - status code 1
+    Command:  false
+    Location:  ./in-functions, line 13
+    Stack Trace:
+        [1] two(): ./in-functions, line 13 -> two 2 22 Two
+        [2] one(): ./in-functions, line 8 -> one One\ one\ one\ long\ argument 1-another
+        [3] main(): ./in-functions, line 17 -> main
+
+You can see the filename, line number and the name of the function that was called.  The exact command is also preserved and is shown after the arrow on the right.  At the top you can see that there is a status code displayed and the command which actually failed (it was executing `false`).  If this was in a pipeline you would see the pipe status for each command in the pipeline.
 
 
 Common Problems and Solutions

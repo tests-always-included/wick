@@ -644,6 +644,8 @@ Enables [strict mode] for Bash.  Errors will kill the program.  Accessing undefi
 
 This is intended to be used at the beginning of your shell scripts in order to ensure correctness in your programming.
 
+Please check out the detailed explanation of [strict mode] for further information.
+
 Example:
 
     #!/bin/bash
