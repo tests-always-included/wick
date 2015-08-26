@@ -6,13 +6,15 @@
 
 wick-strict-mode() {
     set -eEu -o pipefail
+    shopt -s extdebug
     IFS=$'\n\t'
     trap 'wick-strict-mode-fail $?' ERR
 }
 
 wick-strict-mode-fail() (
     set +x
-    local I
+    local ARGS_LIST ARGS_LEFT I NEXT_ARG
+
     echo "Error detected - status code $1"
     echo "Command:  $BASH_COMMAND"
     echo "Location:  ${BASH_SOURCE[1]}, line ${BASH_LINENO[0]}"
@@ -25,7 +27,29 @@ wick-strict-mode-fail() (
     I=1
 
     while [[ $I -lt ${#BASH_LINENO[@]} ]]; do
-        echo "    [$I] ${FUNCNAME[$I]:+${FUNCNAME[$I]}(): }${BASH_SOURCE[$I]}, line ${BASH_LINENO[$(($I - 1))]}"
-        I=$((I + 1))
+        ARGS_LIST=()
+
+        if [[ ${#BASH_ARGC[@]} -gt $I ]] && [[ ${#BASH_ARGV[@]} -ge $(( NEXT_ARG + ${BASH_ARGC[I]} )) ]]; then
+            for (( ARGS_LEFT = ${BASH_ARGC[I]}; ARGS_LEFT; --ARGS_LEFT )); do
+                # Note: this reverses the order on purpose
+                ARGS_LIST[$ARGS_LEFT]=${BASH_ARGV[NEXT_ARG]}
+                (( NEXT_ARG ++ ))
+            done
+
+            if [[ ${#ARGS_LIST[@]} ]]; then
+                printf -v ARGS_LIST " %q" "${ARGS_LIST[@]}"
+            else
+                ARGS_LIST=""
+            fi
+
+            if [[ ${#ARGS_LIST} -gt 255 ]]; then
+                ARGS_LIST=${ARGS_LIST:0:250}...
+            fi
+        else
+            ARGS_LIST = ""
+        fi
+
+        echo "    [$I] ${FUNCNAME[I]:+${FUNCNAME[I]}(): }${BASH_SOURCE[I]}, line ${BASH_LINENO[I - 1]} -> ${FUNCNAME[I]:-${BASH_SOURCE[I]##*/}}$ARGS_LIST"
+        (( I ++ ))
     done
 )
