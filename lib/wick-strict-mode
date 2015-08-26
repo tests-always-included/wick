@@ -46,7 +46,7 @@ wick-strict-mode-fail() (
                 ARGS_LIST=${ARGS_LIST:0:250}...
             fi
         else
-            ARGS_LIST = ""
+            ARGS_LIST=""
         fi
 
         echo "    [$I] ${FUNCNAME[I]:+${FUNCNAME[I]}(): }${BASH_SOURCE[I]}, line ${BASH_LINENO[I - 1]} -> ${FUNCNAME[I]:-${BASH_SOURCE[I]##*/}}$ARGS_LIST"
