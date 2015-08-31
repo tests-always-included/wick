@@ -7,5 +7,9 @@ wick-info "Installing redis"
 sysctl-set vm.overcommit_memory 1
 sysctl-set net.core.somaxconn 512
 YUM_ENABLE_REPO=remi wick-package redis
+
+# Listen on all interfaces
+sed -i 's/^bind/#bind/' /etc/redis.conf
+
 wick-service restart redis
 wick-service enable redis
