@@ -23,7 +23,8 @@ wick-strict-mode-fail() (
         echo "Pipe status: " "${PIPESTATUS[@]}"
     fi
 
-    I=1
+    I=$#
+    NEXT_ARG=$#
 
     if [[ $I -lt ${#BASH_LINENO[@]} ]]; then
         echo "Stack Trace:"
