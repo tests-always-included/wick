@@ -17,14 +17,19 @@ wick-strict-mode-fail() (
 
     echo "Error detected - status code $1"
     echo "Command:  $BASH_COMMAND"
-    echo "Location:  ${BASH_SOURCE[1]}, line ${BASH_LINENO[0]}"
+    echo "Location:  ${BASH_SOURCE[1]:-unknown}, line ${BASH_LINENO[0]:-unknown}"
 
     if [[ ${#PIPESTATUS[@]} -gt 1 ]]; then
         echo "Pipe status: " "${PIPESTATUS[@]}"
     fi
 
-    echo "Stack Trace:"
     I=1
+
+    if [[ $I -lt ${#BASH_LINENO[@]} ]]; then
+        echo "Stack Trace:"
+    else
+        echo "Stack trace is unavailable"
+    fi
 
     while [[ $I -lt ${#BASH_LINENO[@]} ]]; do
         ARGS_LIST=()
