@@ -42,7 +42,7 @@ wick-strict-mode-fail() (
                 (( NEXT_ARG ++ ))
             done
 
-            if [[ ${#ARGS_LIST[@]} ]]; then
+            if [[ ${#ARGS_LIST[@]} -gt 0 ]]; then
                 printf -v ARGS_LIST " %q" "${ARGS_LIST[@]}"
             else
                 ARGS_LIST=""
