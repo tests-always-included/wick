@@ -64,7 +64,7 @@ The dependencies can also use explorers.  If you need to use rvm on centos and r
             ;;
     esac
 
-While executing, the `depends` script will have `WICK_FORMULA_DIR` set to the path of the currently executing formula.
+While executing, the `depends` script will have `WICK_FORMULA_DIR` set to the path of the currently executing formula and `WICK_FORMULA_NAME` will be the name of the formula.
 
 
 Explorers
