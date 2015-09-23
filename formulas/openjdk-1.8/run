@@ -13,8 +13,10 @@ case "$OS" in
 
         # Manually update the priority - RHEL bug 1175457
         # https://bugzilla.redhat.com/show_bug.cgi?id=1175457
+        # Path can be /usr/lib/jvm/java-1.8.0-openjdk-1.8.0
+        # or /usr/lib/jvm/jre-1.8.0-openjdk.x86_64
         ALT_PATH=$(alternatives --display java \
-            | grep "^/usr/lib/jvm/java-1.8.0-openjdk-1.8.0" \
+            | grep "^/usr/lib/jvm/j.*-1.8.0-openjdk" \
             | head -n 1 \
             | sed "s/ - priority.*//")
         alternatives --set java "$ALT_PATH"
