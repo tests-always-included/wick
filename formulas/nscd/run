@@ -1,8 +1,5 @@
 #!/bin/bash
 
-wick-explorer OS wick-base os
-NSCD_PACKAGE=unscd
-
 if wick-package --exists unscd; then
     wick-package unscd
     wick-service start unscd
