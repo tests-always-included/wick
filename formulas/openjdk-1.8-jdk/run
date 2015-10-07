@@ -1,0 +1,13 @@
+#!/bin/bash
+
+wick-explorer OS wick-base os
+
+case "$OS" in
+    debian|ubuntu)
+        wick-package openjdk-8-jdk
+        ;;
+
+    *)
+        wick-package java-1.8.0-openjdk-devel
+        ;;
+esac
