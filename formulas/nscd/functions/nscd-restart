@@ -1,0 +1,9 @@
+#!/bin/bash
+
+nscd-restart() {
+    if wickPackage --exists unscd; then
+        wickService restart unscd
+    else
+        wickService restart nscd
+    fi
+}
