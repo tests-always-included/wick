@@ -59,7 +59,7 @@ The general idea is that any child can override what the parents provide.  This 
 
 * [Binaries] and [libraries] provide functions.  Functions can be overridden by simply defining them again, so the parent is loaded before a child.  In our example for client1, the load order would be wick, then extended-wick and finally client1.
 
-* [Formulas] and [roles] are located using `wick-find` and only one is used.  `wick-find` starts looking in the lowest child and works its way up the parent chain.  If we are seeking the "nginx" formula, `wick-find` searches client1, then extended-wick and finally wick.
+* [Formulas] and [roles] are located using `wickFind` and only one is used.  `wickFind` starts looking in the lowest child and works its way up the parent chain.  If we are seeking the "nginx" formula, `wickFind` searches client1, then extended-wick and finally wick.
 
 
 [Binaries]: ../bin/README.md

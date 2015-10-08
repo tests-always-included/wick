@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-package at
+wickPackage at
 
 # On CentOS 6.5 these folders may not exist.  First, confirm that
 # this is a problem elsewhere and then adjust this run script
@@ -9,25 +9,25 @@ wick-package at
 # AT_JOBS_DIR="/var/spool/cron/atjobs"
 # if [[ ! -d "$AT_JOBS_DIR" ]]; then
 #     mkdir "$AT_JOBS_DIR"
-#     wick-info "RESULT mkdir $AT_JOBS_DIR $?"
+#     wickInfo "RESULT mkdir $AT_JOBS_DIR $?"
 #
 # fi
 #
 # AT_JOBS_FILE="$AT_JOBS_DIR/.SEQ"
 # if [[ ! -f "$AT_JOBS_FILE" ]]; then
 #     touch "$AT_JOBS_FILE"
-#     wick-info "RESULT touch $AT_JOBS_FILE $?"
+#     wickInfo "RESULT touch $AT_JOBS_FILE $?"
 # fi
 #
 # AT_DIR="/var/spool/at"
 # if [[ ! -d "$AT_DIR" ]]; then
 #     mkdir "$AT_DIR"
-#     wick-info "RESULT mkdir $AT_DIR $?"
+#     wickInfo "RESULT mkdir $AT_DIR $?"
 # fi
 #
 # AT_FILE="$AT_DIR/.SEQ"
 # if [[ ! -f "$AT_FILE" ]]; then
 #     touch "$AT_FILE"
-#     wick-info "RESULT touch $AT_FILE $?"
+#     wickInfo "RESULT touch $AT_FILE $?"
 # fi
 

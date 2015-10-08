@@ -1,53 +1,69 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Run a command when the currently executing script or subshell ends.
 #
-# Note:  I am not a fan of eval.  If you have a better way to do this
-# that uses fewer evaluated statements that also works from Bash 3 through
-# the latest release and with "set -eu", then I'd LOVE to know.
+# $1   - The command to execute.
+# $2-@ - Optional arguments to pass to the command.
+#
+# Examples
+#
+#    # Download a file
+#    wickGetUrl http://example.com/installer.tar.gz /tmp/installer.tar.gz
+#
+#    # When done, clean it up
+#    wickOnExit rm -f /tmp/installer.tar.gz
+#
+# Returns nothing.
+wickOnExit() {
+    local cmd length name
 
-WICK_ON_EXIT_ITEMS=()
+    name="WICK_ON_EXIT_$BASHPID"
 
-wick-on-exit() {
-    local COMMAND LEN NAME
-
-    NAME="WICK_ON_EXIT_$BASHPID"
-
-    if ! declare -p $NAME > /dev/null 2>&1; then
-        eval "$NAME=()"
+    if ! declare -p $name > /dev/null 2>&1; then
+        eval "$name=()"
     fi
 
-    eval "LEN=\${#$NAME[@]}"
-    wick-argument-string COMMAND "$@"
-    wick-debug "Adding wick-on-exit item [$BASHPID $LEN]: ${COMMAND}"
-    eval "$NAME[$LEN]=\$COMMAND"
+    # Note:  I am not a fan of eval.  If you have a better way to do this that
+    # uses fewer evaluated statements that also works from Bash 3 through the
+    # latest release and with "set -eu", then I'd LOVE to know.
+    eval "length=\${#$name[@]}"
+    wickArgumentString cmd "$@"
+    wickDebug "Adding wickOnExit item [$BASHPID $length]: ${cmd}"
+    eval "$name[$length]=\$cmd"
 
     # Always set or reset the trap
-    trap wick-on-exit-trap EXIT
+    trap wickOnExitTrap EXIT
 }
 
-wick-on-exit-trap() {
-    local CMD ITEM_ARRAY LEN NAME
 
-    NAME="WICK_ON_EXIT_$BASHPID"
+# Internal: Function that runs the wickOnExit commands.  This is set as the
+# EXIT trap in Bash to ensure that it always executes at the end of a script or
+# subshell.
+wickOnExitTrap() {
+    local cmd itemArray length name
 
-    if ! declare -p "$NAME" > /dev/null 2>&1; then
-        wick-debug "No array of wick-on-exit-traps [$BASHPID]"
+    name="WICK_ON_EXIT_$BASHPID"
+
+    if ! declare -p "$name" > /dev/null 2>&1; then
+        wickDebug "No array of wickOnExit traps [$BASHPID]"
         return
     fi
 
-    ITEM_ARRAY="$NAME[@]"
-    eval "LEN=\${#$ITEM_ARRAY}"
+    itemArray="$name[@]"
 
-    if [[ "$LEN" == 0 ]]; then
-        wick-debug "Empty list of wick-on-exit traps [$BASHPID]"
+    # See note above about using `eval`.
+    eval "length=\${#$itemArray}"
+
+    if [[ "$length" == 0 ]]; then
+        wickDebug "Empty list of wickOnExit traps [$BASHPID]"
         return
     fi
 
-    wick-debug "Running wick-on-exit trap [$BASHPID]"
+    wickDebug "Running wickOnExit trap [$BASHPID]"
 
-    for CMD in "${!ITEM_ARRAY}"; do
-        wick-debug "Running wick-on-exit command: $CMD"
-        eval $CMD
+    for cmd in "${!itemArray}"; do
+        wickDebug "Running wickOnExit command: $cmd"
+        eval $cmd
     done
 
-    wick-debug "Done running wick-on-exit traps"
+    wickDebug "Done running wickOnExit traps"
 }

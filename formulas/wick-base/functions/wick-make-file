@@ -1,18 +1,18 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-make-file() {
+wickMakeFile() {
     local DEST DEST_FILE OWNER SET_MODE SET_OWNER SRC SRC_FILE USE_FORMULA USE_TEMPLATE
 
-    wick-get-option USE_FORMULA formula "$@"
-    wick-get-option SET_MODE mode "$@"
-    wick-get-option SET_OWNER owner "$@"
-    wick-get-option USE_TEMPLATE template "$@"
-    wick-get-argument SRC_FILE 0 "$@"
-    wick-get-argument DEST 1 "$@"
+    wickGetOption USE_FORMULA formula "$@"
+    wickGetOption SET_MODE mode "$@"
+    wickGetOption SET_OWNER owner "$@"
+    wickGetOption USE_TEMPLATE template "$@"
+    wickGetArgument SRC_FILE 0 "$@"
+    wickGetArgument DEST 1 "$@"
     SRC="$WICK_FORMULA_DIR"
 
     if [[ ! -z "$USE_FORMULA" ]]; then
-        wick-find SRC "formulas/$USE_FORMULA"
+        wickFind SRC "formulas/$USE_FORMULA"
     fi
 
     if [[ -z "$USE_TEMPLATE" ]]; then
@@ -25,7 +25,7 @@ wick-make-file() {
 
     # Make sure the file exists
     if [[ ! -f "$SRC" ]]; then
-        wick-error "Unable to find source file: $SRC"
+        wickError "Unable to find source file: $SRC"
 
         return 1
     fi
@@ -33,10 +33,10 @@ wick-make-file() {
     # Write to stdout if there is no destination
     if [[ -z "$DEST" ]] || [[ "$DEST" == "-" ]]; then
         if [[ -z "$USE_TEMPLATE" ]]; then
-            wick-debug "Writing file to stdout: $SRC"
+            wickDebug "Writing file to stdout: $SRC"
             cat "$SRC"
         else
-            wick-debug "Writing template to stdout: $SRC"
+            wickDebug "Writing template to stdout: $SRC"
             formula-template "$SRC"
         fi
 
@@ -57,21 +57,21 @@ wick-make-file() {
 
     if [[ -z "$USE_TEMPLATE" ]]; then
         # Not a template - just copy
-        wick-debug "Copying $SRC to $DEST"
+        wickDebug "Copying $SRC to $DEST"
         cp "$SRC" "$DEST" || return 1
     else
         # Use a template
-        wick-debug "Converting template $SRC into $DEST"
+        wickDebug "Converting template $SRC into $DEST"
         formula-template "$SRC" > "$DEST" || return 1
     fi
 
     if [[ ! -z "$SET_OWNER" ]]; then
-        wick-debug "Changing ownership: $SET_OWNER"
+        wickDebug "Changing ownership: $SET_OWNER"
         chown "$SET_OWNER" "$DEST" || return 1
     fi
 
     if [[ ! -z "$SET_MODE" ]]; then
-        wick-debug "Changing mode: $SET_MODE"
+        wickDebug "Changing mode: $SET_MODE"
         chmod "$SET_MODE" "$DEST" || return 1
     fi
 }

@@ -1,61 +1,113 @@
-#!/bin/bash
-
-wick-get-url() {
+#!/usr/bin/env bash
+# Public: Download a URL, writing it to stdout or optionally saving it to a
+# file.  Uses `curl` or `wget` if installed on the system.
+#
+# $1                - URL to download.
+# $2                - Optional, filename to write with the resulting content.
+#                     When not specified, this writes to stdout.
+# --progress        - Show progress information during downloads.
+# --timeout=SECONDS - Give up after this many seconds elapse.
+#
+# Examples
+#
+#   # Download shell script execute it
+#   wickGetUrl --timeout=30 https://get.rvm.io/ | bash
+#
+#   # Download a large file and show progress information
+#   wickGetUrl --progress http://example.com/large-file.tar.gz /tmp/large-file.tgz
+#
+# Returns zero on success, non-zero if there is an error downloading.
+wickGetUrl() {
+    # These variables are intended to be used outside of wickGetUrl
+    # by the child functions for each command, thus they should be
+    # capitalized.
     local DEST PROGRESS TIMEOUT URL
 
-    wick-get-option PROGRESS progress "$@"
-    wick-get-option TIMEOUT timeout "$@"
-    wick-get-argument URL 0 "$@"
-    wick-get-argument DEST 1 "$@"
-    wick-debug "wick-get-url url: $URL"
-    wick-debug "wick-get-url dest: $DEST"
+    wickGetOption PROGRESS progress "$@"
+    wickGetOption TIMEOUT timeout "$@"
+    wickGetArgument URL 0 "$@"
+    wickGetArgument DEST 1 "$@"
+    wickDebug "wickGetUrl url: $URL"
+    wickDebug "wickGetUrl dest: $DEST"
 
-    if wick-command-exists curl; then
-        wick-get-url-curl || return 1
+    if wickCommandExists curl; then
+        wickGetUrlCurl || return 1
         return 0
     fi
 
-    if wick-command-exists wget; then
-        wick-get-url-wget || return 1
+    if wickCommandExists wget; then
+        wickGetUrlWget || return 1
         return 0
     fi
 
-    wick-error "Unable to download url - no suitable programs found"
+    wickError "Unable to download url - no suitable programs found"
     return 1
 }
 
-wick-get-url-curl() {
+
+# Internal: Download a file with curl.
+#
+# $DEST     - Destination filename or empty string for stdout.
+# $PROGRESS - Show progress bar when not an empty string.
+# $TIMEOUT  - Limit the command to run for the given number of seconds when
+#             this is not an empty string.
+# $URL      - The URL to download.
+#
+# Returns non-zero on error.
+wickGetUrlCurl() {
     local ARGS
 
     ARGS=(curl -L -f)
-    [[ -z "$PROGRESS" ]] && ARGS[${#ARGS[@]}]="-s"
-    [[ ! -z "$TIMEOUT" ]] && {
+
+    if [[ -z "$PROGRESS" ]]; then
+        ARGS[${#ARGS[@]}]="-s"
+    fi
+
+    if [[ ! -z "$TIMEOUT" ]]; then
         ARGS[${#ARGS[@]}]="-m"
         ARGS[${#ARGS[@]}]=$TIMEOUT
-    }
-    [[ ! -z "$DEST" ]] && {
+    fi
+
+    if [[ ! -z "$DEST" ]]; then
         ARGS[${#ARGS[@]}]="-o"
         ARGS[${#ARGS[@]}]=$DEST
-    }
+    fi
+
     ARGS[${#ARGS[@]}]=$URL
-    wick-debug "wick-get-url:" "${ARGS[@]}"
+    wickDebug "wickGetUrl:" "${ARGS[@]}"
     "${ARGS[@]}"
 }
 
-wick-get-url-wget() {
+
+# Internal: Download a file with curl.
+#
+# $DEST     - Destination filename or empty string for stdout.
+# $PROGRESS - Show progress bar when not an empty string.
+# $TIMEOUT  - Limit the command to run for the given number of seconds when
+#             this is not an empty string.
+# $URL      - The URL to download.
+#
+# Returns non-zero on error.
+wickGetUrlWget() {
     local ARGS
 
     ARGS=(wget)
-    [[ -z "$PROGRESS" ]] && ARGS[${#ARGS[@]}]="--quiet"
-    [[ ! -z "$TIMEOUT" ]] && {
+
+    if [[ -z "$PROGRESS" ]]; then
+        ARGS[${#ARGS[@]}]="--quiet"
+    fi
+
+    if [[ ! -z "$TIMEOUT" ]]; then
         ARGS[${#ARGS[@]}]="--timeout"
         ARGS[${#ARGS[@]}]=$TIMEOUT
-    }
-    [[ ! -z "$DEST" ]] && {
+    fi
+
+    if [[ ! -z "$DEST" ]]; then
         ARGS[${#ARGS[@]}]="-O"
         ARGS[${#ARGS[@]}]=$DEST
-    }
+    fi
+
     ARGS[${#ARGS[@]}]=$URL
-    wick-debug "wick-get-url:" "${ARGS[@]}"
+    wickDebug "wickGetUrl:" "${ARGS[@]}"
     "${ARGS[@]}"
 }

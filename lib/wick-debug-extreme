@@ -1,8 +1,24 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Turn on extreme logging.  This will alert you to all commands that
+# run.  When a command returns a non-zero exit code, that also will get
+# reported.
 #
-# Enable extreme debug logging
-
-wick-debug-extreme() {
+# $1 - When this is "stop" it disables the extreme logging.
+#
+# Examples
+#
+#   # This script may have errors, so turn on debugging
+#   wickDebugExtreme
+#
+#   if ! grep -q needle haystack.txt; then
+#       echo "No needle in haystack.txt"
+#   fi
+#
+#   # Stop the extreme logging
+#   wickDebugExtreme stop
+#
+# Returns nothing.
+wickDebugExtreme() {
     if [[ $# -eq 0 ]] || [[ "$1" != "stop" ]]; then
         export PS4='+\$?:$? (${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): } $BASH_COMMAND\n -> '
         set -x

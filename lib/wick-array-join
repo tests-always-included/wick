@@ -1,22 +1,36 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Combine an array of strings together into one string.
+#
+# $1   - Name of variable that should get the result.
+# $2   - String to use for joining elements in the array.
+# $3-@ - Array values.
+#
+# Examples
+#
+#   arr=(one two "three four" five)
+#   wickArrayJoin dest "+" "${arr[@]}"
+#
+#   # Result: one+two+three four+five
+#   echo "$dest"
+#
+# Returns nothing.
+wickArrayJoin() {
+    local joiner result target
 
-wick-array-join() {
-    local JOINER RESULT TARGET
-
-    TARGET=$1
-    JOINER=$2
-    RESULT=""
+    target=$1
+    joiner=$2
+    result=""
     shift 2
 
     if [[ $# -gt 0 ]]; then
-        RESULT="$1"
+        result="$1"
         shift
     fi
 
     while [[ $# -gt 0 ]]; do
-        RESULT="$RESULT$JOINER$1"
+        result="$result$joiner$1"
         shift
     done
 
-    local "$TARGET" && wick-indirect "$TARGET" "$RESULT"
+    local "$target" && wickIndirect "$target" "$result"
 }

@@ -1,64 +1,72 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Internal: Write a log message to a file or to a logging system.  Used by `wickDebug`, `wickInfo`, `wickWarn` and `wickError`.  Should not be used directly.
 #
-# Write a log message to something.
+# $1            - Log level.  One of ERROR WARN INFO DEBUG.
+# $2            - The message to write.
+# $WICK_LOGFILE - Destination for log messages.
 #
-# Uses the environment variable WICK_LOGFILE to determine where to log
-# messages.  Will write a timestamped messsage to that file, creating the
-# file if necessary.
+# Uses the environment variable `$WICK_LOGFILE` to determine where to log
+# messages.  Will write a timestamped messsage to that file, creating the file
+# if necessary.  If `$WICK_LOGFILE` starts with "syslog:", this will use the
+# `logger` command to write a line to syslogd.  The facility defaults to user,
+# but you can use any facility; for example you can use the mail facility by
+# setting `WICK_LOGFILE="syslog:mail"`.
 #
-# If WICK_LOGFILE starts with "syslog:", this will use the `logger` command
-# to write a line to syslogd.  The facility defaults to user, but you can use
-# any facility; for example you can use the mail facility by setting
-# WICK_LOGFILE="syslog:mail".
+# Otherwise, `$WICK_LOGFILE` should be set to a filename.  Messages are
+# prefixed with a timestamp.
 #
-# Parameters:
-#     $1: Log level (ERROR WARN INFO DEBUG)
-#     $2: The message to write
+# Examples
 #
-# Environment variables:
-#     WICK_LOGFILE: controls where the log messages are sent.
-wick-log() {
-    local LOG_LEVEL OUTPUT PRIORITY
+#   # Run a command that logs with other Wick functions.
+#   # Send output to /var/log/messages
+#   WICK_LOGFILE=/var/log/messages ./your-command
+#
+#   # Send messages to /var/log/syslog
+#   WICK_LOGFILE=syslog:daemon ./my-background-thing
+#
+# Returns nothing.
+wickLog() {
+    local logLevel OUTPUT priority
 
-    LOG_LEVEL="$1"
+    logLevel=$1
 
     if [[ -z "${WICK_LOGFILE-}" ]]; then
         return
     fi
 
     if [[ "${WICK_LOGFILE:0:7}" == "syslog:" ]]; then
-        PRIORITY=${WICK_LOGFILE:8}
+        priority=${WICK_LOGFILE:8}
 
-        if [[ -z "$PRIORITY" ]]; then
-            PRIORITY="user"
+        if [[ -z "$priority" ]]; then
+            priority="user"
         fi
 
-        case "$LOG_LEVEL" in
+        case "$logLevel" in
             ERROR)
-                PRIORITY="$PRIORITY.err"
+                priority="$priority.err"
                 ;;
 
             WARN)
-                PRIORITY="$PRIORITY.warning"
+                priority="$priority.warning"
                 ;;
 
             INFO)
-                PRIORITY="$PRIORITY.info"
+                priority="$priority.info"
                 ;;
 
             DEBUG)
-                PRIORITY="$PRIORITY.debug"
+                priority="$priority.debug"
                 ;;
         esac
 
-        logger -p "$PRIORITY" -- "$2"
+        logger -p "$priority" -- "$2"
 
         # Eraser $LOGGER so we don't also write to a file
         LOGGER=""
     fi
 
     if [[ ! -z "$WICK_LOGFILE" ]]; then
-        wick-prefix-lines OUTPUT "$(date -Iseconds) $LOG_LEVEL: " "$2"
+        wickPrefixLines OUTPUT "$(date -Iseconds) $logLevel: " "$2"
         echo "$OUTPUT" >> "$WICK_LOGFILE"
     fi
 }

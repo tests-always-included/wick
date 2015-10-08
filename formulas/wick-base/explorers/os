@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 is-really-centos() {
     rpm -q centos-release > /dev/null 2>&1
@@ -12,9 +12,9 @@ detect-real-redhat() {
     fi
 }
 
-if wick-command-exists lsb_release; then
+if wickCommandExists lsb_release; then
     DISTRIBUTOR=$(lsb-release -s -i 2>&1)
-    wick-debug "Distributor: $DISTRIBUTOR"
+    wickDebug "Distributor: $DISTRIBUTOR"
 
     case "$DISTRIBUTOR" in
         RedHatEnterprise*)
@@ -29,7 +29,7 @@ if wick-command-exists lsb_release; then
     esac
 fi
 
-wick-debug "MACHTYPE=$MACHTYPE"
+wickDebug "MACHTYPE=$MACHTYPE"
 
 if [[ "$MACHTYPE" == *"-redhat-"* ]]; then
     detect-real-redhat
@@ -41,9 +41,9 @@ if [[ "$MACHTYPE" == *"-apple-"* ]]; then
     exit
 fi
 
-if wick-command-exists uname; then
+if wickCommandExists uname; then
     UNAME_V=$(uname -v 2>&1)
-    wick-debug "UNAME_V=$UNAME_V"
+    wickDebug "UNAME_V=$UNAME_V"
 
     if [[ "$UNAME_V" == *"Ubuntu"* ]]; then
         echo "ubuntu"
@@ -51,6 +51,6 @@ if wick-command-exists uname; then
     fi
 fi
 
-wick-error "Unable to detect OS"
+wickError "Unable to detect OS"
 echo "UNKNOWN"
 exit 1

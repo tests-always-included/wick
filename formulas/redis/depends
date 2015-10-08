@@ -1,5 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-formula yum-epel
-wick-formula yum-remi
-wick-formula sysctl
+wickFormula yum-epel
+wickFormula yum-remi
+wickFormula sysctl

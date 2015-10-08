@@ -18,8 +18,8 @@ A little terminology will go a long way.
 * [Roles] are lists of formulas to be executed.  An example role might be "apache-web-server" or "mongodb-replica-set-member".  Roles do not take any configuration parameters.
 
 * [Formulas] are installation scripts or tasks.  They can come with all of the following:
-    * Dependencies, which is just a list of other formulas that are required (processed by [wick-formula])
-    * Explorers that will inspect the target system and report information (see [wick-explorer])
+    * Dependencies, which is just a list of other formulas that are required (processed by [wickFormula])
+    * Explorers that will inspect the target system and report information (see [wickExplorer])
     * Files that could be installed on the target system
     * Functions, which are added to the environment so other formulas can leverage these tools
     * Run script to perform the installation action
@@ -50,7 +50,7 @@ To give you a good understanding of the function of formulas, here are a couple 
 
 This one is pretty easy.  You simply need to install a package.  The formula's `run` script would look like this:
 
-    #!/bin/bash
+    #!/usr/bin/env bash
 
     wick-package git
 
@@ -63,13 +63,13 @@ And you're done.
 
 You can create a virtual host with three files in your formula.  First, the virtual host config would go in `files/` with a suitable name, such as `files/vhost.conf`.  Next, we have a dependency on Apache and need it installed and running before our formula starts to execute.
 
-    #!/bin/bash
+    #!/usr/bin/env bash
 
-    wick-formula apache2
+    wickFormula apache2
 
 The bulk of the work is in the formula's `run` script.
 
-    #!/bin/bash
+    #!/usr/bin/env bash
 
     apache2-add-vhost vhost.conf
 
@@ -114,6 +114,6 @@ Now all you need to know is how to make [roles] and [formulas].  While you are a
 [Tests]: tests/README.md
 [Travis CI]: http://travis-ci.org/tests-always-included/wick
 [Travis-Image]: https://secure.travis-ci.org/tests-always-included/wick.png
-[wick-formula]: bin/README.md
-[wick-explorer]: bin/README.md
+[wickFormula]: bin/README.md
+[wickExplorer]: bin/README.md
 [wick-infect]: formulas/wick-infect/README.md

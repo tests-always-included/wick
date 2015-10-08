@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Starting in deepest parent, write lib/* with a header
 show-all-lib-functions() {
@@ -10,7 +10,7 @@ show-all-lib-functions() {
 
     if [[ -d "$1/lib" ]]; then
         for FILE in "$1/lib/"*; do
-            if wick-is-valid-script "$FILE"; then
+            if wickIsValidScript "$FILE"; then
                 echo "# $FILE"
                 cat "$FILE"
                 echo ""
@@ -20,7 +20,7 @@ show-all-lib-functions() {
 }
 
 (
-    echo "#!/bin/bash"
+    echo "#!/usr/bin/env bash"
     echo "#"
     echo "# This file was created by the wick-infect formula"
     echo ""
@@ -30,4 +30,4 @@ show-all-lib-functions() {
     show-all-lib-functions .
 ) > "$WICK_FORMULA_DIR/files/wick-infect"
 
-wick-formula wick-base
+wickFormula wick-base

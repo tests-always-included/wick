@@ -1,6 +1,55 @@
-#!/bin/bash
-
-wick-indirect-array() {
+#!/usr/bin/env bash
+# Public: Sets a variable in the parent environment to an array.  When you need
+# to return multiple values from a function, this is just like `wickIndirect`,
+# but is a form made for only arrays.
+#
+# $1   - Name of variable that should get the result.
+# $2-@ - Array elements.
+#
+# If you have a sparse array then the array indices will be reordered.  With
+# associative arrays you will lose the keys.
+#
+# Examples
+#
+#   # This function just lists 5 files/directories in /tmp
+#   # and stores the array result in the desired variable.
+#   tempFilesArray() {
+#       local file value
+#
+#       value=()
+#
+#       for file in /tmp; do
+#           [[ "${#value[@]}" -lt 5 ]] && value[${#value[@]}]=$file
+#       done
+#
+#       # Be careful when `set -u` is enabled
+#       if [[ ${#value[@]} -eq 0 ]]; then
+#           local "$1" && wickIndirectArray "$1"
+#           return
+#       fi
+#
+#       local "$1" && wickIndirectArray "$1" "${value[@]}"
+#   }
+#
+#   files=""
+#   tempFilesAarray files
+#   echo "Number of files returned:  ${#files}"
+#
+#   if [[ ${#files} -gt 0 ]]; then
+#       echo "File #1:  ${files[0]}"
+#   fi
+#
+#   # Example result:
+#   # Number of files returned:  5
+#   # File #1:  a_9789
+#
+# There's some interesting syntax in that example, such as using
+# `value[${#value[@]}]=$file` to append to the array.  This is so the code does
+# not fail, as it will run in [strict mode](../doc/bash-strict-mode.md) by
+# default.
+#
+# Returns nothing.
+wickIndirectArray() {
     unset -v "$1"
     eval $1=\(\"\${@:2}\"\)
 }

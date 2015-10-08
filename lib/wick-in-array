@@ -1,13 +1,35 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Check if a value is in an array.  Returns success if it exists,
+# failure otherwise.
+#
+# $1   - The value to seek in the array.
+# $2-@ - Array elements.
+#
+# Examples
+#
+#   local list
+#
+#   list=(one two three "four four")
+#
+#   if wick-in-array one "${list[@]}"; then
+#       # This one works
+#       echo "one is found"
+#   fi
+#
+#   if wick-in-array four "${list[@]}"; then
+#       echo "four should not be found"
+#       echo "'four four' with a space would be found"
+#   fi
+#
+# Returns success if $1 is found in the list of other arguments.
+wickInArray() {
+    local check needle
 
-wick-in-array() {
-    local CHECK NEEDLE
-
-    NEEDLE="$1"
+    needle="$1"
     shift
 
-    for CHECK in "$@"; do
-        [[ "$NEEDLE" == "$CHECK" ]] && return 0
+    for check in "$@"; do
+        [[ "$needle" == "$check" ]] && return 0
     done
 
     return 1

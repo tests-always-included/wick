@@ -1,6 +1,6 @@
-Zip Formula
-===========
+Zip
+===
 
 Simply installs `zip`.
 
-    wick-formula zip
+    wickFormula zip

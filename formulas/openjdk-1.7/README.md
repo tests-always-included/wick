@@ -1,6 +1,6 @@
-OpenJDK 1.7 Formula
-===================
+OpenJDK 1.7
+===========
 
 Installs OpenJDK 1.7 JRE.
 
-    wick-formula openjdk-1.7
+    wickFormula openjdk-1.7

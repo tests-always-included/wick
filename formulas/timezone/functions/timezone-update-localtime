@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 timezone-update-localtime() {
-    wick-debug "Updating tzdata: $2 -> $1"
+    wickDebug "Updating tzdata: $2 -> $1"
 
     if [[ ! -f "$2" ]]; then
-        wick-error "Can not find timezone file: $2"
+        wickError "Can not find timezone file: $2"
         return 1
     fi
 
@@ -12,11 +12,11 @@ timezone-update-localtime() {
 
     if $3; then
         # Use symlink
-        wick-debug "Setting timezone with symlink"
+        wickDebug "Setting timezone with symlink"
         ln -s "$2" "$1"
     else
         # Copy
-        wick-debug "Setting timezone by copying"
+        wickDebug "Setting timezone by copying"
         cp "$2" "$1"
     fi
 

@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-explorer OS wick-base os
-wick-get-argument TZ 0 "$@"
+wickExplorer OS wick-base os
+wickGetArgument TZ 0 "$@"
 
 case "$OS" in
     debian|ubuntu)
@@ -12,7 +12,7 @@ case "$OS" in
         TZ=${TZ:-UTC}
 esac
 
-wick-info "Updating timezone: $TZ"
+wickInfo "Updating timezone: $TZ"
 TIMEZONE=/etc/timezone
 TZDATA_DIR=/usr/share/zoneinfo
 LOCALTIME=/etc/localtime
@@ -37,7 +37,7 @@ case "$OS" in
         ;;
 
     *)
-        wick-warn "Unknown OS: $OS"
-        wick-warn "Updating the timezone with a generic method"
+        wickWarn "Unknown OS: $OS"
+        wickWarn "Updating the timezone with a generic method"
         timezone-update-localtime "$LOCALTIME" "$TZDATA_DIR/$TZ" "$USE_SYMLINK"
 esac

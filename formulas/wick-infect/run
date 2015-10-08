@@ -1,3 +1,3 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-make-file --mode=0644 wick-infect /usr/local/lib/
+wickMakeFile --mode=0644 wick-infect /usr/local/lib/

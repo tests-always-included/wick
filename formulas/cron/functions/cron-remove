@@ -1,15 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 cron-remove() {
     if [[ -d /etc/cron.d/ ]]; then
         if [[ -f "/etc/cron.d/$1" ]]; then
-            wick-debug "Removing cron job: $1"
+            wickDebug "Removing cron job: $1"
             rm "/etc/cron.d/$1"
         else
-            wick-debug "Cron job does not exist: $1"
+            wickDebug "Cron job does not exist: $1"
         fi
     else
-        wick-debug "Purging job from crontab: $1"
+        wickDebug "Purging job from crontab: $1"
         sed -i --follow-symlinks "/^# BEGIN: $1$/,/^# END: $1$/d" /etc/crontab
     fi
 }

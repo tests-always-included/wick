@@ -2,8 +2,8 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wick-indirect"
-    . "$WICK_DIR/lib/wick-indirect-array"
+    . "$WICK_DIR/lib/wickIndirect"
+    . "$WICK_DIR/lib/wickIndirectArray"
     . "$WICK_DIR/lib/wick-get-iface-ip"
 }
 

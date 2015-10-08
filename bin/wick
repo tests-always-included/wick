@@ -1,96 +1,135 @@
-#!/bin/bash
-# Enable "strict mode" - see lib/wick-strict-mode for a better version
+#!/usr/bin/env bash
+#
+# This is the main program.  Most of the code is located in the individual
+# commands or library functions.  This is essentially an environment
+# bootstrapper.
+
+# Enable a quick "strict mode" - see lib/wick-strict-mode for a better version.
 set -euo pipefail
+
+# Public: Location of the `wick` binary.  Available any time that `wick` is
+# running.
 WICK_DIR="${0%/*}"
 
-CMD="$1"
-shift || :
+# TEMPORARY FIX - Load the deprecated functions during this period of
+# translating from wick-thing to wickThing for function names.
+. "$WICK_DIR/deprecated"
 
-WICK_ON_LOAD_COMMANDS=()
-
-# Test if a given file could be a valid script that should be sourced.
+# Public: Run wick commands.  These are provided by the other `wick-*`
+# functions in the [`bin/`](./) folder.
 #
-# Parameters:
-#     $1:  Filename
-# Returns true on success
-wick-is-valid-script() {
+# $1   - The command to execute.  If not found, prints helpful message.
+# $2-@ - Passed to the command.
+#
+# Returns the result of the command.
+wick() {
+    local cmd line onLoadCommands
+
+    cmd=$1
+    shift || :
+    onLoadCommands=()
+
+    # Load all library functions so the commands have access to them.
+    # Wick commands need library functions to use `wickOnLoad`.
+    wickLoadLib "."
+
+    # Enable the full strict mode.
+    wickStrictMode
+
+    # Load all functions into the current environment.
+    for F in "$WICK_DIR/"wick-*; do
+        if [[ -f "$F" ]]; then
+            . "$F"
+        fi
+    done
+
+    # Run all initialization functions.
+    if [[ ${#onLoadCommands[@]} -gt 0 ]]; then
+        for line in "${onLoadCommands[@]}"; do
+            eval "$line"
+        done
+    fi
+
+    # If no command specified, show the help message.
+    if [[ -z "$cmd" ]]; then
+        cmd="help"
+    fi
+
+    # Check if we have the listed command.
+    if [[ "${#WICK_COMMANDS[@]}" -eq 0 ]]; then
+        echo "No commands loaded."
+    elif ! wickInArray "$cmd" "${WICK_COMMANDS[@]}"; then
+        echo "No such command: $cmd"
+        echo "See 'wick help'"
+    else
+        "wick-$cmd" "$@"
+    fi
+}
+
+
+# Internal: Test if a given file could be a valid script that should be
+# sourced.
+#
+# $1 - Filename to test.
+#
+# Returns true on success, false when it is not a valid script.
+wickIsValidScript() {
     [[ -f "$1" ]] || return 1
     [[ "${1##*.}" != "md" ]] || return 1
+    [[ "${1##*.}" != "sh" ]] || return 1
     [[ "$(head -n 1 "$1")" == '#!'* ]] || return 1
 
     return 0
 }
 
 
-# Load library functions.  Starting at the highest parent, load all
-# scripts in lib/, then work down through all children.
+# Internal: Load library functions.  Starting at the highest parent, load all
+# scripts in lib/, then work down through all children.  Children can override
+# a parent's functions.  It does this by sourcing the files, so let's hope
+# that they only contain functions instead of commands to execute.
 #
-# Parameters:
-#     $1: Directory to process1
-wick-load-lib() {
-    local FILE
+# $1 - Directory to process.
+#
+# Returns nothing.
+wickLoadLib() {
+    local file
 
     if [[ -d "$1/parent" ]]; then
-        wick-load-lib "$1/parent"
+        wickLoadLib "$1/parent"
     fi
 
     if [[ -d "$1/lib" ]]; then
-        for FILE in "$1/lib/"*; do
-            if wick-is-valid-script "$FILE"; then
+        for file in "$1/lib/"*; do
+            if wickIsValidScript "$file"; then
                 if [[ ! -z "$DEBUG" ]]; then
-                    echo "Loading library: $FILE"
+                    echo "Loading library: $file"
                 fi
 
-                . "$FILE"
+                . "$file"
             fi
         done
     fi
 }
 
 
-# Set an on-load hook, which will execute once all of the libraries and
-# binaries are loaded into Wick.
+# Internal: Set an "on load" hook, which will execute once all of the
+# libraries and binaries are loaded into Wick.
 #
-# Parameters:
-#     $@:  Command to execute when everything is loaded
-wick-on-load() {
-    local ARGS
-    wick-argument-string ARGS "$@"
-    WICK_ON_LOAD_COMMANDS[${#WICK_ON_LOAD_COMMANDS[@]}]=$ARGS
+# Updates the variable `onLoadCommands`, which is defined in the `wick`
+# function.
+#
+# $@ - Command to execute when everything is loaded
+#
+# Returns nothing.
+wickOnLoad() {
+    local args
+    wickArgumentString args "$@"
+    onLoadCommands[${#onLoadCommands[@]}]=$args
 }
 
 
-# Load all library functions
-wick-load-lib "."
-
-# Enable the full strict mode
-wick-strict-mode
-
-# Load all functions into the current environment
-for F in "$WICK_DIR/"wick-*; do
-    if [[ -f "$F" ]]; then
-        . "$F"
-    fi
-done
-
-# Run all initialization functions
-if [[ ${#WICK_ON_LOAD_COMMANDS[@]} -gt 0 ]]; then
-    for LINE in "${WICK_ON_LOAD_COMMANDS[@]}"; do
-        eval "$LINE"
-    done
-fi
-
-# If no command specified, show the help message
-if [[ -z "$CMD" ]]; then
-    CMD="help"
-fi
-
-# Check if we have the listed command
-if [[ "${#WICK_COMMANDS[@]}" -eq 0 ]]; then
-    echo "No commands loaded."
-elif ! wick-in-array "$CMD" "${WICK_COMMANDS[@]}"; then
-    echo "No such command: $CMD"
-    echo "See 'wick help'"
-else
-    wick-$CMD "$@"
+# If sourced, load all functions.
+# If executed, perform the actions as expected.
+if [[ "$0" == "$BASH_SOURCE" ]] || ! [[ -n "$BASH_SOURCE" ]]; then
+    wick "$@"
 fi

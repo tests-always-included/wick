@@ -1,25 +1,32 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Logging function for errors.  Use this to log error messages right
+# before you exit the program or return a failure.  All messages are written to
+# stderr.  Log messages are also passed to the `wickLog` function to be logged
+# to a file.  (See `wickLog` for information about log files.  See
+# [Bash concepts](../doc/bash-concepts.md) for more about stderr.) This also
+# will colorize the output when the `WICK_COLOR` environment variable is set to
+# a non-empty string.
 #
-# Writes an error message to the logging system.
+# $@          - The message to log.  Arguments are joined into one line.
+# $WICK_COLOR - Colorizes output when set to a non-empty string.
 #
-# This message is always written to stderr.
+# Examples
 #
-# Parameters:
-#     $@: The log messages to write (they get joined into one line)
+#    wickError "Could not find some vital thing"
+#    exit 1
 #
-# Environment variables:
-#     WICK_COLOR: When set to non-empty string, ANSI color is enabled.
-wick-error() (
+# Returns nothing.
+wickError() (
     set +x
-    local CONTENT OUTPUT
+    local content output
 
-    wick-array-join CONTENT " " "$@"
-    wick-log "ERROR" "$CONTENT"
-    wick-prefix-lines OUTPUT "ERROR: " "$CONTENT"
+    wickArrayJoin content " " "$@"
+    wickLog "ERROR" "$content"
+    wickPrefixLines output "ERROR: " "$content"
 
     if [[ ! -z "${WICK_COLOR-}" ]]; then
-        OUTPUT=$'\E[41;37;1m'"$OUTPUT"$'\E[0m'
+        output=$'\E[41;37;1m'"$output"$'\E[0m'
     fi
 
-    echo "$OUTPUT" >&2
+    echo "$output" >&2
 )

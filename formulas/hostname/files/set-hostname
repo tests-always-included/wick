@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 . /usr/local/lib/wick-infect
 
@@ -11,15 +11,15 @@ replace-in-file() {
 
     if ! grep -q "^$WANTED" "$FN"; then
         if grep -q "^$SEARCH" "$FN"; then
-            wick-debug "Updating $FN: $WANTED"
+            wickDebug "Updating $FN: $WANTED"
             sed -i --follow-symlinks 's/^'"$SEARCH"'.*/'"$WANTED"'/' "$FN"
         else
-            wick-debug "Adding to $FN: $WANTED"
+            wickDebug "Adding to $FN: $WANTED"
             echo "$WANTED" >> "$FN"
         fi
         return 0
     else
-        wick-debug "$FN is already changed"
+        wickDebug "$FN is already changed"
         return 1
     fi
 }
@@ -46,11 +46,11 @@ Options:
 EOF
 }
 
-wick-get-option HELP help "$@"
-wick-get-option RELOAD_FLAG reload "$@"
-wick-get-option VERBOSE verbose "$@"
-wick-get-option IFACE iface "$@"
-wick-get-argument FULL 0 "$@"
+wickGetOption HELP help "$@"
+wickGetOption RELOAD_FLAG reload "$@"
+wickGetOption VERBOSE verbose "$@"
+wickGetOption IFACE iface "$@"
+wickGetArgument FULL 0 "$@"
 
 if [[ ! -z "$VERBOSE" ]]; then
     DEBUG=true
@@ -77,7 +77,7 @@ IP=${IP//./-}
 HOST=${HOST//\{\{IP\}\}/$IP}
 FULL="${HOST}.${DOMAIN}"
 
-wick-debug "Setting hostname to $FULL"
+wickDebug "Setting hostname to $FULL"
 
 #
 # Update hostname
@@ -97,26 +97,26 @@ if replace-in-file /etc/hosts "127.0.0.1 $FULL $HOST localhost" "127.0.0.1"; the
 fi
 
 if [[ "$(hostname)" != "$HOST" ]]; then
-    wick-debug "Setting hostname"
+    wickDebug "Setting hostname"
     hostname "$HOST"
     RELOAD=true
 else
-    wick-debug "Hostname is already changed"
+    wickDebug "Hostname is already changed"
 fi
 
 if [[ "$(domainname)" != "$DOMAIN" ]]; then
-    wick-debug "Setting domainname"
+    wickDebug "Setting domainname"
     domainname "$DOMAIN"
     RELOAD=true
 else
-    wick-debug "Domainname is already changed"
+    wickDebug "Domainname is already changed"
 fi
 
 if [[ ! -z "$RELOAD_FLAG" ]] && $RELOAD; then
-    wick-debug "Restarting network to get hostname updated everywhere"
+    wickDebug "Restarting network to get hostname updated everywhere"
     service network restart
 elif $RELOAD; then
-    wick-debug "Not reloading even though changes were made"
+    wickDebug "Not reloading even though changes were made"
 else
-    wick-debug "Skipping network reload because no changes were made"
+    wickDebug "Skipping network reload because no changes were made"
 fi

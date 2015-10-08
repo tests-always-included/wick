@@ -1,11 +1,24 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Change a variable so it is a valid variable in bash.  This is used
+# primarily by argument parsing functions.
 #
-# Creates a safe variable name
+# $1 - Name of variable that should receive the altered string.
+# $2 - The string we are making safe.
+#
+# You can't set things like `$ABC-DEF` as a variable easily and so this
+# function will turn that into something that could be an environment variable
+# by replacing illegal characters with an underscore.
+#
+# Examples
+#
+#   wick-safe-variable-name fixed "ABC-DEF"
+#   echo "$fixed"  # Outputs "ABC_DEF"
+#
+# Returns nothing.
+wickSafeVariableName() {
+    local safe
 
-wick-safe-variable-name() {
-    local SAFE
-
-    SAFE=${2//-/_}
-    SAFE=${SAFE// /_}
-    local "$1" && wick-indirect "$1" "$SAFE"
+    safe=${2//-/_}
+    safe=${safe// /_}
+    local "$1" && wickIndirect "$1" "$safe"
 }

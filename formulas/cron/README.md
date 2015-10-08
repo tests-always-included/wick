@@ -3,17 +3,19 @@ Cron
 
 This formula does not perform any action.  It exists only to add useful functions to the Wick environment.
 
+    wickFormula cron
+
 
 Functions
 ---------
 
 ### cron-add
 
-Add a job to cron.  Takes additional arguments and passes them to `wick-make-file` from [wick-base].
+Add a job to cron.  Takes additional arguments and passes them to `wickMakeFile` from [wick-base].
 
     cron-add [WICK_MAKE_FILE_ARGS] JOB_NAME FILE
 
-* `WICK_MAKE_FILE_ARGS`: Additional arguments as understood by `wick-make-file` from [wick-base].  These arguments can be placed anywhere in the argument list.
+* `WICK_MAKE_FILE_ARGS`: Additional arguments as understood by `wickMakeFile` from [wick-base].  These arguments can be placed anywhere in the argument list.
 * `JOB_NAME`: Name of the cron job to create.  For best results, try to avoid characters that make regular expressions hard or ones that do not work well as filenames.  For example, `*super* job!` is a bad name, `super-job` is far better.
 * `FILE`: File to use for the cron job.  If `--template` is used, this can be a [template]. This might be placed into a new file or appended to a list of cron jobs in one file, so it is best to avoid setting environment variables.
 

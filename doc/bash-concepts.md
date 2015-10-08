@@ -43,7 +43,7 @@ When shell scripts do not use an `exit` keyword, the status code of the shell sc
 Shell scripts can pick their return code and abruptly stop the program at any time using the `exit` keyword.  Here is a simple shell script that exits with a number that's equal to the number of arguments passed to it.
 
     ~$ cat > simple-script <<'EOF'
-    > #!/bin/bash
+    > #!/usr/bin/env bash
     > exit $#
     > EOF
     ~$ chmod 755 simple-script
@@ -61,7 +61,7 @@ Stdout and Stderr
 Every process that's running can write output to "stdout" and "stderr".  Typically, the non-error output goes to stdout and error messages go to stderr.  Stdout is captured using `>` and stderr is captured using `2>`.  Take a look at this example.
 
     ~$ cat > stdout-stderr <<'EOF'
-    > #!/bin/bash
+    > #!/usr/bin/env bash
     > ls $@ > stdout 2> stderr
     > echo "stdout:"
     > cat stdout
@@ -104,8 +104,8 @@ What does it do?  It pretends that you typed in the commands in that other file 
 
     ~$ # Create a file with a function in it
     ~$ cat > testing-function <<'EOF'
-    > #!/bin/bash
-    > test-me() {
+    > #!/usr/bin/env bash
+    > testMe() {
     > echo "This is the function"
     > }
     > echo "testing-function was sourced or executed"
@@ -117,14 +117,14 @@ When you run the test script it will not create the function in the current envi
 
     ~$ ./testing-function
     testing-function was sourced or executed
-    ~$ test-me
-    test-me: command not found
+    ~$ testMe
+    testMe: command not found
     ~$
 
 When you source the test script, the function is added to your environment and you can use it.
 
     ~$ . testing-function
     testing-function was sourced or executed
-    ~$ test-me
+    ~$ testMe
     This is the function
     ~$

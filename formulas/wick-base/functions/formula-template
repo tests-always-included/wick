@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 formula-template() {
     local ENGINE
@@ -6,7 +6,7 @@ formula-template() {
     ENGINE=${1##*.}
 
     if [[ ! -f "$1" ]]; then
-        wick-error "Template not found: $1"
+        wickError "Template not found: $1"
 
         return 1
     fi

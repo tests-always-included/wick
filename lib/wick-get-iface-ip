@@ -1,40 +1,55 @@
-#!/bin/bash
-
-wick-get-iface-ip() {
-    local IP LIST OLD_IFS
+#!/usr/bin/env bash
+# Public: Determines the IP address associated with a given network interface.
+# If no interface is provided, this returns the first IP address listed by
+# `ifconfig`.
+#
+# $1 - Name of the variable that should receive the result.
+# $2 - Optional, network interface name.  If not specified, defaults to the
+#      first one returned by `ifconfig`.
+#
+# Examples
+#
+#   local ip
+#
+#   if ! wickGetIfaceIp ip tun0; then
+#       echo "Tunnel is not yet established"
+#       exit 1
+#   fi
+#
+#   echo "Tunnel IP:  $ip"
+#
+# Returns 0 on success, non-zero on failure.
+wickGetIfaceIp() {
+    local ip list
 
     if [[ "$2" == '*' ]]; then
-        LIST=()
-        OLD_IFS=$IFS
-        IFS=$'\n'
+        list=()
 
-        for IP in $(ifconfig -v 2>/dev/null | grep inet\ || echo ""); do
-            IP=${IP#*inet addr:}
-            IP=${IP#*inet }
-            IP=${IP%% *}
-            LIST[${#LIST[@]}]=$IP
-        done
+        while read ip; do
+            ip=${ip#*inet addr:}
+            ip=${ip#*inet }
+            ip=${ip%% *}
+            list[${#list[@]}]=$ip
+        done < <(ifconfig -v 2>/dev/null | grep 'inet ' || echo "")
 
-        IFS=$OLD_IFS
-
-        if [[ ${#LIST[@]} -eq 0 ]]; then
-            local "$1" && wick-indirect-array "$1"
-            return
+        if [[ ${#list[@]} -eq 0 ]]; then
+            local "$1" && wickIndirectArray "$1"
+            return 0
         fi
 
-        local "$1" && wick-indirect-array "$1" "${LIST[@]}"
+        local "$1" && wickIndirectArray "$1" "${list[@]}"
         return 0
     fi
 
-    IP=$(ifconfig -v $2 2>/dev/null | grep inet\ | head -n 1 || echo "")
-    IP=${IP#*inet addr:}
-    IP=${IP#*inet }
-    IP=${IP%% *}
+    ip=$(ifconfig -v $2 2>/dev/null | grep inet\ | head -n 1 || echo "")
+    ip=${ip#*inet addr:}
+    ip=${ip#*inet }
+    ip=${ip%% *}
 
-    if [[ -z "$IP" ]]; then
+    if [[ -z "$ip" ]]; then
         return 1
     fi
 
-    local "$1" && wick-indirect "$1" "$IP"
+    local "$1" && wickIndirect "$1" "$ip"
 }
 

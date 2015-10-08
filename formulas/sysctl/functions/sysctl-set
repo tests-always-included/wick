@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 sysctl-set() {
     wick-set-config-line /etc/sysctl.conf "${1} = ${2}"

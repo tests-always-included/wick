@@ -1,23 +1,31 @@
-#!/bin/bash
-
-apache2-add-vhost() {
+#!/usr/bin/env bash
+# Installs a virtual host and reloads Apache.  See `wickMakeFile` in
+# [wick-base](../wick-base) for information regarding paths and further
+# options.
+#
+# $1 - Name of file contained in the formula to add as a virtual host for
+#      Apache.
+# $@ - All other options pass directly to `wickMakeFile`.
+#
+# Returns nothing.
+apache2AddVhost() {
     local OPTIONS OS SITE
 
-    wick-get-argument SITE 0 "$@"
-    wick-get-options OPTIONS "$@"
-    wick-info "Adding Apache2 vhost: ${OPTIONS[@]-} $SITE"
-    wick-explorer OS wick-base os
+    wickGetArgument SITE 0 "$@"
+    wickGetOptions OPTIONS "$@"
+    wickInfo "Adding Apache2 vhost: ${OPTIONS[@]-} $SITE"
+    wickExplorer OS wick-base os
 
     case "$OS" in
         redhat|centos)
-            wick-make-file "${OPTIONS[@]-}" /etc/httpd/conf.d/
-            wick-service reload httpd
+            wickMakeFile "${OPTIONS[@]-}" /etc/httpd/conf.d/
+            wickService reload httpd
             ;;
 
         *)
-            wick-make-file "${OPTIONS[@]-}" /etc/apache2/sites-available
+            wickMakeFile "${OPTIONS[@]-}" /etc/apache2/sites-available
             a2ensite "$SITE"
-            wick-service reload apache2
+            wickService reload apache2
             ;;
     esac
 }

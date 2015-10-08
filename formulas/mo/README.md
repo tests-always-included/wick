@@ -1,13 +1,11 @@
-Mo - Wick Formula
-=================
+Mo
+==
 
-This installs the [mo] command into `/usr/local/bin/` and adds the ability to use "mo" templates with `wick-make-file` (see [wick-base]).
+This installs the [mo](https://github.com/tests-always-included/mo) command into `/usr/local/bin/` and adds the ability to use "mo" templates with `wickMakeFile` (in the wick-base formula).
 
-    wick-formula mo
+    wickFormula mo
 
 See [templates] for more about the template system.
 
 
-[mo]: https://github.com/tests-always-included/mo
 [templates]: ../../doc/templates.md
-[wick-base]: ../wick-base/README.md

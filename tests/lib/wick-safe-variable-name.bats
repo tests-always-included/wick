@@ -2,18 +2,18 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wick-indirect"
-    . "$WICK_DIR/lib/wick-safe-variable-name"
+    . "$WICK_DIR/lib/wickIndirect"
+    . "$WICK_DIR/lib/wickSafeVariableName"
 }
 
-@test "lib/wick-safe-variable-name: Normal name" {
+@test "lib/wickSafeVariableName: Normal name" {
     local OUT
-    wick-safe-variable-name OUT "Testing"
+    wickSafeVariableName OUT "Testing"
     [[ "$OUT" == "Testing" ]]
 }
 
-@test "lib/wick-safe-variable-name: Invalid characters" {
+@test "lib/wickSafeVariableName: Invalid characters" {
     local OUT
-    wick-safe-variable-name OUT "One Two-Three"
+    wickSafeVariableName OUT "One Two-Three"
     [[ "$OUT" == "One_Two_Three" ]]
 }

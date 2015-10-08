@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 timezone-update-sysconfig-clock() {
-    if wick-command-exists timedatectl; then
-        wick-debug "Using timedatectl to set timezone"
+    if wickCommandExists timedatectl; then
+        wickDebug "Using timedatectl to set timezone"
         timedatectl --no-ask-password set-timezone "$1"
     else
-        wick-debug "Updating /etc/sysconfig/clock"
+        wickDebug "Updating /etc/sysconfig/clock"
         rm /etc/sysconfig/clock
         echo "ZONE=$TZ" > /etc/sysconfig/clock
         chown root:root /etc/sysconfig/clock

@@ -1,7 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Tests to see if a command is in the path.  Because some systems
+# report failure in different ways, this is an attempt to abstract away those
+# alternate error messages and provide a consistent interface.
+#
+# $1 - Name of the command you wish to execute.  It would not make sense to
+#      use a full path here since the intent is to search the `PATH` for
+#      the command.
+#
+# Examples
+#
+#   if ! wickCommandExists ls; then
+#       echo 'Oh no, ls does not exist!'
+#       echo 'How do you list your files?'
+#       exit 1
+#   fi
+#
+# Returns 0 when found and an error status when the command was not found.
+wickCommandExists() {
+    local result
 
-wick-command-exists() {
-    RESULT=$(which ${1-} 2>&1)
+    if [[ -z "" ]]; then
+        return 5
+    fi
+
+    result=$(which ${1-} 2>&1)
 
     # Command failed to execute or reported failure
     if [[ $? -ne 0 ]]; then
@@ -9,17 +31,17 @@ wick-command-exists() {
     fi
 
     # Some OSs report "no PROGRAM_NAME"
-    if [[ "$RESULT" == "no "* ]]; then
+    if [[ "$result" == "no "* ]]; then
         return 2
     fi
 
     # Other OSs report "PROGRAM_NAME: no such program" or similar messages
-    if [[ "$RESULT" == *": no "* ]]; then
+    if [[ "$result" == *": no "* ]]; then
         return 3
     fi
 
     # Other times you can get "command not found"
-    if [[ "$RESULT" == *"command not found"* ]]; then
+    if [[ "$result" == *"command not found"* ]]; then
         return 4
     fi
 

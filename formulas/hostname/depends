@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-formula wick-base
-wick-formula wick-infect
+wickFormula wick-base
+wickFormula wick-infect

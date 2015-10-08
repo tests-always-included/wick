@@ -1,9 +1,37 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Wait a given amount of time for a shell script to return success,
+# waiting 1 second between calls.  If the time elapses without any successful
+# response then this returns failure.  Otherwise this returns success.
+#
+# $1   - Timeout, specified in seconds.
+# $2-@ - The command and arguments to pass to the command.
+#
+# If the timeout is reached, the running command is killed and `wickWaitFor`
+# will return failure.  Otherwise, `wickWaitFor` will return the status code
+# from the command.
+#
+# The command is executed directly.  Bash built-ins will not work.  Instead
+# of using `[[`, you must resort to `test`, `[` or writing a function that
+# can be called.
+#
+# Examples
+#
+#   /usr/local/bin/some-other-process &
+#
+#   # Wait up to 30 seconds for a file to exist
+#   # You must use a shell command here.  Bash built-ins won't work,
+#   # so use `[` or `test` instead of `[[`.
+#   if ! wickWaitFor 30 [ -f /var/run/other-process/run.lock ]; then
+#       echo "File was not created in time"
+#       exit 1
+#   fi
+#
+# Returns the command's status code.  The command may have been killed and
+# will typically return failure in that scenario.
+wickWaitFor() {
+    local latchProcess result sleepProcess sleepTime
 
-wick-wait-for() {
-    local LATCH_PROCESS RESULT SLEEP_PROCESS SLEEP_TIME
-
-    SLEEP_TIME=$1
+    sleepTime=$1
     shift
 
     # Run everything in a subshell to automatically enable monitor mode (set +m)
@@ -16,29 +44,29 @@ wick-wait-for() {
             done
             echo "latch success"
         ) > /dev/null 2>&1 &
-        LATCH_PROCESS=$!
+        latchProcess=$!
 
         # The timeout
         (
-            sleep $SLEEP_TIME
-            kill "$LATCH_PROCESS"
+            sleep $sleepTime
+            kill "$latchProcess"
         ) > /dev/null 2>&1 &
-        SLEEP_PROCESS=$!
+        sleepProcess=$!
 
         # Delay until one of the processes finish
         # Avoid "wait -n" because older bash does not support it
         # This also hides a "Terminated" message
-        wait $LATCH_PROCESS > /dev/null 2>&1
-        RESULT=$?
+        wait $latchProcess > /dev/null 2>&1
+        result=$?
 
         # On success, the timeout process is likely still running
-        if [[ $RESULT -eq 0 ]]; then
-            kill $SLEEP_PROCESS > /dev/null 2>&1
+        if [[ $result -eq 0 ]]; then
+            kill $sleepProcess > /dev/null 2>&1
         fi
 
         # Clean up and hide the "Terminated" message from killing bash
-        wait $SLEEP_PROCESS > /dev/null 2>&1
+        wait $sleepProcess > /dev/null 2>&1
 
-        return $RESULT
+        return $result
     ) || return 1
 }

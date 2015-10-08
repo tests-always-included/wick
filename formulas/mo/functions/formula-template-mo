@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 formula-template-mo() {
-    wick-debug "Template parsing with mo: $1"
+    wickDebug "Template parsing with mo: $1"
     (
         set +eu
         . /usr/local/bin/mo

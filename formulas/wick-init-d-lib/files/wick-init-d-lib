@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # This file only contains functions that assist with writing service files
 # (/etc/init.d/* files).
@@ -6,7 +6,7 @@
 # To use this properly, you would make your init.d/service-name file look
 # a bit like this:
 #
-#     #!/bin/bash
+#     #!/usr/bin/env bash
 #     #
 #     # Description of your service goes here
 #

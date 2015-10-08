@@ -1,13 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-explorer OS wick-base os
+wickExplorer OS wick-base os
 
 case "$OS" in
     debian|ubuntu)
-        wick-package erlang-nox
+        wickPackage erlang-nox
         ;;
 
     *)
-        wick-package erlang
+        wickPackage erlang
         ;;
 esac

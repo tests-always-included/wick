@@ -1,6 +1,6 @@
-Unzip Formula
-=============
+Unzip
+=====
 
 Simply installs `unzip`.
 
-    wick-formula unzip
+    wickFormula unzip

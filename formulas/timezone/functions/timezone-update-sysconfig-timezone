@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 timezone-update-sysconfig-timezone() {
     local TZFILE
 
-    wick-info "Updating /etc/sysconfig/timezone"
+    wickInfo "Updating /etc/sysconfig/timezone"
     TZFILE=/etc/sysconfig/timezone
     rm "$TZFILE"
     echo "TIMEZONE=\"$1\"" >> "$TZFILE"
@@ -12,5 +12,5 @@ timezone-update-sysconfig-timezone() {
     chown root:root "$TZFILE"
     chmod 0644 "$TZFILE"
 
-    wick-service reload timezone
+    wickService reload timezone
 }

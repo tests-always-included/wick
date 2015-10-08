@@ -1,15 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-explorer OS wick-base os
+wickExplorer OS wick-base os
 
 case "$OS" in
     debian|ubuntu)
-        wick-package openjdk-8-jre
+        wickPackage openjdk-8-jre
         ;;
 
     *)
         # Install Java
-        wick-package java-1.8.0-openjdk
+        wickPackage java-1.8.0-openjdk
 
         # Manually update the priority - RHEL bug 1175457
         # https://bugzilla.redhat.com/show_bug.cgi?id=1175457

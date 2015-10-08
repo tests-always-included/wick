@@ -1,9 +1,6 @@
-Jq - Wick Formula
-=================
+Jq
+==
 
-A command-line tool to process JSON is [jq].  This will automatically download and install the right binary from their website.
+Installs [jq](http://stedolan.github.io/jq/), a command-line tool to process JSON.
 
-    wick-formula jq
-
-
-[jq]: http://stedolan.github.io/jq/
+    wickFormula jq

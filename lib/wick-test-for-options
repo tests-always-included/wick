@@ -1,52 +1,102 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Guarantee that some options are passed to a script.  This is
+# typically used within a role or a formula's `run` or `depends` script.  The
+# error reporter can be overridden so the library function can be used in
+# external scripts as well.  If any options are missing, this function returns
+# an error status code.  (See [Bash concepts](../doc/bash-concepts.md) for
+# status codes.)
+#
+# $1-x                           - Required option names.
+# --                             - A double hyphen separates the required
+#                                  options from the argument list.
+# $y-@                           - The list of arguments.  Typically this is
+#                                  `"$@"`.
+# $WICK_TEST_FOR_OPTIONS_FAILURE - Error reporting function or command.  When
+#                                  not set, defaults to
+#                                  "wickTestForOptionsFailure".
+#
+# When arguments are missing from the list, the error program
+# (`$WICK_TEST_FOR_OPTIONS_FAILURE`) is called.  You may include or omit the
+# hyphens before the required option names.
+#
+# To change the error reporting function, set `$WICK_TEST_FOR_OPTIONS_FAILURE`
+# to the command that should be executed.  The one and only parameter to this
+# will an option that is required but is not specified.
+#
+# Examples
+#
+#   # Test to make sure this function or file received both
+#   # "access-key" and "secret-key"
+#   wickTestForOptions access-key secret-key -- "$@"
+#
+#   # Same as above - you may specify hyphens before options.
+#   # Either "--" or "" can be used to mark the end of the required options.
+#   wickTestForOptions --access-key --secret-key "" "$@"
+#
+#   # Use your own reporter and make sure that both --mom and --dad are set.
+#   # This would get called once for each option that is missing.
+#   missingOption() {
+#       echo "Hey, you need to specify --$1 as an argument"
+#   }
+#   WICK_TEST_FOR_OPTIONS_FAILURE=missingOption \
+#       wickTestForOptions mom dad -- "$@"
+#
+# Returns nothing.
+wickTestForOptions() {
+    local arg failureCommand result seeking value
 
-wick-test-for-options() {
-    local ARG FAILURE_CMD RESULT SEEKING VALUE
-
-    SEEKING=()
-    RESULT=0
-    FAILURE_CMD=${WICK_TEST_FOR_OPTIONS_FAILURE:-wick-test-for-options-failure}
+    seeking=()
+    result=0
+    failureCommand=${WICK_TEST_FOR_OPTIONS_FAILURE:-wickTestForOptionsFailure}
 
     while [[ ! -z "$1" ]] && [[ "$1" != "--" ]]; do
-        ARG="$1"
+        arg="$1"
 
         # Remove hyphens
-        while [[ "${ARG:0:1}" == "-" ]]; do
-            ARG="${ARG:1}"
+        while [[ "${arg:0:1}" == "-" ]]; do
+            arg="${arg:1}"
         done
 
-        SEEKING[${#SEEKING[@]}]=$ARG
+        seeking[${#seeking[@]}]=$arg
         shift
     done
 
-    if [[ ${#SEEKING[@]} -eq 0 ]]; then
+    if [[ ${#seeking[@]} -eq 0 ]]; then
         # No arguments are required
         return 0
     fi
 
     shift
 
-    for ARG in "${SEEKING[@]}"; do
-        VALUE=""
-        wick-get-option VALUE "$ARG" "$@"
+    for arg in "${seeking[@]}"; do
+        value=""
+        wickGetOption value "$arg" "$@"
 
-        if [[ -z "$VALUE" ]]; then
-            "$FAILURE_CMD" "$ARG"
-            RESULT=1
+        if [[ -z "$value" ]]; then
+            "$failureCommand" "$arg"
+            result=1
         fi
     done
 
-    return $RESULT
+    return $result
 }
 
-wick-test-for-options-failure() {
+
+# Public: Default failure reporter function for `wickTestForOptions`.
+#
+# $1       - Option that was not specified.  This is without the double-hyphens.
+# $FORMULA - Set by [`wick`](../bin/wick) when running a formula.
+# $ROLE    - Set by [`wick`](../bin/wick) when running a role.
+#
+# Returns nothing.
+wickTestForOptionsFailure() {
     if [[ ! -z "$FORMULA" ]]; then
-        wick-error "Formula $FORMULA requires option: --$ARG"
+        wickError "Formula $FORMULA requires option: --$1"
     else
         if [[ ! -z "$ROLE" ]]; then
-            wick-error "Role $ROLE requires option: --$ARG"
+            wickError "Role $ROLE requires option: --$1"
         else
-            wick-error "Missing required option:  --$ARG"
+            wickError "Missing required option:  --$1"
         fi
     fi
 }

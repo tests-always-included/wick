@@ -1,26 +1,30 @@
-#!/bin/bash
-#
-# Add a command to the help system
-#
-# Usage:
-#     wick-on-load wick-add-command elephant "Make an elephant appear"
+#!/usr/bin/env bash
 
+# Internal: List of commands that are available in Wick.
 WICK_COMMANDS=()
+
+# Internal: List of helpful messages for what each command does.
 WICK_COMMAND_HELP=()
 
-# Adds a command to the help system
+# Public: Adds a command to the help system
 #
-# Parameters:
-#     $1: Name of command
-#     $2: Help description (optional)
-wick-add-command() {
-    local LINE
+# $1 - Name of command
+# $2 - Help description (optional)
+#
+# Examples
+#
+#   wickOnLoad wickAddCommand elephant "Make an elephant appear"
+#
+# Returns nothing.
+wickAddCommand() {
+    local line
 
     WICK_COMMANDS[${#WICK_COMMANDS[@]}]=$1
 
     if [[ ! -z "$2" ]]; then
-        printf -v LINE "  %-15s  %s" "$1" "$2"
-        WICK_COMMAND_HELP[${#WICK_COMMAND_HELP[@]}]=$LINE
+        printf -v line "  %-15s  %s" "$1" "$2"
+        WICK_COMMAND_HELP[${#WICK_COMMAND_HELP[@]}]=$line
     fi
 }
+
 

@@ -1,30 +1,30 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Writes an informational message to the logging system.  Informational
+# messages are written to stdout unless `$WICK_LOG_QUIET` is set to a non-empty
+# value.  The message is also sent to `wickLog` for possible output to a log
+# file.  See `wickLog` for information regarding logfiles.  When `$WICK_COLOR`
+# is set to a non-empty string, the output is also colorized.  ([Bash
+# concepts](../doc/bash-concepts.md) explains stdout.)
 #
-# Writes an informational message to the logging system.
+# $@              - The message to write.  Arguments are joined into one line.
+# $WICK_COLOR     - When set to a non-empty value, the output is colorized.
+# $WICK_LOG_QUIET - When set to a non-empty value, the output is suppressed.
 #
-# This message is written to stdout as long as WICK_LOG_QUIET is not set to
-# a non-null value.
-#
-# Parameters:
-#     $@: The log messages to write (they get joined into one line)
-#
-# Environment variables:
-#     WICK_COLOR: When set to non-empty string, ANSI color is enabled.
-#     WICK_LOG_QUIET: If set to a value, does not write anything to stdout
-wick-info() (
+# Returns nothing.
+wickInfo() (
     set +x
-    local CONTENT OUTPUT
+    local content output
 
-    wick-array-join CONTENT " " "$@"
-    wick-log INFO "$CONTENT"
+    wickArrayJoin content " " "$@"
+    wickLog INFO "$content"
 
     if [[ -z "${WICK_LOG_QUIET-}" ]]; then
-        wick-prefix-lines OUTPUT "INFO: " "$CONTENT"
+        wickPrefixLines output "INFO: " "$content"
 
         if [[ ! -z "${WICK_COLOR-}" ]]; then
-            OUTPUT=$'\E[32m'"$OUTPUT"$'\E[0m'
+            output=$'\E[32m'"$output"$'\E[0m'
         fi
 
-        echo "$OUTPUT"
+        echo "$output"
     fi
 )

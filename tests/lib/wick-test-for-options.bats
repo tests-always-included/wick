@@ -2,10 +2,10 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wick-get-option"
-    . "$WICK_DIR/lib/wick-indirect"
-    . "$WICK_DIR/lib/wick-safe-variable-name"
-    . "$WICK_DIR/lib/wick-test-for-options"
+    . "$WICK_DIR/lib/wickGetOption"
+    . "$WICK_DIR/lib/wickIndirect"
+    . "$WICK_DIR/lib/wickSafeVariableName"
+    . "$WICK_DIR/lib/wickTestForOptions"
 }
 
 test-for-options-failure() {
@@ -13,26 +13,26 @@ test-for-options-failure() {
     FAILS=("${FAILS[@]}" "$ARG")
 }
 
-@test "lib/wick-test-for-options: Success" {
+@test "lib/wickTestForOptions: Success" {
     FAILS=()
     WICK_TEST_FOR_OPTIONS_FAILURE=test-for-options-failure \
-        wick-test-for-options one two -- thing --two --three --one
+        wickTestForOptions one two -- thing --two --three --one
     echo "${#FAILS[@]}"
     [[ "${#FAILS[@]}" == 0 ]]
 }
 
-@test "lib/wick-test-for-options: Single failure" {
+@test "lib/wickTestForOptions: Single failure" {
     FAILS=()
     ! WICK_TEST_FOR_OPTIONS_FAILURE=test-for-options-failure \
-        wick-test-for-options one two -- thing one two --two --three
+        wickTestForOptions one two -- thing one two --two --three
     [[ "${#FAILS[@]}" == 1 ]]
     [[ "${FAILS[0]}" == "one" ]]
 }
 
-@test "lib/wick-test-for-options: Multiple failures" {
+@test "lib/wickTestForOptions: Multiple failures" {
     FAILS=()
     ! WICK_TEST_FOR_OPTIONS_FAILURE=test-for-options-failure \
-        wick-test-for-options one two -- thing one two --too --three
+        wickTestForOptions one two -- thing one two --too --three
     [[ "${#FAILS[@]}" == 2 ]]
     [[ "${FAILS[0]}" == "one" ]]
     [[ "${FAILS[1]}" == "two" ]]

@@ -21,13 +21,13 @@ Nothing more is loaded for the help system.  This merely writes out messages to 
 wick run
 --------
 
-1.  Execute each of the [roles].  Each role will load more roles or use `wick-formula` to load [formulas].
-2.  `wick-formula` will do the following:
+1.  Execute each of the [roles].  Each role will load more roles or use `wickFormula` to load [formulas].
+2.  `wickFormula` will do the following:
     1.  Make sure the formula is not already in the list of formulas to load.
-    2.  Run the `depends` file to pick up additional formulas that need to be loaded before this formula.  This calls `wick-formula` and is recursive.
+    2.  Run the `depends` file to pick up additional formulas that need to be loaded before this formula.  This calls `wickFormula` and is recursive.
     3.  Add the formula's `run` script if one exists.
     4.  Loads all functions for the formula.
-    5.  Run all explorers for the formula with [wick-explorer].
+    5.  Run all explorers for the formula with [wickExplorer].
 3.  For each of the [formulas] that need to run:
     1.  Set up a clean subshell.
     2.  Run the formula's `run` script.
@@ -39,4 +39,4 @@ wick run
 [Libraries]: ../lib/README.md
 [Parents]: parents.md
 [Roles]: ../roles/README.md
-[wick-explorer]: ../bin/README.md
+[wickExplorer]: ../bin/README.md

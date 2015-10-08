@@ -1,18 +1,39 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Generates a random alphanumeric string.
+#
+# $1 - Name of variable that will receive the random string.
+# $2 - Integer length of the string to create.
+# $3 - Optional, set of characters for string generation.  Defaults to all
+#      lowercase, uppercase and digits.
+#
+# Examples
+#
+#   # Generate a random directory name
+#   wickRandomString dirname 16
+#   mkdir /tmp/$dirname
+#
+#   # Create a hex byte
+#   wickRandomString hex 2 0123456789ABCDEF
+#   echo "Hex byte: $hex"
+#
+# Returns nothing.
+wickRandomString() {
+    local letters output
 
-wick-random-string() {
-    local LETTERS OUTPUT
+    letters=${3:-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}
 
-    LETTERS=${3:-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789}
-
-    # This first eval is mostly for the brace expansion at the end
-    # Generate a string like "${LETTERS:22:1}${LETTERS:43:1}"
-    # Careful, there's ${#LETTERS} in there and it must be changed into
-    # a number in this step - do not escape its $.
-    eval "printf -v OUTPUT '\${LETTERS:\$RANDOM%%${#LETTERS}:1}%.0s' {1..$2}"
+    # The use of eval is intentional.  There are other ways of doing this,
+    # though none are nearly as efficient.  Thus, any changes to this code must
+    # be THOROUGHLY tested and reviewed.  `eval` is dangerous.
+    #
+    # This first eval is mostly for the brace expansion at the end Generate a
+    # string like "${letters:22:1}${letters:43:1}" Careful, there's ${#letters}
+    # in there and it must be changed into a number in this step - do not
+    # escape its `$`.
+    eval "printf -v output '\${letters:\$RANDOM%%${#letters}:1}%.0s' {1..$2}"
 
     # Convert that string into the desired random letters
-    eval "OUTPUT=\"$OUTPUT\""
+    eval "output=\"$output\""
 
-    local "$1" && wick-indirect "$1" "$OUTPUT"
+    local "$1" && wickIndirect "$1" "$output"
 }

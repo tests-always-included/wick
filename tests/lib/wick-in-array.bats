@@ -2,17 +2,17 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wick-in-array"
+    . "$WICK_DIR/lib/wickInArray"
 }
 
 @test "lib/wick-array-filter: none match" {
-    ! wick-in-array match a b c
+    ! wickInArray match a b c
 }
 
 @test "lib/wick-array-filter: no array" {
-    ! wick-in-array match
+    ! wickInArray match
 }
 
 @test "lib/wick-array-filter: match" {
-    wick-in-array match a b c match d e f g h i j k
+    wickInArray match a b c match d e f g h i j k
 }

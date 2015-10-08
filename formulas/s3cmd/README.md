@@ -1,6 +1,6 @@
-S3cmd Formula
-=============
+S3cmd
+=====
 
 This installs a tool to work with Amazon S3.
 
-    wick-formula s3cmd
+    wickFormula s3cmd

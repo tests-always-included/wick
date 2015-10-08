@@ -1,19 +1,44 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Enables [strict mode] for Bash, based off [unofficial bash strict mode].
+# Errors will kill the program.  Accessing undefined variables will cause
+# errors (and exit the program).  Commands in pipelines that return a non-zero
+# status code will also cause errors and kill the program.  An ERR trap is also
+# enabled that will produce a stack trace when errors happen.
 #
-# Enables something as close as possible to a "strict mode" in Bash.
+# This is intended to be used at the beginning of your shell scripts in order
+# to ensure correctness in your programming.
 #
-# See http://redsymbol.net/articles/unofficial-bash-strict-mode/
-
-wick-strict-mode() {
+# Please check out the detailed explanation of [strict mode] for further
+# information.
+#
+# Examples
+#
+#   #!/usr/bin/env bash
+#   . /usr/local/lib/wick-infect
+#   wickStrictMode
+#
+# [unofficial bash strict mode]: http://redsymbol.net/articles/unofficial-bash-strict-mode/
+#
+# [strict mode]: ../docs/bash-strict-mode.md
+#
+# Returns nothing.
+wickStrictMode() {
     set -eEu -o pipefail
     shopt -s extdebug
     IFS=$'\n\t'
-    trap 'wick-strict-mode-fail $?' ERR
+    trap 'wickStrictModeFail $?' ERR
 }
 
-wick-strict-mode-fail() (
+
+# Internal: The ERR trap calls this function to report on the error location
+# right before dying.  See `wickStrictMode` for further details.
+#
+# $1 - Status from failed command.
+#
+# Returns nothing.
+wickStrictModeFail() (
     set +x
-    local ARGS_LIST ARGS_LEFT I NEXT_ARG
+    local argsList argsLeft i nextArg
 
     echo "Error detected - status code $1"
     echo "Command:  $BASH_COMMAND"
@@ -23,39 +48,39 @@ wick-strict-mode-fail() (
         echo "Pipe status: " "${PIPESTATUS[@]}"
     fi
 
-    I=$#
-    NEXT_ARG=$#
+    i=$#
+    nextArg=$#
 
-    if [[ $I -lt ${#BASH_LINENO[@]} ]]; then
+    if [[ $i -lt ${#BASH_LINENO[@]} ]]; then
         echo "Stack Trace:"
     else
         echo "Stack trace is unavailable"
     fi
 
-    while [[ $I -lt ${#BASH_LINENO[@]} ]]; do
-        ARGS_LIST=()
+    while [[ $i -lt ${#BASH_LINENO[@]} ]]; do
+        argsList=()
 
-        if [[ ${#BASH_ARGC[@]} -gt $I ]] && [[ ${#BASH_ARGV[@]} -ge $(( NEXT_ARG + ${BASH_ARGC[I]} )) ]]; then
-            for (( ARGS_LEFT = ${BASH_ARGC[I]}; ARGS_LEFT; --ARGS_LEFT )); do
+        if [[ ${#BASH_ARGC[@]} -gt $i ]] && [[ ${#BASH_ARGV[@]} -ge $(( nextArg + ${BASH_ARGC[i]} )) ]]; then
+            for (( argsLeft = ${BASH_ARGC[i]}; argsLeft; --argsLeft )); do
                 # Note: this reverses the order on purpose
-                ARGS_LIST[$ARGS_LEFT]=${BASH_ARGV[NEXT_ARG]}
-                (( NEXT_ARG ++ ))
+                argsList[$argsLeft]=${BASH_ARGV[nextArg]}
+                (( nextArg ++ ))
             done
 
-            if [[ ${#ARGS_LIST[@]} -gt 0 ]]; then
-                printf -v ARGS_LIST " %q" "${ARGS_LIST[@]}"
+            if [[ ${#argsList[@]} -gt 0 ]]; then
+                printf -v argsList " %q" "${argsList[@]}"
             else
-                ARGS_LIST=""
+                argsList=""
             fi
 
-            if [[ ${#ARGS_LIST} -gt 255 ]]; then
-                ARGS_LIST=${ARGS_LIST:0:250}...
+            if [[ ${#argsList} -gt 255 ]]; then
+                argsList=${argsList:0:250}...
             fi
         else
-            ARGS_LIST=""
+            argsList=""
         fi
 
-        echo "    [$I] ${FUNCNAME[I]:+${FUNCNAME[I]}(): }${BASH_SOURCE[I]}, line ${BASH_LINENO[I - 1]} -> ${FUNCNAME[I]:-${BASH_SOURCE[I]##*/}}$ARGS_LIST"
-        (( I ++ ))
+        echo "    [$i] ${FUNCNAME[i]:+${FUNCNAME[i]}(): }${BASH_SOURCE[i]}, line ${BASH_LINENO[i - 1]} -> ${FUNCNAME[i]:-${BASH_SOURCE[i]##*/}}$argsList"
+        (( i ++ ))
     done
 )

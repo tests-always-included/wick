@@ -2,15 +2,15 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wick-command-exists"
+    . "$WICK_DIR/lib/wickCommandExists"
 }
 
-@test "lib/wick-command-exists: linux - exists" {
-    mock-command which wick-command-exists/linux
-    wick-command-exists ok
+@test "lib/wickCommandExists: linux - exists" {
+    mock-command which wickCommandExists/linux
+    wickCommandExists ok
 }
 
-@test "lib/wick-command-exists: linux - does not exist" {
-    mock-command which wick-command-exists/linux
-    ! wick-command-exists bad
+@test "lib/wickCommandExists: linux - does not exist" {
+    mock-command which wickCommandExists/linux
+    ! wickCommandExists bad
 }

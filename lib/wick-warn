@@ -1,25 +1,33 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Logging for warnings, such as when problems are detected and they
+# aren't severe enough to warrant an error and termination of the function.
+# Warning messages are always written to stderr.  See `wickLog` for information
+# about writing log messages to files.  This also colorizes the output when
+# `$WICK_COLOR` is set to a non-empty value.  (See
+# [Bash concepts](../doc/bash-concepts.md) regarding stderr.)
 #
-# Writes a warning to the logging system.
+# $@          - The text to log.  Arguments are appended into a single line.
+# $WICK_COLOR - When set to a non-empty string the output is colorized.
 #
-# This message always is written to stdout as well.
+# Examples
 #
-# Parameters:
-#     $@: The log messages to write (they get joined into one line)
+#   if [[ -f /some/file ]]; then
+#       wickWarn "File exists when it should not."
+#       rm /some/file
+#   fi
 #
-# Environment variables:
-#     WICK_COLOR: When set to non-empty string, ANSI color is enabled.
-wick-warn() (
+# Returns nothing.
+wickWarn() (
     set +x
-    local CONTENT OUTPUT
+    local content output
 
-    wick-array-join CONTENT " " "$@"
-    wick-log "WARN" "$CONTENT"
-    wick-prefix-lines OUTPUT "WARN: " "$CONTENT"
+    wickArrayJoin content " " "$@"
+    wickLog "WARN" "$content"
+    wickPrefixLines output "WARN: " "$content"
 
     if [[ ! -z "${WICK_COLOR-}" ]]; then
-        OUTPUT=$'\E[33;1m'"$OUTPUT"$'\E[0m'
+        output=$'\E[33;1m'"$output"$'\E[0m'
     fi
 
-    echo "$OUTPUT"
+    echo "$output" >&2
 )

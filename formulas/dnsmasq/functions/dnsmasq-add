@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 dnsmasq-add() {
-    wick-make-file "$@" "/etc/dnsmasq.d"
-    wick-service restart dnsmasq
+    wickMakeFile "$@" "/etc/dnsmasq.d"
+    wickService restart dnsmasq
 }

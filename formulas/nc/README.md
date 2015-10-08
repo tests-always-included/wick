@@ -1,6 +1,6 @@
-Netcat Formula
-==============
+Netcat
+======
 
 Installs `nc`.
 
-    wick-formula nc
+    wickFormula nc

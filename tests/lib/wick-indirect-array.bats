@@ -2,7 +2,7 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wick-indirect-array"
+    . "$WICK_DIR/lib/wickIndirectArray"
 }
 
 test-one-level() {
@@ -14,10 +14,10 @@ test-one-level() {
 }
 
 test-one-level-set() {
-    local "$1" && wick-indirect-array "$1" one two three
+    local "$1" && wickIndirectArray "$1" one two three
 }
 
-@test "lib/wick-indirect: one level" {
+@test "lib/wickIndirect: one level" {
     [ "$(test-one-level)" == "one two three" ]
 }
 
@@ -35,16 +35,16 @@ test-conflicting-variables-set1() {
     AAA=(wrong data)
     test-conflicting-variables-set2 AAA
     AAA=("${AAA[@]}" "+set1")
-    local "$1" && wick-indirect-array "$1" "${AAA[@]}"
+    local "$1" && wickIndirectArray "$1" "${AAA[@]}"
 }
 
 test-conflicting-variables-set2() {
     local AAA
 
     AAA="set2-before"
-    local "$1" && wick-indirect-array "$1" set2a set2b
+    local "$1" && wickIndirectArray "$1" set2a set2b
 }
 
-@test "lib/wick-indirect: conflicting variables" {
+@test "lib/wickIndirect: conflicting variables" {
     [ "$(test-conflicting-variables)" == "set2a set2b +set1" ]
 }

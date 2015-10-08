@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 cat <<EOF
 lo        Link encap:Local Loopback
           inet addr:127.0.0.1  Mask:255.0.0.0

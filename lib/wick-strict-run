@@ -1,18 +1,38 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Runs a command and captures its return code, even when [strict mode]
+# is enabled.  The variable name you specify is set to the return code of the
+# command.
 #
-# Adds a way to get the result status or exit code from a function while
-# the rest of the code operates in strict mode (see `wick-strict-mode`).
+# $1   - Name of variable that should get the return value / status code.
+# $2-@ - Command and arguments to run.
+#
+# This is intended to be used along with `wickStrictMode`.
+#
+# Example:
+#
+#   #!/usr/bin/env bash
+#   . /usr/local/lib/wick-infect
+#   wickStrictMode
+#
+#   wickStrictRun result grep "some-string" /etc/some-file.cfg > /dev/null 2>&1
+#
+#   if [[ $result -eq 0 ]]; then
+#       wickInfo "some-string was found"
+#   else
+#       wickInfo "some-string was not found"
+#   fi
+#
+# Returns nothing.
+wickStrictRun() {
+    local dest result setOptions
 
-wick-strict-run() {
-    local DEST RESULT SET_OPTIONS
-
-    DEST=$1
+    dest=$1
     shift
-    SET_OPTIONS=$-
+    setOptions=$-
     set +eE
     "$@"
-    RESULT=$?
-    set -"$SET_OPTIONS"
+    result=$?
+    set -"$setOptions"
 
-    local "$DEST" && wick-indirect "$DEST" "$RESULT"
+    local "$dest" && wickIndirect "$dest" "$result"
 }

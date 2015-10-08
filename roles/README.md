@@ -9,29 +9,29 @@ Sample Role
 
 Here is a fictional role that could stand up a web server running a copy of a PHP application.  There's comments added to explain what each formula should be doing.
 
-    #!/bin/bash
-    wick-formula wick-base                      # Useful functions and explorers
-    wick-formula hostname app-demo.example.com  # Set the hostname and domain
-    wick-formula apache2                        # Install Apache2
-    wick-formula php5                           # Install PHP5
+    #!/usr/bin/env bash
+    wickFormula wick-base                      # Useful functions and explorers
+    wickFormula hostname app-demo.example.com  # Set the hostname and domain
+    wickFormula apache2                        # Install Apache2
+    wickFormula php5                           # Install PHP5
 
     case "$ENVIRONMENT" in
         prod)
             # Production code, production data
-            wick-formula app-demo --env=prod
-            wick-formula app-data --env=prod
+            wickFormula app-demo --env=prod
+            wickFormula app-data --env=prod
             ;;
 
         test)
             # Production code, testing data
-            wick-formula app-demo --env=prod
-            wick-formula app-data --env=test
+            wickFormula app-demo --env=prod
+            wickFormula app-data --env=test
             ;;
 
         *)
             # Testing code, testing data
-            wick-formula app-demo --env=test
-            wick-formula app-data --env=test
+            wickFormula app-demo --env=test
+            wickFormula app-data --env=test
             ;;
     esac
 
@@ -39,42 +39,42 @@ There you have it.  This role will trigger the execution of 6 other functions, p
 
 Just like the `run` script of [formulas], roles can take parameters from the command line.  If that does not work you can use an explorer or use environment variables.  This next example does all three.  One can also load another role using the `WICK_ROLE_DIR` variable.
 
-    #!/bin/bash
+    #!/usr/bin/env bash
 
     # Parse arguments
     # This gets set to a non-empty string if --extra is passed
-    wick-get-option EXTRA extra "$@"
+    wickGetOption EXTRA extra "$@"
 
     # Load another role to do some basic setup
-    # This uses `wick-formula` to do a lot of basic stuff to the target machine
-    wick-load-role "our-base-formulas"
+    # This uses `wickFormula` to do a lot of basic stuff to the target machine
+    wickLoadRole "our-base-formulas"
 
     # Use the command-line argument
     if [[ ! -z "$EXTRA" ]]; then
-        wick-load-role "our-extra-formulas"
+        wickLoadRole "our-extra-formulas"
     fi
 
     # Check the output of an explorer
-    wick-explorer ARCH wick-base arch
+    wickExplorer ARCH wick-base arch
 
     case "$ARCH" in
         amd64)
-            wick-package ia32-libs
-            wick-formula special-package --64bit
+            wickPackage ia32-libs
+            wickFormula special-package --64bit
             ;;
 
         ia32)
-            wick-formula special-package --32bit
+            wickFormula special-package --32bit
             ;;
 
         *)
-            wick-error "Unknown architecture: $ARCH"
+            wickError "Unknown architecture: $ARCH"
             exit 1
     esac
 
     # Finally check an environment variable
     if [[ ! -z "$NEEDS_APACHE" ]]; then
-        wick-formula apache2
+        wickFormula apache2
     fi
 
 

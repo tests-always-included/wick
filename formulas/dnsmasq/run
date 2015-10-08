@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Get current recursor
-wick-package dnsmasq
+wickPackage dnsmasq
 wick-make-dir /etc/dnsmasq.d/
 wick-set-config-line /etc/dnsmasq.conf "conf-dir=/etc/dnsmasq.d"
-wick-service restart dnsmasq
-wick-service enable dnsmasq
+wickService restart dnsmasq
+wickService enable dnsmasq
 
 # Insert dnsmasq into the resolver
 wick-set-config-line /etc/dhcp/dhclient.conf "prepend domain-name-servers 127.0.0.1;" "prepend domain-name-servers"

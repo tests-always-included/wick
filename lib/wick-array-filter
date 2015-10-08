@@ -1,25 +1,58 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Run a list of values through a filter.  When the filter function
+# returns an error, remove that element from the list.
+#
+# $1   - Variable name where the final list will be placed.
+# $2   - Function or command to run.  Receives one argument that is a single
+#        item's value from the list.
+# $3-@ - The elements in the list.
+#
+# Examples
+#
+#   removeAnimals() {
+#       case $1 in
+#           dog|cat|cow|moose)
+#               # Return failure and the elements will be removed
+#               return 1
+#               ;;
+#       esac
+#
+#       return 0
+#   }
+#
+#   words=(a dog and a cat chased a cow)
+#   wickArrayFilter filtered removeAnimals "${words[@]}"
+#
+#   # Prints "a and a chased a"
+#   # The hyphen is intentional so you can print the array when there
+#   # are no elements in the array and when `set -u` is enabled.
+#   echo "${filtered[@]-}"
+#
+# That last line looks weird but it is to help you work with [strict mode].
+# There are other coding techniques that should be kept in mind; see
+# [strict mode] for a full explanation.
+#
+# [strict mode]: ../doc/bash-strict-mode.md
+wickArrayFilter() {
+    local filter result target
 
-wick-array-filter() {
-    local FILTER RESULT TARGET
-
-    TARGET=$1
-    FILTER=$2
-    RESULT=()
+    target=$1
+    filter=$2
+    result=()
     shift 2
 
     while [[ $# -gt 0 ]]; do
-        if "$FILTER" "$1"; then
-            RESULT[${#RESULT[@]}]=$1
+        if "$filter" "$1"; then
+            result[${#result[@]}]=$1
         fi
 
         shift
     done
 
-    if [[ ${#RESULT[@]} -eq 0 ]]; then
-        local "$TARGET" && wick-indirect-array "$TARGET"
+    if [[ ${#result[@]} -eq 0 ]]; then
+        local "$target" && wickIndirectArray "$target"
         return
     fi
 
-    local "$TARGET" && wick-indirect-array "$TARGET" "${RESULT[@]}"
+    local "$target" && wickIndirectArray "$target" "${result[@]}"
 }

@@ -1,6 +1,6 @@
-Erlang Formula
-==============
+Erlang
+======
 
 Installs erlang.
 
-    wick-formula erlang
+    wickFormula erlang

@@ -1,42 +1,42 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-explorer OS wick-base os
+wickExplorer OS wick-base os
 
 case "$OS" in
     redhat|centos)
-        wick-info "Adding EPEL repository"
+        wickInfo "Adding EPEL repository"
         ;;
 
     *)
-        wick-info "EPEL repository not needed for this OS: $OS"
+        wickInfo "EPEL repository not needed for this OS: $OS"
         exit
 esac
 
 INSTALLED=$(rpm -qa | grep ^epel-release- || true)
 
 if [[ ! -z "$INSTALLED" ]]; then
-    wick-info "EPEL package already installed: $INSTALLED"
+    wickInfo "EPEL package already installed: $INSTALLED"
     exit
 fi
 
 PACKAGE=$(rpm -q --whatprovides /etc/redhat-release)
 
-wick-temp-dir TEMP
+wickTempDir TEMP
 
 (
     cd "$TEMP"
 
     case "$PACKAGE" in
         *.el5.*)
-            wick-get-url "http://dl.fedoraproject.org/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm" epel.rpm
+            wickGetUrl "http://dl.fedoraproject.org/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm" epel.rpm
             ;;
 
         *.el6.*)
-            wick-get-url "http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm" epel.rpm
+            wickGetUrl "http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm" epel.rpm
             ;;
 
         *.el7.*)
-            wick-get-url "http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm" epel.rpm
+            wickGetUrl "http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm" epel.rpm
             ;;
     esac
 

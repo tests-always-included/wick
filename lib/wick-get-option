@@ -1,18 +1,42 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Retrieve a named option from the list of arguments.
+#
+# $1   - Name of variable where the value will be stored.
+# $2   - Option's name.  May have leading hyphens (eg. `--option-name` and
+#      `option-name` are both valid).
+# $3-@ - Arguments to parse.  Typically this is `"$@"`.
+#
+# This splits up single-hyphen options.  Significantly better examples are explained in [argument processing].
+#
+# Examples
+#
+#   # If --verbose=XYZ is passed, $verboseOption will be set to "XYZ".
+#   # If --verbose= is passed (empty vallue), $verboseOption is set to "".
+#   # If --verbose is passed without a value, $verboseOption is set to "true".
+#   # If --verbose is not passed at all, $verboseOption is set to "".
+#   wickGetOption verboseOption verbose "$@"
+#
+#   # Split single-hyphen options:
+#   # Assuming that -abc is passed in ...
+#   wickGetOption letterC c "$@"
+#   wickGetOption letterD d "$@"
+#   echo "$letterC" # Echos "true"
+#   echo "$letterD" # Echos nothing
+#
+# Returns nothing.
+wickGetOption() {
+    local arg name target returnValue value
 
-wick-get-option() {
-    local ARG NAME TARGET RETURN_VALUE VALUE
-
-    TARGET="$1"
-    NAME="$2"
+    target="$1"
+    name="$2"
     shift 2
 
-    while [[ "${NAME:0:1}" == "-" ]]; do
-        NAME="${NAME:1}"
+    while [[ "${name:0:1}" == "-" ]]; do
+        name="${name:1}"
     done
 
-    RETURN_VALUE=""
-    wick-safe-variable-name NAME "$NAME"
+    returnValue=""
+    wickSafeVariableName name "$name"
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
@@ -21,30 +45,30 @@ wick-get-option() {
                 ;;
 
             --*)
-                VALUE=true
-                ARG=${1:2}
+                value=true
+                arg=${1:2}
 
-                if [[ "$ARG" == *=* ]]; then
-                    VALUE=${ARG#*=}
-                    ARG=${ARG%%=*}
+                if [[ "$arg" == *=* ]]; then
+                    value=${arg#*=}
+                    arg=${arg%%=*}
                 fi
 
-                wick-safe-variable-name ARG "$ARG"
+                wickSafeVariableName arg "$arg"
 
-                if [[ "$ARG" == "$NAME" ]]; then
-                    RETURN_VALUE="$VALUE"
+                if [[ "$arg" == "$name" ]]; then
+                    returnValue="$value"
                 fi
                 ;;
 
             -*)
-                ARG="${1:1}"
+                arg="${1:1}"
 
-                while [[ ! -z "$ARG" ]]; do
-                    if [[ "${ARG:0:1}" == "$NAME" ]]; then
-                        RETURN_VALUE=true
+                while [[ ! -z "$arg" ]]; do
+                    if [[ "${arg:0:1}" == "$name" ]]; then
+                        returnValue=true
                     fi
 
-                    ARG="${ARG:1}"
+                    arg="${arg:1}"
                 done
                 ;;
         esac
@@ -52,5 +76,5 @@ wick-get-option() {
         shift
     done
 
-    local "$TARGET" && wick-indirect "$TARGET" "$RETURN_VALUE"
+    local "$target" && wickIndirect "$target" "$returnValue"
 }

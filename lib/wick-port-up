@@ -1,5 +1,29 @@
-#!/bin/bash
-wick-port-up() {
+#!/usr/bin/env bash
+# Public: Determines if a port is open or not.  Works with TCP and UDP ports.
+# If the port is open this returns an error code of 0.  If the port is not open
+# it returns 1.  If there are any errors this returns 2 and writes an error
+# message to stderr.  (See [Bash concepts](../doc/bash-concepts.md) for error
+# codes and stderr.)
+#
+# $1 - Protocol.  One of TCP, tcp, UDP, udp.
+# $2 - Port number to test.
+#
+# Examples
+#
+#   # Confirm a web server is listening
+#   if ! wickPortUp TCP 80; then
+#       echo "There is no web server listening on port 80."
+#   fi
+#
+#   # Wait for a server to start
+#   wickService start my-web-server
+#
+#   if ! wickWaitFor 120 wickPortUp TCP 80; then
+#       echo "Tried to wait for 2 minutes but nothing listened on port 80"
+#   fi
+#
+# Returns true on success and non-zero for any failure.
+wickPortUp() {
     local PORT RESULT
 
     PORT=$2
@@ -14,7 +38,7 @@ wick-port-up() {
             ;;
 
         *)
-            wick-error "Only accepts 'tcp' or 'udp', not '$2'"
+            wickError "Only accepts 'tcp' or 'udp', not '$1'"
             return 2
             ;;
     esac

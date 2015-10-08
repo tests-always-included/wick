@@ -1,6 +1,35 @@
-#!/bin/bash
-
-wick-indirect() {
-    unset -v "$1" || wick-error "Invalid identifer: $1"
+#!/usr/bin/env bash
+# Public: Set a variable in a parent environment to a single string.  This is
+# the mechanism that other functions use to return data to the calling
+# function because Bash has no cleaner way to return a string.
+#
+# $1 - Name of variable that should get the result.
+# $2 - Value to assign.
+#
+# Examples
+#
+#   # This function just lists 5 files/directories in /tmp
+#   # and stores the string result in the desired variable.
+#   tempFiles() {
+#       local VALUE
+#
+#       VALUE=$(ls /tmp | head -n 5)
+#       local "$1" && wickIndirect "$1" "$VALUE"
+#   }
+#
+#   FILES=""
+#   tempFiles FILES
+#   echo "$FILES"
+#
+#   # Example result:
+#   # a_9789
+#   # config-err-BhlXXp
+#   # d20150217-10973-riqke0/
+#   # d20150217-11044-6yj33c/
+#   # d20150217-11571-14rt04k/
+#
+# Returns nothing.
+wickIndirect() {
+    unset -v "$1" || wickError "Invalid identifer: $1"
     printf -v "$1" '%s' "$2"
 }

@@ -1,6 +1,6 @@
-OpenJDK 1.8 Formula
-===================
+OpenJDK 1.8
+===========
 
 Installs OpenJDK 1.8 JRE.
 
-    wick-formula openjdk-1.8
+    wickFormula openjdk-1.8

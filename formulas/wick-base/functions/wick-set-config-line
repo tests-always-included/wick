@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 wick-set-config-line() {
     local KEY TEMPFILE
@@ -16,7 +16,7 @@ wick-set-config-line() {
         KEY=${KEY/:*}
     fi
 
-    wick-temp-dir TEMP
+    wickTempDir TEMP
     TEMPFILE="$TEMP/add-line"
     cat "$1" | grep -v "^$KEY[ =:]" > "$TEMPFILE" || true
     echo "$2" >> "$TEMPFILE"

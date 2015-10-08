@@ -1,11 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+wickOnLoad wickAddCommand help "This help screen"
+
+# Public: Show the help messages saved with wickAddCommand.  Writes output
+# to stdout.
 #
-# Shows the help message
+# Returns nothing.
+wickHelp() {
+    local message
 
-wick-on-load wick-add-command help "This help screen"
-
-# Show the help messages saved with wick-add-command
-wick-help() {
     echo "Specify a command:"
     echo ""
 
@@ -14,7 +17,7 @@ wick-help() {
         return
     fi
 
-    for F in "${WICK_COMMAND_HELP[@]}"; do
-        echo "$F"
+    for message in "${WICK_COMMAND_HELP[@]}"; do
+        echo "$message"
     done
 }

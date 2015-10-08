@@ -1,33 +1,34 @@
-#!/bin/bash
-#
-# Locates a role file in the ancestry chain and loads it.  This will provide
-# a list of formulas to execute.
+#!/usr/bin/env bash
 
-# Load a role
+# Public: Locates a role file in the ancestry chain and loads it.  This
+# will provide a list of formulas to execute.
 #
-# Parameters:
-#     $1: Role to load
-#     $2-*: Extra arguments to pass to the role script
-# Returns true if there was no error loading the role
-wick-load-role() {
-    local LOCATION ROLE
+# When loading the role, sets `WICK_ROLE_DIR` to be the directory of
+# the role that is being loaded.
+#
+# $1   - Role to load
+# $2-@ - Extra arguments to pass to the role script
+#
+# Returns 1 if there is a problem loading the role.
+wickLoadRole() {
+    local location role WICK_ROLE_DIR
 
-    if [[ ${#@} -eq 0 ]]; then
+    if [[ $# -eq 0 ]]; then
         echo "You must specify a role to load."
 
         return 1
     fi
 
-    ROLE=$1
+    role=$1
     shift
 
-    if ! wick-find LOCATION "roles/$ROLE"; then
-        echo "Unable to find role $ROLE"
+    if ! wickFind location "roles/$role"; then
+        echo "Unable to find role $role"
 
         return 1
     fi
 
-    echo "Using role $ROLE ($LOCATION $@)"
-    WICK_ROLE_DIR=${LOCATION%/*}
-    . "$LOCATION" "$@"
+    echo "Using role $role ($@) at $location"
+    WICK_ROLE_DIR=${location%/*}
+    . "$location" "$@"
 }

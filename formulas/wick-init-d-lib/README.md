@@ -1,9 +1,9 @@
-Wick-Init-D-Lib - Wick Formula
-==============================
+Wick-Init-D-Lib
+===============
 
 Not all systems are created equally.  In that regard, not all `/etc/init.d/` environments are the same either.  Instead of rewriting a shell that's extremely similar for multiple services, this formula will install a library that can be used to make init-style scripts quickly.
 
-    wick-formula wick-init-d-lib
+    wickFormula wick-init-d-lib
 
 * There are no parameters.
 
@@ -11,7 +11,7 @@ There are many hooks that you can plug into in order to run commands right befor
 
 This is a sample `/etc/init.d` script that uses the library.
 
-    #!/bin/bash
+    #!/usr/bin/env bash
 
     # Source in the init.d library
     . /usr/local/lib/wick-init-d-lib

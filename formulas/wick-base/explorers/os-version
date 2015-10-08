@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-explorer OS wick-base os || true
+wickExplorer OS wick-base os || true
 
 case "$OS" in
     centos)

@@ -1,29 +1,43 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Get all options from a list of arguments and return a list without
+# any processing.
+#
+# $1   - Name of variable where the array will be stored.
+# $2-@ - Arguments that are to be parsed.  Typically this is `"$@"`.
+#
+# This does not split up single-hyphen options.  Significantly better examples
+# are explained in [argument processing](../doc/argument-processing.md).
+#
+# Examples:
+#
+#   wickGetOptions opts "$@"
+#   # opts is now a list of all options that were passed to the script
+#
+# Returns nothing.
+wickGetOptions() {
+    local options prefix target
 
-wick-get-options() {
-    local OPTIONS PREFIX TARGET
-
-    OPTIONS=()
-    TARGET=$1
-    PREFIX="-"
+    options=()
+    target=$1
+    prefix="-"
     shift
 
     while [[ $# -gt 0 ]]; do
-        if [[ "${1:0:1}" == "$PREFIX" ]]; then
+        if [[ "${1:0:1}" == "$prefix" ]]; then
             if [[ "$1" == "--" ]]; then
-                PREFIX="DO NOT MATCH"
+                prefix="DO NOT MATCH"
             else
-                OPTIONS[${#OPTIONS[@]}]=$1
+                options[${#options[@]}]=$1
             fi
         fi
 
         shift
     done
 
-    if [[ "${#OPTIONS[@]}" -eq 0 ]]; then
-        local "$TARGET" && wick-indirect-array "$TARGET"
+    if [[ "${#options[@]}" -eq 0 ]]; then
+        local "$target" && wickIndirectArray "$target"
         return
     fi
 
-    local "$TARGET" && wick-indirect-array "$TARGET" "${OPTIONS[@]}"
+    local "$target" && wickIndirectArray "$target" "${options[@]}"
 }

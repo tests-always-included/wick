@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 cat <<EOF
 docker0   Link encap:Ethernet  HWaddr 56:84:7a:fe:97:99
           inet addr:172.17.42.1  Bcast:0.0.0.0  Mask:255.255.0.0

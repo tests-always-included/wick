@@ -1,9 +1,9 @@
-Wick-Base - Wick Formula
-========================
+Wick-Base
+=========
 
 This formula does not perform any action.  It exists only to add useful functions and explorers to the Wick environment.
 
-    wick-formula wick-base
+    wickFormula wick-base
 
 
 Explorers
@@ -15,7 +15,7 @@ Returns the version of Bash in use on the target system.
 
 Example:
 
-    wick-explorer RESULT wick-base bash-version
+    wickExplorer RESULT wick-base bash-version
     echo "$RESULT"  # "4.3.30(1)-release"
 
 
@@ -30,7 +30,7 @@ Returned values:
 
 Example:
 
-    wick-explorer RESULT wick-base machine-type
+    wickExplorer RESULT wick-base machine-type
     if [[ "$RESULT" == "amazon" ]]; then
         echo "I am in Amazon AWS"
     fi
@@ -48,7 +48,7 @@ Returned values:
 
 Example:
 
-    wick-explorer RESULT wick-base os
+    wickExplorer RESULT wick-base os
     case "$RESULT" in
         apple)
             brew install packageName
@@ -71,7 +71,7 @@ Functions
 
 Process a formula's template file.  Automatically detects the template engine by the filename extension.  Writes results to stdout.  (See [Bash concepts] for stdout; [templates] about the template system.)
 
-This is what `wick-make-file` may use when processing templates.
+This is what `wickMakeFile` may use when processing templates.
 
     formula-template TEMPLATE
 
@@ -107,13 +107,13 @@ Examples:
     wick-make-dir --owner nobody:nogroup /a/b/c/d/
 
 
-### wick-make-file
+### wickMakeFile
 
 Copies a file from the formula to the target machine.  Files are stored in `files/` within the formula.  When `--template` is used, then files come from `templates/` instead.  (See [templates] for more about templates.)
 
 *It is good practice to have the destination either include the filename or else end in a slash (`/`) to avoid ambiguity.  See the examples for more information.*
 
-    wick-make-file [--formula=FORMULA] [--mode=MODE] [--owner=OWNER]
+    wickMakeFile [--formula=FORMULA] [--mode=MODE] [--owner=OWNER]
         [--template] FILE DESTINATION
 
 * `[--formula=FORMULA]`: Indicate that the source file comes from a different formula than the current one.
@@ -130,26 +130,26 @@ If you want the destination directory to be created automatically, make sure you
 Examples:
 
     # Writes /etc/rc.local from a template.
-    wick-make-file --mode=0755 --template rc.local.mo /etc/
+    wickMakeFile --mode=0755 --template rc.local.mo /etc/
 
     # Writes a root-only configuration file, renaming it as it is written.
-    wick-make-file --mode=0600 --owner=root:root secret.txt /root/super-secret-key.txt
+    wickMakeFile --mode=0600 --owner=root:root secret.txt /root/super-secret-key.txt
 
     # Installs a file into a directory that does not exist.
     # The directory will be created and owned by "nobody", just like the file.
     # Note the / at the end of the destination
-    wick-make-file --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d/
+    wickMakeFile --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d/
 
     # The same as above but the directory will NOT be created automatically
     # if it doesn't already exist.
     # If /etc/a/b/c/d exists as a directory then config.ini will be written
     # to that folder.  Otherwise, this will create the file /etc/a/b/c/d (not
     # /etc/a/b/c/d/config.ini), so be careful.
-    wick-make-file --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d
+    wickMakeFile --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d
 
     # Get a file from other-formula, no matter where it is located in the
     # parent hierarchy in relation to the current formula.
-    wick-make-file --formula=other-formula motd.txt /etc/motd
+    wickMakeFile --formula=other-formula motd.txt /etc/motd
 
 
 ### wick-make-user
@@ -199,11 +199,11 @@ Return a hash for a file.  The type of hash returned is based on what's availabl
 * `FILENAME`: File to hash.
 
 
-### wick-package
+### wickPackage
 
 Install or remove packages on the target system.  This handles the OS-specific tools that are used to install or remove the packages.  If the package is named differently on various systems, it is up to the formula to address that (see the [apache2] formula).
 
-    wick-package [--uninstall] PACKAGE [...]
+    wickPackage [--uninstall] PACKAGE [...]
 
 * `[--uninstall]`: Remove the packages instead of installing it.
 * `PACKAGE`: Name of package to install
@@ -212,29 +212,29 @@ Uses the `YUM_ENABLE_REPO` environment variable if you need to enable additional
 
 Examples:
 
-    wick-package --uninstall apache
-    wick-package apache2
+    wickPackage --uninstall apache
+    wickPackage apache2
 
     # Enable Remi's repository for this one package so we install a
     # significantly newer version of Redis.
-    YUM_ENABLE_REPO=remi wick-package redis
+    YUM_ENABLE_REPO=remi wickPackage redis
 
 
-### wick-service
+### wickService
 
 Control services.  Add services, enable and disable them at boot up.  Start, stop, reload, restart services.  Helps with the creation of override files (for `chkconfig`).
 
-    wick-service COMMAND SERVICE
+    wickService COMMAND SERVICE
 
 * `COMMAND`: Action to perform.
 * `SERVICE`: Service name.
 
 Actions:
 
-* `add [--force] [--*] SERVICE FORMULA_FILE` - Use `wick-make-file` to copy the formula file to `/etc/init.d/` for the named service.  Does not enable nor start the service.  Does not add the service if the file already exists unless `--force` is also used.  You can also use any additional options that `wick-make-file` supports.
+* `add [--force] [--*] SERVICE FORMULA_FILE` - Use `wickMakeFile` to copy the formula file to `/etc/init.d/` for the named service.  Does not enable nor start the service.  Does not add the service if the file already exists unless `--force` is also used.  You can also use any additional options that `wickMakeFile` supports.
 * `disable SERVICE` - Disable the service from starting at boot.  Does not stop the service if it is already running.
 * `enable SERVICE` - Enable the service at boot.  Does not start the service.
-* `make-override [--force] SERVICE` - Creates `/etc/chkconfig.d/SERVICE` that is used by `chkconfig` to help determine order.  This override file can be modified to list additional dependencies to influence the boot order of scripts.  Make sure to call `wick-service override` when you update an override file.  When using `--force`, this will overwrite any override file that may already exist.
+* `make-override [--force] SERVICE` - Creates `/etc/chkconfig.d/SERVICE` that is used by `chkconfig` to help determine order.  This override file can be modified to list additional dependencies to influence the boot order of scripts.  Make sure to call `wickService override` when you update an override file.  When using `--force`, this will overwrite any override file that may already exist.
 * `override SERVICE` - Calls `chkconfig override` to apply any changes made to override files.
 * `reload SERVICE` - Reloads the given service.
 * `restart SERVICE` - Stops and starts the given service.
@@ -245,14 +245,14 @@ Example:
 
     # Creating a new service using the formula's files/consul.init
     # and copying it to the right spot.
-    wick-service add consul consul.init
-    wick-service enable consul
-    wick-service start consul
+    wickService add consul consul.init
+    wickService enable consul
+    wickService start consul
 
     # Make Apache require Consul before starting
-    wick-service make-override apache2
+    wickService make-override apache2
     sed -i 's/Required-Start:/Required-Start: consul/' /etc/chkconfig.d/apache2
-    wick-service override apache2
+    wickService override apache2
 
 
 ### wick-set-config-line

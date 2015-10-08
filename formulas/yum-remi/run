@@ -1,46 +1,46 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-explorer OS wick-base os
+wickExplorer OS wick-base os
 
 case "$OS" in
     redhat|centos)
-        wick-info "Adding Remi repository"
+        wickInfo "Adding Remi repository"
         ;;
 
     *)
-        wick-info "Remi repository not needed for this OS: $OS"
+        wickInfo "Remi repository not needed for this OS: $OS"
         exit
 esac
 
 INSTALLED=$(rpm -qa | grep ^remi-release- || true)
 
 if [[ ! -z "$INSTALLED" ]]; then
-    wick-info "Remi package already installed: $INSTALLED"
+    wickInfo "Remi package already installed: $INSTALLED"
     exit
 fi
 
 PACKAGE=$(rpm -q --whatprovides /etc/redhat-release)
 
-wick-temp-dir TEMP
+wickTempDir TEMP
 
 (
     cd "$TEMP"
 
     case "$PACKAGE" in
         *.el4.*)
-            wick-get-url "http://rpms.remirepo.net/enterprise/remi-release-4.rpm" remi-release.rpm
+            wickGetUrl "http://rpms.remirepo.net/enterprise/remi-release-4.rpm" remi-release.rpm
             ;;
 
         *.el5.*)
-            wick-get-url "http://rpms.remirepo.net/enterprise/remi-release-5.rpm" remi-release.rpm
+            wickGetUrl "http://rpms.remirepo.net/enterprise/remi-release-5.rpm" remi-release.rpm
             ;;
 
         *.el6.*)
-            wick-get-url "http://rpms.remirepo.net/enterprise/remi-release-6.rpm" remi-release.rpm
+            wickGetUrl "http://rpms.remirepo.net/enterprise/remi-release-6.rpm" remi-release.rpm
             ;;
 
         *.el7.*)
-            wick-get-url "http://rpms.remirepo.net/enterprise/remi-release-7.rpm" remi-release.rpm
+            wickGetUrl "http://rpms.remirepo.net/enterprise/remi-release-7.rpm" remi-release.rpm
             ;;
     esac
 

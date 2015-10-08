@@ -1,29 +1,43 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Grab all non-option arguments and return them as an array.
+#
+# $1   - Name of variable that should receive the result.
+# $2-@ - Command line arguments to parse.  Typically this is `"$@"`.
+#
+# Significantly better examples are explained in
+# [argument processing](../doc/argument-processing.md).
+#
+# Examples
+#
+#   # Any non-option arguments are placed into $arguments.
+#   # If there were none, $arguments is set to an empty list.
+#   wickGetArguments arguments "$@"
+#
+# Returns nothing.
+wickGetArguments() {
+    local args prefix target
 
-wick-get-arguments() {
-    local ARGS PREFIX TARGET
-
-    ARGS=()
-    TARGET=$1
-    PREFIX="-"
+    args=()
+    target=$1
+    prefix="-"
     shift
 
     while [[ $# -gt 0 ]]; do
-        if [[ "${1:0:1}" != "$PREFIX" ]]; then
-            ARGS[${#ARGS[@]}]=$1
+        if [[ "${1:0:1}" != "$prefix" ]]; then
+            args[${#args[@]}]=$1
         else
             if [[ "$1" == "--" ]]; then
-                PREFIX="DO NOT MATCH"
+                prefix="DO NOT MATCH"
             fi
         fi
 
         shift
     done
 
-    if [[ ${#ARGS[@]} -eq 0 ]]; then
-        local "$TARGET" && wick-indirect-array "$TARGET"
+    if [[ ${#args[@]} -eq 0 ]]; then
+        local "$target" && wickIndirectArray "$target"
         return
     fi
 
-    local "$TARGET" && wick-indirect-array "$TARGET" "${ARGS[@]}"
+    local "$target" && wickIndirectArray "$target" "${args[@]}"
 }

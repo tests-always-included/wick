@@ -1,12 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: This retrieves a single argument from the list of arguments.  It's
+# similar to `wickGetOption`.  This returns non-options that were passed to a
+# function.
+#
+# $1   - Name of the variable that should get the result.
+# $2   - Index of the non-option argument, starting with 0.
+# $3-@ - Command line arguments to parse.  Typically you use `"$0"` here.
+#
+# Significantly better examples are explained in
+# [argument processing](../doc/argument-processing.md).
+#
+# Examples
+#
+#   # Get the first non-option and place it into $name
+#   # If the argument does not exist, sets $name to ""
+#   wickGetArgument name 0 "$@"
+#
+# Returns nothing.
+wickGetArgument() {
+    local args index target
 
-wick-get-argument() {
-    local ARGS INDEX TARGET
-
-    TARGET=$1
-    INDEX=$2
+    target=$1
+    index=$2
     shift 2
-    wick-get-arguments ARGS "$@"
+    wickGetArguments args "$@"
 
-    local "$TARGET" && wick-indirect "$TARGET" "${ARGS[$INDEX]-}"
+    local "$target" && wickIndirect "$target" "${args[$index]-}"
 }

@@ -6,17 +6,17 @@ As found on [another website](http://redsymbol.net/articles/unofficial-bash-stri
     set -eEu -o pipefail
     shopt -s extdebug
     IFS=$'\n\t'
-    trap 'wick-strict-mode-fail $?' ERR
+    trap 'wickStrictModeFail $?' ERR
 
 A brief summary of what each option does:
 
 * `set -e`: Exit immediately if a command exits with a non-zero status, unless that command is part a test condition.  On failure this triggers the ERR trap.
-* `set -E`: The ERR trap is inherited by shell functions, command substitutions and commands in subshells.  This helps us use `wick-strict-mode-fail` wherever `set -e` is enabled.
+* `set -E`: The ERR trap is inherited by shell functions, command substitutions and commands in subshells.  This helps us use `wickStrictModeFail` wherever `set -e` is enabled.
 * `set -u`: Exit and trigger the ERR trap when accessing an unset variable.  This helps catch typos in variable names.
 * `set -o pipefail`: The return value of a pipeline is the value of the last (rightmost) command to exit with a non-zero status.  So, `a | b | c` can return `a`'s status when `b` and `c` both return a zero status.  It is easier to catch problems during the middle of processing a pipeline this way.
 * `shopt -s extdebug`: Enable extended debugging.  Bash will track the parameters to all of the functions in the call stack, allowing the stack trace to also display the parameters that were used.
 * `IFS=$'\n\t'`: Set the "internal field separator", which is a list of characters use for word splitting after expansion and to split lines into words with the `read` builtin command.  Normally this is `$' \t\n'` and we're removing the space.  This helps us catch other issues when we may rely on IFS or accidentally use it incorrectly.
-* `trap 'wick-strict-mode-fail $?' ERR`:  The ERR trap is triggered when a script catches an error.  `wick-strict-mode-fail` attempts to produce a stack trace to aid in debugging.  We pass `$?` as the first argument so we have access to the return code of the failed command.
+* `trap 'wickStrictModeFail $?' ERR`:  The ERR trap is triggered when a script catches an error.  `wickStrictModeFail` attempts to produce a stack trace to aid in debugging.  We pass `$?` as the first argument so we have access to the return code of the failed command.
 
 This document deals heavily with status codes, conditionals, and other constructs in Bash scripts.  For more information on those, read about [Bash concepts].
 
@@ -62,9 +62,9 @@ If there are no lines with "REMOVE", then `grep` will return a non-zero status c
     # Option 1
     # Try to use it in a condition
     if grep -v "REMOVE" old-file.txt > new-file.txt; then
-        wick-debug "One or more lines were removed"
+        wickDebug "One or more lines were removed"
     else
-        wick-debug "No lines were found"
+        wickDebug "No lines were found"
     fi
 
 
@@ -77,19 +77,19 @@ If there are no lines with "REMOVE", then `grep` will return a non-zero status c
 
 You may send data through some sort of formatting utility, similar to this:
 
-    my-program | formatter
+    myProgram | formatter
 
-The `formatter` command is pretty simple and will always return 0 (success).  Your command seems to fail even though formatter always succeeds and that's because the return code from `my-program` is not zero.
+The `formatter` command is pretty simple and will always return 0 (success).  Your command seems to fail even though formatter always succeeds and that's because the return code from `myProgram` is not zero.
 
-To counter this issue, you really want to ignore the return value from `my-program`.
+To counter this issue, you really want to ignore the return value from `myProgram`.
 
-    # You can ignore just the return code for my-program
-    (my-program || true) | formatter
+    # You can ignore just the return code for myProgram
+    (myProgram || true) | formatter
 
     # You can ignore the return code for the whole line
-    my-program | formatter || true
+    myProgram | formatter || true
 
-The better option is to ignore only the return code for `my-program`.  That way errors from other parts of the line can still be caught.
+The better option is to ignore only the return code for `myProgram`.  That way errors from other parts of the line can still be caught.
 
 
 ### `Unbound variable $1` and optional parameters
@@ -97,20 +97,20 @@ The better option is to ignore only the return code for `my-program`.  That way 
 With `set -u` enabled, you are unable to use positional parameters that are not defined.  Let's say you have a function that will `echo` the first parameter.
 
     # This is the old function
-    function echo-first() {
+    function echoFirst() {
         echo $1
     }
 
-When you run `echo-first` with no arguments, the above will fail.  To adapt this you should do one of two things.
+When you run `echoFirst` with no arguments, the above will fail.  To adapt this you should do one of two things.
 
     # You can default to an empty value, which is similar to how Bash
     # would interpret this without set -u
-    function echo-first() {
+    function echoFirst() {
         echo ${1-}
     }
 
     # Alternately you can test for the number of arguments
-    function echo-first() {
+    function echoFirst() {
         if [[ $# -gt 0 ]]; then
             echo $1
         fi
@@ -119,12 +119,12 @@ When you run `echo-first` with no arguments, the above will fail.  To adapt this
 Strangely enough, `$@` will never give an error even in strict mode.
 
     # This always works
-    function show-args() {
+    function showArgs() {
         echo "$@"
     }
 
-    show-args one two three
-    show-args  # I would expect this to fail and it does not
+    showArgs one two three
+    showArgs  # I would expect this to fail and it does not
 
 
 ### `Unbound variable ${ARRAY[@]}`
@@ -171,16 +171,16 @@ There are several ways to append values to an array.
 We used to be able to run a command and catch its return code.
 
     # Will fail with strict mode
-    some-command-that-may-fail
+    someCommandThatMayFail
 
     if [[ $? -ne 0 ]]; then
         echo "There was a failure that will need to get handled"
     fi
 
-With the strict mode in place it is much harder to do that.  One option is to use `set +x` and then `set -x` again.  There is a new command, `wick-strict-run` that does this for you.  A full description is in [library functions](../lib/README.md).
+With the strict mode in place it is much harder to do that.  One option is to use `set +x` and then `set -x` again.  There is a new command, `wickStrictRun` that does this for you.  A full description is in [library functions](../lib/README.md).
 
     # Use this syntax
-    wick-strict-run RESULT some-command-that-may-fail
+    wickStrictRun RESULT someCommandThatMayFail
 
     if [[ $RESULT -ne 0 ]]; then
         echo "There was a failure that will need to get handled"

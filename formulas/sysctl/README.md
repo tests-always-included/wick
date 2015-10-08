@@ -1,9 +1,9 @@
-Sysctl Formula
-==============
+Sysctl
+======
 
 This adds a function to Wick to set a configuration setting.
 
-    wick-formula sysctl
+    wickFormula sysctl
 
 Now you have access to `sysctl-set` in your `run` files.
 

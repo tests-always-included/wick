@@ -1,18 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+wickOnLoad wickAddCommand run "Execute the formulas for a given role"
+
+# Public: Runs a single role and passes additional arguments to the role.
 #
-# Executes one role
-
-wick-on-load wick-add-command run "Execute the formulas for a given role"
-
-
-# Runs a single role and passes additional arguments to the role
+# $1   - Role to execute
+# $2-@ - Arguments to pass to the role's script.
 #
-# Parameters:
-#     $1: Role to execute
-#     $2-*: Arguments to pass to the role's script.
-# Returns true on success.
-wick-run() {
-    local FORMULA I LOCATION ROLE
+# Returns true on success, 1 if there are problems with the role.
+wickRun() {
+    local formula i location role
 
     if [[ -z "$1" ]]; then
         echo "You must specify a role to execute." >&2
@@ -20,7 +17,7 @@ wick-run() {
         return 1
     fi
 
-    wick-load-role "$@"
+    wickLoadRole "$@"
 
     if [[ ${#WICK_FORMULA_COMMANDS[@]} -eq 0 ]]; then
         echo "No formulas listed or no run scripts found for the formulas."
@@ -29,16 +26,16 @@ wick-run() {
         return 0
     fi
 
-    I=0
+    i=0
 
-    while [[ $I -lt ${#WICK_FORMULA_LIST[@]} ]]; do
-        echo "Order of formulas to execute [$I]: ${WICK_FORMULA_LIST[$I]}"
-        I=$((I + 1))
+    while [[ $i -lt ${#WICK_FORMULA_LIST[@]} ]]; do
+        echo "Order of formulas to execute [$i]: ${WICK_FORMULA_LIST[$i]}"
+        i=$((i + 1))
     done
 
-    for FORMULA in "${WICK_FORMULA_COMMANDS[@]}"; do
+    for formula in "${WICK_FORMULA_COMMANDS[@]}"; do
         # CAREFUL - keep the formula quoted here.
-        wick-run-formula "$FORMULA"
+        wickRunFormula "$formula"
     done
 
     echo "Done."

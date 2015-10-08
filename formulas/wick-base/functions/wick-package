@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-package() {
+wickPackage() {
     local OS STATE UNINSTALL UNPARSED
 
-    wick-get-option EXISTS exists "$@"
-    wick-get-option UNINSTALL uninstall "$@"
-    wick-get-arguments UNPARSED "$@"
+    wickGetOption EXISTS exists "$@"
+    wickGetOption UNINSTALL uninstall "$@"
+    wickGetArguments UNPARSED "$@"
 
     # Intentionally append to STATE to flag errors
     STATE=""
@@ -20,25 +20,25 @@ wick-package() {
 
     : ${STATE:=install}
 
-    wick-explorer OS wick-base os
+    wickExplorer OS wick-base os
 
     case "$OS" in
         centos|redhat)
-            wick-package-yum "$STATE" "${UNPARSED[@]-}"
+            wickPackage-yum "$STATE" "${UNPARSED[@]-}"
             ;;
 
         ubuntu|debian)
-            wick-package-apt "$STATE" "${UNPARSED[@]-}"
+            wickPackage-apt "$STATE" "${UNPARSED[@]-}"
             ;;
 
         *)
-            wick-error "Unable to determine package manager"
+            wickError "Unable to determine package manager"
             return 1
             ;;
     esac
 }
 
-wick-package-yum() {
+wickPackage-yum() {
     local ARGS STATE
 
     ARGS=()
@@ -48,11 +48,11 @@ wick-package-yum() {
     case "$STATE" in
         exists)
             if rpm -q "$@" > /dev/null 2>&1; then
-                wick-debug "Package exists: $@"
+                wickDebug "Package exists: $@"
                 return 0
             fi
 
-            wick-debug "Package does not exist: $@"
+            wickDebug "Package does not exist: $@"
             return 1
             ;;
 
@@ -78,7 +78,7 @@ wick-package-yum() {
     esac
 }
 
-wick-package-apt() {
+wickPackage-apt() {
     local STATE
 
     STATE=$1
@@ -87,11 +87,11 @@ wick-package-apt() {
     case "$STATE" in
         exists)
             if apt-cache show "$@" > /dev/null 2>&1; then
-                wick-debug "Package exists: $@"
+                wickDebug "Package exists: $@"
                 return 0
             fi
 
-            wick-debug "Package does not exist: $@"
+            wickDebug "Package does not exist: $@"
             return 1
             ;;
 

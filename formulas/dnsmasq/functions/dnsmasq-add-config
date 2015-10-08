@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 dnsmasq-add-config() {
     local NAME
@@ -8,6 +8,6 @@ dnsmasq-add-config() {
     echo "$@" > "/etc/dnsmasq.d/$NAME"
 
     if pidof dnsmasq > /dev/null; then
-        wick-service restart dnsmasq
+        wickService restart dnsmasq
     fi
 }

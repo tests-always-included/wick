@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-formula yum-epel
-wick-formula wick-base
+wickFormula yum-epel
+wickFormula wick-base

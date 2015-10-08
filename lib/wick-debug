@@ -1,75 +1,91 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: This logging function helps diagnose errors or provide additional
+# details about what's happening in your scripts.  Use this to log every action
+# that is performed.  Debug output can be enabled by setting the `DEBUG`
+# environment variable.  When enabled, debug output is written to stderr and
+# are also passed to `wickLog` so they could be written to a log file.  (See
+# [Bash concepts](../doc/bash-concepts.md) for more about stderr.)  This also
+# will colorize the output when the `WICK_COLOR` environment variable is set to
+# a non-empty string.
 #
-# When debugging is enabled, this writes a message to the logging system
-# and to stderr.
+# $@          - The message to log.  Arguments are joined into one line.
+# $DEBUG      - Controls if logging is enabled and where it's enabled.
+# $WICK_COLOR - When set to non-empty string, ANSI color is enabled.
 #
-# When the DEBUG environment variable is not set, this does nothing.
-# If DEBUG is set to "*", "all" or "true", this always logs.
-# In all other cases, DEBUG is assumed to be either a name of a function
-# or a list of function names that should have debug logging enabled.
-# When FUNCNAME lists one of these functions, logging will happen.  This
-# means you can turn on logging for one function and logging is enabled for
-# all functions that are called by your chosen function.
+# When the DEBUG environment variable is not set, debug is disabled.  If DEBUG
+# is set to `*`, `all` or `true`, this always logs.  In all other cases, DEBUG
+# is assumed to be either a name of a function or a list of function names that
+# should have debug logging enabled.  When FUNCNAME lists one of these
+# functions, logging will happen.  This means you can turn on logging for one
+# function and logging is enabled for that function and for all code that the
+# function will execute, so child functions will also write debug output.
 #
-# Examples of running a command-line program (./thing) with various
-# debug settings:
-#     # Disable all logging
-#     DEBUG= ./thing
+# Writing to stderr is intentional.  This way you can enable debugging and
+# still get valid output captured.
 #
-#     # Enable all debugging
-#     DEBUG=true ./thing
-#     DEBUG="*" ./thing
-#     DEBUG=all ./thing
+# Examples
 #
-#     # Enable logging for a function named "do-magic"
-#     DEBUG=do-magic ./thing
+#   # Forcibly disable all logging
+#   DEBUG= ./thing
 #
-#     # Enable logging for the functions "rainbow", "pony" and "unicorn"
-#     DEBUG="rainbow pony unicorn" ./thing
+#   # Enable all debugging
+#   DEBUG=true ./thing
+#   DEBUG="*" ./thing
+#   DEBUG=all ./thing
 #
-# Parameters:
-#     $@: The log messages to write (they get joined into one line)
+#   # Enable logging for a function named "doMagic"
+#   DEBUG=doMagic ./thing
 #
-# Environment variables:
-#     DEBUG: Controls if logging is enabled and where it's enabled.
-#     WICK_COLOR: When set to non-empty string, ANSI color is enabled.
-wick-debug() (
+#   # Enable logging for the functions "rainbow", "pony" and "unicorn"
+#   DEBUG="rainbow pony unicorn" ./thing
+#
+#   # Enable debug logging for all of these commands
+#   export DEBUG=true
+#   ./thing1
+#   ./thing2
+#
+#   # Enable debug output inside of a Wick formula
+#   DEBUG=true
+#   wickMakeFile config.ini /opt/my-app/
+#
+# Returns nothing.
+wickDebug() (
     set +x
-    local CONTENT LIST NAME OUTPUT
+    local content list name output
 
     # Do not log unless the DEBUG environment variable is set
     if [[ -z "${DEBUG-}" ]]; then
         return
     fi
 
-    wick-array-join CONTENT " " "$@"
-    wick-prefix-lines OUTPUT "DEBUG: " "$CONTENT"
+    wickArrayJoin content " " "$@"
+    wickPrefixLines output "DEBUG: " "$content"
 
     if [[ ! -z "${WICK_COLOR-}" ]]; then
-        OUTPUT=$'\E[30;1m'"$OUTPUT"$'\E[0m'
+        output=$'\E[30;1m'"$output"$'\E[0m'
     fi
 
     # Check if debugging is enabled for everything
     if [[ "$DEBUG" == "*" ]] || [[ "$DEBUG" == "all" ]] || [[ "$DEBUG" == "true" ]]; then
-        wick-log "DEBUG" "$CONTENT"
-        echo "$OUTPUT" >&2
+        wickLog "DEBUG" "$content"
+        echo "$output" >&2
         return
     fi
 
-    # Here is the more complex checking if any value in the DEBUG variable
-    # is in the FUNCNAME array.
-    LIST="$DEBUG"
-    while [[ ! -z "$LIST" ]]; do
-        NAME=${DEBUG%% *}
-        LIST=${LIST#* }
+    #: Here is the more complex checking if any value in the DEBUG variable
+    #: is in the FUNCNAME array.
+    list="$DEBUG"
+    while [[ ! -z "$list" ]]; do
+        name=${DEBUG%% *}
+        list=${list#* }
 
-        if [[ "$LIST" == "$NAME" ]]; then
-            LIST=""
+        if [[ "$list" == "$name" ]]; then
+            list=""
         fi
 
-        if [[ ! -z "$NAME" ]] && [[ ${#FUNCNAME[@]} -gt 0 ]] && wick-in-array "$NAME" "${FUNCNAME[@]}"; then
-            wick-log "DEBUG" "$CONTENT"
-            echo "$OUTPUT" >&2
+        if [[ ! -z "$name" ]] && [[ ${#FUNCNAME[@]} -gt 0 ]] && wickInArray "$name" "${FUNCNAME[@]}"; then
+            wickLog "DEBUG" "$content"
+            echo "$output" >&2
             return
         fi
     done

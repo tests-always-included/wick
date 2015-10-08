@@ -1,29 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-get-option DYNAMIC dynamic "$@"
-wick-get-argument DESIRED 0 "$@"
+wickGetOption DYNAMIC dynamic "$@"
+wickGetArgument DESIRED 0 "$@"
 
 if [ -z "$DYNAMIC" ]; then
-    wick-info "Setting the hostname: $DESIRED"
+    wickInfo "Setting the hostname: $DESIRED"
     "$WICK_FORMULA_DIR/files/set-hostname" --verbose "$DESIRED"
 else
-    wick-info "Setting a dynamic hostname: $DESIRED"
-    wick-make-file set-hostname /usr/local/bin/ --mode=0755
+    wickInfo "Setting a dynamic hostname: $DESIRED"
+    wickMakeFile set-hostname /usr/local/bin/ --mode=0755
 
     HOOK_FILE="/etc/dhcp/dhclient-exit-hooks"
-    wick-info "Creating/updating hook file: $HOOK_FILE"
+    wickInfo "Creating/updating hook file: $HOOK_FILE"
     :> "$HOOK_FILE"
     chmod 755 "$HOOK_FILE"
     wick-set-config-line "$HOOK_FILE" "/usr/local/bin/set-hostname '$DESIRED'"
 
-    wick-info "Setting the hostname: $DESIRED"
+    wickInfo "Setting the hostname: $DESIRED"
     /usr/local/bin/set-hostname --verbose "$DESIRED"
 
     CLOUD_FILE="/etc/cloud/cloud.cfg"
     if [ -f "$CLOUD_FILE" ]; then
-        wick-info "Updating cloud-init: $CLOUD_FILE"
+        wickInfo "Updating cloud-init: $CLOUD_FILE"
         wick-set-config-line "$CLOUD_FILE" "preserve_hostname: true"
     else
-        wick-info "Cloud-init not detected"
+        wickInfo "Cloud-init not detected"
     fi
 fi

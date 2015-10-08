@@ -1,111 +1,119 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# Public: List of formulas to execute.  It is better to log this list
+# instead of the one with arguments because arguments may contain
+# sensitive information.
+WICK_FORMULA_LIST=()
+
+# Public: List of formulas with their arguments.  Try to avoid logging these.
+WICK_FORMULA_LIST_WITH_ARGS=()
+
+# Public: Commands to execute in order to make the formula execute.  This
+# will only add an entry if there is a "run" script.
+WICK_FORMULA_COMMANDS=()
+
+# Public: Mark a formula as required for a given role or as a dependency
+# for other formulas.
 #
-# Mark a formula as required for a given role or as a dependency for other
-# formulas.
+# $1   - Formula to require
+# $2-@ - Arguments for formula's run script
 #
 # If the formula was already marked as required, this will error as long as
 # the arguments don't match and there are arguments for this invocation.
 #
-#     # Example
-#     wick-formula test --arg=1
-#     wick-formula test          # Will not error
-#     wick-formula test --blue   # Errors
-
-WICK_FORMULA_LIST=()
-WICK_FORMULA_LIST_WITH_ARGS=()
-WICK_FORMULA_COMMANDS=()
-
-# Mark a formula as required and pass arguments to the formula's run script.
+# Examples
 #
-# Parameters:
-#     $1: Formula to require
-#     $2-*:  Arguments for formula's run script
+#   wickFormula test --arg=1
+#   wickFormula test          # Will not error
+#   wickFormula test --blue   # Errors
+#
 # Returns true if formula was found and added to the list.
-wick-formula() {
-    local ARGS FILE FORMULA FORMULA_ESCAPED LOCATION PRESERVED_PWD TEMP
+wickFormula() {
+    local args file formula formulaEscaped location preservedPwd temp
 
-    FORMULA="$1"
-    wick-argument-string FORMULA_ESCAPED "$FORMULA"
+    formula="$1"
+    wickArgumentString formulaEscaped "$formula"
     shift
 
     if [[ $# -gt 0 ]]; then
-        wick-argument-string ARGS "$@"
-        ARGS=" $ARGS"
+        wickArgumentString args "$@"
+        args=" $args"
     else
-        ARGS=""
+        args=""
     fi
 
-    if [[ -z "$FORMULA" ]]; then
+    if [[ -z "$formula" ]]; then
         echo "You must specify a formula name." >&2
 
         return 1
     fi
 
-    if ! wick-find LOCATION "formulas/$FORMULA"; then
-        echo "Unable to find formula $FORMULA" >&2
+    if ! wickFind location "formulas/$formula"; then
+        echo "Unable to find formula $formula" >&2
 
         return 1
     fi
 
-    if [[ "${#WICK_FORMULA_LIST[@]}" -gt 0 ]] && wick-in-array "$FORMULA" "${WICK_FORMULA_LIST[@]}"; then
+    if [[ "${#WICK_FORMULA_LIST[@]}" -gt 0 ]] && wickInArray "$formula" "${WICK_FORMULA_LIST[@]}"; then
         # Specifying the same formula is ok as long as the arguments are the same
-        if wick-in-array "$FORMULA_ESCAPED$ARGS" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"; then
-            echo "Formula is already in list: $FORMULA"
+        if wickInArray "$formulaEscaped$args" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"; then
+            echo "Formula is already in list: $formula"
+
             return 0
         fi
 
         # You can add the formula as a dependency with no arguments when it
         # was already added with arguments
-        if [[ "$ARGS" == "" ]]; then
-            echo "Formula is already in list and has additional arguments: $FORMULA"
+        if [[ "$args" == "" ]]; then
+            echo "Formula is already in list and has additional arguments: $formula"
             return 0
         fi
 
         # Mismatched arguments OR previously did not have arguments and current
         # one has arguments.  Do not continue.
-        echo "Formula specified multiple times with different arguments: $FORMULA" >&2
+        echo "Formula specified multiple times with different arguments: $formula" >&2
         return 1
     fi
 
     # Only use echo - do not log this to the file because the arguments
     # may contain secret keys.  Logging just the formula's name would be
     # acceptable.
-    echo "Adding formula $FORMULA$ARGS ($LOCATION)"
-    WICK_FORMULA_LIST[${#WICK_FORMULA_LIST[@]}]=$FORMULA
-    WICK_FORMULA_LIST_WITH_ARGS[${#WICK_FORMULA_LIST_WITH_ARGS[@]}]=$FORMULA_ESCAPED$ARGS
+    echo "Adding formula $formula$args ($location)"
+    WICK_FORMULA_LIST[${#WICK_FORMULA_LIST[@]}]=$formula
+    WICK_FORMULA_LIST_WITH_ARGS[${#WICK_FORMULA_LIST_WITH_ARGS[@]}]=$formulaEscaped$args
 
-    if [[ -f "$LOCATION/depends" ]]; then
-        # Can't run this in a subshell because subshells won't be able to
-        # modify parent variables, like WICK_FORMULA_LIST.
-        WICK_FORMULA_DIR=$LOCATION
-        PRESERVED_PWD=$PWD
+    if [[ -f "$location/depends" ]]; then
+        #: Can't run this in a subshell because subshells won't be able to
+        #: modify parent variables, like WICK_FORMULA_LIST.
+        WICK_FORMULA_DIR=$location
+        preservedPwd=$PWD
 
-        # See escaping note in wick-run-formula for why we are unable to use
-        #     . "$LOCATION/depends" $ARGS
-        eval "wick-strict-mode ; . \"$LOCATION/depends\" $ARGS"
-        cd "$PRESERVED_PWD"
+        # See escaping note in wickRunFormula for why we are unable to use
+        #     . "$location/depends" $args
+        eval "wickStrictMode ; . \"$location/depends\" $args"
+        cd "$preservedPwd"
     fi
 
-    if [[ -f "$LOCATION/run" ]]; then
-        wick-argument-string TEMP "$LOCATION/run"
-        WICK_FORMULA_COMMANDS[${#WICK_FORMULA_COMMANDS[@]}]=$TEMP$ARGS
+    if [[ -f "$location/run" ]]; then
+        wickArgumentString temp "$location/run"
+        WICK_FORMULA_COMMANDS[${#WICK_FORMULA_COMMANDS[@]}]=$temp$args
     fi
 
-    if [[ -d "$LOCATION/functions" ]]; then
-        for FILE in "$LOCATION/functions/"*; do
-            if [[ -f "$FILE" ]]; then
-                echo "Loading function: $FILE"
-                . "$FILE"
+    if [[ -d "$location/functions" ]]; then
+        for file in "$location/functions/"*; do
+            if [[ -f "$file" ]]; then
+                echo "Loading function: $file"
+                . "$file"
             fi
         done
     fi
 
-    if [[ -d "$LOCATION/explorers" ]]; then
-        for FILE in "$LOCATION/explorers/"*; do
-            if [[ -f "$FILE" ]]; then
-                echo "Running explorer: $FILE"
+    if [[ -d "$location/explorers" ]]; then
+        for file in "$location/explorers/"*; do
+            if [[ -f "$file" ]]; then
+                echo "Running explorer: $file"
                 (
-                    wick-explorer TEMP "$FORMULA" "${FILE##*/}"
+                    wickExplorer temp "$formula" "${file##*/}"
                 )
             fi
         done

@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-wick-explorer OS wick-base os
-wick-explorer ARCH wick-base arch
+wickExplorer OS wick-base os
+wickExplorer ARCH wick-base arch
 
 case "$OS" in
     centos|redhat|ubuntu)
@@ -30,6 +30,6 @@ case "$ARCH" in
         ;;
 esac
 
-wick-info "Downloading and installing jq"
-wick-get-url "http://stedolan.github.io/jq/download/$DIR/jq" /usr/bin/jq
+wickInfo "Downloading and installing jq"
+wickGetUrl "http://stedolan.github.io/jq/download/$DIR/jq" /usr/bin/jq
 chmod 755 /usr/bin/jq

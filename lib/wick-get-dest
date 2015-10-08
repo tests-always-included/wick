@@ -1,46 +1,80 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Converts a destination (either a filename or a folder) into a
+# standard format.
 #
-# Possible destinations, organized by how they are handled.
-# "unknown" means that there's no directory nor file with that
-# name so it is impossible to tell if the destination should be
-# a new directory or file.
+# Below are possible destinations, organized by how they are handled.
+# "unknown" means that there's no directory nor file with that name so it is
+# impossible to tell if the destination should be a new directory or file.
 #
-# (A) /dir/that/exists/
-# (A) /dir/missing/
-# (A) /missing/dir/
-# (B) /dir/that/exists
-# (C) /dir/unknown
-# (C) /unknown/some-name
+#   (A) /dir/that/exists/
+#   (A) /dir/missing/
+#   (A) /missing/dir/
+#   (B) /dir/that/exists
+#   (C) /dir/unknown
+#   (C) /unknown/some-name
 #
-# A = Treat as a directory, append optional filename and be done
-# B = Add a slash then treat as (A)
-# C = Treat as a filename and do not append the optional filename parameter
+#   A = Treat as a directory, append optional filename and be done
+#   B = Add a slash then treat as (A)
+#   C = Treat as a filename and do not append the optional filename parameter
 #
-# $1 = Variable for the resolved path
-# $2 = Destination to resolve (required)
-# $3 = Filename as a target (optional)
+# The returned value will always have a "/" at the end if it signifies a
+# directory and if the optional filename was not specified.
+#
+# $1 - Variable for the resolved path.
+# $2 - Destination to resolve.
+# $3 - Optional filename as a target.
+#
+# Examples:
+#
+#   # Anything ending in a slash is a folder.
+#   #
+#   # Result: $out is "/etc/server.config"
+#   wickGetDest $out /etc/ server.config
+#
+#   # Result: $out is "/etc/"
+#   wickGetDest $out /etc/
+#
+#   # When $2 has no slash and it exists on the filesystem
+#   # as a folder, this operates the same as above.  Note that a slash
+#   # is added to the end for directories.
+#   #
+#   # Result: $out is "/etc/server.config"
+#   wickGetDest $out /etc server.config
+#
+#   # Result: $out is "/etc/"
+#   wickGetDest $out /etc
+#
+#   # When $2 has no slash at the end and does not exist as a
+#   # directory, it is assumed to be a destination file.
+#   #
+#   # Result: $out is "/some/thing/here"
+#   wickGetDest $out /some/thing/here server.config
+#
+#   # Result: $out is "/some/thing/here"
+#   wickGetDest $out /some/thing/here
+#
+# Returns true if the name was resolved, non-zero on any error.
+wickGetDest() {
+    local dest file target
 
-wick-get-dest() {
-    local DEST FILE TARGET
+    target=$1
+    dest=$2
+    file=${3-}
 
-    TARGET=$1
-    DEST=$2
-    FILE=${3-}
-
-    if [[ -z "$DEST" ]]; then
-        wick-error "A destination path is required for wick-absolute-destination"
+    if [[ -z "$dest" ]]; then
+        wickError "A destination path is required for wickGetDest"
         return 1
     fi
 
     # First change (B) into (A)
-    if [[ "${DEST: -1}" != "/" ]] && [[ -d "${DEST}" ]]; then
-        DEST="${DEST}/"
+    if [[ "${dest: -1}" != "/" ]] && [[ -d "${dest}" ]]; then
+        dest="${dest}/"
     fi
 
     # Handle all (A) situations and append the optional filename
-    if [[ "${DEST: -1}" == "/" ]]; then
-        DEST="$DEST$FILE"
+    if [[ "${dest: -1}" == "/" ]]; then
+        dest="$dest$file"
     fi
 
-    local "$TARGET" && wick-indirect "$TARGET" "$DEST"
+    local "$target" && wickIndirect "$target" "$dest"
 }

@@ -1,9 +1,9 @@
-Timezone Formula
-================
+Timezone
+========
 
 Sets the time zone to a specified zone, defaulting to UTC.
 
-    wick-formula [TIMEZONE]
+    wickFormula [TIMEZONE]
 
 * `TIMEZONE`: Time zone identifier.  Defaults to `Etc/UTC` for Debian/Ubuntu, `UTC` for all others.
 
@@ -12,7 +12,7 @@ The actions of this formula are based heavily on [timezone-ii](https://github.co
 Example:
 
     # Set to UTC
-    wick-formula timezone
+    wickFormula timezone
 
     # Set to CST6CDT
-    wick-formula CST6CDT
+    wickFormula CST6CDT

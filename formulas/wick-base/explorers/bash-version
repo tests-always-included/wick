@@ -1,4 +1,4 @@
-#!/bin/bash
-wick-debug "Bash $BASH_VERSION"
-wick-debug "$(bash --version)"
+#!/usr/bin/env bash
+wickDebug "Bash $BASH_VERSION"
+wickDebug "$(bash --version)"
 echo "$BASH_VERSION"

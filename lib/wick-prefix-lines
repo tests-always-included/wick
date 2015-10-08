@@ -1,13 +1,28 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Public: Prepend a string before each line in a variable.  Also converts all
+# newlines to Unix-style newlines in case they weren't that way before.
+#
+# $1 - Name of variable where the result will be stored.
+# $2 - Prefix string to add to the beginning of all lines.
+# $3 - The original string.
+#
+# Example:
+#
+#   printf -v lines "one\ntwo\n"
+#   # lines is three lines with nothing on the third line.
+#   wickPrefixLines result "Look:  " "$lines"
+#   # Result is "Look:  one\nLook:  two\nLook:  "
+#   # Even the last line is (intentionally) prefixed.
+#
+# Returns nothing.
+wickPrefixLines() {
+    local output
 
-wick-prefix-lines() {
-    local OUTPUT
+    output=${3//$'\r\n'/$'\n'}
+    output=${output//$'\r'/$'\n'}
+    output="$2$output"
+    output=${output//$'\n'/$'\n'$2}
 
-    OUTPUT=${3//$'\r\n'/$'\n'}
-    OUTPUT=${OUTPUT//$'\r'/$'\n'}
-    OUTPUT="$2$OUTPUT"
-    OUTPUT=${OUTPUT//$'\n'/$'\n'$2}
-
-    local "$1" && wick-indirect "$1" "$OUTPUT"
+    local "$1" && wickIndirect "$1" "$output"
 }
 

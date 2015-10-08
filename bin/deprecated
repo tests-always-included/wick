@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+wickDeprecated() {
+    eval "$1 () { echo \"$1 is deprecated\" > &2; $2 \"\$@\"; }"
+}
+
+# bin/
+wickDeprecated wick-add-command wickAddCommand
+wickDeprecated wick-explorer wickExplorer
+wickDeprecated wick-find wickFind
+wickDeprecated wick-formula wickFormula
+wickDeprecated wick-help wickHelp
+wickDeprecated wick-is-valid-script wickIsValidScript
+wickDeprecated wick-load-lib wickLoadLib
+wickDeprecated wick-load-role wickLoadRole
+wickDeprecated wick-on-load wickOnLoad
+wickDeprecated wick-run-formula wickRunFormula
+wickDeprecated wick-run wickRun
+
+# lib/
+wickDeprecated wick-argument-string wickArgumentString
+wickDeprecated wick-array-filter wickArrayFilter
+wickDeprecated wick-array-join wickArrayJoin
+wickDeprecated wick-command-exists wickCommandExists
+wickDeprecated wick-debug wickDebug
+wickDeprecated wick-error wickError
+wickDeprecated wick-get-argument wickGetArgument
+wickDeprecated wick-get-arguments wickGetArguments
+wickDeprecated wick-get-dest wickGetDest
+wickDeprecated wick-get-iface-ip wickGetIfaceIp
+wickDeprecated wick-get-option wickGetOption
+wickDeprecated wick-get-url wickGetUrl
+wickDeprecated wick-get-url-curl wickGetUrlCurl
+wickDeprecated wick-get-url-wget wickGetUrlWget
+wickDeprecated wick-in-array wickInArray
+wickDeprecated wick-indirect wickIndirect
+wickDeprecated wick-indirect-array wickIndirectArray
+wickDeprecated wick-info wickInfo
+wickDeprecated wick-log wickLog
+wickDeprecated wick-on-exit wickOnExit
+wickDeprecated wick-on-exit-trap wickOnExitTrap
+wickDeprecated wick-port-up wickPortUp
+wickDeprecated wick-prefix-lines wickPrefixLines
+wickDeprecated wick-random-string wickRandomString
+wickDeprecated wick-safe-variable-name wickSafeVariableName
+wickDeprecated wick-strict-mode wickStrictMode
+wickDeprecated wick-strict-mode-fail wickStrictModeFail
+wickDeprecated wick-strict-run wickStrictRun
+wickDeprecated wick-temp-dir wickTempDir
+wickDeprecated wick-test-for-options wickTestForOptions
+wickDeprecated wick-wait-for wickWaitFor
+wickDeprecated wick-warn wickWarn
+
+# formulas/

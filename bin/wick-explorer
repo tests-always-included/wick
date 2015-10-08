@@ -1,41 +1,41 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
-# Run explorers on the target machine
+# Run explorers on the target machine.
 
-# Run an explorer
+# Public: Run an explorer.
 #
-# Parameters:
-#     $1:  Variable name for the result
-#     $2:  Formula name
-#     $3:  Explorer name
-# Returns true when explorer ran successfully, false otherwise
-wick-explorer() {
-    local EXPLORER TEMP
+# $1 - Variable name for the result
+# $2 - Formula name
+# $3 - Explorer name
+#
+# Returns true when explorer ran successfully, false otherwise.
+wickExplorer() {
+    local explorer tempdir
 
-    EXPLORER="formulas/$2/explorers/$3"
+    explorer="formulas/$2/explorers/$3"
 
-    if ! wick-find EXPLORER "$EXPLORER"; then
-        wick-error "Unable to find explorer: $EXPLORER"
+    if ! wickFind explorer "$explorer"; then
+        wickError "Unable to find explorer: $explorer"
 
         return 1
     fi
 
     # Run the explorer
-    wick-temp-dir TEMP
+    wickTempDir tempdir
 
     (
-        . "$EXPLORER" > "$TEMP/stdout" 2> "$TEMP/stderr" || echo "$" > "$TEMP/fail"
+        . "$explorer" > "$tempdir/stdout" 2> "$TEMP/stderr" || echo "$" > "$TEMP/fail"
     )
 
-    if [[ -f "$TEMP/fail" ]]; then
-        wick-error "Explorer failed: $EXPLORER"
-        wick-error "Status code:  $(<"$TEMP/fail")"
+    if [[ -f "$tempdir/fail" ]]; then
+        wickError "Explorer failed: $explorer"
+        wickError "Status code:  $(<"$tempdir/fail")"
 
         return 1
     fi
 
-    wick-debug "Explorer success"
-    wick-debug "$(<"$TEMP/stdout")"
+    wickDebug "Explorer success"
+    wickDebug "$(<"$tempdir/stdout")"
 
-    local "$1" && wick-indirect "$1" "$(<"$TEMP/stdout")"
+    local "$1" && wickIndirect "$1" "$(<"$tempdir/stdout")"
 }

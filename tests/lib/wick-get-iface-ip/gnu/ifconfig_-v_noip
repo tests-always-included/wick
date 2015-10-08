@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 cat <<EOF
 noip      Link encap:Ethernet  HWaddr 56:84:7a:fe:97:99
           UP BROADCAST MULTICAST  MTU:1500  Metric:1

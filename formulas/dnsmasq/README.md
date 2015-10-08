@@ -1,10 +1,10 @@
-Dnsmasq Formula
-===============
+Dnsmasq
+=======
 
 This adds dnsmasq to your system and makes sure it is prepended as a resolver.
 
-    wick-formula dnsmasq
-    
+    wickFormula dnsmasq
+
 
 Functions
 ---------
@@ -13,7 +13,7 @@ Functions
 
 Adds the given configuration file to dnsmasq and restarts dnsmasq.
 
-* `OPTIONS`: Optional arguments that can be used with `wick-make-file` from [wick-base].
+* `OPTIONS`: Optional arguments that can be used with `wickMakeFile` from [wick-base].
 * `FILE`: The name of the configuration file
 
     dnsmasq-add --template consul-dns-settings.mo

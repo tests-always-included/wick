@@ -13,6 +13,8 @@ Specific Formulas
 
 See the formula-specific documentation that explain what each of these do.  Formulas can reference each other in the chain of [parents] in the invocation of `wick`.
 
+[//] # (START - Automatically generated section)
+
 * [apache2] - Install and configure Apache2
 * [at] - Ensures the `at` program is installed
 * [dnsmasq] - Install dnsmasq and provide configuration functions
@@ -42,25 +44,27 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [zip] - Installs zip
 * [zmodem] - Installs ZModem for transferring files
 
+[//] # (END - Automatically generated section)
+
 
 Dependencies
 ------------
 
 The `depends` file exists so you can list the formulas that need to be installed before this formula executes.  For instance, if you have a formula that requires `apache2`, then your `depends` file would look like this:
 
-    #!/bin/bash
+    #!/usr/bin/env bash
 
-    wick-formula apache2
+    wickFormula apache2
 
 The dependencies can also use explorers.  If you need to use rvm on centos and redhat, your `depends` file would contain lines similar to this example.
 
-    #!/bin/bash
+    #!/usr/bin/env bash
 
-    wick-explorer OS wick-base os
+    wickExplorer OS wick-base os
 
     case "$OS" in
         centos|redhat)
-            wick-formula rvm
+            wickFormula rvm
             ;;
     esac
 
@@ -70,9 +74,9 @@ While executing, the `depends` script will have `WICK_FORMULA_DIR` set to the pa
 Explorers
 ---------
 
-The shell scripts in `explorers/` are executed by [wick-explorer], one of the main binaries provided by Wick.  Their mission is to identify some information about the target system.  This example will detect the Linux kernel version.
+The shell scripts in `explorers/` are executed by [wickExplorer], one of the main binaries provided by Wick.  Their mission is to identify some information about the target system.  This example will detect the Linux kernel version.
 
-    #!/bin/bash
+    #!/usr/bin/env bash
 
     uname -r
 
@@ -80,7 +84,7 @@ Please remember that all explorers run in [strict mode] and all errors in runnin
 
 When executed, the output of this will be something like "3.16.0-30-generic".  You can use explorers to determine the currently running operating system, versions of software, if files exist in specific locations or see if some packages are installed (among many other things).  Take a look at the ones provided in [wick-base] to see some that already exist.
 
-Explorer scripts have the full Wick environment, so functions like wick-debug, wick-info (both from [wick-base]) and any other functions defined by earlier formulas are available during script execution.
+Explorer scripts have the full Wick environment, so functions like wickDebug, wickInfo (both from [wick-base]) and any other functions defined by earlier formulas are available during script execution.
 
 On success, information should be written to stdout.  Failure would cause Wick to stop and display all of the messages written to stderr.  (See [Bash concepts] for stdout, stderr, success and failure.)
 
@@ -88,7 +92,7 @@ On success, information should be written to stdout.  Failure would cause Wick t
 Files
 -----
 
-Anything under `files/` is intended to be copied directly to the target system with `wick-make-file` (a function provided by [wick-base]).  They can also be used indirectly, such as with the `apache2-add-vhost` function (from [apache2]).
+Anything under `files/` is intended to be copied directly to the target system with `wickMakeFile` (a function provided by [wick-base]).  They can also be used indirectly, such as with the `apache2-add-vhost` function (from [apache2]).
 
 
 Functions
@@ -96,7 +100,7 @@ Functions
 
 The files in `functions/` are sourced into Wick's environment before a formula runs, allowing the `run` script and any formula afterwards to use them.  (See [Bash concepts] for sourcing.)
 
-It is a good idea to include functions to eliminate repeated tasks such as adding users, installing configuration files and managing processes.  Having copious amounts of logging in the functions helps troubleshoot difficulties as well.  You should use `wick-info`, `wick-debug`, `wick-warn` and `wick-error` (all from [wick-base]) to write output.
+It is a good idea to include functions to eliminate repeated tasks such as adding users, installing configuration files and managing processes.  Having copious amounts of logging in the functions helps troubleshoot difficulties as well.  You should use `wickInfo`, `wickDebug`, `wickWarn` and `wickError` (all from [wick-base]) to write output.
 
 
 Run Script
@@ -106,19 +110,19 @@ The `run` file is the meat of your formula.  It performs whatever actions are ne
 
 All `run` scripts automatically start in [strict mode], so any error that is encountered will cause the script to immediately fail.
 
-These scripts can also be passed arguments.  For instance, the [hostname] formula accepts the desired name for the target machine.  Arguments are set in another function's dependencies or in [roles].  They use the command `wick-formula`, like this:
+These scripts can also be passed arguments.  For instance, the [hostname] formula accepts the desired name for the target machine.  Arguments are set in another function's dependencies or in [roles].  They use the command `wickFormula`, like this:
 
     # This is how a role would pass arguments to the run script
-    wick-formula hostname server1.example.com
+    wickFormula hostname server1.example.com
 
     # The run script would act like it was called this way:
     # ./formulas/hostname/run server1.example.com
 
 In the above example, the `run` script for the [hostname] formula will get "server1.example.com" as `$1` in the script.
 
-Here is a sample run script that will download a copy of the application from an internal server.  It uses `wick-get-option` and `wick-get-argument` to simplify command-line arguments (available in [Libraries] and detailed in [argument processing]).
+Here is a sample run script that will download a copy of the application from an internal server.  It uses `wickGetOption` and `wickGetArgument` to simplify command-line arguments (available in [Libraries] and detailed in [argument processing]).
 
-    #!/bin/bash
+    #!/usr/bin/env bash
     #
     # Download and install the application code from a remote server
     #
@@ -131,16 +135,16 @@ Here is a sample run script that will download a copy of the application from an
     # If `--version=VALUE` was used then VERSION is set to VALUE.
     # If `--version` was used, then VERSION will be set to "true".
     # If `--version` is not used, VERSION will be set to "".
-    wick-get-option VERSION version "$@"
+    wickGetOption VERSION version "$@"
 
     # Get the first non-option argument.  Use this syntax instead of $1
     # because $1 might be the --version option.
-    wick-get-argument NAME 0 "$@"
+    wickGetArgument NAME 0 "$@"
 
     # Check to make sure the codebase was passed.
     if [[ -z "$NAME" ]]; then
-        # Write a message with wick-error
-        wick-error "You must specify a codebase to download"
+        # Write a message with wickError
+        wickError "You must specify a codebase to download"
 
         # Return a non-zero code to indicate failure
         exit 1
@@ -148,7 +152,7 @@ Here is a sample run script that will download a copy of the application from an
 
     : ${VERSION:=latest}
     URL="http://10.0.0.1/installer-files/${NAME}-${VERSION}.tar.gz"
-    wick-info "Installing $NAME ($VERSION)"
+    wickInfo "Installing $NAME ($VERSION)"
 
     # Remove a previous installation if one exists
     rm -rf /opt/application
@@ -164,16 +168,16 @@ Here is a sample run script that will download a copy of the application from an
 
         cd /opt/application
 
-        wick-debug "Downloading $URL"
-        wick-get-url "$URL" application.tar.gz
+        wickDebug "Downloading $URL"
+        wickGetUrl "$URL" application.tar.gz
 
-        wick-debug "Extracting"
+        wickDebug "Extracting"
         tar xfz application.tar.gz --strip=1
 
         rm application.tar.gz
     )
 
-There you have it, a complete `run` script.  It's calling several other functions defined in [formulas] and [libraries].  It even cleans up after itself.  When anything fails, the script will automatically terminate and Wick will stop processing.  It's fairly simple Bash, with the complexities hidden away in functions.  For example, `wick-get-url` will use `curl` or `wget` if available.  You don't need to worry, force the installation nor do the check yourself.  Instead, let that function do the hard work.
+There you have it, a complete `run` script.  It's calling several other functions defined in [formulas] and [libraries].  It even cleans up after itself.  When anything fails, the script will automatically terminate and Wick will stop processing.  It's fairly simple Bash, with the complexities hidden away in functions.  For example, `wickGetUrl` will use `curl` or `wget` if available.  You don't need to worry, force the installation nor do the check yourself.  Instead, let that function do the hard work.
 
 
 Templates
@@ -213,7 +217,7 @@ The files contained within the `templates/` folder are extremely similar to the 
 [yum-epel]: yum-epel/README.md
 [yum-remi]: yum-remi/README.md
 [wick-base]: wick-base/README.md
-[wick-explorer]: ../bin/README.md
+[wickExplorer]: ../bin/README.md
 [wick-infect]: wick-infect/README.md
 [wick-init-d-lib]: wick-init-d-lib/README.md
 [zip]: zip/README.md

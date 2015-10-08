@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 UNAME_M=$(uname -m)
-wick-debug "uname -m: $UNAME_M"
+wickDebug "uname -m: $UNAME_M"
 
 case "$UNAME_M" in
     x86_64)
@@ -13,7 +13,7 @@ case "$UNAME_M" in
         ;;
 
     *)
-        wick-error "Unable to detect architecture"
+        wickError "Unable to detect architecture"
         echo "UNKNOWN"
         exit 1
         ;;
