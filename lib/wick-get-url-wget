@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Internal: Download a file with curl.
+#
+# $DEST     - Destination filename or empty string for stdout.
+# $PROGRESS - Show progress bar when not an empty string.
+# $TIMEOUT  - Limit the command to run for the given number of seconds when
+#             this is not an empty string.
+# $URL      - The URL to download.
+#
+# Returns non-zero on error.
+wickGetUrlWget() {
+    local ARGS
+
+    ARGS=(wget)
+
+    if [[ -z "$PROGRESS" ]]; then
+        ARGS[${#ARGS[@]}]="--quiet"
+    fi
+
+    if [[ ! -z "$TIMEOUT" ]]; then
+        ARGS[${#ARGS[@]}]="--timeout"
+        ARGS[${#ARGS[@]}]=$TIMEOUT
+    fi
+
+    if [[ ! -z "$DEST" ]]; then
+        ARGS[${#ARGS[@]}]="-O"
+        ARGS[${#ARGS[@]}]=$DEST
+    fi
+
+    ARGS[${#ARGS[@]}]=$URL
+    wickDebug "wickGetUrl:" "${ARGS[@]}"
+    "${ARGS[@]}"
+}

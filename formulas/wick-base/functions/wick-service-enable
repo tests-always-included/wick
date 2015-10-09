@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Internal: Enables a service so it starts at boot.
+#
+# $1 - Service name.
+#
+# Examples
+#
+#   wickServiceEnable mongod
+#
+# Returns nothing.
+wickServiceEnable() {
+    local service
+
+    wickGetArgument service 0 "$@"
+    wickInfo "Enabling service: $service"
+    chkconfig "$service" on
+}

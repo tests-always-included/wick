@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
-
+# This installs a name server caching daemon.  The `unscd` package is preferred
+# over `nscd`, but the two are essentially interchangeable.
+#
+# Examples
+#
+#   wickFormula nscd
+#
+# Returns nothing.
 if wickPackage --exists unscd; then
     wickPackage unscd
     wickService start unscd

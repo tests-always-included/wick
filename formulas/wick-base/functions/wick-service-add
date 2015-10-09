@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Internal: Add a service and inform chkconfig.
+#
+# $1 - Service name.
+# $2 - Source file, passed to `wickMakeFile`.
+# $@ - Other options, also passed to `wickMakeFile`.
+#
+# Examples
+#
+#   wickServiceAdd redis redis.conf.sh --template
+#
+# Returns nothing.
+wickServiceAdd() {
+    local force options service source
+
+    wickGetArgument service 0 "$@"
+    wickGetArgument source 1 "$@"
+    wickGetOptions options "$@"
+    wickGetOption FORCE force "$@"
+    wickInfo "Adding service: $service"
+
+    if [[ ! -f "/etc/init.d/$service" ]] || [[ -n "$FORCE" ]]; then
+        wickMakeFile --mode=0755 --owner=root:root "$source" "/etc/init.d/$service" "${options[@]-}"
+        chkconfig --add "$service"
+    else
+        wickWarn "Service already exists and --force flag was not specified"
+    fi
+}

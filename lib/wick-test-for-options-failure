@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Internal: Default failure reporter function for `wickTestForOptions`.
+#
+# $1       - Option that was not specified.  This is without the double-hyphens.
+# $FORMULA - Set by [`wick`](../bin/wick) when running a formula.
+# $ROLE    - Set by [`wick`](../bin/wick) when running a role.
+#
+# Returns nothing.
+wickTestForOptionsFailure() {
+    if [[ ! -z "$FORMULA" ]]; then
+        wickError "Formula $FORMULA requires option: --$1"
+    else
+        if [[ ! -z "$ROLE" ]]; then
+            wickError "Role $ROLE requires option: --$1"
+        else
+            wickError "Missing required option:  --$1"
+        fi
+    fi
+}

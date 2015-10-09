@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
+# Installs [jq](http://stedolan.github.io/jq/), a command-line tool to process JSON.
+#
+# Examples
+#
+#   wickFormula jq
+#
+# Returns nothing.
+wickExplorer os wick-base os
+wickExplorer arch wick-base arch
 
-wickExplorer OS wick-base os
-wickExplorer ARCH wick-base arch
-
-case "$OS" in
+case "$os" in
     centos|redhat|ubuntu)
         DIR="linux"
         ;;
@@ -13,10 +19,12 @@ case "$OS" in
         ;;
 
     *)
-        DIR="UNKNOWN_OS_$OS"
+        wickError "Unknown OS: $os"
+        exit 1
+        ;;
 esac
 
-case "$ARCH" in
+case "$arch" in
     amd64)
         DIR="${DIR}64"
         ;;
@@ -26,7 +34,8 @@ case "$ARCH" in
         ;;
 
     *)
-        DIR="${DIR}UNKNOWN_ARCH_$ARCH"
+        wickError "Unknown architecture: $arch"
+        exit 1
         ;;
 esac
 

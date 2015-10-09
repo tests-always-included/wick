@@ -1,43 +1,60 @@
 #!/usr/bin/env bash
+# Sets the time zone to a specified zone, defaulting to UTC.
+#
+# $1 - Optional time zone identifier.  Defaults to `Etc/UTC` for
+#      Debian/Ubuntu and `UTC` for all others.
+#
+# The actions of this formula are based heavily on
+# [timezone-ii](https://github.com/L2G/timezone-ii), a Chef recipe.
+#
+# Examples
+#
+#     # Set to UTC
+#     wickFormula timezone
+#
+#     # Set to CST6CDT
+#     wickFormula CST6CDT
+#
+# Returns nothing.
 
-wickExplorer OS wick-base os
-wickGetArgument TZ 0 "$@"
+wickExplorer os wick-base os
+wickGetArgument timezoneValue 0 "$@"
 
-case "$OS" in
+case "$os" in
     debian|ubuntu)
-        TZ=${TZ:-Etc/UTC}
+        timezoneValue=${timezoneValue:-Etc/UTC}
         ;;
 
     *)
-        TZ=${TZ:-UTC}
+        timezoneValue=${timezoneValue:-UTC}
 esac
 
-wickInfo "Updating timezone: $TZ"
-TIMEZONE=/etc/timezone
-TZDATA_DIR=/usr/share/zoneinfo
-LOCALTIME=/etc/localtime
-USE_SYMLINK=false
+wickInfo "Updating timezone: $timezoneValue"
+timezoneFile=/etc/timezone
+tzDataDir=/usr/share/zoneinfo
+localtimeFile=/etc/localtime
+useSymlink=false
 
-case "$OS" in
+case "$os" in
     amazon)
-        timezone-update-localtime "$LOCALTIME" "$TZDATA_DIR/$TZ" "$USE_SYMLINK"
-        timezone-update-sysconfig-clock "$TZ"
+        timezoneUpdateLocaltime "$localtimeFile" "$tzDataDir/$timezoneValue" "$useSymlink"
+        timezoneUpdateSysconfigClock "$timezoneValue"
         ;;
 
     fedora|redhat|centos)
-        timezone-update-sysconfig-clock "$TZ"
+        timezoneUpdateSysconfigClock "$timezoneValue"
         ;;
 
     debian|ubuntu)
-        timezone-update-timezone "$TZ" "$TIMEZONE"
+        timezoneUpdateTimezone "$timezoneValue" "$timezoneFile"
         ;;
 
     pld)
-        timezone-update-sysconfig-timezone "$TZ" "$TZDATA_DIR"
+        timezoneUpdateSysconfigTimezone "$timezoneValue" "$tzDataDir"
         ;;
 
     *)
-        wickWarn "Unknown OS: $OS"
+        wickWarn "Unknown OS: $os"
         wickWarn "Updating the timezone with a generic method"
-        timezone-update-localtime "$LOCALTIME" "$TZDATA_DIR/$TZ" "$USE_SYMLINK"
+        timezoneUpdateLocaltime "$localtimeFile" "$tzDataDir/$timezoneValue" "$useSymlink"
 esac

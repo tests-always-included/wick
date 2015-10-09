@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Run a POSIX shell script as a template.
+#
+# Examples
+#
+#   shFormulaTemplate my-template-file.sh > /tmp/the-result
+#
+# Returns the status code of the shell script.
+shFormulaTemplate() {
+    /bin/sh "$1"
+}

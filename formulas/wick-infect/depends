@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
-
+# This happens here instead of the run script because the depends file should
+# execute on the "control master" instead of the "target machine".  At the
+# time of this writing, Wick does not allow for remotely provisioning
+# machines, but it is a direction that is desired for the project.
+#
 # Starting in deepest parent, write lib/* with a header
-show-all-lib-functions() {
+showAllLibFunctions() {
     local FILE
 
     if [[ -d "$1/parent" ]]; then
-        show-all-lib-functions "$1/parent"
+        showAllLibFunctions "$1/parent"
     fi
 
     if [[ -d "$1/lib" ]]; then
@@ -27,7 +31,7 @@ show-all-lib-functions() {
     echo '[ ! -z "$BASH_VERSION" ] || return 1'
     echo '[[ "$POSIXLY_CORRECT" != "y" ]] || return 1'
     echo ""
-    show-all-lib-functions .
+    showAllLibFunctions .
 ) > "$WICK_FORMULA_DIR/files/wick-infect"
 
 wickFormula wick-base

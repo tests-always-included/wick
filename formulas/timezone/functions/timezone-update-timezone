@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
-
-timezone-update-timezone() {
+# Update the timezone file.
+#
+# $1 - The new timezone.
+# $2 - The file to use.
+#
+# Examples
+#
+#   timezoneUpdateTimezone UTC /etc/timezone
+#
+# Returns nothing.
+timezoneUpdateTimezone() {
     local AMENDED
 
     wickDebug "Updating timezone using tzdata: $2"

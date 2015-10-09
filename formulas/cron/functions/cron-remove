@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
-
-cron-remove() {
+# Removes a job from cron.  Works only for jobs that were added with `cronAdd`.
+#
+# $1 - The name of the cron job to remove.
+#
+# Examples
+#
+#   # Add and remove a cron job
+#   cronAdd update-mongo-v2 --template update-mongo.mo
+#   cronRemove update-mongo-v1
+#
+# Returns nothing.
+cronRemove() {
     if [[ -d /etc/cron.d/ ]]; then
         if [[ -f "/etc/cron.d/$1" ]]; then
             wickDebug "Removing cron job: $1"

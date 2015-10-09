@@ -1,32 +1,39 @@
 #!/usr/bin/env bash
+# Adds the EPEL repository to yum.  Does not do anything for other package
+# managers.
+#
+# Examples
+#
+#   wickFormula yum-epel
+#
+# Returns nothing.
+wickExplorer os wick-base os
 
-wickExplorer OS wick-base os
-
-case "$OS" in
+case "$os" in
     redhat|centos)
         wickInfo "Adding EPEL repository"
         ;;
 
     *)
-        wickInfo "EPEL repository not needed for this OS: $OS"
+        wickInfo "EPEL repository not needed for this OS: $os"
         exit
 esac
 
-INSTALLED=$(rpm -qa | grep ^epel-release- || true)
+installed=$(rpm -qa | grep ^epel-release- || true)
 
-if [[ ! -z "$INSTALLED" ]]; then
-    wickInfo "EPEL package already installed: $INSTALLED"
+if [[ ! -z "$installed" ]]; then
+    wickInfo "EPEL package already installed: $installed"
     exit
 fi
 
-PACKAGE=$(rpm -q --whatprovides /etc/redhat-release)
+package=$(rpm -q --whatprovides /etc/redhat-release)
 
-wickTempDir TEMP
+wickTempDir temp
 
 (
-    cd "$TEMP"
+    cd "$temp"
 
-    case "$PACKAGE" in
+    case "$package" in
         *.el5.*)
             wickGetUrl "http://dl.fedoraproject.org/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm" epel.rpm
             ;;

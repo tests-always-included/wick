@@ -1,6 +1,13 @@
 #!/bin/bash
-
-nscd-restart() {
+# Restart the nscd or unscd daemon.  This is used whenever you make changes to
+# nsswitch or other times when a cached user hit/miss would cause issues.
+#
+# Examples
+#
+#   nscdRestart
+#
+# Returns nothing.
+nscdRestart() {
     if wickPackage --exists unscd; then
         wickService restart unscd
     else

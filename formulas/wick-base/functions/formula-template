@@ -1,9 +1,25 @@
 #!/usr/bin/env bash
+# Process a formula's template file.  Automatically detects the template engine
+# by the filename extension.  Writes results to stdout.
+#
+# This is what `wickMakeFile` may use when processing templates.
+#
+# The template engine is detected by the file extension.  It will automatically
+# run a function named `extFormulaTemplate` where `ext` is replaced with the
+# file extension.
+#
+# $1 - Path to a template file
+#
+# Examples
+#
+#   # This calls shFormulaTemplate automatically
+#   formulaTemplate my-template-file.sh > /tmp/the-result
+#
+# Returns true on success.
+formulaTemplate() {
+    local engine
 
-formula-template() {
-    local ENGINE
-
-    ENGINE=${1##*.}
+    engine=${1##*.}
 
     if [[ ! -f "$1" ]]; then
         wickError "Template not found: $1"
@@ -11,18 +27,8 @@ formula-template() {
         return 1
     fi
 
-    "formula-template-$ENGINE" "$1"
-}
-
-formula-template-sh() {
     (
-        /bin/sh "$1"
+        # Run in subshell in case this function changes directories.
+        "${engine}FormulaTemplate" "$1"
     )
 }
-
-formula-template-bash() {
-    (
-        . "$1"
-    )
-}
-

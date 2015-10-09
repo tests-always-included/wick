@@ -33,37 +33,3 @@ wickOnExit() {
     # Always set or reset the trap
     trap wickOnExitTrap EXIT
 }
-
-
-# Internal: Function that runs the wickOnExit commands.  This is set as the
-# EXIT trap in Bash to ensure that it always executes at the end of a script or
-# subshell.
-wickOnExitTrap() {
-    local cmd itemArray length name
-
-    name="WICK_ON_EXIT_$BASHPID"
-
-    if ! declare -p "$name" > /dev/null 2>&1; then
-        wickDebug "No array of wickOnExit traps [$BASHPID]"
-        return
-    fi
-
-    itemArray="$name[@]"
-
-    # See note above about using `eval`.
-    eval "length=\${#$itemArray}"
-
-    if [[ "$length" == 0 ]]; then
-        wickDebug "Empty list of wickOnExit traps [$BASHPID]"
-        return
-    fi
-
-    wickDebug "Running wickOnExit trap [$BASHPID]"
-
-    for cmd in "${!itemArray}"; do
-        wickDebug "Running wickOnExit command: $cmd"
-        eval $cmd
-    done
-
-    wickDebug "Done running wickOnExit traps"
-}

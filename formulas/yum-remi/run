@@ -1,32 +1,47 @@
 #!/usr/bin/env bash
+# Adds the Remi repository for yum.  Will not make it enabled by default.  Does
+# nothing for other platforms that do not use yum.
+#
+# In order to use this properly you will need to set an extra environment
+# variable with `wickPackage`.  For example, you install `redis` with this
+# command.
+#
+# Examples
+#
+#   # Loading the formula.
+#   wickFormula yum-remi
+#
+#   # Enabling the repository while installing a package.
+#   YUM_ENABLE_REPO="remi" wickPackage redis
+#
+# Returns nothing.
+wickExplorer os wick-base os
 
-wickExplorer OS wick-base os
-
-case "$OS" in
+case "$os" in
     redhat|centos)
         wickInfo "Adding Remi repository"
         ;;
 
     *)
-        wickInfo "Remi repository not needed for this OS: $OS"
+        wickInfo "Remi repository not needed for this OS: $os"
         exit
 esac
 
-INSTALLED=$(rpm -qa | grep ^remi-release- || true)
+installed=$(rpm -qa | grep ^remi-release- || true)
 
-if [[ ! -z "$INSTALLED" ]]; then
-    wickInfo "Remi package already installed: $INSTALLED"
+if [[ ! -z "$installed" ]]; then
+    wickInfo "Remi package already installed: $installed"
     exit
 fi
 
-PACKAGE=$(rpm -q --whatprovides /etc/redhat-release)
+package=$(rpm -q --whatprovides /etc/redhat-release)
 
-wickTempDir TEMP
+wickTempDir temp
 
 (
-    cd "$TEMP"
+    cd "$temp"
 
-    case "$PACKAGE" in
+    case "$package" in
         *.el4.*)
             wickGetUrl "http://rpms.remirepo.net/enterprise/remi-release-4.rpm" remi-release.rpm
             ;;

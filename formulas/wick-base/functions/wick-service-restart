@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Internal: Restarts a service.
+#
+# $1 - Service name to restart.
+#
+# Examples
+#
+#   wickServiceReload tinyproxy
+#
+# Returns nothing.
+wickServiceRestart() {
+    local service
+
+    wickGetArgument service 0 "$@"
+    wickInfo "Restarting service: $service"
+    nohup service "$service" restart
+}

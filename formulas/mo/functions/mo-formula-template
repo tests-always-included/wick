@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Template parser for mustache style templates (`.mo` extension).  Writes the
+# parsed content to stdout.
+#
+# $1 - Name of file to parse
+#
+# Examples
+#
+#   moFormulaTemplate file.mo
+#
+# Returns nothing.
+moFormulaTemplate() {
+    wickDebug "Template parsing with mo: $1"
+    (
+        set +eu
+
+        # Source the file to load the functions
+        . /usr/local/bin/mo
+
+        # Call `mo` here so we can get the variables, including ones
+        # that are not exported.
+        mo "$1"
+    )
+}

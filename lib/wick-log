@@ -26,7 +26,7 @@
 #
 # Returns nothing.
 wickLog() {
-    local logLevel OUTPUT priority
+    local logLevel output priority
 
     logLevel=$1
 
@@ -60,13 +60,8 @@ wickLog() {
         esac
 
         logger -p "$priority" -- "$2"
-
-        # Eraser $LOGGER so we don't also write to a file
-        LOGGER=""
-    fi
-
-    if [[ ! -z "$WICK_LOGFILE" ]]; then
-        wickPrefixLines OUTPUT "$(date -Iseconds) $logLevel: " "$2"
-        echo "$OUTPUT" >> "$WICK_LOGFILE"
+    elif [[ -n "$WICK_LOGFILE" ]]; then
+        wickPrefixLines output "$(date -Iseconds) $logLevel: " "$2"
+        echo "$output" >> "$WICK_LOGFILE"
     fi
 }

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Internal: Stops a service.
+#
+# $1 - Service name to stop.
+#
+# Examples
+#
+#   wickServiceStop rsync
+#
+# Returns nothing.
+wickServiceStop() {
+    local service
+
+    wickGetArgument service 0 "$@"
+    wickInfo "Stopping service: $service"
+    nohup service "$service" stop
+}

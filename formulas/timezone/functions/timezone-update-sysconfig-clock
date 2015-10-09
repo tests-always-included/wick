@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
-
-timezone-update-sysconfig-clock() {
+# Updates the timezone in sysconfig/clock.
+#
+# $1 - The new timezone.
+#
+# Examples
+#
+#   timezoneUpdateSysconfigClock UTC
+#
+# Returns nothing.
+timezoneUpdateSysconfigClock() {
     if wickCommandExists timedatectl; then
         wickDebug "Using timedatectl to set timezone"
         timedatectl --no-ask-password set-timezone "$1"

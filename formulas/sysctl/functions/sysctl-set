@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
-
-sysctl-set() {
-    wick-set-config-line /etc/sysctl.conf "${1} = ${2}"
+# Changes a system setting.
+#
+# $1 - Setting name.
+# $2 - Value to assign.
+#
+# Examples
+#
+#   sysctlSet vm.overcommit_memory 1
+#
+# This configures `sysctl` with the setting as well as sets the line in
+# `/etc/sysctl.conf` for when you restart the machine.
+#
+# Returns nothing.
+sysctlSet() {
+    wickSetConfigLine /etc/sysctl.conf "${1} = ${2}"
     sysctl "${1}=${2}"
 }

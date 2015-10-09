@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
-
-dnsmasq-add-config() {
+# Adds a configuration entry into dnsmasq.
+#
+# $1   - Name of the rule to generate.
+# $2-@ - The configuration line.
+#
+# The name can be later used by dnsmasqRemove to remove this line.
+#
+# Examples
+#
+#   dnsmasqAddConfig consul "server=/consul./127.0.0.1#8600"
+#
+# Returns nothing.
+dnsmasqAddConfig() {
     local NAME
 
     NAME=$1

@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
+# Attempts to find the release version of the distribution that is running.
+#
+# Example:
+#
+#   wickExplorer
+#
+# Returns true on success.
+wickExplorer os wick-base os || true
 
-wickExplorer OS wick-base os || true
-
-case "$OS" in
+case "$os" in
     centos)
         rpm -q centos-release | cut -d - -f 3- | cut -d . -f 1 | tr - .
         ;;
 
     osx)
-        echo "Unsupported OS: $OS"
+        echo "Unsupported OS: $os"
         exit 1
         ;;
 
@@ -26,7 +32,7 @@ case "$OS" in
         ;;
 
     *)
-        echo "Unsupported OS: $OS"
+        echo "Unknown OS: $os"
         exit 1
         ;;
 esac

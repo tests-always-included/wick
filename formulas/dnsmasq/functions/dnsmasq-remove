@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
-
-dnsmasq-remove() {
+# Removes a configuration file from dnsmasq.
+#
+# $1 - Name of file to remove.
+#
+# Examples
+#
+#   dnsmasqAdd --template my-config.mo
+#   dnsmasqRemove my-config
+#
+#   dnsmasqAddConfig consul "server=/consul./127.0.0.1#8600"
+#   dnsmasqRemove consul
+#
+# Returns nothing.
+dnsmasqRemove() {
     if [[ -f "/etc/dnsmasq.d/$1" ]]; then
         rm -f "/etc/dnsmasq.d/$1"
         wickService restart dnsmasq

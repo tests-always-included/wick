@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
-
-dnsmasq-add() {
+# Add a configuration file for dnsmasq into `/etc/dnsmasq.d/`.
+#
+# $@ - Passed to `wickMakeFile`
+#
+# The call to `wickMakeFile` defaults the destination directory for your
+# file.
+#
+# Examples
+#
+#   dnsmasqAdd my-sample-config
+#   dnamasqAdd --template another-sample-config.sh
+#
+# Returns nothing.
+dnsmasqAdd() {
     wickMakeFile "$@" "/etc/dnsmasq.d"
     wickService restart dnsmasq
 }

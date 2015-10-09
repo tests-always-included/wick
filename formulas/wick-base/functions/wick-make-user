@@ -1,90 +1,126 @@
 #!/usr/bin/env bash
+# Create or manage a user on the system.
+#
+# $1            - Username to create on the system
+# --daemon      - Optional; flag to indicate reasonable settings should be
+#                 assigned for a daemon account.  See the examples.
+# --home=HOME   - Optional; set the home directory for the user.
+# --move-home   - Optional; move a home directory for a user that already
+#                 exists when this flag is used.
+# --name=NAME   - Optional; full name for the account.
+# --no-skel     - Optional; will prevent skeleton files from being copied when
+#                 this flag is used.
+# --shell=SHELL - Optional; set a shell that isn't the default for the user.
+# --system      - Optional; uses a lower user ID when available when creating
+#                 the user.
+#
+# For consistency, the home directory is always created if it does not exist
+# and the ownership of the home directory is always set to `USERNAME:USERNAME`.
+#
+# Examples:
+#
+#   # Create a normal user
+#   wickMakeUser fidian
+#
+#   # Update that same user with a new shell
+#   wickMakeUser --shell=/bin/zsh
+#
+#   # Create a system account that can't login.  It is used to
+#   # run a special server that's installed in /opt/myserver.
+#   wickMakeUser --home=/opt/myserver --name="MyServer" \
+#       --shell=/bin/false --no-skel --system myserver
+#
+#   # The exact same command but it uses --daemon to specify
+#   # several options automatically.
+#   # --daemon enables --no-skel --system and disables --move-home
+#   wickMakeUser --daemon --home=/opt/myserver --name="MyServer" myserver
+#
+# Returns true on success.
+wickMakeUser() {
+    local args daemonFlag moveHomeFlag noSkelFlag passwd setHome setName setShell systemFlag userhome username
 
-wick-make-user() {
-    local ARGS DAEMON_FLAG MOVE_HOME_FLAG NO_SKEL_FLAG PASSWD SET_HOME SET_NAME SET_SHELL SYSTEM_FLAG USERHOME USERNAME
+    wickGetOption daemonFlag daemon "$@"
+    wickGetOption setHome home "$@"
+    wickGetOption moveHomeFlag move-home "$@"
+    wickGetOption setName name "$@"
+    wickGetOption noSkelFlag no-skel "$@"
+    wickGetOption setShell shell "$@"
+    wickGetOption systemFlag system "$@"
+    wickGetArgument username 0 "$@"
 
-    wickGetOption DAEMON_FLAG daemon "$@"
-    wickGetOption SET_HOME home "$@"
-    wickGetOption MOVE_HOME_FLAG move-home "$@"
-    wickGetOption SET_NAME name "$@"
-    wickGetOption NO_SKEL_FLAG no-skel "$@"
-    wickGetOption SET_SHELL shell "$@"
-    wickGetOption SYSTEM_FLAG system "$@"
-    wickGetArgument USERNAME 0 "$@"
-
-    if [[ -z "$USERNAME" ]]; then
-        wickError "You must specify a username for wick-make-user"
+    if [[ -z "$username" ]]; then
+        wickError "You must specify a username for wickMakeUser"
         return 1
     fi
 
     # Set reasonable defaults for daemons
-    if [[ ! -z "$DAEMON_FLAG" ]]; then
-        MOVE_HOME_FLAG=""
-        NO_SKEL_FLAG=true
-        SET_SHELL=/bin/false
-        SYSTEM_FLAG=true
+    if [[ ! -z "$daemonFlag" ]]; then
+        moveHomeFlag=""
+        noSkelFlag=true
+        setShell=/bin/false
+        systemFlag=true
     fi
 
-    PASSWD=$(getent passwd "$USERNAME" || true)
+    passwd=$(getent passwd "$username" || true)
 
-    if [[ -z "$PASSWD" ]]; then
-        wickInfo "Creating user: $USERNAME"
-        ARGS=(useradd)
+    if [[ -z "$passwd" ]]; then
+        wickInfo "Creating user: $username"
+        args=(useradd)
 
-        if [[ ! -z "$SET_HOME" ]]; then
-            ARGS[${#ARGS[@]}]=-d
-            ARGS[${#ARGS[@]}]=$SET_HOME
+        if [[ ! -z "$setHome" ]]; then
+            args[${#args[@]}]=-d
+            args[${#args[@]}]=$setHome
         fi
 
-        if [[ ! -z "$SET_NAME" ]]; then
-            ARGS[${#ARGS[@]}]=-c
-            ARGS[${#ARGS[@]}]=$SET_NAME
+        if [[ ! -z "$setName" ]]; then
+            args[${#args[@]}]=-c
+            args[${#args[@]}]=$setName
         fi
 
-        if [[ ! -z "$NO_SKEL_FLAG" ]]; then
-            ARGS[${#ARGS[@]}]=-M
+        if [[ ! -z "$noSkelFlag" ]]; then
+            args[${#args[@]}]=-M
         fi
 
-        if [[ ! -z "$SET_SHELL" ]]; then
-            ARGS[${#ARGS[@]}]=-s
-            ARGS[${#ARGS[@]}]=$SET_SHELL
+        if [[ ! -z "$setShell" ]]; then
+            args[${#args[@]}]=-s
+            args[${#args[@]}]=$setShell
         fi
 
-        if [[ ! -z "$SYSTEM_FLAG" ]]; then
-            ARGS[${#ARGS[@]}]=-r
+        if [[ ! -z "$systemFlag" ]]; then
+            args[${#args[@]}]=-r
         fi
 
-        ARGS[${#ARGS[@]}]=$USERNAME
-        wickDebug "Command:" "${ARGS[@]}"
-        "${ARGS[@]}"
+        args[${#args[@]}]=$username
+        wickDebug "Command:" "${args[@]}"
+        "${args[@]}"
     else
-        wickInfo "Altering user: $USERNAME"
-        ARGS=(usermod)
+        wickInfo "Altering user: $username"
+        args=(usermod)
 
-        if [[ ! -z "$SET_HOME" ]]; then
-            ARGS[${#ARGS[@]}]=-d
-            ARGS[${#ARGS[@]}]=$SET_HOME
+        if [[ ! -z "$setHome" ]]; then
+            args[${#args[@]}]=-d
+            args[${#args[@]}]=$setHome
         fi
 
-        if [[ ! -z "$MOVE_HOME_FLAG" ]]; then
-            ARGS[${#ARGS[@]}]=-m
+        if [[ ! -z "$moveHomeFlag" ]]; then
+            args[${#args[@]}]=-m
         fi
 
-        if [[ ! -z "$SET_NAME" ]]; then
-            ARGS[${#ARGS[@]}]=-c
-            ARGS[${#ARGS[@]}]=$SET_NAME
+        if [[ ! -z "$setName" ]]; then
+            args[${#args[@]}]=-c
+            args[${#args[@]}]=$setName
         fi
 
-        if [[ ! -z "$SET_SHELL" ]]; then
-            ARGS[${#ARGS[@]}]=-s
-            ARGS[${#ARGS[@]}]=$SET_SHELL
+        if [[ ! -z "$setShell" ]]; then
+            args[${#args[@]}]=-s
+            args[${#args[@]}]=$setShell
         fi
 
-        ARGS[${#ARGS[@]}]=$USERNAME
-        wickDebug "Command:" "${ARGS[@]}"
-        "${ARGS[@]}"
+        args[${#args[@]}]=$username
+        wickDebug "Command:" "${args[@]}"
+        "${args[@]}"
     fi
 
-    USERHOME=$(getent passwd "$USERNAME" | cut -d : -f 6)
-    wick-make-dir --owner="$USERNAME:$USERNAME" --mode=0755 "$USERHOME"
+    userhome=$(getent passwd "$username" | cut -d : -f 6)
+    wickMakeDir --owner="$username:$username" --mode=0755 "$userhome"
 }

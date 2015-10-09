@@ -1,77 +1,137 @@
 #!/usr/bin/env bash
-
+# Copies a file from the formula to the target machine.  Files are stored in
+# `files/` within the formula.  When `--template` is used, then files come from
+# `templates/` instead.
+#
+# It is good practice to have the destination either include the filename or
+# else end in a slash (`/`) to avoid ambiguity.  See the examples for more
+# information.
+#
+# $1                - The source file to use.  It must be in the `files/`
+#                     directory for normal files or `templates/` when using a
+#                     template engine.
+# $2                - The destination directory or filename.  Will always
+#                     create or overwrite this file.  The template engine
+#                     suffix will be removed when using a template and
+#                     specifying a destination directory.
+# --formula=FORMULA - Optional; indicate that the source file comes from a
+#                     different formula than the current one.
+# --mode=MODE       - Optional; specify a mode for the file using `chmod`
+#                     syntax.  Always sets the mode when specified, otherwise
+#                     uses a default.
+# --owner=OWNER -     Optional; specify an owner for the file using `chown`
+#                     syntax.  Always sets the owner when specified, otherwises
+#                     uses a default.
+# --template        - Optional; indicate that the file should pass through a
+#                     template engine before being saved on the target
+#                     filesystem.
+#
+# If the destination is a directory, the file will keep its original name and
+# be copied to the directory.  When using templates, the template engine suffix
+# will be stripped off.
+#
+# If you want the destination directory to be created automatically, make sure
+# you use a `/` at the end of the directory name.  It will be created with the
+# installed file's owner and a default mode.  See the notes for the
+# `wickMakeDir` function regarding ownership of directories.
+#
+# Examples:
+#
+#   # Writes /etc/rc.local from a template.
+#   wickMakeFile --mode=0755 --template rc.local.mo /etc/
+#
+#   # Writes a root-only configuration file, renaming it as it is written.
+#   wickMakeFile --mode=0600 --owner=root:root secret.txt /root/secret.txt
+#
+#   # Installs a file into a directory that does not exist.
+#   # The directory will be created and owned by "nobody", just like the file.
+#   # Note the / at the end of the destination
+#   wickMakeFile --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d/
+#
+#   # The same as above but the directory will NOT be created automatically
+#   # if it doesn't already exist.
+#   # If /etc/a/b/c/d exists as a directory then config.ini will be written
+#   # to that folder.  Otherwise, this will create the file /etc/a/b/c/d (not
+#   # /etc/a/b/c/d/config.ini), so be careful.
+#   wickMakeFile --mode=600 --owner=nobody:nobody config.ini /etc/a/b/c/d
+#
+#   # Get a file from other-formula, no matter where it is located in the
+#   # parent hierarchy in relation to the current formula.
+#   wickMakeFile --formula=other-formula motd.txt /etc/motd
+#
+# Returns true on success.
 wickMakeFile() {
-    local DEST DEST_FILE OWNER SET_MODE SET_OWNER SRC SRC_FILE USE_FORMULA USE_TEMPLATE
+    local dest owner setMode setOwner src srcFile useFormula useTemplate
 
-    wickGetOption USE_FORMULA formula "$@"
-    wickGetOption SET_MODE mode "$@"
-    wickGetOption SET_OWNER owner "$@"
-    wickGetOption USE_TEMPLATE template "$@"
-    wickGetArgument SRC_FILE 0 "$@"
-    wickGetArgument DEST 1 "$@"
-    SRC="$WICK_FORMULA_DIR"
+    wickGetOption useFormula formula "$@"
+    wickGetOption setMode mode "$@"
+    wickGetOption setOwner owner "$@"
+    wickGetOption useTemplate template "$@"
+    wickGetArgument srcFile 0 "$@"
+    wickGetArgument dest 1 "$@"
+    src="$WICK_FORMULA_DIR"
 
-    if [[ ! -z "$USE_FORMULA" ]]; then
-        wickFind SRC "formulas/$USE_FORMULA"
+    if [[ ! -z "$useFormula" ]]; then
+        wickFind src "formulas/$useFormula"
     fi
 
-    if [[ -z "$USE_TEMPLATE" ]]; then
-        SRC="$SRC/files"
+    if [[ -z "$useTemplate" ]]; then
+        src="$src/files"
     else
-        SRC="$SRC/templates"
+        src="$src/templates"
     fi
 
-    SRC="$SRC/$SRC_FILE"
+    src="$src/$srcFile"
 
     # Make sure the file exists
-    if [[ ! -f "$SRC" ]]; then
-        wickError "Unable to find source file: $SRC"
+    if [[ ! -f "$src" ]]; then
+        wickError "Unable to find source file: $src"
 
         return 1
     fi
 
     # Write to stdout if there is no destination
-    if [[ -z "$DEST" ]] || [[ "$DEST" == "-" ]]; then
-        if [[ -z "$USE_TEMPLATE" ]]; then
-            wickDebug "Writing file to stdout: $SRC"
-            cat "$SRC"
+    if [[ -z "$dest" ]] || [[ "$dest" == "-" ]]; then
+        if [[ -z "$useTemplate" ]]; then
+            wickDebug "Writing file to stdout: $src"
+            cat "$src"
         else
-            wickDebug "Writing template to stdout: $SRC"
-            formula-template "$SRC"
+            wickDebug "Writing template to stdout: $src"
+            formulaTemplate "$src"
         fi
 
         return 0
     fi
 
-    if [[ -z "$USE_TEMPLATE" ]]; then
-        wick-get-dest DEST "$DEST" "$SRC_FILE"
+    if [[ -z "$useTemplate" ]]; then
+        wickGetDest dest "$dest" "$srcFile"
     else
-        wick-get-dest DEST "$DEST" "${SRC_FILE%.*}"
+        wickGetDest dest "$dest" "${srcFile%.*}"
     fi
 
     # Ensure the directory exists
-    if [[ ! -d "${DEST%/*}" ]]; then
+    if [[ ! -d "${dest%/*}" ]]; then
         # Preserve the owner if one was passed
-        wick-make-dir "${DEST%/*}" "--owner=$SET_OWNER"
+        wickMakeDir "${dest%/*}" "--owner=$setOwner"
     fi
 
-    if [[ -z "$USE_TEMPLATE" ]]; then
+    if [[ -z "$useTemplate" ]]; then
         # Not a template - just copy
-        wickDebug "Copying $SRC to $DEST"
-        cp "$SRC" "$DEST" || return 1
+        wickDebug "Copying $src to $dest"
+        cp "$src" "$dest" || return 1
     else
         # Use a template
-        wickDebug "Converting template $SRC into $DEST"
-        formula-template "$SRC" > "$DEST" || return 1
+        wickDebug "Converting template $src into $dest"
+        formulaTemplate "$src" > "$dest" || return 1
     fi
 
-    if [[ ! -z "$SET_OWNER" ]]; then
-        wickDebug "Changing ownership: $SET_OWNER"
-        chown "$SET_OWNER" "$DEST" || return 1
+    if [[ ! -z "$setOwner" ]]; then
+        wickDebug "Changing ownership: $setOwner"
+        chown "$setOwner" "$dest" || return 1
     fi
 
-    if [[ ! -z "$SET_MODE" ]]; then
-        wickDebug "Changing mode: $SET_MODE"
-        chmod "$SET_MODE" "$DEST" || return 1
+    if [[ ! -z "$setMode" ]]; then
+        wickDebug "Changing mode: $setMode"
+        chmod "$setMode" "$dest" || return 1
     fi
 }

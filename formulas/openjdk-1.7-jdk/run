@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
+# Installs OpenJDK 1.7 JDK.
+#
+# Examples
+#
+#   wickFormula openjdk-1.7-jdk
+#
+# Returns nothing.
+wickExplorer os wick-base os
 
-wickExplorer OS wick-base os
-
-case "$OS" in
+case "$os" in
     debian|ubuntu)
         wickPackage openjdk-7-jdk
         ;;

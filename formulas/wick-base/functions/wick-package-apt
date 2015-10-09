@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Internal: Helper function to take action on apt-based systems.
+#
+# $1 - Desired package state.  One of "install", "uninstall" or "exists".
+# $2 - Package name.
+#
+# Examples
+#
+#   wickPackageApt install apache2
+#
+# Return true on success.
+wickPackageApt() {
+    local state
+
+    state=$1
+    shift
+
+    case "$state" in
+        exists)
+            if apt-cache show "$@" > /dev/null 2>&1; then
+                wickDebug "Package exists: $@"
+                return 0
+            fi
+
+            wickDebug "Package does not exist: $@"
+            return 1
+            ;;
+
+        install)
+            apt-get install -y "$@"
+            ;;
+
+        uninstall)
+            apt-get purge -y "$@"
+            ;;
+
+        *)
+            echo "Unknown package state: $state"
+            return 1
+    esac
+}

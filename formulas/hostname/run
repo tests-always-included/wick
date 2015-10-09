@@ -1,28 +1,53 @@
 #!/usr/bin/env bash
+# Sets the hostname and domain.  Supports templates.  Can automatically update the hostname when network connections are made.
+#
+# $1        - Hostname to set or template for dynamic hostnames.
+# --dynamic - Option that enables a dynamic hostname.
+#
+# When `--dynamic` is used, the hostname will get updated whenever new DHCP
+# leases are established.
+#
+# The hostname can be just the "local part" (eg. "machine1") or a fully
+# qualified name (eg. "machine1.example.com").  When fully qualified, this also
+# sets the domain name.  Can be templated.
+#
+# Templated hostnames can change "app1-{{IP}}.example.com" into
+# "app1-192_168_0_1.example.com".  This is not the same template system that
+# formulas use; it is a simple string replacement.  Templated variables that
+# are supported:
+#
+# * `{{IP}}`:  Results in a string of the current IP address of the machine, with dots replaced by underscores.
+#
+# When using templated hostnames, you will likely want to also use `--dynamic`
+# so the name is changed after reboots.
+#
+# Examples
+#
+#   wickFormula hostname --dynamic app1-{{IP}}.example.com
+#   wickFormula hostname machine1
+wickGetOption dynamic dynamic "$@"
+wickGetArgument desired 0 "$@"
 
-wickGetOption DYNAMIC dynamic "$@"
-wickGetArgument DESIRED 0 "$@"
-
-if [ -z "$DYNAMIC" ]; then
-    wickInfo "Setting the hostname: $DESIRED"
-    "$WICK_FORMULA_DIR/files/set-hostname" --verbose "$DESIRED"
+if [ -z "$dynamic" ]; then
+    wickInfo "Setting the hostname: $desired"
+    "$WICK_FORMULA_DIR/files/set-hostname" --verbose "$desired"
 else
-    wickInfo "Setting a dynamic hostname: $DESIRED"
+    wickInfo "Setting a dynamic hostname: $desired"
     wickMakeFile set-hostname /usr/local/bin/ --mode=0755
 
-    HOOK_FILE="/etc/dhcp/dhclient-exit-hooks"
-    wickInfo "Creating/updating hook file: $HOOK_FILE"
-    :> "$HOOK_FILE"
-    chmod 755 "$HOOK_FILE"
-    wick-set-config-line "$HOOK_FILE" "/usr/local/bin/set-hostname '$DESIRED'"
+    hookFile="/etc/dhcp/dhclient-exit-hooks"
+    wickInfo "Creating/updating hook file: $hookFile"
+    :> "$hookFile"
+    chmod 755 "$hookFile"
+    wickSetConfigLine "$hookFile" "/usr/local/bin/set-hostname '$desired'"
 
-    wickInfo "Setting the hostname: $DESIRED"
-    /usr/local/bin/set-hostname --verbose "$DESIRED"
+    wickInfo "Setting the hostname: $desired"
+    /usr/local/bin/set-hostname --verbose "$desired"
 
-    CLOUD_FILE="/etc/cloud/cloud.cfg"
-    if [ -f "$CLOUD_FILE" ]; then
-        wickInfo "Updating cloud-init: $CLOUD_FILE"
-        wick-set-config-line "$CLOUD_FILE" "preserve_hostname: true"
+    cloudFile="/etc/cloud/cloud.cfg"
+    if [ -f "$cloudFile" ]; then
+        wickInfo "Updating cloud-init: $cloudFile"
+        wickSetConfigLine "$cloudFile" "preserve_hostname: true"
     else
         wickInfo "Cloud-init not detected"
     fi

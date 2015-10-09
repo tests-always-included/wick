@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Internal: Disable a service so it doesn't start on boot.
+#
+# $1 - Service name.
+#
+# Examples
+#
+#   wickServiceDisable consul
+#
+# Returns nothing.
+wickServiceDisable() {
+    local service
+
+    wickGetArgument service 0 "$@"
+    wickInfo "Disabling service: $service"
+    chkconfig "$service" off
+}

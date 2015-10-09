@@ -9,22 +9,22 @@
 #
 # Returns nothing.
 apache2AddConf() {
-    local CONF OPTIONS OS
+    local conf options os
 
-    wickGetArgument CONF 0 "$@"
-    wickGetOptions OPTIONS "$@"
-    wickInfo "Adding Apache2 config: ${OPTIONS[@]-} $CONF"
-    wickExplorer OS wick-base os
+    wickGetArgument conf 0 "$@"
+    wickGetOptions options "$@"
+    wickInfo "Adding Apache2 config: ${options[@]-} $conf"
+    wickExplorer os wick-base os
 
-    case "$OS" in
+    case "$os" in
         redhat|centos)
-            wickMakeFile "${OPTIONS[@]-}" /etc/httpd/conf.d/
+            wickMakeFile "${options[@]-}" /etc/httpd/conf.d/
             wickService reload httpd
             ;;
 
         *)
-            wickMakeFile "${OPTIONS[@]-}" /etc/apache2/conf-available
-            a2enconf "$CONF"
+            wickMakeFile "${options[@]-}" /etc/apache2/conf-available
+            a2enconf "$conf"
             wickService reload apache2
             ;;
     esac

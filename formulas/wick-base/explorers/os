@@ -1,11 +1,56 @@
 #!/usr/bin/env bash
+# Makes an educated guess to determine the OS that is running.  Writes the
+# OS to stdout for `wickExplorer`.
+#
+# Detected values:
+#
+# * `apple`: Mac OS X
+# * `centos`: CentOS
+# * `redhat`: RedHat
+# * `ubuntu`: Ubuntu
+#
+# Examples
+#
+#   wickExplorer RESULT wick-base os
+#   case "$RESULT" in
+#       apple)
+#           brew install packageName
+#           ;;
+#
+#       redhat)
+#           yum install packageName
+#           ;;
+#
+#       ubuntu)
+#           apt-get install packageName
+#           ;;
+#   esac
+#
+# Returns 0 on success or 1 when the OS can't be determined.
 
-is-really-centos() {
+# On RedHat-like systems you can see if there's a package called
+# `centos-release`.  If so, you are on CentOS.
+#
+# Examples
+#
+#   if isReallyCentos; then
+#       echo "This is CentOS, not RedHat"
+#   fi
+#
+# Returns true if this is CentOS.
+isReallyCentos() {
     rpm -q centos-release > /dev/null 2>&1
 }
 
-detect-real-redhat() {
-    if is-really-centos; then
+# Determines if this is truly RedHat or a derivative.  Writes the OS to stdout.
+#
+# Examples
+#
+#   detectRealRedhat
+#
+# Returns nothing.
+detectRealRedhat() {
+    if isReallyCentos; then
         echo "centos"
     else
         echo "redhat"
@@ -13,12 +58,12 @@ detect-real-redhat() {
 }
 
 if wickCommandExists lsb_release; then
-    DISTRIBUTOR=$(lsb-release -s -i 2>&1)
-    wickDebug "Distributor: $DISTRIBUTOR"
+    distributor=$(lsb-release -s -i 2>&1)
+    wickDebug "Distributor: $distributor"
 
-    case "$DISTRIBUTOR" in
+    case "$distributor" in
         RedHatEnterprise*)
-            detect-real-redhat
+            detectRealRedhat
             exit
             ;;
 
@@ -32,7 +77,7 @@ fi
 wickDebug "MACHTYPE=$MACHTYPE"
 
 if [[ "$MACHTYPE" == *"-redhat-"* ]]; then
-    detect-real-redhat
+    detectRealRedhat
     exit
 fi
 
@@ -42,10 +87,10 @@ if [[ "$MACHTYPE" == *"-apple-"* ]]; then
 fi
 
 if wickCommandExists uname; then
-    UNAME_V=$(uname -v 2>&1)
-    wickDebug "UNAME_V=$UNAME_V"
+    unameV=$(uname -v 2>&1)
+    wickDebug "unameV=$UNAME_V"
 
-    if [[ "$UNAME_V" == *"Ubuntu"* ]]; then
+    if [[ "$unameV" == *"Ubuntu"* ]]; then
         echo "ubuntu"
         exit
     fi

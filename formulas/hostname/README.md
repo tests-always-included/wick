@@ -1,7 +1,7 @@
 Hostname
 ========
 
-Sets the hostname and domain.  Supports templates.  Can automatically update the hostname on network connections.
+Sets the hostname and domain.  Supports templates.  Can automatically update the hostname when network connections are made.
 
     wickFormula hostname [--dynamic] HOSTNAME
 

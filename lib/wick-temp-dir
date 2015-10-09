@@ -7,9 +7,9 @@
 #
 # Examples
 #
-#   wickTempDir TEMPDIR
+#   wickTempDir tempdir
 #   (
-#       cd TEMPDIR
+#       cd tempdir
 #       wickGetUrl http://install.example.com/ installer-script
 #       . installer-script
 #   )
@@ -18,31 +18,31 @@
 #
 # Returns nothing.
 wickTempDir() {
-    local BASE DIR
+    local base dir
 
-    BASE="/tmp"
+    base="/tmp"
 
-    if [ ! -z "${TMPDIR:-}" ] && [ -d "$TMPDIR" ]; then
-        BASE="$TMPDIR"
+    if [ ! -z "${TMPdir:-}" ] && [ -d "$TMPdir" ]; then
+        base="$TMPdir"
     fi
 
-    BASE="${BASE}/wick."
+    base="${base}/wick."
 
     while true; do
-        wickRandomString DIR 16
-        DIR="$BASE$DIR"
+        wickRandomString dir 16
+        dir="$base$dir"
 
-        if [ ! -e "$DIR" ]; then
-            if mkdir -m 0700 "$DIR" 2>/dev/null; then
-                wickDebug "Temporary directory created: $DIR"
-                wickOnExit rm -rf "$DIR"
-                local "$1" && wickIndirect "$1" "$DIR"
+        if [ ! -e "$dir" ]; then
+            if mkdir -m 0700 "$dir" 2>/dev/null; then
+                wickDebug "Temporary directory created: $dir"
+                wickOnExit rm -rf "$dir"
+                local "$1" && wickIndirect "$1" "$dir"
                 return 0
-            else
-                wickDebug "Temporary directory could not be created: $DIR"
             fi
+
+            wickDebug "Temporary directory could not be created: $dir"
         else
-            wickDebug "Temporary directory already exists: $DIR"
+            wickDebug "Temporary directory already exists: $dir"
         fi
     done
 }

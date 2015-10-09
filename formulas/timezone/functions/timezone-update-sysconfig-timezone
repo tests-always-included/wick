@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
-
-timezone-update-sysconfig-timezone() {
+# Updates the timezone in /etc/sysconfig/timezone.
+#
+# $1 - The new time zone.
+# $2 - The zoneinfo directory.
+#
+# Examples
+#
+#   timezoneUpdateSysconfigTimezone UTC /usr/share/zoneinfo
+#
+# Returns nothing.
+timezoneUpdateSysconfigTimezone() {
     local TZFILE
 
     wickInfo "Updating /etc/sysconfig/timezone"

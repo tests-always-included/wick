@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
-
-# Get current recursor
+# Installs dnsmasq and adds it as a nameserver.
+#
+# Examples
+#
+#   wickFormula dnsmasq
+#
+# Returns nothing
 wickPackage dnsmasq
-wick-make-dir /etc/dnsmasq.d/
-wick-set-config-line /etc/dnsmasq.conf "conf-dir=/etc/dnsmasq.d"
+wickMakeDir /etc/dnsmasq.d/
+wickSetConfigLine /etc/dnsmasq.conf "conf-dir=/etc/dnsmasq.d"
 wickService restart dnsmasq
 wickService enable dnsmasq
 
 # Insert dnsmasq into the resolver
-wick-set-config-line /etc/dhcp/dhclient.conf "prepend domain-name-servers 127.0.0.1;" "prepend domain-name-servers"
+wickSetConfigLine /etc/dhcp/dhclient.conf "prepend domain-name-servers 127.0.0.1;" "prepend domain-name-servers"
 
 if grep -q ^nameserver /etc/resolv.conf; then
     sed --follow-symlinks -i '/^nameserver/inameserver 127.0.0.1' /etc/resolv.conf

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Internal: Reloads a service.
+#
+# $1 - Service name to reload.
+#
+# Examples
+#
+#   wickServiceReload nginx
+#
+# Returns nothing.
+wickServiceReload() {
+    local service
+
+    wickGetArgument service 0 "$@"
+    wickInfo "Reloading service: $service"
+    nohup service "$service" reload
+}

@@ -9,22 +9,22 @@
 #
 # Returns nothing.
 apache2AddVhost() {
-    local OPTIONS OS SITE
+    local options os site
 
-    wickGetArgument SITE 0 "$@"
-    wickGetOptions OPTIONS "$@"
-    wickInfo "Adding Apache2 vhost: ${OPTIONS[@]-} $SITE"
-    wickExplorer OS wick-base os
+    wickGetArgument site 0 "$@"
+    wickGetOptions options "$@"
+    wickInfo "Adding Apache2 vhost: ${options[@]-} $site"
+    wickExplorer os wick-base os
 
-    case "$OS" in
+    case "$os" in
         redhat|centos)
-            wickMakeFile "${OPTIONS[@]-}" /etc/httpd/conf.d/
+            wickMakeFile "${options[@]-}" /etc/httpd/conf.d/
             wickService reload httpd
             ;;
 
         *)
-            wickMakeFile "${OPTIONS[@]-}" /etc/apache2/sites-available
-            a2ensite "$SITE"
+            wickMakeFile "${options[@]-}" /etc/apache2/sites-available
+            a2ensite "$site"
             wickService reload apache2
             ;;
     esac

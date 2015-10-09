@@ -1,0 +1,14 @@
+#!/bin/bash
+# This formula only adds useful functions and explorers to Wick.  Nearly
+# everything depends on this formula.
+#
+# Instead of building many things into the core of Wick, the choice was made to
+# allow users to override nearly everything.  This includes `wick-base`,
+# putting the power to fix bugs or experiment with new techniques in your
+# repositories before things get published in the official repository.
+#
+# Examples
+#
+#   wickFormula wick-base
+#
+# Returns nothing.

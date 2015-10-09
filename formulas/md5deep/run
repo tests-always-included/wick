@@ -1,3 +1,9 @@
 #!/usr/bin/env bash
-
+# Sets up md5deep and its related utilities.
+#
+# Examples
+#
+#   wickFormula md5deep
+#
+# Returns nothing.
 wickPackage md5deep

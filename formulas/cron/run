@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Adds useful cron manipulation functions to the Wick environment.  Performs no
+# actions.
+#
+# Examples
+#
+#   wickFormula cron
+#
+# Returns nothing.

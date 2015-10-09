@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Internal: Helper function to take action on yum-based systems.
+#
+# $1               - Desired package state.  One of "install", "uninstall" or
+#                    "exists".
+# $2               - Package name.
+# $YUM_ENABLE_REPO - Enable additional repositories.
+#
+# Examples
+#
+#   wickPackageYum install httpd
+#
+# Return true on success.
+wickPackageYum() {
+    local args state
+
+    args=()
+    state=$1
+    shift
+
+    case "$state" in
+        exists)
+            if rpm -q "$@" > /dev/null 2>&1; then
+                wickDebug "Package exists: $@"
+                return 0
+            fi
+
+            wickDebug "Package does not exist: $@"
+            return 1
+            ;;
+
+        install)
+            if [[ ! -z "${YUM_ENABLE_REPO-}" ]]; then
+                args[${#args[@]}]="--enablerepo=$YUM_ENABLE_REPO"
+            fi
+
+            if [[ ${#args[@]} -eq 0 ]]; then
+                yum install -y "$@"
+            else
+                yum "${args[@]}" install -y "$@"
+            fi
+            ;;
+
+        uninstall)
+            yum remove -y "$@"
+            ;;
+
+        *)
+            echo "Unknown package state: $state"
+            return 1
+    esac
+}

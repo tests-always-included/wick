@@ -1,4 +1,21 @@
 #!/usr/bin/env bash
+# Determines the architecture that the system is running upon.
+#
+# Detected values:
+#
+# * `amd64`
+# * `ia32`
+#
+# Examples
+#
+#   wickExplorer arch wick-base arch
+#
+#   if [[ "$arch" != "amd64" ]]; then
+#       wickError "Sorry, this requires an AMD64 system."
+#       exit 1
+#   fi
+#
+# Returns true when the architecute could be determined.
 
 UNAME_M=$(uname -m)
 wickDebug "uname -m: $UNAME_M"

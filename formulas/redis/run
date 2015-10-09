@@ -1,11 +1,19 @@
 #!/usr/bin/env bash
-
-# There are many other settings you can tweak for better performance.  Each
-# one should be tested to determine if they are applicable to the situation.
+# Installs redis onto the box.
+#
+# There are many other settings you can tweak for better performance beyond
+# what this formula set.  Each one should be tested to determine if they are
+# applicable to the situation.
 # http://shokunin.co/blog/2014/11/11/operational_redis.html
+#
+# Examples
+#
+#   wickFormula redis
+#
+# Returns nothing.
 wickInfo "Installing redis"
-sysctl-set vm.overcommit_memory 1
-sysctl-set net.core.somaxconn 512
+sysctlSet vm.overcommit_memory 1
+sysctlSet net.core.somaxconn 512
 YUM_ENABLE_REPO=remi wickPackage redis
 
 # Listen on all interfaces

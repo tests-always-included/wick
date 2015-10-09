@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
+# Installs the Apache 2.x web server and enables named virtual hosts.  Provides
+# functions to add virtual hosts and config files.
+#
+# Examples
+#
+#   wickFormula apache2
+#
+# Returns nothing.
+wickExplorer os wick-base os
 
-# Install Apache 2 and enable named virtual hosts
-
-wickExplorer OS wick-base os
-
-case "$OS" in
+case "$os" in
     centos|redhat)
         wickPackage httpd
         wickService enable httpd
         wickService restart httpd
-        wick-set-config-line /etc/httpd/conf/httpd.conf "NameVirtualHost *:80"
+        wickSetConfigLine /etc/httpd/conf/httpd.conf "NameVirtualHost *:80"
         ;;
 
     *)

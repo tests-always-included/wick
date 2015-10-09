@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Internal: Starts a service.
+#
+# $1 - Service name to start.
+#
+# Examples
+#
+#   wickServiceStart cron
+#
+# Returns nothing.
+wickServiceStart() {
+    local service
+
+    wickGetArgument service 0 "$@"
+    wickInfo "Starting service: $service"
+    nohup service "$service" start
+}

@@ -1,3 +1,9 @@
 #!/usr/bin/env bash
-
+# Installs unzip.  This does not install zip automatically.
+#
+# Examples
+#
+#   wickFormula zip
+#
+# Returns nothing.
 wickPackage unzip

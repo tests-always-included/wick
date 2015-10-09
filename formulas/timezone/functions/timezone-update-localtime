@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
-
-timezone-update-localtime() {
+# Updates the localtime file.
+#
+# $1 - Time zone
+# $2 - File to update
+#
+# Example:
+#
+#   timezoneUpdateLocaltime UTC /etc/localtime
+#
+# Returns 0 on success.
+timezoneUpdateLocaltime() {
     wickDebug "Updating tzdata: $2 -> $1"
 
     if [[ ! -f "$2" ]]; then

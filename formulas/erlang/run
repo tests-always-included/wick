@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
+# Determines the erlang package based on the OS distribution.
+#
+# Examples
+#
+#   wickFormula erlang
+#
+# Returns nothing.
+wickExplorer os wick-base os
 
-wickExplorer OS wick-base os
-
-case "$OS" in
+case "$os" in
     debian|ubuntu)
         wickPackage erlang-nox
         ;;

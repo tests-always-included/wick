@@ -1,21 +1,51 @@
 #!/usr/bin/env bash
+# Creates a directory on the target machine.
+#
+# *Only the last folder will have its ownership changed.*  See the examples for
+# further information.
+#
+# $1            - The directory to create.
+# --mode=MODE   - Optional, specify a mode for the directory.  Uses `chmod`
+#                 syntax.
+# --owner=OWNER - Optional, specify an owner for the directory.  Uses `chown`
+#                 syntax.
+#
+# The directory is created with `mkdir -p` so all parent directories would also
+# be created if they do not exist.  The ownership and mode are only changed on
+# the specified path, not all parents.
+#
+# When specified, the mode and owner are always applied, even if the directory
+# already existed.
+#
+# Examples:
+#
+#   # Creates /etc/consul.d (/etc already existed) with the mode 0755
+#   # and make consul the owner.
+#   wickMakeDir --mode=0755 --owner=consul:consul /etc/consul.d
+#
+#   # Creates a folder named /a/b/c/d/ and changes the ownership of
+#   # /a/b/c/d/ to nobody:nogroup.  NOTE: All of the parent directories
+#   # will be created automatically if they didn't already exist and
+#   # they will be owned by root:root, NOT nobody:nogroup.
+#   wickMakeDir --owner nobody:nogroup /a/b/c/d/
+#
+# Returns nothing.
+wickMakeDir() {
+    local dest mode owner
 
-wick-make-dir() {
-    local DEST MODE OWNER
+    wickGetOption mode mode "$@"
+    wickGetOption owner owner "$@"
+    wickGetArgument dest 0 "$@"
+    wickDebug "Making directory: $dest"
+    mkdir -p "$dest"
 
-    wickGetOption MODE mode "$@"
-    wickGetOption OWNER owner "$@"
-    wickGetArgument DEST 0 "$@"
-    wickDebug "Making directory: $DEST"
-    mkdir -p "$DEST"
-
-    if [ ! -z "$OWNER" ]; then
-        wickDebug "Changing ownership: $OWNER"
-        chown "$OWNER" "$DEST"
+    if [ ! -z "$owner" ]; then
+        wickDebug "Changing ownership: $owner"
+        chown "$owner" "$dest"
     fi
 
-    if [ ! -z "$MODE" ]; then
-        wickDebug "Changing mode: $MODE"
-        chmod "$MODE" "$DEST"
+    if [ ! -z "$mode" ]; then
+        wickDebug "Changing mode: $mode"
+        chmod "$mode" "$dest"
     fi
 }

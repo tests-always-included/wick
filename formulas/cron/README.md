@@ -1,46 +1,54 @@
 Cron
 ====
 
-This formula does not perform any action.  It exists only to add useful functions to the Wick environment.
+Adds useful cron manipulation functions to the Wick environment.  Performs no actions.
 
-    wickFormula cron
+Examples
+
+    wickFormula cro
+
+Returns nothing.
 
 
-Functions
----------
+`cronAdd()`
+-----------
 
-### cron-add
+Add a job to cron.  Takes additional arguments and passes them to `wickMakeFile` from the wick-base formula.
 
-Add a job to cron.  Takes additional arguments and passes them to `wickMakeFile` from [wick-base].
+* $1   - The name of the job to create.
+* $2   - The file in the formula to use for the cron job.
+* $3-@ - Additional arguments to pass to `wickMakeFile`, such as `--template`.
 
-    cron-add [WICK_MAKE_FILE_ARGS] JOB_NAME FILE
+The job name should be simple alphanumeric characters.  Try to avoid things that make regular expressions hard or ones that do not work well as filenames.  For example, `*super* job!` is a bad name, `super-job` is far better.
 
-* `WICK_MAKE_FILE_ARGS`: Additional arguments as understood by `wickMakeFile` from [wick-base].  These arguments can be placed anywhere in the argument list.
-* `JOB_NAME`: Name of the cron job to create.  For best results, try to avoid characters that make regular expressions hard or ones that do not work well as filenames.  For example, `*super* job!` is a bad name, `super-job` is far better.
-* `FILE`: File to use for the cron job.  If `--template` is used, this can be a [template]. This might be placed into a new file or appended to a list of cron jobs in one file, so it is best to avoid setting environment variables.
+The job file may be placed into a new file or appended to a list of cron jobs in a single file, so it is best to avoid setting environment variables in it. Instead, you could call a shell script that sets environment variables, if you require that feature.
 
 File contents need to have the following fields for a job definition, in order:  minute, hour, day, day of month, month, day of week, username, command.  For more information, see `man 5 crontab` and remember that these are system jobs so they require an account name.
 
-Example:
+Examples
 
-    # Adds a job from files/delete_files.cron
-    cron-add delete_files delete_files.cron
+    # Adds a job from files/delete_files.cro
+    cronAdd delete_files delete_files.cron
+
+    # Uses a template instead
+    cronAdd rebuild_index --template rebuild_index.cron
+
+Returns nothing.
 
 
-### cron-remove
+`cronRemove()`
+--------------
 
-Removes a job from cron.  Works only for jobs that were added with `cron-add`.
+Removes a job from cron.  Works only for jobs that were added with `cronAdd`.
 
-    cron-remove JOB_NAME
+* $1 - The name of the cron job to remove.
 
-* `JOB_NAME`: Name of the cron job to remove.
-
-Example:
+Examples
 
     # Add and remove a cron job
-    cron-add update-mongo-v2 --template update-mongo.mo
-    cron-remove update-mongo-v1
+    cronAdd update-mongo-v2 --template update-mongo.mo
+    cronRemove update-mongo-v1
+
+Returns nothing.
 
 
-[template]: ../../doc/templates.md
-[wick-base]: ../wick-base/README.md

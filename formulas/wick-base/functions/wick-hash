@@ -1,5 +1,21 @@
 #!/usr/bin/env bash
-
-wick-hash() {
+# Hash a file and put its checksum into the destination variable.
+#
+# $1 - Destination variable name.
+# $2 - Filename to hash.
+#
+# Currently this generates an MD5 checksum of a file, though the hashing
+# mechanism can change at any time.  Only rely on the output from wickHash
+# to detect when files change as opposed to determining if the contents
+# are correct.  It is entirely possible, for instance, that this hash will
+# include the last modified time or file size as well.
+#
+# Examples
+#
+#   wickHash hash /etc/passwd
+#   echo "$hash"
+#
+# Returns nothing.
+wickHash() {
     local "$1" && wickIndirect "$1" "$(md5sum "$2" | cut -b -32)"
 }

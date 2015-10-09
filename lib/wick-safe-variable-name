@@ -11,7 +11,7 @@
 #
 # Examples
 #
-#   wick-safe-variable-name fixed "ABC-DEF"
+#   wickSafeVariableName fixed "ABC-DEF"
 #   echo "$fixed"  # Outputs "ABC_DEF"
 #
 # Returns nothing.

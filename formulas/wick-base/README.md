@@ -1,52 +1,78 @@
 Wick-Base
 =========
 
-This formula does not perform any action.  It exists only to add useful functions and explorers to the Wick environment.
+This formula only adds useful functions and explorers to Wick.  Nearly everything depends on this formula.
+
+Instead of building many things into the core of Wick, the choice was made to allow users to override nearly everything.  This includes `wick-base`, putting the power to fix bugs or experiment with new techniques in your repositories before things get published in the official repository.
+
+Examples
 
     wickFormula wick-base
 
+Returns nothing.
+
 
 Explorers
----------
+=========
+
+
+### arch
+
+Determines the architecture that the system is running upon.
+
+Detected values:
+
+* `amd64` * `ia32`
+
+Examples
+
+    wickExplorer arch wick-base arch
+
+    if [[ "$arch" != "amd64" ]]; then
+        wickError "Sorry, this requires an AMD64 system."
+        exit 1
+    fi
+
+Returns true when the architecute could be determined.
+
 
 ### bash-version
 
-Returns the version of Bash in use on the target system.
+Writes to stdout the version of Bash in use on the target system.
 
-Example:
+Examples
 
-    wickExplorer RESULT wick-base bash-version
-    echo "$RESULT"  # "4.3.30(1)-release"
+    wickExplorer result wick-base bash-versio
+    echo "$result"  # "4.3.30(1)-release"
+
+Returns nothing.
 
 
 ### machine-type
 
-Returns the type of machine we appear to be using.  Attempts to detect virtualization environments.  This explorer is a bit rudimentary and could be tricked.
+Finds the type of machine we appear to be using.  Attempts to detect virtualization environments.  This explorer is a bit rudimentary and could be tricked.  Output is written to stdout.
 
-Returned values:
+Detected values:
 
-* `amazon`: Running in Amazon AWS
-* `unknown`: All other results
+* `amazon`: Running in Amazon AWS * `unknown`: All other results
 
-Example:
+Examples
 
-    wickExplorer RESULT wick-base machine-type
-    if [[ "$RESULT" == "amazon" ]]; then
+    wickExplorer result wick-base machine-type
+    if [[ "$result" == "amazon" ]]; then
         echo "I am in Amazon AWS"
     fi
 
 
 ### os
 
-Returns the best guess at the OS that's running.
+Makes an educated guess to determine the OS that is running.  Writes the OS to stdout for `wickExplorer`.
 
-Returned values:
+Detected values:
 
-* `apple`: Mac OS X
-* `redhat`: RedHat or CentOS
-* `ubuntu`: Ubuntu
+* `apple`: Mac OS X * `centos`: CentOS * `redhat`: RedHat * `ubuntu`: Ubuntu
 
-Example:
+Examples
 
     wickExplorer RESULT wick-base os
     case "$RESULT" in
@@ -63,69 +89,128 @@ Example:
             ;;
     esac
 
+Returns 0 on success or 1 when the OS can't be determined.
 
-Functions
----------
 
-### formula-template
+### os-version
 
-Process a formula's template file.  Automatically detects the template engine by the filename extension.  Writes results to stdout.  (See [Bash concepts] for stdout; [templates] about the template system.)
-
-This is what `wickMakeFile` may use when processing templates.
-
-    formula-template TEMPLATE
-
-* `TEMPLATE`: Path to a template file.
+Attempts to find the release version of the distribution that is running.
 
 Example:
 
-    formula-template my-template-file.sh > /tmp/the-result
+    wickExplorer
+
+Returns true on success.
 
 
-### wick-make-dir
+`bashFormulaTemplate()`
+-----------------------
+
+Run a Bash shell script as a template.
+
+Examples
+
+    bashFormulaTemplate my-template-file.bash > /tmp/the-result
+
+Returns the status code of the shell script.
+
+
+`formulaTemplate()`
+-------------------
+
+Process a formula's template file.  Automatically detects the template engine by the filename extension.  Writes results to stdout.
+
+This is what `wickMakeFile` may use when processing templates.
+
+The template engine is detected by the file extension.  It will automatically run a function named `extFormulaTemplate` where `ext` is replaced with the file extension.
+
+* $1 - Path to a template file
+
+Examples
+
+    # This calls shFormulaTemplate automatically
+    formulaTemplate my-template-file.sh > /tmp/the-result
+
+Returns true on success.
+
+
+`shFormulaTemplate()`
+---------------------
+
+Run a POSIX shell script as a template.
+
+Examples
+
+    shFormulaTemplate my-template-file.sh > /tmp/the-result
+
+Returns the status code of the shell script.
+
+
+`wickHash()`
+------------
+
+Hash a file and put its checksum into the destination variable.
+
+* $1 - Destination variable name.
+* $2 - Filename to hash.
+
+Currently this generates an MD5 checksum of a file, though the hashing mechanism can change at any time.  Only rely on the output from wickHash to detect when files change as opposed to determining if the contents are correct.  It is entirely possible, for instance, that this hash will include the last modified time or file size as well.
+
+Examples
+
+    wickHash hash /etc/passwd
+    echo "$hash"
+
+Returns nothing.
+
+
+`wickMakeDir()`
+---------------
 
 Creates a directory on the target machine.
 
 *Only the last folder will have its ownership changed.*  See the examples for further information.
 
-    wick-make-dir [--mode=MODE] [--owner=OWNER] PATH
+* $1            - The directory to create.
+* --mode=MODE   - Optional, specify a mode for the directory.  Uses `chmod` syntax.
+* --owner=OWNER - Optional, specify an owner for the directory.  Uses `chown` syntax.
 
-* `[--mode=MODE]`: Specify a mode for the directory using `chmod` syntax.  When specified, the mode is always set, even if the directory already existed.  Optional; does not change the mode unless the option is set.
-* `[--owner=OWNER]`:  Designate an owner and possibly a group for the directory using `chown` syntax.  When specified, the ownership is always set even if the directory already existed.  Optional; does not change the ownership unless the option is set.
-* `PATH`: The directory to create.  Uses `mkdir -p` so all parents directories would be created if they do not exist.  Ownership and mode is only changed on the specified path, not all parents.
+The directory is created with `mkdir -p` so all parent directories would also be created if they do not exist.  The ownership and mode are only changed on the specified path, not all parents.
+
+When specified, the mode and owner are always applied, even if the directory already existed.
 
 Examples:
 
     # Creates /etc/consul.d (/etc already existed) with the mode 0755
     # and make consul the owner.
-    wick-make-dir --mode=0755 --owner=consul:consul /etc/consul.d
+    wickMakeDir --mode=0755 --owner=consul:consul /etc/consul.d
 
     # Creates a folder named /a/b/c/d/ and changes the ownership of
     # /a/b/c/d/ to nobody:nogroup.  NOTE: All of the parent directories
     # will be created automatically if they didn't already exist and
     # they will be owned by root:root, NOT nobody:nogroup.
-    wick-make-dir --owner nobody:nogroup /a/b/c/d/
+    wickMakeDir --owner nobody:nogroup /a/b/c/d/
+
+Returns nothing.
 
 
-### wickMakeFile
+`wickMakeFile()`
+----------------
 
-Copies a file from the formula to the target machine.  Files are stored in `files/` within the formula.  When `--template` is used, then files come from `templates/` instead.  (See [templates] for more about templates.)
+Copies a file from the formula to the target machine.  Files are stored in `files/` within the formula.  When `--template` is used, then files come from `templates/` instead.
 
-*It is good practice to have the destination either include the filename or else end in a slash (`/`) to avoid ambiguity.  See the examples for more information.*
+It is good practice to have the destination either include the filename or else end in a slash (`/`) to avoid ambiguity.  See the examples for more information.
 
-    wickMakeFile [--formula=FORMULA] [--mode=MODE] [--owner=OWNER]
-        [--template] FILE DESTINATION
-
-* `[--formula=FORMULA]`: Indicate that the source file comes from a different formula than the current one.
-* `[--mode=MODE]`: Specify a mode for the file using `chmod` syntax.  Optional; does not change the mode unless the option is set.
-* `[--owner=OWNER]`:  Designate an owner and possibly a group for the file using `chown` syntax.  Optional; does not change the ownership unless the option is set.
-* `[--template]`: Switch to using a template as the source.  (See [templates].)
-* `FILE`: The source file to use.  It must be in `files/` for normal files or `templates/` when using the template engine.
-* `DESTINATION`: The file to create or overwrite.  This file is always written, even if it exists.  Does not check to make sure the directory exists first.
+* $1                - The source file to use.  It must be in the `files/` directory for normal files or `templates/` when using a template engine.
+* $2                - The destination directory or filename.  Will always create or overwrite this file.  The template engine suffix will be removed when using a template and specifying a destination directory.
+* --formula=FORMULA - Optional; indicate that the source file comes from a different formula than the current one.
+* --mode=MODE       - Optional; specify a mode for the file using `chmod` syntax.  Always sets the mode when specified, otherwise uses a default.
+* --owner=OWNER -     Optional; specify an owner for the file using `chown` syntax.  Always sets the owner when specified, otherwises uses a default.
+* --template        - Optional; indicate that the file should pass through a template engine before being saved on the target filesystem.
 
 If the destination is a directory, the file will keep its original name and be copied to the directory.  When using templates, the template engine suffix will be stripped off.
 
-If you want the destination directory to be created automatically, make sure you use a `/` at the end of the directory name.  It will be created with the installed file's owner and a default mode.  See the notes for the `wick-make-dir` function regarding ownership of directories.
+If you want the destination directory to be created automatically, make sure you use a `/` at the end of the directory name.  It will be created with the installed file's owner and a default mode.  See the notes for the `wickMakeDir` function regarding ownership of directories.
 
 Examples:
 
@@ -133,7 +218,7 @@ Examples:
     wickMakeFile --mode=0755 --template rc.local.mo /etc/
 
     # Writes a root-only configuration file, renaming it as it is written.
-    wickMakeFile --mode=0600 --owner=root:root secret.txt /root/super-secret-key.txt
+    wickMakeFile --mode=0600 --owner=root:root secret.txt /root/secret.txt
 
     # Installs a file into a directory that does not exist.
     # The directory will be created and owned by "nobody", just like the file.
@@ -151,66 +236,58 @@ Examples:
     # parent hierarchy in relation to the current formula.
     wickMakeFile --formula=other-formula motd.txt /etc/motd
 
+Returns true on success.
 
-### wick-make-user
+
+`wickMakeUser()`
+----------------
 
 Create or manage a user on the system.
 
-    wick-make-user [--daemon] [--home=DIR] [--move-home] [--name=NAME] \
-        [--no-skel] [--shell=SHELL] [--system] USERNAME
-
-* `--daemon`: Set reasonable settings for daemon processes.  See the examples.
-* `--home=DIR`: Sets the home directory for the user.
-* `--move-home`: If the user already existed on the system and the home directory is changed, this flag will also move all of the files.
-* `--name=NAME`: Sets the full name field in the password entry.
-* `--no-skel`: Do not copy the skeleton files into the home directory.
-* `--shell=SHELL`: Sets the login shell for the new or updated user.
-* `--system`: Uses a lower UID when available to create the user.
-* `USERNAME`: Username to create on the system.
+* $1            - Username to create on the system
+* --daemon      - Optional; flag to indicate reasonable settings should be assigned for a daemon account.  See the examples.
+* --home=HOME   - Optional; set the home directory for the user.
+* --move-home   - Optional; move a home directory for a user that already exists when this flag is used.
+* --name=NAME   - Optional; full name for the account.
+* --no-skel     - Optional; will prevent skeleton files from being copied when this flag is used.
+* --shell=SHELL - Optional; set a shell that isn't the default for the user.
+* --system      - Optional; uses a lower user ID when available when creating the user.
 
 For consistency, the home directory is always created if it does not exist and the ownership of the home directory is always set to `USERNAME:USERNAME`.
 
 Examples:
 
     # Create a normal user
-    wick-make-user fidian
+    wickMakeUser fidia
 
     # Update that same user with a new shell
-    wick-make-user --shell=/bin/zsh
+    wickMakeUser --shell=/bin/zsh
 
     # Create a system account that can't login.  It is used to
     # run a special server that's installed in /opt/myserver.
-    wick-make-user --home=/opt/myserver --name="MyServer" \
-        --shell=/bin/false --no-skel --system myserver
+    wickMakeUser --home=/opt/myserver --name="MyServer"       --shell=/bin/false --no-skel --system myserver
 
     # The exact same command but it uses --daemon to specify
     # several options automatically.
     # --daemon enables --no-skel --system and disables --move-home
-    wick-make-user --daemon --home=/opt/myserver --name="MyServer" myserver
+    wickMakeUser --daemon --home=/opt/myserver --name="MyServer" myserver
+
+Returns true on success.
 
 
-### wick-hash
+`wickPackage()`
+---------------
 
-Return a hash for a file.  The type of hash returned is based on what's available on the system.  You can use this to see if files change their contents.
+Public: Install or remove packages on the target system.  This handles the OS-specific tools that are used to install or remove the packages.  If the package is named differently on various systems, it is up to the formula to address that, such as with the apache2 formula.
 
-    wick-hash DESTINATION FILENAME
-
-* `DESTINATION`: Name of environment variable that will get the resulting hash value
-* `FILENAME`: File to hash.
-
-
-### wickPackage
-
-Install or remove packages on the target system.  This handles the OS-specific tools that are used to install or remove the packages.  If the package is named differently on various systems, it is up to the formula to address that (see the [apache2] formula).
-
-    wickPackage [--uninstall] PACKAGE [...]
-
-* `[--uninstall]`: Remove the packages instead of installing it.
-* `PACKAGE`: Name of package to install
+* $1               - Name of package to install.
+* --exists         - When set, returns true if the package exists.  Does not install nor uninstall any package.
+* --uninstall      - When set, this will uninstall the package instead.
+* $YUM_ENABLE_REPO - Allows additional yum repositories.
 
 Uses the `YUM_ENABLE_REPO` environment variable if you need to enable additional yum repositories, such as [Remi's Repository](../yum-remi/README.md), which can sometimes be a little dangerous.  This is only used with yum-based systems.
 
-Examples:
+Examples
 
     wickPackage --uninstall apache
     wickPackage apache2
@@ -219,29 +296,55 @@ Examples:
     # significantly newer version of Redis.
     YUM_ENABLE_REPO=remi wickPackage redis
 
+Returns true on success for normal execution.  When `--exists` is used, this returns true if the specified package exists and is installed on the system.
 
-### wickService
 
-Control services.  Add services, enable and disable them at boot up.  Start, stop, reload, restart services.  Helps with the creation of override files (for `chkconfig`).
+`state`
+-------
 
-    wickService COMMAND SERVICE
+Intentionally append to state to flag errors
 
-* `COMMAND`: Action to perform.
-* `SERVICE`: Service name.
 
-Actions:
+`wickPackageApt()`
+------------------
 
-* `add [--force] [--*] SERVICE FORMULA_FILE` - Use `wickMakeFile` to copy the formula file to `/etc/init.d/` for the named service.  Does not enable nor start the service.  Does not add the service if the file already exists unless `--force` is also used.  You can also use any additional options that `wickMakeFile` supports.
-* `disable SERVICE` - Disable the service from starting at boot.  Does not stop the service if it is already running.
-* `enable SERVICE` - Enable the service at boot.  Does not start the service.
-* `make-override [--force] SERVICE` - Creates `/etc/chkconfig.d/SERVICE` that is used by `chkconfig` to help determine order.  This override file can be modified to list additional dependencies to influence the boot order of scripts.  Make sure to call `wickService override` when you update an override file.  When using `--force`, this will overwrite any override file that may already exist.
-* `override SERVICE` - Calls `chkconfig override` to apply any changes made to override files.
-* `reload SERVICE` - Reloads the given service.
-* `restart SERVICE` - Stops and starts the given service.
-* `start SERVICE` - Starts the service.
-* `stop SERVICE` - Stops the service.
+Internal: Helper function to take action on apt-based systems.
 
-Example:
+* $1 - Desired package state.  One of "install", "uninstall" or "exists".
+* $2 - Package name.
+
+Examples
+
+    wickPackageApt install apache2
+
+Return true on success.
+
+
+`wickPackageYum()`
+------------------
+
+Internal: Helper function to take action on yum-based systems.
+
+* $1               - Desired package state.  One of "install", "uninstall" or "exists".
+* $2               - Package name.
+* $YUM_ENABLE_REPO - Enable additional repositories.
+
+Examples
+
+    wickPackageYum install httpd
+
+Return true on success.
+
+
+`wickService()`
+---------------
+
+Public: Control services.  Add services, enable and disable them at boot up. Start, stop, reload, restart services.  Helps with the creation of override files (for `chkconfig`).
+
+* $1 - Action to perform, detailed below.
+* $2 - Service name.
+
+Examples
 
     # Creating a new service using the formula's files/consul.init
     # and copying it to the right spot.
@@ -254,46 +357,226 @@ Example:
     sed -i 's/Required-Start:/Required-Start: consul/' /etc/chkconfig.d/apache2
     wickService override apache2
 
+Returns nothing.
 
-### wick-set-config-line
+
+### `add [--force] [--*] SERVICE FORMULA_FILE`
+
+Use `wickMakeFile` to copy the formula file to `/etc/init.d/` for the named service.  Does not enable nor start the service.  Does not add the service if the file already exists unless `--force` is also used.  You can also use any additional options that `wickMakeFile` supports.
+
+
+### `disable SERVICE`
+
+Disable the service from starting at boot.  Does not stop the service if it is already running.
+
+### `enable SERVICE`
+
+Enable the service at boot.  Does not start the service.
+
+
+### `make-override [--force] SERVICE`
+
+Creates `/etc/chkconfig.d/SERVICE` that is used by `chkconfig` to help determine order.  This override file can be modified to list additional dependencies to influence the boot order of scripts.  Make sure to call `wickService override` when you update an override file.  When using `--force`, this will overwrite any override file that may already exist.
+
+
+### `override SERVICE`
+
+Calls `chkconfig override` to apply any changes made to override files.
+
+
+### `reload SERVICE`
+
+Reloads the given service.
+
+
+### `restart SERVICE`
+
+Stops and starts the given service.
+
+
+### `start SERVICE`
+
+Starts the service.
+
+
+### `stop SERVICE`
+
+Stops the service.
+
+
+
+`unparsed`
+----------
+
+Remove the action from the unparsed items
+
+
+`wickServiceAdd()`
+------------------
+
+Internal: Add a service and inform chkconfig.
+
+* $1 - Service name.
+* $2 - Source file, passed to `wickMakeFile`.
+* $@ - Other options, also passed to `wickMakeFile`.
+
+Examples
+
+    wickServiceAdd redis redis.conf.sh --template
+
+Returns nothing.
+
+
+`wickServiceDisable()`
+----------------------
+
+Internal: Disable a service so it doesn't start on boot.
+
+* $1 - Service name.
+
+Examples
+
+    wickServiceDisable consul
+
+Returns nothing.
+
+
+`wickServiceEnable()`
+---------------------
+
+Internal: Enables a service so it starts at boot.
+
+* $1 - Service name.
+
+Examples
+
+    wickServiceEnable mongod
+
+Returns nothing.
+
+
+`wickServiceMakeOverride()`
+---------------------------
+
+Internal: Generates an override file for use with chkconfig so alternate dependencies may be used with a service without modifying the original service file.
+
+* $1      - Service name.
+* --force - Overwrite an override file if one exists.
+
+Examples
+
+    wickServiceMakeOverride mysql
+
+Returns true on success, non-zero if the file exists and should not be clobbered.
+
+
+`wickServiceOverride()`
+-----------------------
+
+Internal: Tell the system that an override file was updated.  This could shuffle the order of services in chkconfig.
+
+* $1 - Service name that was updated.
+
+Examples
+
+    wickServiceMakeOverride ntp
+    sed 's/Required:/Required: myServer/' /etc/chkconfig.d/ntp
+    wickServiceOverride ntp
+
+Returns nothing.
+
+
+`wickServiceReload()`
+---------------------
+
+Internal: Reloads a service.
+
+* $1 - Service name to reload.
+
+Examples
+
+    wickServiceReload nginx
+
+Returns nothing.
+
+
+`wickServiceRestart()`
+----------------------
+
+Internal: Restarts a service.
+
+* $1 - Service name to restart.
+
+Examples
+
+    wickServiceReload tinyproxy
+
+Returns nothing.
+
+
+`wickServiceStart()`
+--------------------
+
+Internal: Starts a service.
+
+* $1 - Service name to start.
+
+Examples
+
+    wickServiceStart cro
+
+Returns nothing.
+
+
+`wickServiceStop()`
+-------------------
+
+Internal: Stops a service.
+
+* $1 - Service name to stop.
+
+Examples
+
+    wickServiceStop rsync
+
+Returns nothing.
+
+
+`wickSetConfigLine()`
+---------------------
 
 Adds or updates a line in a config file.  This is a very basic tool that ensures a line exists in a file, not that it is in any particular order.
 
-    wick-set-config-line FILE LINE [KEY]
-
-* `FILE`: File to update.
-* `LINE`: Line to add.  This line will be placed at the end.
-* `KEY`: The "key" that we are setting.  Optional and defaults to a portion of `LINE`.
+* $1 - File to update.
+* $2 - The full line to add.  It will be placed at the end.
+* $3 - Optional; the key that we are setting.  Defaults to a portion of `$2`.
 
 The line is not repeatedly added to the config file.  First, we attempt to get the "key" for the line, either automatically or use a value that is passed in.  Most config files use a key value of some sort and this script usually can detect them - more on this later.  Next, we remove any lines with the same key from the file and finally we append the line you want onto the file.
 
-The key can be automatically detected.  It is anything in LINE that is to the left of a space, colon, or equals.  If you are having difficulty understanding what is used as the key, check out the examples.  I have listed what `wick-set-config-line` uses as the key.
+The key can be automatically detected.  It is anything in LINE that is to the left of a space, colon, or equals.  If you are having difficulty understanding what is used as the key, check out the examples.  I have listed what `wickSetConfigLine` uses as the key.
 
-This is not suitable for updating shell scripts and other similar-looking files.  For instance, if you tried to modify `/etc/rc.local` and add two lines (`bash /script1` and `bash /script2`) then only one would ever exist in the file because "bash" would be considered the key.
+This is not suitable for updating shell scripts and other similar-looking files.  For instance, if you tried to modify `/etc/rc.local` and add two lines (`bash /script1` and `bash /script2`) then only one would ever exist in the file because "bash" would be considered the key.  That's why you can specify the key as `$3`.  However, even specifying the key does not solve all problems because typically `/etc/rc.local` will have `exit` as the last line by default, thus your newly added lines will be after the `exit` command and would never be executed.
 
 Example:
 
     # This wipes out any previous settings for 127.0.0.1 and replaces them.
     # Key is "127.0.0.1"
-    wick-set-config-line /etc/hosts "127.0.0.1 localhost some-funky-name"
+    wickSetConfigLine /etc/hosts "127.0.0.1 localhost some-funky-name"
 
     # Set the bind IP for mongo
-    # Detects the current IP using `wick-get-iface-ip`
+    # Detects the current IP using `wickGetIfaceIp`
     # Key is "bind_ip"
-    wick-set-config-line /etc/mongod.conf "bind_ip=$(wick-get-iface-ip)"
+    wickSetConfigLine /etc/mongod.conf "bind_ip=$(wickGetIfaceIp)"
 
     # Update cloud-init
     # Key is "preserve_hostname"
-    wick-set-config-line /etc/cloud/cloud.cfg "preserve_hostname: true"
+    wickSetConfigLine /etc/cloud/cloud.cfg "preserve_hostname: true"
 
     # Update DHCP settings
     # Key is "prepend nameservers" because we specify it as a third
     # parameter.
-    wick-set-config-line /etc/dhcp/dhclient.conf \
-        "prepend nameservers 127.0.0.1" "prepend nameservers"
+    wickSetConfigLine /etc/dhcp/dhclient.conf       "prepend nameservers 127.0.0.1" "prepend nameservers"
+
+Returns nothing.
 
 
-[Apache]: ../apache2/README.md
-[Bash concepts]: ../../doc/bash-concepts.md
-[Formulas]: ../../formulas/README.md
-[templates]: ../../doc/templates.md

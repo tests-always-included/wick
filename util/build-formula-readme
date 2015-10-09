@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# Builds a README.md from a run script, explorers and functions for a single
+# formula.  Writes the contents to stdout.
+#
+# Examples
+#
+#   util/build-formula-readme formulas/sample/README.md
+#
+# Returns nothing.
+
+# Generate tomdoc from a file that typically wouldn't provide useful
+# documentation from TomDoc.  This grabs the comments at the top of the file
+# and appends a fake function signature afterwards.  Runs tomdoc and removes
+# the header.
+#
+# $1      - File to process.
+# $tomdoc - Location of `tomdoc.sh`.
+#
+# Examples
+#
+#   getInitialTomdoc formulas/sample/run
+#
+# Returns nothing.
+getInitialTomdoc() {
+    (
+        # Get the comment at the top
+        sed '/^[^#]/,$d;/^$/,$d' "$1"
+        # Fake function definition for TomDoc
+        echo "runScript() { :; }"
+    ) | "$tomdoc" -m | tail -n +4
+}
+
+dir=${1%/*}
+tomdoc=${0%/*}/tomdoc.sh
+
+# Get the header from the last README.md
+head -n 3 "$dir/README.md"
+
+# Process the run script
+getInitialTomdoc "$dir/run"
+
+# Explorers
+if ls "$dir/explorers/"* > /dev/null 2>&1; then
+    echo "Explorers"
+    echo "========="
+    echo ""
+    echo ""
+
+    for explorer in "$dir/explorers/"*; do
+        if [[ -f "$explorer" ]]; then
+            echo "### ${explorer##*/}"
+            echo ""
+            getInitialTomdoc "$explorer"
+        fi
+    done
+fi
+
+# Functions
+for f in "$dir/functions/"*; do
+    if [[ -f "$f" ]]; then
+        "$tomdoc" -m "$f"
+    fi
+done

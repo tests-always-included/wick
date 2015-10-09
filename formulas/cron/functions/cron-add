@@ -1,17 +1,47 @@
 #!/usr/bin/env bash
+# Add a job to cron.  Takes additional arguments and passes them to
+# `wickMakeFile` from the wick-base formula.
+#
+# $1   - The name of the job to create.
+# $2   - The file in the formula to use for the cron job.
+# $3-@ - Additional arguments to pass to `wickMakeFile`, such as `--template`.
+#
+# The job name should be simple alphanumeric characters.  Try to avoid things
+# that make regular expressions hard or ones that do not work well as
+# filenames.  For example, `*super* job!` is a bad name, `super-job` is far
+# better.
+#
+# The job file may be placed into a new file or appended to a list of cron jobs
+# in a single file, so it is best to avoid setting environment variables in it.
+# Instead, you could call a shell script that sets environment variables, if
+# you require that feature.
+#
+# File contents need to have the following fields for a job definition, in
+# order:  minute, hour, day, day of month, month, day of week, username,
+# command.  For more information, see `man 5 crontab` and remember that these
+# are system jobs so they require an account name.
+#
+# Examples
+#
+#   # Adds a job from files/delete_files.cron
+#   cronAdd delete_files delete_files.cron
+#
+#   # Uses a template instead
+#   cronAdd rebuild_index --template rebuild_index.cron
+#
+# Returns nothing.
+cronAdd() {
+    local filename jobname options
 
-cron-add() {
-    local FILENAME JOBNAME OPTIONS
-
-    wickGetArgument JOBNAME 0 "$@"
-    wickGetArgument FILENAME 1 "$@"
-    wickGetOptions OPTIONS "$@"
+    wickGetArgument jobname 0 "$@"
+    wickGetArgument filename 1 "$@"
+    wickGetOptions options "$@"
 
     if [[ -d /etc/cron.d/ ]]; then
-        wickMakeFile "$FILENAME" "/etc/cron.d/$JOBNAME" "${OPTIONS[@]-}"
+        wickMakeFile "$filename" "/etc/cron.d/$jobname" "${options[@]-}"
     else
-        echo "# BEGIN: $JOBNAME" >> /etc/crontab
-        wickMakeFile "$FILENAME" - "${OPTIONS[@]-}" >> /etc/crontab
-        echo "# END: $JOBNAME" >> /etc/crontab
+        echo "# BEGIN: $jobname" >> /etc/crontab
+        wickMakeFile "$filename" - "${options[@]-}" >> /etc/crontab
+        echo "# END: $jobname" >> /etc/crontab
     fi
 }

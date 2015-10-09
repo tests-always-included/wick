@@ -24,17 +24,17 @@
 #
 # Returns true on success and non-zero for any failure.
 wickPortUp() {
-    local PORT RESULT
+    local port result
 
-    PORT=$2
+    port=$2
 
     case $1 in
         tcp|TCP)
-            RESULT=$(netstat -ln | awk '$1 == "tcp" && $4 ~/:'$PORT'$/ && $6 == "LISTEN" {print $4}')
+            result=$(netstat -ln | awk '$1 == "tcp" && $4 ~/:'$port'$/ && $6 == "LISTEN" {print $4}')
             ;;
 
         udp|UDP)
-            RESULT=$(netstat -ln | awk '$1 == "udp" && $4 ~/:'$PORT'$/ {print $4}')
+            result=$(netstat -ln | awk '$1 == "udp" && $4 ~/:'$port'$/ {print $4}')
             ;;
 
         *)
@@ -43,7 +43,7 @@ wickPortUp() {
             ;;
     esac
 
-    if [[ $RESULT == "" ]]; then
+    if [[ $result == "" ]]; then
         return 1
     fi
 

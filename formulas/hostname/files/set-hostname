@@ -1,121 +1,127 @@
 #!/usr/bin/env bash
-
+#/ Set the hostname of the machine, with support for templates
+#/
+#/ Usage:
+#/     set_hostname [OPTIONS] hostname.domain.name
+#/
+#/ If no domain name is given, "localdomain" is used instead.
+#/ You can use the following patterns:
+#/
+#/     {{IP}}      Replaced with the IP, such as 127-0-0-1.
+#/                 Example:  apache-{{IP}}.internal
+#/                 Result:   apache-192-168-0-3.internal
+#/
+#/ Options:
+#/     --iface=IF  Detect the IP of this specific interface
+#/     --help      This help message
+#/     --reload    Reload if necessary
+#/     --verbose   Be verbose about what's going on
 . /usr/local/lib/wick-infect
+wickStrictMode
 
-replace-in-file() {
-    local FN SEARCH WANTED
+# Replaces a line in a file.
+#
+# $1 - The filename to update.
+# $2 - The new string; always added at the end.
+# $3 - The old string; removed if it is found.
+#
+# Returns 0 on success.
+replaceInFile() {
+    local fn search wanted
 
-    FN="$1"
-    WANTED="$2"
-    SEARCH="$3"
+    fn="$1"
+    wanted="$2"
+    search="$3"
 
-    if ! grep -q "^$WANTED" "$FN"; then
-        if grep -q "^$SEARCH" "$FN"; then
-            wickDebug "Updating $FN: $WANTED"
-            sed -i --follow-symlinks 's/^'"$SEARCH"'.*/'"$WANTED"'/' "$FN"
+    if ! grep -q "^$wanted" "$fn"; then
+        if grep -q "^$search" "$fn"; then
+            wickDebug "Updating $fn: $wanted"
+            sed -i --follow-symlinks 's/^'"$search"'.*/'"$wanted"'/' "$fn"
         else
-            wickDebug "Adding to $FN: $WANTED"
-            echo "$WANTED" >> "$FN"
+            wickDebug "Adding to $fn: $wanted"
+            echo "$wanted" >> "$fn"
         fi
         return 0
-    else
-        wickDebug "$FN is already changed"
-        return 1
     fi
+
+    wickDebug "$fn is already changed"
+    return 1
 }
 
-show-help() {
-    cat <<EOF
-Set the hostname of the machine, with support for templates
-
-Usage:
-    set_hostname [OPTIONS] hostname.domain.name
-
-If no domain name is given, "localdomain" is used instead.
-You can use the following patterns:
-
-    {{IP}}      Replaced with the IP, such as 127-0-0-1.
-                Example:  apache-{{IP}}.internal
-                Result:   apache-192-168-0-3.internal
-
-Options:
-    --iface=IF  Detect the IP of this specific interface
-    --help      This help message
-    --reload    Reload if necessary
-    --verbose   Be verbose about what's going on
-EOF
+showHelp() {
+    grep "^#/ " "$0" | cut -b 4-
 }
 
-wickGetOption HELP help "$@"
-wickGetOption RELOAD_FLAG reload "$@"
-wickGetOption VERBOSE verbose "$@"
-wickGetOption IFACE iface "$@"
-wickGetArgument FULL 0 "$@"
+wickGetOption help help "$@"
+wickGetOption reloadFlag reload "$@"
+wickGetOption verbose verbose "$@"
+wickGetOption iface iface "$@"
+wickGetArgument full 0 "$@"
 
-if [[ ! -z "$VERBOSE" ]]; then
+if [[ -n "$verbose" ]]; then
     DEBUG=true
 fi
 
-if [[ ! -z "$HELP" ]] || [[ -z "$FULL" ]]; then
-    show-help
+if [[ -n "$help" ]] || [[ -z "$full" ]]; then
+    showHelp
     exit 1
 fi
 
-HOST=$(echo "$FULL" | cut -d '.' -f 1)
-DOMAIN=$(echo "$FULL" | cut -d '.' -f 2- -s)
-DOMAIN=${DOMAIN:-localdomain}
-IFCONFIG_ARGS=("-v")
+host=$(echo "$full" | cut -d '.' -f 1)
+domain=$(echo "$full" | cut -d '.' -f 2- -s)
+domain=${domain:-localdomain}
+ifconfigArgs=("-v")
 
-if [[ ! -z "$IFACE" ]]; then
-    IFCONFIG_ARGS[${#IFCONFIG_ARGS[@]}]=$IFACE
+if [[ -n "$iface" ]]; then
+    ifconfigArgs[${#ifconfigArgs[@]}]=$iface
 fi
 
-IP=$(ifconfig "${IFCONFIG_ARGS[@]}" | grep inet\ addr | head -n 1)
-IP=${IP#*:}
-IP=${IP%% *}
-IP=${IP//./-}
-HOST=${HOST//\{\{IP\}\}/$IP}
-FULL="${HOST}.${DOMAIN}"
+ip=$(ifconfig "${ifconfigArgs[@]}" | grep inet\ addr | head -n 1)
+ip=${ip#*:}
+ip=${ip%% *}
+ip=${ip//./-}
+host=${host//\{\{ip\}\}/$ip}
+full="${host}.${domain}"
 
-wickDebug "Setting hostname to $FULL"
+wickDebug "Setting hostname to $full"
 
 #
 # Update hostname
 #
-RELOAD=false
+reload=false
 
-if replace-in-file /etc/sysconfig/network HOSTNAME=$FULL HOSTNAME=; then
-    RELOAD=true
+if replaceInFile /etc/sysconfig/network HOSTNAME=$full HOSTNAME=; then
+    reload=true
 fi
 
-if replace-in-file /etc/sysctl.conf kernel.hostname=$HOST kernel.hostname=; then
-    RELOAD=true
+if replaceInFile /etc/sysctl.conf kernel.hostname=$host kernel.hostname=; then
+    reload=true
 fi
 
-if replace-in-file /etc/hosts "127.0.0.1 $FULL $HOST localhost" "127.0.0.1"; then
-    RELOAD=true
+if replaceInFile /etc/hosts "127.0.0.1 $full $host localhost" "127.0.0.1"; then
+    reload=true
 fi
 
-if [[ "$(hostname)" != "$HOST" ]]; then
+if [[ "$(hostname)" != "$host" ]]; then
     wickDebug "Setting hostname"
-    hostname "$HOST"
-    RELOAD=true
+    hostname "$host"
+    reload=true
 else
     wickDebug "Hostname is already changed"
 fi
 
-if [[ "$(domainname)" != "$DOMAIN" ]]; then
+if [[ "$(domainname)" != "$domain" ]]; then
     wickDebug "Setting domainname"
-    domainname "$DOMAIN"
-    RELOAD=true
+    domainname "$domain"
+    reload=true
 else
     wickDebug "Domainname is already changed"
 fi
 
-if [[ ! -z "$RELOAD_FLAG" ]] && $RELOAD; then
+if [[ -n "$reloadFlag" ]] && $reload; then
     wickDebug "Restarting network to get hostname updated everywhere"
     service network restart
-elif $RELOAD; then
+elif $reload; then
     wickDebug "Not reloading even though changes were made"
 else
     wickDebug "Skipping network reload because no changes were made"

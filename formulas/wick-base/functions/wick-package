@@ -1,110 +1,65 @@
 #!/usr/bin/env bash
-
+# Public: Install or remove packages on the target system.  This handles the
+# OS-specific tools that are used to install or remove the packages.  If the
+# package is named differently on various systems, it is up to the formula to
+# address that, such as with the apache2 formula.
+#
+# $1               - Name of package to install.
+# --exists         - When set, returns true if the package exists.  Does not
+#                    install nor uninstall any package.
+# --uninstall      - When set, this will uninstall the package instead.
+# $YUM_ENABLE_REPO - Allows additional yum repositories.
+#
+# Uses the `YUM_ENABLE_REPO` environment variable if you need to enable
+# additional yum repositories, such as [Remi's
+# Repository](../yum-remi/README.md), which can sometimes be a little
+# dangerous.  This is only used with yum-based systems.
+#
+# Examples
+#
+#   wickPackage --uninstall apache
+#   wickPackage apache2
+#
+#   # Enable Remi's repository for this one package so we install a
+#   # significantly newer version of Redis.
+#   YUM_ENABLE_REPO=remi wickPackage redis
+#
+# Returns true on success for normal execution.  When `--exists` is used, this
+# returns true if the specified package exists and is installed on the system.
 wickPackage() {
-    local OS STATE UNINSTALL UNPARSED
+    local exists os state uninstall unparsed
 
-    wickGetOption EXISTS exists "$@"
-    wickGetOption UNINSTALL uninstall "$@"
-    wickGetArguments UNPARSED "$@"
+    wickGetOption exists exists "$@"
+    wickGetOption uninstall uninstall "$@"
+    wickGetArguments unparsed "$@"
 
-    # Intentionally append to STATE to flag errors
-    STATE=""
+    # Intentionally append to state to flag errors
+    state=""
 
-    if [[ ! -z "$EXISTS" ]]; then
-        STATE="exists$STATE"
+    if [[ -n "$exists" ]]; then
+        state="exists$state"
     fi
 
-    if [[ ! -z "$UNINSTALL" ]]; then
-        STATE="uninstall$STATE"
+    if [[ -n "$uninstall" ]]; then
+        state="uninstall$state"
     fi
 
-    : ${STATE:=install}
+    : ${state:=install}
 
-    wickExplorer OS wick-base os
+    wickExplorer os wick-base os
 
-    case "$OS" in
+    case "$os" in
         centos|redhat)
-            wickPackage-yum "$STATE" "${UNPARSED[@]-}"
+            wickPackageYum "$state" "${unparsed[@]-}"
             ;;
 
         ubuntu|debian)
-            wickPackage-apt "$STATE" "${UNPARSED[@]-}"
+            wickPackageApt "$state" "${unparsed[@]-}"
             ;;
 
         *)
             wickError "Unable to determine package manager"
             return 1
             ;;
-    esac
-}
-
-wickPackage-yum() {
-    local ARGS STATE
-
-    ARGS=()
-    STATE=$1
-    shift
-
-    case "$STATE" in
-        exists)
-            if rpm -q "$@" > /dev/null 2>&1; then
-                wickDebug "Package exists: $@"
-                return 0
-            fi
-
-            wickDebug "Package does not exist: $@"
-            return 1
-            ;;
-
-        install)
-            if [[ ! -z "${YUM_ENABLE_REPO-}" ]]; then
-                ARGS[${#ARGS[@]}]="--enablerepo=$YUM_ENABLE_REPO"
-            fi
-
-            if [[ ${#ARGS[@]} -eq 0 ]]; then
-                yum install -y "$@"
-            else
-                yum "${ARGS[@]}" install -y "$@"
-            fi
-            ;;
-
-        uninstall)
-            yum remove -y "$@"
-            ;;
-
-        *)
-            echo "Unknown package state: $STATE"
-            return 1
-    esac
-}
-
-wickPackage-apt() {
-    local STATE
-
-    STATE=$1
-    shift
-
-    case "$STATE" in
-        exists)
-            if apt-cache show "$@" > /dev/null 2>&1; then
-                wickDebug "Package exists: $@"
-                return 0
-            fi
-
-            wickDebug "Package does not exist: $@"
-            return 1
-            ;;
-
-        install)
-            apt-get install -y "$@"
-            ;;
-
-        uninstall)
-            apt-get purge -y "$@"
-            ;;
-
-        *)
-            echo "Unknown package state: $STATE"
-            return 1
     esac
 }

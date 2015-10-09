@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-#
 # This file only contains functions that assist with writing service files
 # (/etc/init.d/* files).
 #
 # To use this properly, you would make your init.d/service-name file look
-# a bit like this:
+# a bit like the example.
+#
+# Examples
 #
 #     #!/usr/bin/env bash
 #     #
@@ -16,14 +17,14 @@
 #     # Load functions and set some environment variables
 #     . /usr/local/lib/wick-init-d-lib
 #
-#     # Override the process-start command
-#     process-start() {
+#     # Override the processStart command
+#     processStart() {
 #         /usr/bin/consul agent -config-dir /etc/consul.d >> "$1" 2>&1 &
 #         disown %+
 #         echo "$!" > "$2"
 #     }
 #
-#     handle-command
+#     handleCommand
 
 # Save a copy of the command we will handle
 COMMAND="$1"
@@ -33,15 +34,40 @@ LOGFILE="/var/log/$NAME.log"
 PIDFILE="/var/run/$NAME.pid"
 LOCKFILE="/var/lock/subsys/$NAME"
 
-cleanup-files() {
+# Removes files that are used while the system is running.
+#
+# Examples
+#
+#   cleanupFiles
+#
+# Returns nothing.
+cleanupFiles() {
     rm -f "$PIDFILE" "$LOCKFILE"
 }
 
-get-pid() {
+
+# Writes the PID to stdout.  By default this will get the PID from the
+# PIDFILE.
+#
+# Examples
+#
+#   getPid
+#
+# Returns nothing.
+getPid() {
     cat "$PIDFILE"
 }
 
-handle-command() {
+
+# Handles the command that was issued to the script.  Does that by calling
+# other functions that happen to just map to the command name.
+#
+# Examples
+#
+#    handleCommand
+#
+# Returns nothing.
+handleCommand() {
     case "$COMMAND" in
         start)
             start
@@ -71,139 +97,298 @@ handle-command() {
     exit $?
 }
 
+
+# Shows a help message.
+#
+# Examples
+#
+#   help
+#
+# Returns 1 (failure) always.
 help() {
     echo "Usage: $NAME {start|stop|restart|reload|status}" >&2
     exit 1
 }
 
-is-running() {
+
+# Determines if the process is running.  By default this checks that the
+# PIDFILE exists and that there is a process running with that PID.
+#
+# Examples
+#
+#   if isRunning; then
+#       echo "It is running"
+#   fi
+#
+# Returns 1 (failure) when it is off, 0 (success) when it is running.
+isRunning() {
     if [[ ! -f "$PIDFILE" ]]; then
         return 1
     fi
 
-    if ! ps `get-pid` > /dev/null 2>&1; then
-        cleanup-files
+    if ! ps `getPid` > /dev/null 2>&1; then
+        cleanupFiles
         return 1
     fi
 
     return 0
 }
 
-process-reload() {
-    kill -HUP `get-pid`
+
+# Reloads the process.  By default this will send a HUP (hangup) signal to
+# the process.
+#
+# Examples
+#
+#   processReload
+#
+# Returns nothing.
+processReload() {
+    kill -HUP `getPid`
 }
 
-process-start() {
+
+# Start the process.
+#
+# At a minimum, you must override this function.
+#
+# $1 - Log file to use
+# $2 - PID file to write
+#
+# Examples
+#
+#   processStart /var/log/my-service.log /var/run/my-service
+#
+# Returns true on success
+processStart() {
     echo "Misconfigured init script"
     echo "This function must be overridden"
     exit 1
 }
 
-process-stop() {
-    kill -INT `get-pid`
+
+# Stop the process.  By default this kills the PID.
+#
+# Examples
+#
+#   processStop
+#
+# Returns nothing.
+processStop() {
+    kill -INT `getPid`
 }
 
+
+# Reloads the process.  Checks to make sure it is running, executes hooks
+# and reloads the process.  You should redefine one of the other functions
+# instead of this one.
+#
+# Examples
+#
+#   reload
+#
+# Returns nothing.
 reload() {
-    if ! is-running; then
+    if ! isRunning; then
         echo "$NAME is not running"
         return 0
     fi
 
     echo -n "Reloading $NAME ..."
-    reload-before
-    process-reload
+    reloadBefore
+    processReload
 
-    if ! is-running; then
+    if ! isRunning; then
         echo " $NAME has died, see $LOGFILE"
-        reload-fail
+        reloadFail
         return 1
     fi
 
     echo " ok"
-    reload-success
+    reloadSuccess
 }
 
-reload-before() {
+
+# Hook to allow extra functionality before reloading a process.
+#
+# Examples
+#
+#   reloadBefore
+#
+# Returns nothing.
+reloadBefore() {
     :
 }
 
-reload-fail() {
+
+# Hook to allow extra functionality when a reload fails.
+#
+# Examples
+#
+#   reloadFail
+#
+# Returns nothing.
+reloadFail() {
     :
 }
 
-reload-success() {
+
+# Hook to allow extra functionality when a reload succeeds.
+#
+# Examples
+#
+#   reloadSuccess
+#
+# Returns nothing.
+reloadSuccess() {
     :
 }
 
+
+# Restarts the process.  Checks to make sure it is running, executes hooks
+# and restarts the process.  You should redefine one of the other functions
+# instead of this one.
+#
+# Examples
+#
+#   restart
+#
+# Returns nothing.
 restart() {
-    restart-before
+    restartBefore
     stop
 
-    if is-running; then
+    if isRunning; then
         echo "Unable to stop $NAME, will not attempt to start."
-        restart-fail
+        restartFail
         return 1
     fi
 
     start
 
     if [[ $? -ne 0 ]]; then
-        restart-fail
+        restartFail
         return 2
     fi
 
-    restart-success || return 3
+    restartSuccess || return 3
 }
 
-restart-before() {
+
+# Hook to allow extra functionality before restarting a process.
+#
+# Examples
+#
+#   restartBefore
+#
+# Returns nothing.
+restartBefore() {
     :
 }
 
-restart-fail() {
+
+# Hook to allow extra functionality when a restart fails.
+#
+# Examples
+#
+#   restartFail
+#
+# Returns nothing.
+restartFail() {
     :
 }
 
-restart-success() {
+
+# Hook to allow extra functionality when a restart succeeds.
+#
+# Examples
+#
+#   restartSuccess
+#
+# Returns nothing.
+restartSuccess() {
     :
 }
 
+
+# Start the process.  Typically you should override other functions in
+# order to take different actions.
+#
+# Examples
+#
+#   start
+#
+# Returns true on success, or different failure status codes.
 start() {
     local PID
 
-    if is-running; then
+    if isRunning; then
         echo "$NAME already running"
         return 1
     fi
 
     echo -n "Starting $NAME ..."
-    start-before
-    process-start "$LOGFILE" "$PIDFILE"
+    startBefore
+    processStart "$LOGFILE" "$PIDFILE"
 
-    if ! is-running; then
+    if ! isRunning; then
         echo " unable to start $NAME, see $LOGFILE"
-        start-fail
+        startSail
         return 1
     fi
 
     echo " ok"
     touch "/var/lock/subsys/$NAME"
-    start-success || return 3
+    startSuccess || return 3
 }
 
-start-before() {
+
+# Hook to allow extra functionality before starting a process.
+#
+# Examples
+#
+#   startBefore
+#
+# Returns nothing.
+startBefore() {
     :
 }
 
-start-fail() {
+
+# Hook to allow extra functionality when a start fails.
+#
+# Examples
+#
+#   startFail
+#
+# Returns nothing.
+startFail() {
     :
 }
 
-start-success() {
+
+# Hook to allow extra functionality when a start succeeds.
+#
+# Examples
+#
+#   startSuccess
+#
+# Returns nothing.
+startSuccess() {
     :
 }
 
+
+# Determine if the current process is running.  Writes the status to stdout
+# and returns a status code indicative of the state of the process.
+#
+# Examples
+#
+#   status
+#
+# Returns true if the process is running, 1 if the process is not running.
 status() {
-    if is-running; then
+    if isRunning; then
         echo "$NAME is running"
     else
         echo "$NAME is stopped"
@@ -211,18 +396,28 @@ status() {
     fi
 }
 
+
+# Stops the process if it is running.  Instead of overriding this function,
+# you should override one of the other functions that this one calls.
+#
+# Examples
+#
+#   stop
+#
+# Returns true on success (it was stopped or was never running).  Returns
+# different status codes for different reasons the process did not stop.
 stop() {
-    if ! is-running; then
+    if ! isRunning; then
         echo "$NAME not running"
         return 0
     fi
 
     echo -n "Stopping $NAME ..."
-    stop-before
-    process-stop
+    stopBefore
+    processStop
 
     for I in {1..10}; do
-        if ! is-running; then
+        if ! isRunning; then
             break
         fi
 
@@ -230,26 +425,50 @@ stop() {
         echo -n "."
     done
 
-    if is-running; then
+    if isRunning; then
         echo " $NAME not stopped; may still be shutting down or shutdown may have failed - see $LOGFILE"
-        stop-fail
+        stopFail
         return 1
     fi
 
     echo " stopped"
-    cleanup-files
-    stop-success || return 3
+    cleanupFiles
+    stopSuccess || return 3
 }
 
-stop-before() {
+
+# Hook to allow extra functionality before stopping a process.
+#
+# Examples
+#
+#   stopBefore
+#
+# Returns nothing.
+stopBefore() {
     :
 }
 
-stop-fail() {
+
+# Hook to allow extra functionality when stopping failed.
+#
+# Examples
+#
+#   stopFail
+#
+# Returns nothing.
+stopFail() {
     :
 }
 
-stop-success() {
+
+# Hook to allow extra functionality when stopping succeeded.
+#
+# Examples
+#
+#   stopSuccess
+#
+# Returns nothing.
+stopSuccess() {
     :
 }
 

@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+# Writes to stdout the version of Bash in use on the target system.
+#
+# Examples
+#
+#   wickExplorer result wick-base bash-version
+#   echo "$result"  # "4.3.30(1)-release"
+#
+# Returns nothing.
 wickDebug "Bash $BASH_VERSION"
 wickDebug "$(bash --version)"
 echo "$BASH_VERSION"

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Run a Bash shell script as a template.
+#
+# Examples
+#
+#   bashFormulaTemplate my-template-file.bash > /tmp/the-result
+#
+# Returns the status code of the shell script.
+bashFormulaTemplate() {
+    . "$1"
+}
+

@@ -11,12 +11,12 @@
 #
 #   list=(one two three "four four")
 #
-#   if wick-in-array one "${list[@]}"; then
+#   if wickInArray one "${list[@]}"; then
 #       # This one works
 #       echo "one is found"
 #   fi
 #
-#   if wick-in-array four "${list[@]}"; then
+#   if wickInArray four "${list[@]}"; then
 #       echo "four should not be found"
 #       echo "'four four' with a space would be found"
 #   fi

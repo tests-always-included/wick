@@ -11,15 +11,15 @@
 #   # This function just lists 5 files/directories in /tmp
 #   # and stores the string result in the desired variable.
 #   tempFiles() {
-#       local VALUE
+#       local value
 #
-#       VALUE=$(ls /tmp | head -n 5)
-#       local "$1" && wickIndirect "$1" "$VALUE"
+#       value=$(ls /tmp | head -n 5)
+#       local "$1" && wickIndirect "$1" "$value"
 #   }
 #
-#   FILES=""
-#   tempFiles FILES
-#   echo "$FILES"
+#   files=""
+#   tempFiles files
+#   echo "$files"
 #
 #   # Example result:
 #   # a_9789

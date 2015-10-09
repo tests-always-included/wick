@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Internal: Tell the system that an override file was updated.  This could
+# shuffle the order of services in chkconfig.
+#
+# $1 - Service name that was updated.
+#
+# Examples
+#
+#   wickServiceMakeOverride ntp
+#   sed 's/Required:/Required: myServer/' /etc/chkconfig.d/ntp
+#   wickServiceOverride ntp
+#
+# Returns nothing.
+wickServiceOverride() {
+    local service
+
+    wickGetArgument service 0 "$@"
+    wickInfo "Updating scripts with override for service: $service"
+    chkconfig --override "$service"
+}
