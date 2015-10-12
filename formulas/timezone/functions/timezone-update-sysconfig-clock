@@ -14,8 +14,8 @@ timezoneUpdateSysconfigClock() {
         timedatectl --no-ask-password set-timezone "$1"
     else
         wickDebug "Updating /etc/sysconfig/clock"
-        rm /etc/sysconfig/clock
-        echo "ZONE=$TZ" > /etc/sysconfig/clock
+        rm -f /etc/sysconfig/clock
+        echo "ZONE=$1" > /etc/sysconfig/clock
         chown root:root /etc/sysconfig/clock
         chmod 0644 /etc/sysconfig/clock
 
