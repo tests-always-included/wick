@@ -177,7 +177,7 @@ We used to be able to run a command and catch its return code.
         echo "There was a failure that will need to get handled"
     fi
 
-With the strict mode in place it is much harder to do that.  One option is to use `set +x` and then `set -x` again.  There is a new command, `wickStrictRun` that does this for you.  A full description is in [library functions](../lib/README.md).
+With the strict mode in place it is much harder to do that.  One option is to use `set +e` and then `set -e` again.  There is a function, `wickStrictRun` that does this for you.  A full description is in [library functions](../lib/README.md).
 
     # Use this syntax
     wickStrictRun RESULT someCommandThatMayFail
