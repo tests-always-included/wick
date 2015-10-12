@@ -19,11 +19,11 @@
 wickCommandExists() {
     local result
 
-    if [[ -z "" ]]; then
+    if [[ -z "${1-}" ]]; then
         return 5
     fi
 
-    result=$(which ${1-} 2>&1)
+    result=$(which "${1-}" 2>&1)
 
     # Command failed to execute or reported failure
     if [[ $? -ne 0 ]]; then
