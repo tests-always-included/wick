@@ -2,18 +2,18 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wickIndirect"
-    . "$WICK_DIR/lib/wickPrefixLines"
+    . "$WICK_DIR/lib/wick-indirect"
+    . "$WICK_DIR/lib/wick-prefix-lines"
 }
 
-@test "lib/wickPrefixLines: one line" {
+@test "lib/wick-prefix-lines: one line" {
     local OUT
 
     wickPrefixLines OUT "TEST 1:" "This is just a single line"
     [[ "$OUT" == "TEST 1:This is just a single line" ]]
 }
 
-@test "lib/wickPrefixLines: newlines" {
+@test "lib/wick-prefix-lines: newlines" {
     local OUT
 
     # Newlines of any flavor are converted to \n

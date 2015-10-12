@@ -2,11 +2,11 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wickIndirectArray"
+    . "$WICK_DIR/lib/wick-indirect-array"
     . "$WICK_DIR/lib/wick-array-filter"
 }
 
-remove-leading-a() {
+removeLeadingA() {
     [[ "${1:0:1}" != "a" ]]
 }
 
@@ -14,7 +14,7 @@ remove-leading-a() {
     local X
 
     X=(b1 b2 b3 " " b4)
-    wick-array-filter X remove-leading-a "${X[@]}"
+    wickArrayFilter X removeLeadingA "${X[@]}"
     [[ "${#X[@]}" == 5 ]]
     [[ "${X[@]}" == "b1 b2 b3   b4" ]]
 }
@@ -23,7 +23,7 @@ remove-leading-a() {
     local X
 
     X=(a1 b1 a2 b2 a3)
-    wick-array-filter X remove-leading-a "${X[@]}"
+    wickArrayFilter X removeLeadingA "${X[@]}"
     [[ "${#X[@]}" == 2 ]]
     [[ "${X[@]}" == "b1 b2" ]]
 }
@@ -32,7 +32,7 @@ remove-leading-a() {
     local X
 
     X=(a1 a2 a3)
-    wick-array-filter X remove-leading-a "${X[@]}"
+    wickArrayFilter X removeLeadingA "${X[@]}"
     [[ "${#X[@]}" == 0 ]]
     [[ "${X[@]}" == "" ]]
 }

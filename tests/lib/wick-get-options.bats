@@ -2,11 +2,11 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wickIndirectArray"
-    . "$WICK_DIR/lib/wickGetOptions"
+    . "$WICK_DIR/lib/wick-indirect-array"
+    . "$WICK_DIR/lib/wick-get-options"
 }
 
-@test "lib/wickGetOptions: success" {
+@test "lib/wick-get-options: success" {
     local X
 
     wickGetOptions X zero no not me --option sky -b --key=23
@@ -14,14 +14,14 @@ setup() {
     [[ "${X[@]}" == "--option -b --key=23" ]]
 }
 
-@test "lib/wickGetOptions: no options" {
+@test "lib/wick-get-options: no options" {
     local X
 
     wickGetOptions X
     [[ "${#X[@]}" == 0 ]]
 }
 
-@test "lib/wickGetOptions: mixed with arguments" {
+@test "lib/wick-get-options: mixed with arguments" {
     local X
 
     # Options after -- are treated as arguments

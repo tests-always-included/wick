@@ -2,15 +2,15 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wickPortUp"
+    . "$WICK_DIR/lib/wick-port-up"
 }
 
-@test "lib/wickPortUp: linux - exists" {
-    mock-command netstat wickPortUp/linux
+@test "lib/wick-port-up: linux - exists" {
+    mock-command netstat wick-port-up/linux
     wickPortUp tcp 22
 }
 
-@test "lib/wickPortUp: linux - fail" {
-    mock-command netstat wickPortUp/linux
+@test "lib/wick-port-up: linux - fail" {
+    mock-command netstat wick-port-up/linux
     ! wickPortUp udp 22
 }

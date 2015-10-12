@@ -2,18 +2,18 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wickWaitFor"
+    . "$WICK_DIR/lib/wick-wait-for"
 }
 
-@test "lib/wickWaitFor: waiting for true" {
+@test "lib/wick-wait-for: waiting for true" {
     wickWaitFor 3 true
 }
 
-@test "lib/wickWaitFor: waiting for false" {
+@test "lib/wick-wait-for: waiting for false" {
     ! wickWaitFor 3 false
 }
 
-@test "lib/wickWaitFor: wait for file creation" {
+@test "lib/wick-wait-for: wait for file creation" {
     rm -f /tmp/moocow
 
     (

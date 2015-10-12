@@ -2,32 +2,32 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wickIndirect"
-    . "$WICK_DIR/lib/wickArgumentString"
+    . "$WICK_DIR/lib/wick-indirect"
+    . "$WICK_DIR/lib/wick-argument-string"
 }
 
-@test "lib/wickArgumentString: simple" {
+@test "lib/wick-argument-string: simple" {
     local X
 
     wickArgumentString X "abc"
     [[ "$X" == "abc" ]]
 }
 
-@test "lib/wickArgumentString: space" {
+@test "lib/wick-argument-string: space" {
     local X
 
     wickArgumentString X "a b"
     [[ "$X" == "a\\ b" ]]
 }
 
-@test "lib/wickArgumentString: single quote" {
+@test "lib/wick-argument-string: single quote" {
     local X
 
     wickArgumentString X "a'b"
     [[ "$X" == "a\\'b" ]]
 }
 
-@test "lib/wickArgumentString: double quote" {
+@test "lib/wick-argument-string: double quote" {
     local X
 
     wickArgumentString X "a\"b"

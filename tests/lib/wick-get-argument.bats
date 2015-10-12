@@ -2,27 +2,27 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wickIndirectArray"
-    . "$WICK_DIR/lib/wickIndirect"
-    . "$WICK_DIR/lib/wickGetArguments"
-    . "$WICK_DIR/lib/wickGetArgument"
+    . "$WICK_DIR/lib/wick-indirect-array"
+    . "$WICK_DIR/lib/wick-indirect"
+    . "$WICK_DIR/lib/wick-get-arguments"
+    . "$WICK_DIR/lib/wick-get-argument"
 }
 
-@test "lib/wickGetArgument: success" {
+@test "lib/wick-get-argument: success" {
     local X
 
     wickGetArgument X 1 zero one two three
     [[ "$X" == "one" ]]
 }
 
-@test "lib/wickGetArgument: no arguments" {
+@test "lib/wick-get-argument: no arguments" {
     local X
 
     wickGetArgument X 1
     [[ "$X" == "" ]]
 }
 
-@test "lib/wickGetArgument: mixed with options" {
+@test "lib/wick-get-argument: mixed with options" {
     local X
 
     # Options after -- are treated as arguments

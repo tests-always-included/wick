@@ -2,8 +2,8 @@
 
 setup() {
     load ../wick-test-base
-    . "$WICK_DIR/lib/wickIndirect"
-    . "$WICK_DIR/lib/wickIndirectArray"
+    . "$WICK_DIR/lib/wick-indirect"
+    . "$WICK_DIR/lib/wick-indirect-array"
     . "$WICK_DIR/lib/wick-get-iface-ip"
 }
 
@@ -11,7 +11,7 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
-    wick-get-iface-ip RESULT
+    wickGetIfaceIp RESULT
     [ "$RESULT" == "172.17.42.1" ]
 }
 
@@ -19,7 +19,7 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
-    wick-get-iface-ip RESULT '*'
+    wickGetIfaceIp RESULT '*'
     [ "${#RESULT[@]}" -eq 3 ]
     [ "${RESULT[0]}" == "172.17.42.1" ]
     [ "${RESULT[1]}" == "127.0.0.1" ]
@@ -30,14 +30,14 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
-    ! wick-get-iface-ip RESULT asdf
+    ! wickGetIfaceIp RESULT asdf
 }
 
 @test "lib/wick-get-iface-ip: gnu - one iface" {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
-    wick-get-iface-ip RESULT lo
+    wickGetIfaceIp RESULT lo
     [ "$RESULT" == $'127.0.0.1' ]
 }
 
@@ -45,14 +45,14 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
-    ! wick-get-iface-ip RESULT noip
+    ! wickGetIfaceIp RESULT noip
 }
 
 @test "lib/wick-get-iface-ip: bsd - first iface" {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
-    wick-get-iface-ip RESULT
+    wickGetIfaceIp RESULT
     [ "$RESULT" == "192.168.0.103" ]
 }
 
@@ -60,7 +60,7 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
-    wick-get-iface-ip RESULT '*'
+    wickGetIfaceIp RESULT '*'
     [ "${#RESULT[@]}" -eq 3 ]
     [ "${RESULT[0]}" == "192.168.0.103" ]
     [ "${RESULT[1]}" == "127.0.0.1" ]
@@ -71,14 +71,14 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
-    ! wick-get-iface-ip RESULT asdf
+    ! wickGetIfaceIp RESULT asdf
 }
 
 @test "lib/wick-get-iface-ip: bsd - one iface" {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
-    wick-get-iface-ip RESULT re1
+    wickGetIfaceIp RESULT re1
     [ "$RESULT" == "192.168.0.103" ]
 }
 
@@ -86,5 +86,5 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
-    ! wick-get-iface-ip RESULT noip
+    ! wickGetIfaceIp RESULT noip
 }
