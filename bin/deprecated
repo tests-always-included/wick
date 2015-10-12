@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 wickDeprecated() {
-    eval "$1 () { echo \"$1 is deprecated\" > &2; $2 \"\$@\"; }"
+    eval "$1 () { wickError \"$1 is deprecated\" >&2; $2 \"\$@\"; }"
 }
 
 # bin/
