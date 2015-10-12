@@ -14,7 +14,7 @@
 #   wickGetUrl --timeout=30 https://get.rvm.io/ | bash
 #
 #   # Download a large file and show progress information
-#   wickGetUrl --progress http://example.com/large-file.tar.gz /tmp/large-file.tgz
+#   wickGetUrl --progress http://example.com/file.tar.gz /tmp/file.tgz
 #
 # Returns zero on success, non-zero if there is an error downloading.
 wickGetUrl() {
