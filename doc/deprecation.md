@@ -15,4 +15,4 @@ Naming standards were enforced for variables and functions.  This caused functio
 
 The old functions have been added to a list of deprecated functions.  The old name will continue to work for a while but will call `wickError` to display an error message to the screen indicating that a deprecated function was called.
 
-The biggest snag is when you use `wick-init-d-lib` because it doesn't have the deprecated functions.  Please update those immediately to the new naming standard.
+The biggest snag is when you use `wick-init-d-lib` because it doesn't have the same mechanism in place for deprecated functions.  The newly named functions will be rewritten to call through to the hyphenated versions when those are defined, though you must call `handle-command` (the old function name) to enable this behavior.

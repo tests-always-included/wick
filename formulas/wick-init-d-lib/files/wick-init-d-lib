@@ -59,12 +59,45 @@ getPid() {
 }
 
 
+# Deprecated
+#
+# When this is used, it will also rename all hyphenated functions to
+# non-hyphenated functions.
+#
+# Examples
+#
+#   handle-command
+#
+# Returns nothing.
+handle-command() {
+    renameFunction cleanup-files cleanupFiles
+    renameFunction get-pid getPid
+    renameFunction is-running isRunning
+    renameFunction process-reload process-reload
+    renameFunction process-start processStart
+    renameFunction process-stop processStop
+    renameFunction reload-before reloadBefore
+    renameFunction reload-fail reloadFail
+    renameFunction reload-success reloadSuccess
+    renameFunction restart-before restartBefore
+    renameFunction restart-fail restartFail
+    renameFunction restart-success restartSuccess
+    renameFunction start-before startBefore
+    renameFunction start-fail startFail
+    renameFunction start-success startSuccess
+    renameFunction stop-before stopBefore
+    renameFunction stop-fail stopFail
+    renameFunction stop-success stopSuccess
+    handleCommand
+    return $?
+}
+
 # Handles the command that was issued to the script.  Does that by calling
 # other functions that happen to just map to the command name.
 #
 # Examples
 #
-#    handleCommand
+#   handleCommand
 #
 # Returns nothing.
 handleCommand() {
@@ -242,6 +275,33 @@ reloadFail() {
 # Returns nothing.
 reloadSuccess() {
     :
+}
+
+
+# Deprecated: Changes the non-hyphenated function so that it merely calls
+# through to the old, hyphenated function name.  This acts like a rename
+# without doing a lot of string processing.
+#
+# $1 - Old name.
+# $2 - New name.
+#
+# Examples
+#
+#   renameFunction cleanup-files cleanupFiles
+#
+# Returns nothing.
+renameFunction() {
+    local functionList functionName
+
+    functionList=$(declare -F)
+    functionList=( ${functionList//declare -f /} )
+
+    for functionName in "${functionList[@]}"; do
+        if [[ "$functionName" == "$1" ]]; then
+            # Make the new name simply call through to the old name.
+            eval "$2 () { $1 \"\$@\" ; return \$? ; }"
+        fi
+    done
 }
 
 
