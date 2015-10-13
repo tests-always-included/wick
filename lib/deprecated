@@ -4,7 +4,7 @@
 # Read more about [deprecation](../doc/deprecated.md).
 
 wickDeprecated() {
-    eval "$1 () { wickError \"$1 is deprecated\" >&2; $2 \"\$@\"; }"
+    eval "$1 () { wickError \"$1 is deprecated\" >&2; $2 \"\$@\"; return \$?; }"
 }
 
 # bin/
