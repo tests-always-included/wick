@@ -80,7 +80,7 @@ ip=$(ifconfig "${ifconfigArgs[@]}" | grep inet\ addr | head -n 1)
 ip=${ip#*:}
 ip=${ip%% *}
 ip=${ip//./-}
-host=${host//\{\{ip\}\}/$ip}
+host=${host//\{\{IP\}\}/$ip}
 full="${host}.${domain}"
 
 wickDebug "Setting hostname to $full"
