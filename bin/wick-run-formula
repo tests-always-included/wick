@@ -28,7 +28,7 @@ wickRunFormula() {
     # See escaping note above
     eval "WICK_FORMULA_DIR=($formula)"
     WICK_FORMULA_DIR=${WICK_FORMULA_DIR[0]%/*}
-    WICK_FORMULA_NAME=${WICK_FORMULA_DOR##*/}
+    WICK_FORMULA_NAME=${WICK_FORMULA_DIR##*/}
 
     if ! (
         # See escaping note in function header
