@@ -380,7 +380,7 @@ Examples
     wickGetUrl --timeout=30 https://get.rvm.io/ | bash
 
     # Download a large file and show progress information
-    wickGetUrl --progress http://example.com/large-file.tar.gz /tmp/large-file.tgz
+    wickGetUrl --progress http://example.com/file.tar.gz /tmp/file.tgz
 
 Returns zero on success, non-zero if there is an error downloading.
 
@@ -671,6 +671,44 @@ Examples
 
     wickSafeVariableName fixed "ABC-DEF"
     echo "$fixed"  # Outputs "ABC_DEF"
+
+Returns nothing.
+
+
+`wickShowUsage()`
+-----------------
+
+Shows a help message that is generated from the contents of a file.  For this to work you must format your help message in the shell script (or I suppose embed this comment in other languages) using special markup.
+
+* $1 - The name of the file to parse for a usage message.
+
+Examples
+
+    #!/usr/bin/env bash
+    #/ This is my special help text.
+    #/
+    #/ Usage:  the_command [ACTION]
+    #/
+    #/ ACTION - The action you want to perform (run, walk, or help)
+
+    # Load the library of tools
+    /usr/local/lib/wick-infect
+
+    case "$1" in
+        run)
+            echo "Running"
+            ;;
+        walk)
+            echo "Walking"
+            ;;
+        help)
+            Show the help embedded inside this script
+            wickShowUsage "$0"
+            ;;
+        *)
+            echo "Use '${0##*/} help' for usage information"
+            ;;
+    esac
 
 Returns nothing.
 

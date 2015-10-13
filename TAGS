@@ -1,9 +1,9 @@
 
 bin/wick,140
-wick() {wick25,804
-wickIsValidScript() {wickIsValidScript76,2032
-wickLoadLib() {wickLoadLib94,2586
-wickOnLoad() {wickOnLoad124,3263
+wick() {wick25,811
+wickIsValidScript() {wickIsValidScript76,2039
+wickLoadLib() {wickLoadLib94,2593
+wickOnLoad() {wickOnLoad124,3270
 
 bin/wick-add-command,41
 wickAddCommand() {wickAddCommand19,388
@@ -263,7 +263,7 @@ lib/wick-get-options,41
 wickGetOptions() {wickGetOptions17,535
 
 lib/wick-get-url,33
-wickGetUrl() {wickGetUrl20,791
+wickGetUrl() {wickGetUrl20,779
 
 lib/wick-get-url-curl,41
 wickGetUrlCurl() {wickGetUrlCurl11,367
@@ -303,6 +303,9 @@ wickRandomString() {wickRandomString20,522
 
 lib/wick-safe-variable-name,53
 wickSafeVariableName() {wickSafeVariableName18,567
+
+lib/wick-show-usage,39
+wickShowUsage() {wickShowUsage35,917
 
 lib/wick-strict-mode,41
 wickStrictMode() {wickStrictMode25,858

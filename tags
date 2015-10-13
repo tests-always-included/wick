@@ -79,6 +79,7 @@ wickServiceRestart	formulas/wick-base/functions/wick-service-restart	/^wickServi
 wickServiceStart	formulas/wick-base/functions/wick-service-start	/^wickServiceStart() {$/;"	f
 wickServiceStop	formulas/wick-base/functions/wick-service-stop	/^wickServiceStop() {$/;"	f
 wickSetConfigLine	formulas/wick-base/functions/wick-set-config-line	/^wickSetConfigLine() {$/;"	f
+wickShowUsage	lib/wick-show-usage	/^wickShowUsage() {$/;"	f
 wickStrictMode	lib/wick-strict-mode	/^wickStrictMode() {$/;"	f
 wickStrictModeFail	lib/wick-strict-mode-fail	/^wickStrictModeFail() ($/;"	f
 wickStrictRun	lib/wick-strict-run	/^wickStrictRun() {$/;"	f
