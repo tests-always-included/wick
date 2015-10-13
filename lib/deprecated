@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Deprecated functions are patched whenever possible.
+#
+# Read more about [deprecation](../doc/deprecated.md).
 
 wickDeprecated() {
     eval "$1 () { wickError \"$1 is deprecated\" >&2; $2 \"\$@\"; }"
