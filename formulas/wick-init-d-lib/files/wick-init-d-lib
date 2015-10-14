@@ -300,8 +300,13 @@ renameFunction() {
         if [[ "$functionName" == "$1" ]]; then
             # Make the new name simply call through to the old name.
             eval "$2 () { $1 \"\$@\" ; return \$? ; }"
+            return 0
         fi
     done
+
+    # Write a call through wrapper the other way so they can call the
+    # old name and it transparently calls to the new name.
+    eval "$1 () { $2 \"\$@\" ; return \$? ; }"
 }
 
 
