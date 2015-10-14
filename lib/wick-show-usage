@@ -33,5 +33,5 @@
 #
 # Returns nothing.
 wickShowUsage() {
-    grep "^#/ " "$1" | cut -b 4-
+    grep '^#/\( .*\)\?$' "$1" | cut -b 4-
 }
