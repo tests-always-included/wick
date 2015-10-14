@@ -40,10 +40,10 @@ wick-test-for-options() {
 }
 
 wick-test-for-options-failure() {
-    if [[ ! -z "$FORMULA" ]]; then
+    if [[ -n "${FORMULA-}" ]]; then
         wick-error "Formula $FORMULA requires option: --$ARG"
     else
-        if [[ ! -z "$ROLE" ]]; then
+        if [[ -n "${ROLE-}" ]]; then
             wick-error "Role $ROLE requires option: --$ARG"
         else
             wick-error "Missing required option:  --$ARG"
