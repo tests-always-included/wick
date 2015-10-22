@@ -3,11 +3,15 @@ Rvm
 
 This installs RVM from [http://get.rvm.io/](http://get.rvm.io/).  Passes all extra parameters to the installer.
 
-    wickFormula rvm OPTIONS
+* $@ - All options are passed directly to the installer.
 
-* `OPTIONS`: Installer options, passed directly to the installer.  See [https://rvm.io/rvm/install](https://rvm.io/rvm/install) for some examples.
+For examples of options see [https://rvm.io/rvm/install](https://rvm.io/rvm/install).
 
-Example:
+Examples
 
     # Install RVM and the latest Ruby
     wickFormula rvm stable --ruby=latest
+
+Returns nothing.
+
+

@@ -1,41 +1,43 @@
 Wick-Infect
 ===========
 
-Installs a Bash configuration at `/usr/local/lib/wick-infect` that shell scripts can source into their environment in order to get a copy of all of the [library] functions.
+Installs a Bash configuration at `/usr/local/lib/wick-infect` that shell scripts can source into their environment in order to get a copy of all of the library functions.
 
-    wickFormula wick-infect
+The file is first generated in the `depends` file of this formula.
 
-* There are no parameters.
+Examples
 
-This example is for a shell script that can run on the target machine after configuring has been performed.
+      #!/usr/bin/env bash
+      # This example is for a shell script that can run on the target machine
+      # after configuring has been performed.
 
-    #!/usr/bin/env bash
+      # Source the library of functions
+      . /usr/local/lib/wick-infect
 
-    # Source the library of functions
-    . /usr/local/lib/wick-infect
+      # Enable strict mode to be safe
+      wickStrictMode
 
-    # Enable strict mode to be safe
-    wickStrictMode
+      # Now the script can download URLs
+      wickGetUrl http://google.com/ google.html
 
-    # Now the script can download URLs
-    wickGetUrl http://google.com/ google.html
+      # Define a function
+      callMyFunction() {
+          local target verbose
 
-    # Define a function
-    call-my-function() {
-        local TARGET VERBOSE
+          wickGetOption verbose verbose "$@"
+          wickGetArgument target 0 "$@"
 
-        wickGetOption VERBOSE verbose "$@"
-        wickGetArgument TARGET 0 "$@"
+          if [[ ! -z "$verbose" ]]; then
+              echo "Verbose mode enabled"
+          fi
 
-        if [[ ! -z "$VERBOSE" ]]; then
-            echo "Verbose mode enabled"
-        fi
+          # Can pass back values as well
+          local "$target" && wickIndirect "$target" "data"
+      }
 
-        # Can pass back values as well
-        local "$TARGET" && wickIndirect "$TARGET" "data"
-    }
+      callMyFunction --verbose result
+      echo "Result is: $result"
 
-    call-my-function --verbose RESULT
+Returns nothing.
 
 
-[Library]:  ../../lib/README.md

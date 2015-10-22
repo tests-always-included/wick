@@ -1,6 +1,12 @@
 Unzip
 =====
 
-Simply installs `unzip`.
+Installs unzip.  This does not install zip automatically.
 
-    wickFormula unzip
+Examples
+
+    wickFormula zip
+
+Returns nothing.
+
+
