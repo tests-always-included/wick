@@ -12,4 +12,4 @@
 # [templates]: ../../doc/templates.md
 #
 # Returns nothing.
-wickMakeFile mo /usr/local/bin/
+wickMakeFile mo /usr/local/bin/ --mode=0744
