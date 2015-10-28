@@ -5,7 +5,7 @@ Adds useful cron manipulation functions to the Wick environment.  Performs no ac
 
 Examples
 
-    wickFormula cro
+    wickFormula cron
 
 Returns nothing.
 
