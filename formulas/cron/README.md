@@ -27,7 +27,7 @@ File contents need to have the following fields for a job definition, in order: 
 
 Examples
 
-    # Adds a job from files/delete_files.cro
+    # Adds a job from files/delete_files.cron
     cronAdd delete_files delete_files.cron
 
     # Uses a template instead

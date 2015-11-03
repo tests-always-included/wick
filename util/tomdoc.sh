@@ -91,7 +91,7 @@ generate_markdown() {
     last=""
     did_newline=false
     last_was_option=false
-    echo "$2" | uncomment | sed -e "s/$SPACE_RE$//" | while IFS=$'\n' read line; do
+    echo "$2" | uncomment | sed -e "s/$SPACE_RE$//" | while IFS='' read line; do
         if echo "$line" | grep -q "^$SPACE_RE$NOT_SPACE_RE $SPACE_RE- "; then
             if ! $did_newline; then
                 echo ""

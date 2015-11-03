@@ -42,7 +42,7 @@ Writes to stdout the version of Bash in use on the target system.
 
 Examples
 
-    wickExplorer result wick-base bash-versio
+    wickExplorer result wick-base bash-version
     echo "$result"  # "4.3.30(1)-release"
 
 Returns nothing.
@@ -273,7 +273,7 @@ For consistency, the home directory is always created if it does not exist and t
 Examples:
 
     # Create a normal user
-    wickMakeUser fidia
+    wickMakeUser fidian
 
     # Update that same user with a new shell
     wickMakeUser --shell=/bin/zsh
@@ -550,7 +550,7 @@ Internal: Starts a service.
 
 Examples
 
-    wickServiceStart cro
+    wickServiceStart cron
 
 Returns nothing.
 

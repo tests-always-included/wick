@@ -497,7 +497,7 @@ Examples
         # Be careful when `set -u` is enabled
         if [[ ${#value[@]} -eq 0 ]]; then
             local "$1" && wickIndirectArray "$1"
-            retur
+            return
         fi
 
         local "$1" && wickIndirectArray "$1" "${value[@]}"
@@ -601,14 +601,14 @@ Public: Determines if a port is open or not.  Works with TCP and UDP ports. If t
 Examples
 
     # Confirm a web server is listening
-    if ! wickPortUp TCP 80; the
+    if ! wickPortUp TCP 80; then
         echo "There is no web server listening on port 80."
     fi
 
     # Wait for a server to start
     wickService start my-web-server
 
-    if ! wickWaitFor 120 wickPortUp TCP 80; the
+    if ! wickWaitFor 120 wickPortUp TCP 80; then
         echo "Tried to wait for 2 minutes but nothing listened on port 80"
     fi
 
@@ -876,7 +876,7 @@ Public: Logging for warnings, such as when problems are detected and they aren't
 
 Examples
 
-    if [[ -f /some/file ]]; the
+    if [[ -f /some/file ]]; then
         wickWarn "File exists when it should not."
         rm /some/file
     fi
