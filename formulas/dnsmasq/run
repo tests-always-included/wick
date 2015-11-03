@@ -13,7 +13,18 @@ wickService restart dnsmasq
 wickService enable dnsmasq
 
 # Insert dnsmasq into the resolver
-wickSetConfigLine /etc/dhcp/dhclient.conf "prepend domain-name-servers 127.0.0.1;" "prepend domain-name-servers"
+#
+# The normal, one-line method may not work in all situations.
+# http://www.fidian.com/problems-only-tyler-has/dhclient-not-honoring-prepend-config
+#wickSetConfigLine /etc/dhcp/dhclient.conf "prepend domain-name-servers 127.0.0.1;" "prepend domain-name-servers"
+
+if [[ ! -f /etc/dhcp/dhclient-enter-hooks ]]; then
+    echo "#!/bin/sh" > /etc/dhcp/dhclient-enter-hooks
+    chmod 755 /etc/dhcp/dhclient-enter-hooks
+fi
+
+wickMakeFile dnsmasq - | wickAddConfigSection /etc/dhcp/dhclient-enter-hooks "dnsmasq"
+
 
 if grep -q ^nameserver /etc/resolv.conf; then
     sed --follow-symlinks -i '/^nameserver/inameserver 127.0.0.1' /etc/resolv.conf
