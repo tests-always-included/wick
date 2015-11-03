@@ -20,6 +20,6 @@ cronRemove() {
         fi
     else
         wickDebug "Purging job from crontab: $1"
-        sed -i --follow-symlinks "/^# BEGIN: $1$/,/^# END: $1$/d" /etc/crontab
+        wickRemoveConfigSection /etc/crontab "$1"
     fi
 }

@@ -107,6 +107,9 @@ formulaTemplate() {formulaTemplate19,584
 formulas/wick-base/functions/sh-formula-template,46
 shFormulaTemplate() {shFormulaTemplate9,186
 
+formulas/wick-base/functions/wick-add-config-section,53
+wickAddConfigSection() {wickAddConfigSection15,550
+
 formulas/wick-base/functions/wick-hash,29
 wickHash() {wickHash19,582
 
@@ -127,6 +130,9 @@ wickPackageApt() {wickPackageApt12,260
 
 formulas/wick-base/functions/wick-package-yum,41
 wickPackageYum() {wickPackageYum14,360
+
+formulas/wick-base/functions/wick-remove-config-section,59
+wickRemoveConfigSection() {wickRemoveConfigSection11,332
 
 formulas/wick-base/functions/wick-service,36
 wickService() {wickService76,2015

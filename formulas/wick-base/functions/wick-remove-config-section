@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Removes a named section from a config file.  Idempotent - will not modify
+# a file that does not contain the named section.  This is the opposite of
+# `wickAddConfigSection`.
+#
+# $1 - Config file.
+# $2 - Name of the section (very important).
+# $3 - Line comment delimeter, defaults to "#"
+#
+# Returns nothing.
+wickRemoveConfigSection() {
+    if [[ -z "$1" ]]; then
+        wickError "A file must be specified for wickRemoveConfigSection"
+        return 1
+    fi
+
+    if [[ -z "$2" ]]; then
+        wickError "You must specify a name for wickRemoveConfigSection"
+        return 1
+    fi
+
+    sed -i --follow-symlinks "/ BEGIN wickAddConfigSection: $2$/,/ END wickAddConfigSection: $2$/d" "$1"
+}

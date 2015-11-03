@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Writes a section to the end of a config file.  Idempotent - will not add
+# another section with an identical name.  The opposite function is
+# `wickRemoveConfigSection`.
+#
+# $1 - Config file.
+# $2 - Name of the section (very important).
+# $3 - Line comment delimeter, defaults to "#"
+# stdin - Lines of configuration
+#
+# This searches the file for a section with the same name and removes it.
+# Next it creates a new section with the given name at the end of the file.
+#
+# Returns 0 on success, 1 on argument validation errors.
+wickAddConfigSection() {
+    if [[ -z "$1" ]]; then
+        wickError "A file must be specified for wickAddConfigSection"
+        return 1
+    fi
+
+    if [[ -z "$2" ]]; then
+        wickError "You must specify a name for wickAddConfigSection"
+        return 1
+    fi
+
+    if [[ -f "$1" ]]; then
+        wickRemoveConfigSection "$1" "$2" "$3"
+    fi
+
+    {
+        echo "${3:-#} BEGIN wickAddConfigSection: $2"
+        cat
+        echo "${3:-#} END wickAddConfigSection: $2"
+    } >> "$1"
+}

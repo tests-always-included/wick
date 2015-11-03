@@ -146,6 +146,21 @@ Examples
 Returns the status code of the shell script.
 
 
+`wickAddConfigSection()`
+------------------------
+
+Writes a section to the end of a config file.  Idempotent - will not add another section with an identical name.  The opposite function is `wickRemoveConfigSection`.
+
+* $1 - Config file.
+* $2 - Name of the section (very important).
+* $3 - Line comment delimeter, defaults to "#"
+* stdin - Lines of configuration
+
+This searches the file for a section with the same name and removes it. Next it creates a new section with the given name at the end of the file.
+
+Returns 0 on success, 1 on argument validation errors.
+
+
 `wickHash()`
 ------------
 
@@ -334,6 +349,18 @@ Examples
     wickPackageYum install httpd
 
 Return true on success.
+
+
+`wickRemoveConfigSection()`
+---------------------------
+
+Removes a named section from a config file.  Idempotent - will not modify a file that does not contain the named section.  This is the opposite of `wickAddConfigSection`.
+
+* $1 - Config file.
+* $2 - Name of the section (very important).
+* $3 - Line comment delimeter, defaults to "#"
+
+Returns nothing.
 
 
 `wickService()`

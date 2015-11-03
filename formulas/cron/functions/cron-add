@@ -40,8 +40,6 @@ cronAdd() {
     if [[ -d /etc/cron.d/ ]]; then
         wickMakeFile "$filename" "/etc/cron.d/$jobname" "${options[@]-}"
     else
-        echo "# BEGIN: $jobname" >> /etc/crontab
-        wickMakeFile "$filename" - "${options[@]-}" >> /etc/crontab
-        echo "# END: $jobname" >> /etc/crontab
+        wickMakeFile "$filename" - "${options[@]-}" | wickAddConfigSection "/etc/crontab" "$jobname"
     fi
 }

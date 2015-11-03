@@ -24,6 +24,7 @@ timezoneUpdateSysconfigTimezone	formulas/timezone/functions/timezone-update-sysc
 timezoneUpdateTimezone	formulas/timezone/functions/timezone-update-timezone	/^timezoneUpdateTimezone() {$/;"	f
 wick	bin/wick	/^wick() {$/;"	f
 wickAddCommand	bin/wick-add-command	/^wickAddCommand() {$/;"	f
+wickAddConfigSection	formulas/wick-base/functions/wick-add-config-section	/^wickAddConfigSection() {$/;"	f
 wickArgumentString	lib/wick-argument-string	/^wickArgumentString() {$/;"	f
 wickArrayFilter	lib/wick-array-filter	/^wickArrayFilter() {$/;"	f
 wickArrayJoin	lib/wick-array-join	/^wickArrayJoin() {$/;"	f
@@ -65,6 +66,7 @@ wickPackageYum	formulas/wick-base/functions/wick-package-yum	/^wickPackageYum() 
 wickPortUp	lib/wick-port-up	/^wickPortUp() {$/;"	f
 wickPrefixLines	lib/wick-prefix-lines	/^wickPrefixLines() {$/;"	f
 wickRandomString	lib/wick-random-string	/^wickRandomString() {$/;"	f
+wickRemoveConfigSection	formulas/wick-base/functions/wick-remove-config-section	/^wickRemoveConfigSection() {$/;"	f
 wickRun	bin/wick-run	/^wickRun() {$/;"	f
 wickRunFormula	bin/wick-run-formula	/^wickRunFormula() {$/;"	f
 wickSafeVariableName	lib/wick-safe-variable-name	/^wickSafeVariableName() {$/;"	f
