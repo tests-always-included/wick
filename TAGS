@@ -132,7 +132,7 @@ formulas/wick-base/functions/wick-package-yum,41
 wickPackageYum() {wickPackageYum14,360
 
 formulas/wick-base/functions/wick-remove-config-section,59
-wickRemoveConfigSection() {wickRemoveConfigSection11,332
+wickRemoveConfigSection() {wickRemoveConfigSection10,285
 
 formulas/wick-base/functions/wick-service,36
 wickService() {wickService76,2015

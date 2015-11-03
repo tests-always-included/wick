@@ -24,7 +24,7 @@ wickAddConfigSection() {
     fi
 
     if [[ -f "$1" ]]; then
-        wickRemoveConfigSection "$1" "$2" "$3"
+        wickRemoveConfigSection "$1" "$2" "${3-}"
     fi
 
     {

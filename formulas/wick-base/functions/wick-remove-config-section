@@ -5,7 +5,6 @@
 #
 # $1 - Config file.
 # $2 - Name of the section (very important).
-# $3 - Line comment delimeter, defaults to "#"
 #
 # Returns nothing.
 wickRemoveConfigSection() {

@@ -358,7 +358,6 @@ Removes a named section from a config file.  Idempotent - will not modify a file
 
 * $1 - Config file.
 * $2 - Name of the section (very important).
-* $3 - Line comment delimeter, defaults to "#"
 
 Returns nothing.
 
