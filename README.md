@@ -71,7 +71,7 @@ The bulk of the work is in the formula's `run` script.
 
     #!/usr/bin/env bash
 
-    apache2-add-vhost vhost.conf
+    apache2AddVhost vhost.conf
 
 There.  Now the vhost will be added to Apache, the server will be reloaded and everything will be ready.  This formula is complete.
 
