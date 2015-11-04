@@ -51,6 +51,7 @@ wickIndirect	lib/wick-indirect	/^wickIndirect() {$/;"	f
 wickIndirectArray	lib/wick-indirect-array	/^wickIndirectArray() {$/;"	f
 wickInfo	lib/wick-info	/^wickInfo() ($/;"	f
 wickIsValidScript	bin/wick	/^wickIsValidScript() {$/;"	f
+wickIsVarSet	lib/wick-is-var-set	/^wickIsVarSet() {$/;"	f
 wickLoadLib	bin/wick	/^wickLoadLib() {$/;"	f
 wickLoadRole	bin/wick-load-role	/^wickLoadRole() {$/;"	f
 wickLog	lib/wick-log	/^wickLog() {$/;"	f

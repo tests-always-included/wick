@@ -289,6 +289,9 @@ wickIndirectArray() {wickIndirectArray52,1476
 lib/wick-info,29
 wickInfo() (wickInfo14,716
 
+lib/wick-is-var-set,37
+wickIsVarSet() {wickIsVarSet20,442
+
 lib/wick-log,28
 wickLog() {wickLog28,1135
 

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Determine if a variable is assigned, even if it is assigned an empty value.
+#
+# $1 = Variable name to check
+#
+# Examples
+#
+#   unset missing
+#   empty=""
+#
+#   if wickIsVarSet missing; then
+#       echo "This never is called."
+#   fi
+#
+#   if wickIsVarSet empty; then
+#       echo "This is called even though $empty is set to an empty string."
+#   fi
+#
+# Returns true if the variable is set, 1 if the variable is unset.
+wickIsVarSet() {
+    [[ "${!1-a}" == "${!1-b}" ]]
+}
