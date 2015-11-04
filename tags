@@ -85,6 +85,7 @@ wickShowUsage	lib/wick-show-usage	/^wickShowUsage() {$/;"	f
 wickStrictMode	lib/wick-strict-mode	/^wickStrictMode() {$/;"	f
 wickStrictModeFail	lib/wick-strict-mode-fail	/^wickStrictModeFail() ($/;"	f
 wickStrictRun	lib/wick-strict-run	/^wickStrictRun() {$/;"	f
+wickStringSplit	lib/wick-string-split	/^wickStringSplit() {$/;"	f
 wickTempDir	lib/wick-temp-dir	/^wickTempDir() {$/;"	f
 wickTestForOptions	lib/wick-test-for-options	/^wickTestForOptions() {$/;"	f
 wickTestForOptionsFailure	lib/wick-test-for-options-failure	/^wickTestForOptionsFailure() {$/;"	f

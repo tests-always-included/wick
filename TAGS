@@ -322,6 +322,9 @@ wickStrictModeFail() (wickStrictModeFail8,220
 lib/wick-strict-run,39
 wickStrictRun() {wickStrictRun26,695
 
+lib/wick-string-split,43
+wickStringSplit() {wickStringSplit19,434
+
 lib/wick-temp-dir,35
 wickTempDir() {wickTempDir20,524
 

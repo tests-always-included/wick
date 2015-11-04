@@ -772,6 +772,28 @@ Example:
 Returns nothing.
 
 
+`wickStringSplit()`
+-------------------
+
+Split a string into an array
+
+* $1 - Destination variable name
+* $2 - The string to split
+* $3 - Optional, the delimeter, defaults to a space
+
+Examples:
+
+    wickStringSplit DEST "a b c d"
+    set | grep ^DEST=
+    # DEST=([0]="a" [1]="b" [2]="c" [3]="d")
+
+    wickStringSplit DEST "one|two||three|" "|"
+    set | grep ^DEST=
+    # DEST=([0]="one" [1]="two" [2]="" [3]="three" [4]="")
+
+Returns nothing.
+
+
 `wickTempDir()`
 ---------------
 

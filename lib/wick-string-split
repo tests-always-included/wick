@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Split a string into an array
+#
+# $1 - Destination variable name
+# $2 - The string to split
+# $3 - Optional, the delimeter, defaults to a space
+#
+# Examples:
+#
+#   wickStringSplit DEST "a b c d"
+#   set | grep ^DEST=
+#   # DEST=([0]="a" [1]="b" [2]="c" [3]="d")
+#
+#   wickStringSplit DEST "one|two||three|" "|"
+#   set | grep ^DEST=
+#   # DEST=([0]="one" [1]="two" [2]="" [3]="three" [4]="")
+#
+# Returns nothing.
+wickStringSplit() {
+    local delim result str target
+
+    target=$1
+    str=$2
+    delim=${3:- }
+    result=()
+
+    while [[ "$str" != "${str#*$delim}" ]]; do
+        result[${#result[@]}]=${str%%${delim}*}
+        str=${str#*$delim}
+    done
+
+    result[${#result[@]}]=$str
+
+    if [[ "${#result[@]}" -gt 0 ]]; then
+        local "$target" && wickIndirectArray "$target" "${result[@]}"
+        return
+    fi
+
+    local "$target" && wickIndirectArray "$target"
+}
