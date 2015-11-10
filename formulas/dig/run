@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Installs `dig` to query domain name system name servers.
+#
+# Examples
+#
+#   wickFormula dig
+#
+# Returns nothing.
+wickPackage dig

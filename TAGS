@@ -29,6 +29,10 @@ wickRun() {wickRun11,310
 bin/wick-run-formula,41
 wickRunFormula() {wickRunFormula17,556
 
+formulas/curl/depends,0
+
+formulas/dig/depends,0
+
 formulas/dnsmasq/depends,0
 
 formulas/erlang/depends,0
@@ -41,15 +45,23 @@ formulas/md5deep/depends,0
 
 formulas/mo/depends,0
 
+formulas/nano/depends,0
+
+formulas/netcat/depends,0
+
 formulas/nscd/depends,0
 
 formulas/redis/depends,0
 
 formulas/s3cmd/depends,0
 
+formulas/telnet/depends,0
+
 formulas/timezone/depends,0
 
 formulas/tomcat-7/depends,0
+
+formulas/vim/depends,0
 
 formulas/wick-infect/depends,50
 showAllLibFunctions() {showAllLibFunctions8,368
@@ -173,6 +185,10 @@ formulas/at/run,0
 
 formulas/cron/run,0
 
+formulas/curl/run,0
+
+formulas/dig/run,0
+
 formulas/dnsmasq/run,0
 
 formulas/erlang/run,0
@@ -189,7 +205,11 @@ formulas/md5deep/run,0
 
 formulas/mo/run,0
 
+formulas/nano/run,0
+
 formulas/nc/run,0
+
+formulas/netcat/run,0
 
 formulas/nscd/run,0
 
@@ -209,11 +229,15 @@ formulas/s3cmd/run,0
 
 formulas/sysctl/run,0
 
+formulas/telnet/run,0
+
 formulas/timezone/run,0
 
 formulas/tomcat-7/run,0
 
 formulas/unzip/run,0
+
+formulas/vim/run,0
 
 formulas/wick-base/run,0
 

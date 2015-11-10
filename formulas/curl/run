@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Ensures `curl` is installed
+#
+# Examples
+#
+#   wickFormula curl
+#
+# Returns nothing.
+wickPackage curl

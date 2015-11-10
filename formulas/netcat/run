@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Installs the netcat (`nc`) package.
+#
+# Examples
+#
+#   wickFormula netcat
+#
+# Returns nothing.
+wickExplorer os wick-base os
+case "$os" in
+    centos|redhat)
+        wickPackage nc
+        ;;
+
+    *)
+        wickPackage netcat
+        ;;
+esac

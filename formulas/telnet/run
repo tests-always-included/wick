@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Installs `telnet` if it is not already installed.  Consider netcat instead.
+#
+# Examples
+#
+#   wickFormula telnet
+#
+# Returns nothing.
+wickPackage telnet

@@ -19,6 +19,8 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Apache2](apache2/README.md) - Installs the Apache 2.x web server and enables named virtual hosts.  Provides functions to add virtual hosts and config files.
 * [At](at/README.md) - Installs and sets up the `at` package.
 * [Cron](cron/README.md) - Adds useful cron manipulation functions to the Wick environment.  Performs no actions.
+* [Curl](curl/README.md) - Ensures `curl` is installed
+* [Dig](dig/README.md) - Installs `dig` to query domain name system name servers.
 * [Dnsmasq](dnsmasq/README.md) - Installs dnsmasq and adds it as a nameserver.
 * [Erlang](erlang/README.md) - Determines the erlang package based on the OS distribution.
 * [Hostname](hostname/README.md) - Sets the hostname and domain.  Supports templates.  Can automatically update the hostname when network connections are made.
@@ -27,7 +29,9 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Lsof](lsof/README.md) - This installs the `lsof` command, which may be needed by other programs.
 * [Md5deep](md5deep/README.md) - Sets up md5deep and its related utilities.
 * [Mo](mo/README.md) - Installs [mo](https://github.com/tests-always-included/mo) mustache template parser into `/usr/local/bin/` and adds the ability to use "mo" templates with `wickMakeFile` (in the wick-base formula).
+* [Nano](nano/README.md) - Installs `nano`, a tiny clone of Pico.
 * [Netcat](nc/README.md) - Installs `nc`, the netcat package.
+* [Netcat](netcat/README.md) - Installs the netcat (`nc`) package.
 * [NSCD](nscd/README.md) - This installs a name server caching daemon.  The `unscd` package is preferred over `nscd`, but the two are essentially interchangeable.
 * [OpenJDK 1.7 JDK](openjdk-1.7-jdk/README.md) - Installs OpenJDK 1.7 JDK.
 * [OpenJDK 1.7](openjdk-1.7/README.md) - Installs OpenJDK 1.7 JRE.
@@ -37,9 +41,11 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Rvm](rvm/README.md) - This installs RVM from [http://get.rvm.io/](http://get.rvm.io/).  Passes all extra parameters to the installer.
 * [S3cmd](s3cmd/README.md) - This installs a tool to work with Amazon S3 from the command-line.
 * [Sysctl](sysctl/README.md) - This adds a function to Wick to set a system configuration setting.
+* [Telnet](telnet/README.md) - Installs `telnet` if it is not already installed.  Consider netcat instead.
 * [Timezone](timezone/README.md) - Sets the time zone to a specified zone, defaulting to UTC.
 * [Tomcat 7](tomcat-7/README.md) - Installs Tomcat 7, which depends on Java 1.7 or Java 1.8.
 * [Unzip](unzip/README.md) - Installs unzip.  This does not install zip automatically.
+* [Vim](vim/README.md) - Makes sure `vim` (enhanced `vi`)
 * [Wick-Base](wick-base/README.md) - This formula only adds useful functions and explorers to Wick.  Nearly everything depends on this formula.
 * [Wick-Infect](wick-infect/README.md) - Installs a Bash configuration at `/usr/local/lib/wick-infect` that shell scripts can source into their environment in order to get a copy of all of the library functions.
 * [Wick-Init-D-Lib](wick-init-d-lib/README.md) - Not all systems are created equally.  In that regard, not all `/etc/init.d/` environments are the same either.  Instead of rewriting a shell that's extremely similar for multiple services, this formula will install a library that can be used to make init-style scripts quickly.
