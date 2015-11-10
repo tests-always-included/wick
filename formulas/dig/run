@@ -6,4 +6,13 @@
 #   wickFormula dig
 #
 # Returns nothing.
-wickPackage dig
+wickExplorer os wick-base os
+case "$os" in
+    centos|redhat)
+        wickPackage bind-utils
+        ;;
+
+    *)
+        wickPackage dig
+        ;;
+esac
