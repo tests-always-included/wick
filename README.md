@@ -98,6 +98,14 @@ Well, assuming you have created some formulas and at least one role, you are abl
 Now all you need to know is how to make [roles] and [formulas].  While you are at it, writing [tests] can also help prove that the installers work in a variety of environments.
 
 
+Development
+-----------
+
+Patches and updates are welcome, especially if they come with tests.  You run tests with the `tests/run-tests` script.
+
+To build the `README.md` files from the content of the other files, run `make`.  This also builds `TAGS` for Emacs and `tags` for Vim, though that requires Exuberant Ctags.  If you are on a Mac or another filesystem that does has case-insensitive files and if you use the tag files, run `make TAGS` or `make tags` after `make` to ensure you have the right file saved to your disk.
+
+
 [Ansible]: http://www.ansible.com/
 [bash-booster]: http://www.bashbooster.net/
 [Bash Concepts]: doc/bash-concepts.md

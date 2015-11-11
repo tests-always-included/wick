@@ -2,8 +2,7 @@ SHELL=/bin/bash
 SCRIPTS=bin/w* formulas/*/depends formulas/*/functions/* formulas/*/run lib/w*
 .PHONY: clean
 FORMULA_READMES=$(patsubst %/./,%/README.md,$(wildcard formulas/*/./))
-TAGS=tags TAGS
-all: bin/README.md lib/README.md formulas/README.md $(FORMULA_READMES) $(TAGS)
+all: bin/README.md lib/README.md formulas/README.md $(FORMULA_READMES) tags TAGS
 
 bin/README.md: bin/w*
 	util/build-readme $@ > $@.tmp
@@ -22,10 +21,13 @@ formulas/%/README.md: formulas/%/run $$(wildcard formulas/%/functions/*) $$(wild
 	util/build-formula-readme $@ > $@.tmp
 	mv $@.tmp $@
 
-$(TAGS): $(SCRIPTS)
+TAGS: $(SCRIPTS)
+	chmod 755 $(SCRIPTS)
+	ctags -e --recurse $(SCRIPTS)
+
+tags: $(SCRIPTS)
 	chmod 755 $(SCRIPTS)
 	ctags --recurse $(SCRIPTS)
-	ctags -e --recurse $(SCRIPTS)
 
 clean:
 	#
