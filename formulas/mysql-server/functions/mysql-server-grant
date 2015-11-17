@@ -39,6 +39,7 @@ mysqlServerGrant() {
         db="${db}.*"
     fi
 
+    wickInfo "Granting $grant to $username@$host for $db"
     export host=${username[1]}
     export username=${username[0]}
     export grant
