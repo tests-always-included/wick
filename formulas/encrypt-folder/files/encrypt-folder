@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+# Generates a one-time password and encrypted mount on top of a folder.
+#
+# $1 - Name of the folder to encrypt.
+#
+# If the folder contains files before encryption, they will be copied into
+# the encrypted folder and never removed from the underlying filesystem.
+# When unmounted, the encrypted files will be unusable.  The original
+# files (before encryption) will remain, but all changes to those files
+# will be lost.
+#
+# This command requires that you run it as root.
+#
+# Examples
+#
+#   /usr/local/bin/encrypt-folder /var/log/secret-logs
+. /usr/local/lib/wick-infect
+
+encmount() {
+    local fnekSig keys sig
+
+    wickDebug "Clearing out any old keys"
+    keyctl clear @u
+
+    wickDebug "Adding the keys"
+    keys="$(echo "$PASSWORD" \
+        | ecryptfs-add-passphrase --fnek 2>&1 \
+        | grep Inserted \
+        | cut -d '[' -f 2 \
+        | cut -d ']' -f 1)"
+    sig="$(echo "$keys" | head -n 1)"
+    fnekSig="$(echo "$keys" | tail -n 1)"
+
+    wickDebug "Mounting ecryptfs"
+    mount -t ecryptfs \
+        -o "key=passphrase:passphrase_passwd_file=$PASSWORD_FILE" \
+        -o ecryptfs_cipher=aes \
+        -o ecryptfs_key_bytes=16 \
+        -o ecryptfs_passthrough=n \
+        -o ecryptfs_enable_filename_crypto=y \
+        -o "ecryptfs_sig=$sig" \
+        -o "ecryptfs_fnek_sig=$fnekSig" \
+        -o no_sig_cache \
+        "$1" "$2" > /dev/null 2>&1
+
+    wickDebug "Removing the keys"
+    keyctl clear @u
+}
+
+# Must be root
+if [[ "$(whoami)" != "root" ]]; then
+    wickError "You need to be root."
+    exit 1
+fi
+
+if [[ -z "$1" ]]; then
+    wickError "Specify directory to encrypt"
+    exit 1
+fi
+
+# Make clearFolder the full path to the folder to encrypt, sans trailing slash
+clearFolder="${1%%/}"
+clearFolder=$(cd "$clearFolder"; pwd)
+wickDebug "Unencrypted folder:  $clearFolder"
+
+# Where to store encrypted contents
+encryptedFolder="$clearFolder/.ecryptfs"
+
+if [[ ! -d "$clearFolder" ]]; then
+    wickError "Not a directory: $clearFolder"
+    exit 1
+fi
+
+if [[ -e "$encryptedFolder" ]]; then
+    wickDebug "Removing previously encrypted folder: $encryptedFolder"
+    rm -rf "$encryptedFolder" || exit 1
+fi
+
+mkdir "$encryptedFolder"
+encryptedFolder=$(cd "$encryptedFolder"; pwd)
+chown --reference="$clearFolder" "$encryptedFolder"
+chmod --reference="$clearFolder" "$encryptedFolder"
+
+if mount | fgrep -q "$encryptedFolder"; then
+    wickError "Already mounted: $clearFolder"
+    exit 1
+fi
+
+if [[ ! -e /dev/ecryptfs ]]; then
+    wickDebug "Installing kernel module"
+    /sbin/modprobe ecryptfs ecryptfs_message_wait_timeout=3600
+
+    # Must delay here for things to start working behind the scenes.
+    # Running an arbitrary sleep command is truly terrible.
+    sleep 5
+else
+    wickDebug "Kernel module already installed"
+fi
+
+if [[ -z "$(pidof ecryptfsd)" ]]; then
+    wickDebug "Run the crypt daemon in the background"
+    /usr/bin/ecryptfsd > /dev/null 2>&1 &
+    disown
+
+    # Running a second arbitrary sleep command is nearly unforgivable.
+    sleep 5
+else
+    wickDebug "Crypt daemon is already running"
+fi
+
+# Create a random key
+wickRandomString encryptionPassword 64
+
+# Create a configuration file, secure it, then put the password inside
+encryptionConfigFile=/dev/shm/encrypt-folder-${$}-$RANDOM
+touch "$encryptionConfigFile"
+chmod 600 "$encryptionConfigFile"
+/bin/echo "passphrase_passwd=$encryptionPassword" > "$encryptionConfigFile"
+
+(
+    cd "$clearFolder"
+    isMounted=false
+
+    for NAME in "$clearFolder"/{..?*,.[^.]*,[^.]*}; do
+        if [[ -e "$NAME" ]] && [[ "$NAME" != ".ecryptfs" ]]; then
+            if ! $isMounted; then
+                wickDebug "Mounting encrypted folder to copy existing files"
+                encmount "$encryptedFolder" "$encryptedFolder"
+                isMounted=true
+            fi
+
+            wickDebug "Copying: $NAME"
+            cp -rp "$NAME" "$encryptedFolder"
+        fi
+    done
+
+    if $isMounted; then
+        wickDebug "Unmounting encrypted folder"
+        umount "$encryptedFolder"
+    fi
+)
+
+wickDebug "Mounting the encrypted folder over the normal path"
+encmount "$encryptedFolder" "$clearFolder"
+
+wickDebug "Wiping and removing password file"
+sed -i 's/./x/' "$encryptionConfigFile"
+rm "$encryptionConfigFile"
