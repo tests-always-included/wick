@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Internal: Takes the username and optional hostname.  Splits them out into
+# separate fields, defaulting the hostname to "localhost" when not specified.
+#
+# $1 - Target for the array of data
+# $2 - Username and hostname (user@host).
+#
+# Examples
+#
+#   mysqlServerSplitUsername destInfo user
+#   # destInfo=([0]="user" [1]="localhost")
+#
+#   mysqlServerSplitUsername destInfo user@%
+#   # destInfo=([0]="user" [1]="%")
+#
+# Returns the parsed information as an arry to $1.
+mysqlServerSplitUsername() {
+    local host target userhost username
+
+    wickGetArgument target 0 "$@"
+    wickGetArgument userhost 1 "$@"
+    host=${userhost#*@}
+    username=${userhost%%@*}
+
+    if [[ "$host" == "$username" ]]; then
+        host=localhost
+    fi
+
+    local "$target" && wickIndirectArray "$target" "$username" "$host"
+}

@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Grants privileges to a user.
+#
+# $1    - User that receives the permissions.  If a host is not specified,
+#         defaults to localhost.
+# $2    - Database.  Can be "db" or "db.table" or "db.*".  If no tables are
+#         specified, defaults to `*`.
+# --all - Same as --grant="ALL PRIVILEGES"
+#
+# Examples
+#
+#   # Read-only access to users database for tim@localhost
+#   mysqlServerGrant tim users
+#
+#   # Full access to users database for admin@localhost
+#   mysqlServerGrant addmin --all users
+#
+#   # Same as above
+#   mysqlServerGrant --grant="ALL PRIVILEGES" admin@localhost users.*
+#
+# Returns nothing.
+mysqlServerGrant() {
+    local db host userhost username
+
+    wickGetArgument userhost 0 "$@"
+    wickGetArgument db 1 "$@"
+    wickGetOption grant grant "$@"
+    wickGetOption all all "$@"
+    mysqlServerSplitUsername userhost "$userhost"
+    : "${grant:=SELECT}"
+
+    if [[ -n "$all" ]]; then
+        grant="ALL PRIVILEGES"
+    fi
+
+    : "${db:=*.*}"
+
+    if [[ "$db" == "${db#.*}" ]]; then
+        db="${db}.*"
+    fi
+
+    export host=${username[1]}
+    export username=${username[0]}
+    export grant
+    wickMakeFile --template --formula=mysql-server grant.mo | mysql-server-execute-sql mysql
+}

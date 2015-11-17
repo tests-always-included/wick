@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Creates a user.
+#
+# $1 - Username and hostname.  If no host is specified,localhost is assumed.
+# $2 - Password for the user.
+#
+# Examples
+#
+#   # Create a local user
+#   mysqlServerCreateUser bob 'Robert!'
+#
+#   # Create a user that can access the server from any remote machine
+#   mysqlServerCreateUser sally@% Fields
+#
+# Returns nothing.
+mysqlServerCreateUser() {
+    local host password userhost username
+
+    wickGetArgument userhost 0 "$@"
+    wickGetArgument password 1 "$@"
+    mysqlServerSplitUsername userhost "$userhost"
+    export host=${username[1]}
+    export username=${username[0]}
+
+    wickInfo "Creating mysql user: $username@$host"
+    wickMakeFile --template --formula=mysql-server create-user.mo | mysqlServerExecuteSql mysql
+}

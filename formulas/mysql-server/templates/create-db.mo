@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS {{name}};
+CREATE DATABASE {{name}};

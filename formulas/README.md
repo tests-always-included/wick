@@ -31,6 +31,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Lsof](lsof/README.md) - This installs the `lsof` command, which may be needed by other programs.
 * [Md5deep](md5deep/README.md) - Sets up md5deep and its related utilities.
 * [Mo](mo/README.md) - Installs [mo](https://github.com/tests-always-included/mo) mustache template parser into `/usr/local/bin/` and adds the ability to use "mo" templates with `wickMakeFile` (in the wick-base formula).
+* [MySQL Server](mysql-server/README.md) - Installs the MySQL relational database server.
 * [Nano](nano/README.md) - Installs `nano`, a tiny clone of Pico.
 * [Netcat](nc/README.md) - Installs `nc`, the netcat package.
 * [Netcat](netcat/README.md) - Installs the netcat (`nc`) package.

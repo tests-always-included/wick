@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Create a database.
+#
+# $1 - Name of the database.
+#
+# Examples
+#
+#   mysqlServerCreateDb potato
+#
+# Returns nothing.
+mysqlServerCreateDb() {
+    local name
+
+    wickGetArgument name 0 "$@"
+    wickInfo "Creating mysql database: $name"
+    wickMakeFile --template --formula=mysql-server create-db.mo | mysqlServerExecuteSql mysql
+}

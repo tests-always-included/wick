@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Run SQL against the MySQL server.
+#
+# $1    - Database to execute against.
+# stdin - SQL to execute.
+#
+# If the server is not started, this will automatically start the service, run
+# the SQL and stop the service.
+#
+# Examples
+#
+#   echo "FLUSH PRIVILEGES" | mysqlServerExecuteSql mysql
+#
+#   wickMakeFile --template --formula=mysql-server create-db.mo | \
+#       mysqlServerExecuteSql mysql
+#
+# Returns nothing.
+mysqlServerExecuteSql() {
+    local db killAfter
+
+    wickGetArgument db 0 "$@"
+    killAfter=false
+
+    if ! wickService is-running mysql; then
+        killAfter=true
+        wickService start mysql
+    fi
+
+    cat | mysql -u root "$db"
+
+    if $killAfter; then
+        wickService stop mysql
+    fi
+}

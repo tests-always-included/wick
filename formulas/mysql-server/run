@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Installs the MySQL relational database server.
+#
+# Sets a random password for the root account and adds ~root/.my.cnf so
+# you can still use the root account when you use `sudo mysql`.
+#
+# --start - Ensure the service is started at the end of the formula.  When
+#           omitted, this will force the server to be stopped instead.
+#
+# Examples
+#
+#   wickFormula mysql-server
+#
+# Returns nothing.
+wickInfo "Installing MySql server"
+wickGetOption start start "$@"
+wickPackage mysql
+wickPackage mysql-server
+wickRandomString password 30
+
+# Must start the service in order to configure the root password
+wickService start mysqld
+/usr/bin/mysqladmin -u root password "$password"
+wickMakeFile --template my.cnf.mo /root/.my.cnf --mode=0644
+wickService enable mysqld
+wickService force-state mysqld "$start"
