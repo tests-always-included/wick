@@ -21,5 +21,5 @@ if wickPackage --exists unscd; then
 else
     wickPackage nscd
     wickService enable nscd
-    wickService force-state unscd "$start"
+    wickService force-state nscd "$start"
 fi
