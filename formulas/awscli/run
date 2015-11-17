@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Installs Amazon's command-line tools.
 #
 # Depends on `pip`.

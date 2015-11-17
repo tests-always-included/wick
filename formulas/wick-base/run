@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # This formula only adds useful functions and explorers to Wick.  Nearly
 # everything depends on this formula.
 #

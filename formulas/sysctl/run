@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # This adds a function to Wick to set a system configuration setting.
 #
 # Examples
