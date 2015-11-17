@@ -1,7 +1,7 @@
-AWS Cli Formula
-===============
+AWS Cli
+=======
 
-Installs Amazon's cli tools.
+Installs Amazon's command-line tools.
 
 Depends on `pip`.
 

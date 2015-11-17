@@ -18,7 +18,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 
 * [Apache2](apache2/README.md) - Installs the Apache 2.x web server and enables named virtual hosts.  Provides functions to add virtual hosts and config files.
 * [At](at/README.md) - Installs and sets up the `at` package.
-* [AWS Cli Formula](awscli/README.md) - Installs Amazon's cli tools.
+* [AWS Cli](awscli/README.md) - Installs Amazon's command-line tools.
 * [Cron](cron/README.md) - Adds useful cron manipulation functions to the Wick environment.  Performs no actions.
 * [Curl](curl/README.md) - Ensures `curl` is installed
 * [Dig](dig/README.md) - Installs `dig` to query domain name system name servers.
@@ -38,7 +38,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [OpenJDK 1.7](openjdk-1.7/README.md) - Installs OpenJDK 1.7 JRE.
 * [OpenJDK 1.8 JDK Formula](openjdk-1.8-jdk/README.md) - Installs OpenJDK 1.8 JDK.
 * [OpenJDK 1.8](openjdk-1.8/README.md) - Installs OpenJDK 1.8 JRE.
-* [python-pip Formula](python-pip/README.md) - Installs the Python package manager, pip.
+* [Python-Pip](python-pip/README.md) - Installs the Python package manager, pip.
 * [Redis](redis/README.md) - Installs redis onto the box.
 * [Rvm](rvm/README.md) - This installs RVM from [http://get.rvm.io/](http://get.rvm.io/).  Passes all extra parameters to the installer.
 * [S3cmd](s3cmd/README.md) - This installs a tool to work with Amazon S3 from the command-line.

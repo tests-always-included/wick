@@ -1,5 +1,5 @@
-python-pip Formula
-==================
+Python-Pip
+==========
 
 Installs the Python package manager, pip.
 
