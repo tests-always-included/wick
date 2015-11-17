@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Internal: Restarts a service if it is running.
+#
+# $1 - Service name to possibly restart.
+#
+# Examples
+#
+#   wickServiceConditionalRestart tinyproxy
+#
+# Returns nothing.
+wickServiceConditionalRestart() {
+    local service
+
+    wickGetArgument service 0 "$@"
+
+    if wickService is-running "$service"; then
+        wickService restart "$service"
+    fi
+}

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Internal: Restarts or stops a service
+#
+# $1 - Service name to stop.
+# $2 - If empty, stops the service.  Otherwise it restarts the service.
+#
+# Examples
+#
+#   # Leaves the service stopped
+#   wickServiceForceState rsync
+#
+#   # Leaves the service started (forcing a restart)
+#   wickServiceForceState rsync anything
+#
+#   # Normal usage in other formulas that use --start
+#   wickGetOption start start "$@"
+#   wickServiceForceState the-service-name "$start"
+#
+# Returns nothing.
+wickServiceForceState() {
+    local service state
+
+    wickGetArgument service 0 "$@"
+    wickGetArgument state 1 "$@"
+
+    if [[ -n "$state" ]]; then
+        wickServiceRestart "$service"
+    else
+        wickServiceStop "$service"
+    fi
+}
+

@@ -35,9 +35,19 @@
 # Disable the service from starting at boot.  Does not stop the service if it
 # is already running.
 #
+#
 # ### `enable SERVICE`
 #
 # Enable the service at boot.  Does not start the service.
+#
+#
+# ### `force-state SERVICE STATE`
+#
+# Used by other scripts to force the service to be running or stopped.
+#
+# SERVICE - Name of service to manage.
+# STATE - If empty, the service is stopped.  If not empty the service is
+#         restarted (ensuring it is running properly).
 #
 #
 # ### `make-override [--force] SERVICE`
@@ -98,12 +108,24 @@ wickService() {
             wickServiceAdd "${unparsed[@]}" "${options[@]-}"
             ;;
 
+        conditional-restart)
+            wickServiceConditionalRestart "${unparsed[@]}" "${options[@]-}"
+            ;;
+
         disable)
             wickServiceDisable "${unparsed[@]}" "${options[@]-}"
             ;;
 
         enable)
             wickServiceEnable "${unparsed[@]}" "${options[@]-}"
+            ;;
+
+        force-state)
+            wickServiceForceState "${unparsed[@]}" "${options[@]-}"
+            ;;
+
+        is-running)
+            wickServiceIsRunning "${unparsed[@]}" "${options[@]-}"
             ;;
 
         make-override)

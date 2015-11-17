@@ -1,16 +1,22 @@
 #!/usr/bin/env bash
 # Installs dnsmasq and adds it as a nameserver.
 #
+# --start - Starts the service.  If not specified, the service will not be
+#           running when the formula finishes.
+#
 # Examples
 #
 #   wickFormula dnsmasq
 #
+#   wickFormula dnsmasq --start
+#
 # Returns nothing
+wickGetOption start start "$@"
 wickPackage dnsmasq
 wickMakeDir /etc/dnsmasq.d/
 wickSetConfigLine /etc/dnsmasq.conf "conf-dir=/etc/dnsmasq.d"
-wickService restart dnsmasq
 wickService enable dnsmasq
+wickService force-state dnsmasq "$state"
 
 # Insert dnsmasq into the resolver
 #

@@ -3,9 +3,13 @@ NSCD
 
 This installs a name server caching daemon.  The `unscd` package is preferred over `nscd`, but the two are essentially interchangeable.
 
+* --start - Starts the service.  If not specified, the service will not be running when the formula finishes.
+
 Examples
 
     wickFormula nscd
+
+    wickFormula nscd --start
 
 Returns nothing.
 

@@ -17,8 +17,5 @@ dnsmasqAddConfig() {
     NAME=$1
     shift
     echo "$@" > "/etc/dnsmasq.d/$NAME"
-
-    if pidof dnsmasq > /dev/null; then
-        wickService restart dnsmasq
-    fi
+    wickService conditional-restart dnsmasq
 }

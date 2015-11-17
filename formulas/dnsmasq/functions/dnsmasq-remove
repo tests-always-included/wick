@@ -15,6 +15,6 @@
 dnsmasqRemove() {
     if [[ -f "/etc/dnsmasq.d/$1" ]]; then
         rm -f "/etc/dnsmasq.d/$1"
-        wickService restart dnsmasq
+        wickService conditional-restart dnsmasq
     fi
 }

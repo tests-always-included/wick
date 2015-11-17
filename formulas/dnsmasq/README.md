@@ -3,9 +3,13 @@ Dnsmasq
 
 Installs dnsmasq and adds it as a nameserver.
 
+* --start - Starts the service.  If not specified, the service will not be running when the formula finishes.
+
 Examples
 
     wickFormula dnsmasq
+
+    wickFormula dnsmasq --start
 
 Returns nothing
 

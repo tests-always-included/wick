@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Internal: Determines if a service is running
+#
+# $1 - Service name to check.
+#
+# Examples
+#
+#   wickServiceIsRunning ssh
+#
+# Returns nothing.
+wickServiceIsRunning() {
+    local service
+
+    wickGetArgument service 0 "$@"
+    wickInfo "Checking if service is running: $service"
+    service "$service" status
+}

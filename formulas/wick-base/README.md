@@ -395,9 +395,18 @@ Use `wickMakeFile` to copy the formula file to `/etc/init.d/` for the named serv
 
 Disable the service from starting at boot.  Does not stop the service if it is already running.
 
+
 ### `enable SERVICE`
 
 Enable the service at boot.  Does not start the service.
+
+
+### `force-state SERVICE STATE`
+
+Used by other scripts to force the service to be running or stopped.
+
+* SERVICE - Name of service to manage.
+* STATE - If empty, the service is stopped.  If not empty the service is restarted (ensuring it is running properly).
 
 
 ### `make-override [--force] SERVICE`
@@ -453,6 +462,20 @@ Examples
 Returns nothing.
 
 
+`wickServiceConditionalRestart()`
+---------------------------------
+
+Internal: Restarts a service if it is running.
+
+* $1 - Service name to possibly restart.
+
+Examples
+
+    wickServiceConditionalRestart tinyproxy
+
+Returns nothing.
+
+
 `wickServiceDisable()`
 ----------------------
 
@@ -477,6 +500,43 @@ Internal: Enables a service so it starts at boot.
 Examples
 
     wickServiceEnable mongod
+
+Returns nothing.
+
+
+`wickServiceForceState()`
+-------------------------
+
+Internal: Restarts or stops a service
+
+* $1 - Service name to stop.
+* $2 - If empty, stops the service.  Otherwise it restarts the service.
+
+Examples
+
+    # Leaves the service stopped
+    wickServiceForceState rsync
+
+    # Leaves the service started (forcing a restart)
+    wickServiceForceState rsync anything
+
+    # Normal usage in other formulas that use --start
+    wickGetOption start start "$@"
+    wickServiceForceState the-service-name "$start"
+
+Returns nothing.
+
+
+`wickServiceIsRunning()`
+------------------------
+
+Internal: Determines if a service is running
+
+* $1 - Service name to check.
+
+Examples
+
+    wickServiceIsRunning ssh
 
 Returns nothing.
 
@@ -535,7 +595,7 @@ Internal: Restarts a service.
 
 Examples
 
-    wickServiceReload tinyproxy
+    wickServiceRestart tinyproxy
 
 Returns nothing.
 

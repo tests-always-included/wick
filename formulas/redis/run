@@ -2,6 +2,8 @@
 # Installs redis onto the box.
 #
 # --password=PASS - Sets a password for this redis installation
+# --start         - Starts the service.  If not passed, the service will not
+#                   be running when the formula ends.
 #
 # There are many other settings you can tweak for better performance beyond
 # what this formula set.  Each one should be tested to determine if they are
@@ -10,12 +12,13 @@
 #
 # Examples
 #
-#   wickFormula redis
+#   wickFormula redis --start
 #
 #   wickFormula redis --password="A very long password goes here"
 #
 # Returns nothing.
 wickInfo "Installing redis"
+wickGetOption start start "$@"
 wickGetArgument password password "$@"
 sysctlSet vm.overcommit_memory 1
 sysctlSet net.core.somaxconn 512
@@ -31,5 +34,5 @@ else
     wickSetConfigLine /etc/redis.conf "requirepass \"$password\""
 fi
 
-wickService restart redis
 wickService enable redis
+wickService force-state redis "$start"

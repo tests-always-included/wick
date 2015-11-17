@@ -14,5 +14,5 @@
 # Returns nothing.
 dnsmasqAdd() {
     wickMakeFile "$@" "/etc/dnsmasq.d"
-    wickService restart dnsmasq
+    wickService conditional-restart dnsmasq
 }

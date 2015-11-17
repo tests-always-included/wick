@@ -5,7 +5,7 @@
 #
 # Examples
 #
-#   wickServiceReload tinyproxy
+#   wickServiceRestart tinyproxy
 #
 # Returns nothing.
 wickServiceRestart() {
