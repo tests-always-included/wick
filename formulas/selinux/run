@@ -1,0 +1,33 @@
+#!/bin/bash
+# Configures SELinux into a given state.
+#
+# $1 - Desired state.
+#
+# Allowed states:
+#
+# * `disable`: Completely disables SELinux so that no rules will be enforced.
+#
+# Reconfigures [SELinux](https://en.wikipedia.org/wiki/Security-Enhanced_Linux)
+# so that it is disabled.
+#
+# Examples
+#
+#   wick-formula selinux disable
+#
+# Returns nothing.
+case "$1" in
+    disable)
+        if selinuxIsEnabled; then
+            wickDebug "Disabling SELinux."
+            echo "0" > /selinux/enforce
+            wickSetConfigLine "/etc/selinux/config" "SELINUX=disabled"
+        else
+            wickDebug "SELinux is alreay disabled or is not enforced."
+        fi
+
+        ;;
+
+    *)
+        wickError "Desired state '$1' is not supported for formula selinux"
+        exit 1
+esac

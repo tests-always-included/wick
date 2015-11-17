@@ -1,0 +1,27 @@
+#!/bin/bash
+# Returns success (0) when SELinux is installed and enabled.
+#
+# Examples
+#
+#   if selinuxIsEnabled; then
+#       wickWarn "This does not work well with SELinux enabled"
+#   fi
+#
+# Returns true if it is enabled and it is being enforced.
+selinuxIsEnabled() {
+    local ENFORCED
+
+    if ! wickCommandExists getenforce && ! wickCommandExists semanage; then
+        wickDebug "SELinux appears to be not installed"
+        return 1
+    fi
+
+    ENFORCED=$(getenforce)
+
+    if [[ "$ENFORCED" == "Disabled" ]] || [[ "$ENFORCED" == "Permissive" ]]; then
+        wickDebug "SELinux is not enforced"
+        return 1
+    fi
+
+    return 0
+}
