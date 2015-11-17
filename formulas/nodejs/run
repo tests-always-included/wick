@@ -1,0 +1,36 @@
+#!/bin/bash
+# Installs the latest Node.js (not a distribution's packaged version).
+#
+# Installs the latest version of node.js to the current machine.  The files
+# are installed into `/usr/local/` and symlinks are added to `/usr/`.  Does
+# not use the platform's packaged version and instead downloads it from
+# the source.
+#
+# Examples
+#
+#    wickFormula nodejs
+#
+# Returns nothing.
+wickInfo "Installing Node.js"
+
+wickDebug "Getting latest version number"
+nodeBoth=$(wickGetUrl http://nodejs.org/dist/latest/SHASUMS256.txt | grep 'linux-x64.tar.gz')
+nodeFile=$(echo "$nodeBoth" | awk '{ print $2 }')
+
+wickTempDir tempDir
+
+wickInfo "Downloading $nodeFile"
+wickGetUrl "http://nodejs.org/dist/latest/$nodeFile" "$tempDir/$nodeFile"
+
+wickInfo "Installing Node.js"
+cd /usr/local/
+tar xzf "$tempDir/$nodeFile" --strip=1 --no-overwrite-dir --owner=root
+
+wickInfo "Creating symlinks for binaries"
+for F in bin/node lib/node bin/npm bin/node-waf; do
+    rm -f "/usr/$F"
+
+    if [[ -e "/usr/local/$F" ]]; then
+        ln -s "/usr/local/$F" "/usr/$F"
+    fi
+done

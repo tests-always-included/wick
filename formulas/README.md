@@ -35,6 +35,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Nano](nano/README.md) - Installs `nano`, a tiny clone of Pico.
 * [Netcat](nc/README.md) - Installs `nc`, the netcat package.
 * [Netcat](netcat/README.md) - Installs the netcat (`nc`) package.
+* [Node.js](nodejs/README.md) - Installs the latest Node.js (not a distribution's packaged version).
 * [NSCD](nscd/README.md) - This installs a name server caching daemon.  The `unscd` package is preferred over `nscd`, but the two are essentially interchangeable.
 * [OpenJDK 1.7 JDK](openjdk-1.7-jdk/README.md) - Installs OpenJDK 1.7 JDK.
 * [OpenJDK 1.7](openjdk-1.7/README.md) - Installs OpenJDK 1.7 JRE.
