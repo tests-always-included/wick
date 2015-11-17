@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
-# Generates a one-time password and encrypted mount on top of a folder.
-#
-# $1 - Name of the folder to encrypt.
-#
-# If the folder contains files before encryption, they will be copied into
-# the encrypted folder and never removed from the underlying filesystem.
-# When unmounted, the encrypted files will be unusable.  The original
-# files (before encryption) will remain, but all changes to those files
-# will be lost.
-#
-# This command requires that you run it as root.
-#
-# Examples
-#
-#   /usr/local/bin/encrypt-folder /var/log/secret-logs
+#/ Generates a one-time password and encrypted mount on top of a folder.
+#/
+#/ $1 - Name of the folder to encrypt.
+#/
+#/ If the folder contains files before encryption, they will be copied into
+#/ the encrypted folder and never removed from the underlying filesystem.
+#/ When unmounted, the encrypted files will be unusable.  The original
+#/ files (before encryption) will remain, but all changes to those files
+#/ will be lost.
+#/
+#/ This command requires that you run it as root.
+#/
+#/ Examples
+#/
+#/   /usr/local/bin/encrypt-folder /var/log/secret-logs
+#/
+#/ Returns nothing.
 . /usr/local/lib/wick-infect
 
 encmount() {
@@ -50,11 +52,15 @@ encmount() {
 # Must be root
 if [[ "$(whoami)" != "root" ]]; then
     wickError "You need to be root."
+    echo ""
+    wickShowUsage "$0"
     exit 1
 fi
 
 if [[ -z "$1" ]]; then
     wickError "Specify directory to encrypt"
+    echo ""
+    wickShowUsage "$0"
     exit 1
 fi
 
