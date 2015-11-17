@@ -12,3 +12,4 @@
 #   wickFormula wick-base
 #
 # Returns nothing.
+exit 0

@@ -6,3 +6,4 @@
 #   wickFormula sysctl
 #
 # Returns nothing.
+exit 0
