@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+local opt val
+
+for opt in use-dns gssapi-auth password-auth agent-forwarding; do
+    wickGetOption val "$opt"
+    case "$val" in
+        true|no|"")
+            ;;
+
+        *)
+            wickError "Invalid option value to ssh-tweak formula."
+            wickError "--$opt is set to $val"
+            wickError "Valid options:  --$opt or --$opt=no"
+            exit 1
+            ;;
+    esac
+done

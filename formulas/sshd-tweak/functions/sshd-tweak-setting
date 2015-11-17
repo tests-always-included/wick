@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Internal: Changes a single setting for sshd based on the value from
+# an option passed to the formula.
+#
+# $1       - Setting to change
+# $2       - Name of the option
+# $options - All options passed to the formula.
+# $config  - Config file to update.
+#
+# Scans through `$options` for `--$2` or `--$2=no`.  If the value is "no",
+# disables the option (adds "$1 no" to the config file).  When the value
+# is "true" (because that's how wickGetOption works) it enables the setting
+# in the config file.
+#
+# Returns nothing.
+sshdTweakSetting() {
+    local val
+
+    wickGetOption val "$2" "$options"
+
+    case "$val" in
+        true)
+            wickInfo "Enabling $1"
+            wickSetConfigLine "$config" "$1 yes"
+            ;;
+
+        no)
+            wickInfo "Disabling $1"
+            wickSetConfigLine "$config" "$1 no"
+            ;;
+    esac
+}

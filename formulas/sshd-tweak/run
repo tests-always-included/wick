@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Alters the SSH server's settings.
+#
+# --agent-forwarding[=no] - Allow/deny agent forwarding.
+# --faster-login          - Enables faster login (disable DNS and GSSAPI).
+#                           Same as using `--use-dns=no --gssapi-auth=no`
+# --gssapi-auth[=no]      - Enable/disable GSSAPI authentication.
+# --password-auth[=no]    - Allow/deny password authentication mechanisms.
+# --use-dns[=no]          - Enable/disable DNS
+#
+# For `=no`, that means it is optional.  The default is to enable the
+# option.  You turn off the option by using "no" and turn on the option by not
+# specifying a value.  See the examples for more information.
+#
+# Each of these options will toggle one setting in the config file, unless
+# otherwise noted.
+#
+# If there were any changes to the file, sshd is reloaded.
+#
+# Examples
+#
+#   # Faster logins
+#   wickFormula sshd-tweak --faster-login
+#
+#   # Same as above
+#   wickFormula sshd-tweak --use-dns=no --gssapi-auth=no
+#
+#   # Enable agent forwarding and disable passwords
+#   wickFormula sshd-tweak --agent-forwarding --password-auth=no
+#
+# Returns nothing.
+export config="/etc/ssh/sshd_config"
+export options=("$@")
+
+wickInfo "Tweaking SSH configuration"
+wickHash hashBefore "$config"
+sshdTweakSetting UseDNS use-dns
+sshdTweakSetting GSSAPIAuthentication gssapi-auth
+sshdTweakSetting PasswordAuthentication password-auth
+sshdTweakSetting AllowAgentForwarding agent-forwarding
+
+wickGetOption fasterLogin faster-login "$@"
+
+if [[ -n $fasterLogin ]]; then
+    wickSetConfigLine "$config" "GSSAPIAuthentication no"
+    wickSetConfigLine "$config" "UseDNS no"
+fi
+
+wickHash hashAfter "$config"
+
+if [[ "$hashBefore" != "$hashAfter" ]]; then
+    if wickService is-running sshd; then
+        wickService reload sshd
+    fi
+fi

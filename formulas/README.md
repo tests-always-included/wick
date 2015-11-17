@@ -46,6 +46,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Rvm](rvm/README.md) - This installs RVM from [http://get.rvm.io/](http://get.rvm.io/).  Passes all extra parameters to the installer.
 * [S3cmd](s3cmd/README.md) - This installs a tool to work with Amazon S3 from the command-line.
 * [SELinux](selinux/README.md) - Configures SELinux into a given state.
+* [SSHD Tweak](sshd-tweak/README.md) - Alters the SSH server's settings.
 * [Sysctl](sysctl/README.md) - This adds a function to Wick to set a system configuration setting.
 * [Telnet](telnet/README.md) - Installs `telnet` if it is not already installed.  Consider netcat instead.
 * [Timezone](timezone/README.md) - Sets the time zone to a specified zone, defaulting to UTC.
