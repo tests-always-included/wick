@@ -16,7 +16,7 @@ wickPackage dnsmasq
 wickMakeDir /etc/dnsmasq.d/
 wickSetConfigLine /etc/dnsmasq.conf "conf-dir=/etc/dnsmasq.d"
 wickService enable dnsmasq
-wickService force-state dnsmasq "$state"
+wickService force-state dnsmasq "$start"
 
 # Insert dnsmasq into the resolver
 #
