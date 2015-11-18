@@ -31,9 +31,12 @@ fi
 
 wickMakeFile dnsmasq - | wickAddConfigSection /etc/dhcp/dhclient-enter-hooks "dnsmasq"
 
-
-if grep -q ^nameserver /etc/resolv.conf; then
-    sed --follow-symlinks -i '/^nameserver/inameserver 127.0.0.1' /etc/resolv.conf
-else
-    echo "nameserver 127.0.0.1" >> /etc/resolv.conf
+if "$start"; then
+    if grep -v -q "^nameserver 127.0.0.1" /etc/resolv.conf; then
+        if grep -q ^nameserver /etc/resolv.conf; then
+            sed --follow-symlinks -i '/^nameserver/inameserver 127.0.0.1' /etc/resolv.conf
+        else
+            echo "nameserver 127.0.0.1" >> /etc/resolv.conf
+        fi
+    fi
 fi
