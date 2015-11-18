@@ -43,5 +43,5 @@ mysqlServerGrant() {
     export host=${username[1]}
     export username=${username[0]}
     export grant
-    wickMakeFile --template --formula=mysql-server grant.mo | mysql-server-execute-sql mysql
+    wickMakeFile --template --formula=mysql-server grant.mo | mysqlServerExecuteSql mysql
 }

@@ -12,7 +12,7 @@
 #
 # Examples
 #
-#   wick-formula selinux disable
+#   wickFormula selinux disable
 #
 # Returns nothing.
 case "$1" in
