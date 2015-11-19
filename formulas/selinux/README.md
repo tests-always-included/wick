@@ -13,7 +13,7 @@ Reconfigures [SELinux](https://en.wikipedia.org/wiki/Security-Enhanced_Linux) so
 
 Examples
 
-    wick-formula selinux disable
+    wickFormula selinux disable
 
 Returns nothing.
 

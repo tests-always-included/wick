@@ -52,6 +52,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Timezone](timezone/README.md) - Sets the time zone to a specified zone, defaulting to UTC.
 * [Tomcat 7](tomcat-7/README.md) - Installs Tomcat 7, which depends on Java 1.7 or Java 1.8.
 * [Unzip](unzip/README.md) - Installs unzip.  This does not install zip automatically.
+* [Update Packages](update-packages/README.md) - Updates all packages on the system except kernel updates.
 * [Vim](vim/README.md) - Makes sure `vim` (enhanced `vi`)
 * [Wick-Base](wick-base/README.md) - This formula only adds useful functions and explorers to Wick.  Nearly everything depends on this formula.
 * [Wick-Infect](wick-infect/README.md) - Installs a Bash configuration at `/usr/local/lib/wick-infect` that shell scripts can source into their environment in order to get a copy of all of the library functions.
