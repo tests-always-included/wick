@@ -67,7 +67,11 @@ wickSetConfigLine() {
 
     wickTempDir TEMP
     TEMPFILE="$TEMP/add-line"
-    cat "$1" | grep -v "^$KEY[ =:]" > "$TEMPFILE" || true
+
+    # Run this in a subshell to eliminate all newlines at the end
+    # but then forcibly add one newline because of the "echo"
+    # on the left side.
+    echo "$(cat "$1" | grep -v "^$KEY[ =:]" || true)" > "$TEMPFILE"
     echo "$2" >> "$TEMPFILE"
 
     # Avoid using cp as this preserves file ownership and permissions
