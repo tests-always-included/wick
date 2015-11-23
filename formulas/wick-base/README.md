@@ -161,24 +161,6 @@ This searches the file for a section with the same name and removes it. Next it 
 Returns 0 on success, 1 on argument validation errors.
 
 
-`wickHash()`
-------------
-
-Hash a file and put its checksum into the destination variable.
-
-* $1 - Destination variable name.
-* $2 - Filename to hash.
-
-Currently this generates an MD5 checksum of a file, though the hashing mechanism can change at any time.  Only rely on the output from wickHash to detect when files change as opposed to determining if the contents are correct.  It is entirely possible, for instance, that this hash will include the last modified time or file size as well.
-
-Examples
-
-    wickHash hash /etc/passwd
-    echo "$hash"
-
-Returns nothing.
-
-
 `wickMakeDir()`
 ---------------
 
@@ -624,44 +606,6 @@ Internal: Stops a service.
 Examples
 
     wickServiceStop rsync
-
-Returns nothing.
-
-
-`wickSetConfigLine()`
----------------------
-
-Adds or updates a line in a config file.  This is a very basic tool that ensures a line exists in a file, not that it is in any particular order.
-
-* $1 - File to update.
-* $2 - The full line to add.  It will be placed at the end.
-* $3 - Optional; the key that we are setting.  Defaults to a portion of `$2`.
-
-The line is not repeatedly added to the config file.  First, we attempt to get the "key" for the line, either automatically or use a value that is passed in.  Most config files use a key value of some sort and this script usually can detect them - more on this later.  Next, we remove any lines with the same key from the file and finally we append the line you want onto the file.
-
-The key can be automatically detected.  It is anything in LINE that is to the left of a space, colon, or equals.  If you are having difficulty understanding what is used as the key, check out the examples.  I have listed what `wickSetConfigLine` uses as the key.
-
-This is not suitable for updating shell scripts and other similar-looking files.  For instance, if you tried to modify `/etc/rc.local` and add two lines (`bash /script1` and `bash /script2`) then only one would ever exist in the file because "bash" would be considered the key.  That's why you can specify the key as `$3`.  However, even specifying the key does not solve all problems because typically `/etc/rc.local` will have `exit` as the last line by default, thus your newly added lines will be after the `exit` command and would never be executed.
-
-Example:
-
-    # This wipes out any previous settings for 127.0.0.1 and replaces them.
-    # Key is "127.0.0.1"
-    wickSetConfigLine /etc/hosts "127.0.0.1 localhost some-funky-name"
-
-    # Set the bind IP for mongo
-    # Detects the current IP using `wickGetIfaceIp`
-    # Key is "bind_ip"
-    wickSetConfigLine /etc/mongod.conf "bind_ip=$(wickGetIfaceIp)"
-
-    # Update cloud-init
-    # Key is "preserve_hostname"
-    wickSetConfigLine /etc/cloud/cloud.cfg "preserve_hostname: true"
-
-    # Update DHCP settings
-    # Key is "prepend nameservers" because we specify it as a third
-    # parameter.
-    wickSetConfigLine /etc/dhcp/dhclient.conf       "prepend nameservers 127.0.0.1" "prepend nameservers"
 
 Returns nothing.
 
