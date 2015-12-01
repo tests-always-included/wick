@@ -1,2 +1,3 @@
 #!/usr/bin/env bash
 wickFormula mo
+wickFormula mysql-client
