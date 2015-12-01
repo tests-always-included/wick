@@ -14,7 +14,6 @@
 # Returns nothing.
 wickInfo "Installing MySql server"
 wickGetOption start start "$@"
-wickPackage mysql
 wickPackage mysql-server
 wickRandomString password 30
 
