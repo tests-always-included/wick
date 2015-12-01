@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Installs the mysql client for mysql-server
+#
+# Examples
+#
+#   wickFormula mysql-client
+#
+# Returns nothing.
+wickInfo "Installing MySql client"
+packageName="mysql"
+
+wickExplorer result wick-base os
+
+if [[ "ubuntu" == "$result" ]]; then
+    packageName="mysql-client"
+fi
+
+wickPackage "$packageName"
