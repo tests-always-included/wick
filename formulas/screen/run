@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Installs GNU screen package.
+#
+# Examples
+#
+#   wickFormula screen
+#
+# Returns nothing
+wickPackage screen
