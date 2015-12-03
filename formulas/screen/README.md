@@ -1,10 +1,15 @@
 Screen
 ======
 
-Installs GNU screen package.
+-n Installs GNU screen package.
 
-Examples
+
+-n Examples
+
 
     wickFormula screen
 
-Returns nothing
+-n Returns nothing
+
+
+
