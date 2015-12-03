@@ -98,10 +98,10 @@ generate_markdown() {
             fi
 
             if echo "$line" | grep -q "^$NOT_SPACE_RE"; then
-                echo -n "* $line"
+                /usr/bin/env echo -n "* $line"
             else
-                echo -n "    * "
-                echo -n "$line" | sed "s/^$SPACE_RE//"
+                /usr/bin/env echo -n "    * "
+                /usr/bin/env echo -n "$line" | sed "s/^$SPACE_RE//"
             fi
 
             last_was_option=true
@@ -122,7 +122,7 @@ generate_markdown() {
                 "  "*)
                     # Examples and option continuation
                     if $last_was_option; then
-                        echo -n "$line" | sed "s/^ */ /"
+                        /usr/bin/env echo -n "$line" | sed "s/^ */ /"
                         did_newline=false
                     else
                         echo "  $line"
@@ -135,12 +135,12 @@ generate_markdown() {
                     case "$last" in
                         "")
                             # Start a new paragraph
-                            echo -n "$line"
+                            /usr/bin/env echo -n "$line"
                             ;;
 
                         *)
                             # Continue this line
-                            echo -n " $line"
+                            /usr/bin/env echo -n " $line"
                             ;;
                     esac
                     did_newline=false
