@@ -46,7 +46,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Redis](redis/README.md) - Installs redis onto the box.
 * [Rvm](rvm/README.md) - This installs RVM from [http://get.rvm.io/](http://get.rvm.io/).  Passes all extra parameters to the installer.
 * [S3cmd](s3cmd/README.md) - This installs a tool to work with Amazon S3 from the command-line.
-* [Screen](screen/README.md) - -n Installs GNU screen package.
+* [Screen](screen/README.md) - Installs GNU screen package.
 * [SELinux](selinux/README.md) - Configures SELinux into a given state.
 * [SSHD Tweak](sshd-tweak/README.md) - Alters the SSH server's settings.
 * [Sysctl](sysctl/README.md) - This adds a function to Wick to set a system configuration setting.
