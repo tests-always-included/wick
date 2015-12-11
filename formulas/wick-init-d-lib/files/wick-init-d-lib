@@ -398,7 +398,7 @@ start() {
 
     if ! isRunning; then
         echo " unable to start $NAME, see $LOGFILE"
-        startSail
+        startFail
         return 1
     fi
 
