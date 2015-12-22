@@ -31,7 +31,12 @@ wick() {
 
     # Load all library functions so the commands have access to them.
     # Wick commands need library functions to use `wickOnLoad`.
-    wickLoadLib "."
+    if ! wickLoadLib .; then
+        if ! wickLoadLib ..; then
+            echo "Unable to load library functions." >&2
+            exit 1
+        fi
+    fi
 
     # Enable the full strict mode.
     wickStrictMode
@@ -92,23 +97,30 @@ wickIsValidScript() {
 #
 # Returns nothing.
 wickLoadLib() {
-    local file
+    local file loaded
+
+    loaded=false
 
     if [[ -d "$1/parent" ]]; then
-        wickLoadLib "$1/parent"
+        if wickLoadLib "$1/parent"; then
+            loaded=true
+        fi
     fi
 
     if [[ -d "$1/lib" ]]; then
         for file in "$1/lib/"*; do
             if wickIsValidScript "$file"; then
-                if [[ ! -z "$DEBUG" ]]; then
+                if [[ ! -z "${DEBUG-}" ]]; then
                     echo "Loading library: $file"
                 fi
 
                 . "$file"
+                loaded=true
             fi
         done
     fi
+
+    $loaded
 }
 
 
