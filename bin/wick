@@ -25,7 +25,7 @@ WICK_DIR="${0%/*}"
 wick() {
     local cmd line onLoadCommands
 
-    cmd=$1
+    cmd=${1-}
     shift || :
     onLoadCommands=()
 
