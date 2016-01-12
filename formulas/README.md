@@ -19,6 +19,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Apache2](apache2/README.md) - Installs the Apache 2.x web server and enables named virtual hosts.  Provides functions to add virtual hosts and config files.
 * [At](at/README.md) - Installs and sets up the `at` package.
 * [AWS Cli](awscli/README.md) - Installs Amazon's command-line tools.
+* [Consul-Locker](consul-locker/README.md) - Adds [Consul-Locker](https://github.com/fidian/consul-locker) to `/usr/local/bin/` to enable process locking via Consul.
 * [Cron](cron/README.md) - Adds useful cron manipulation functions to the Wick environment.  Performs no actions.
 * [Curl](curl/README.md) - Ensures `curl` is installed
 * [Dig](dig/README.md) - Installs `dig` to query domain name system name servers.

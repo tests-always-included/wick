@@ -1,0 +1,420 @@
+#!/usr/bin/env bash
+#/ Bootstrap a Mongo so it joins into an auto-discovering cluster
+#/
+#/    ./bootstrap-mongodb [--help] [--iface=IFACE] serviceName [replicaSetName]
+#/
+#/ --help         - Displays this help message.
+#/ --iface=IFACE  - Optionally specify the interface to use.
+#/ serviceName    - Queries Consul for other members of this service to see if
+#/                  we should be clustering or promoting to master.
+#/ replicaSetName - Name to initialize for the replica set.  If not set,
+#/                  defaults to `rs0`.
+#/
+#/ Requires curl and jq.
+#/
+#/ Mongo must be set up to run in a replica set.  Only the bits where you
+#/ add the instance to a replica set is handled by this program.  Mongo
+#/ also must use the default port of 27107.
+#/
+#/ The iface that is used to start the replica set must be resolvable in
+#/ `/etc/hosts` file or through DNS.  Since this script focuses on IPs,
+#/ editing `/etc/hosts` to list your IP address is the only option.
+#/
+#/ This also requires a pretty fast health check so when the first machine
+#/ comes up and becomes master, the second machine can query Consul to see
+#/ who is the master and will get results.
+#/
+#/ Return codes:
+#/   0 - Everything worked.
+#/   1 - Missing a required command.
+#/   2 - Problem parsing arguments.
+#/   3 - Unable to communicate with consul.
+#/   4 - Problem parsing JSON or finding values in JSON.
+#/   5 - Not enough setting or invalid configuration.
+#/   6 - Some strange error when trying to get the replica set working.
+
+# Switch the local node to be the master of a replica set.
+becomeMaster() {
+    local isOk result
+
+    debug "Promoting to be the master of the replica set"
+    result=$(runMongo "$localAddress" 'rs.initiate({"_id":"'"$replicaSetName"'","members":[{"_id":0,"host":"'"$localAddress"':27017"}]})')
+    isOk=$(echo "$result" | jq -r .ok 2>/dev/null || :)
+
+    if [[ "$isOk" == "1" ]]; then
+        debug "Success"
+    else
+        debug "Failed to promote - Abort"
+        return 6
+    fi
+}
+
+
+# Contact a mongo instance and ask them to include us in their replication.
+#
+# $1 - A replica set member's IP address.
+becomeMember() {
+    local isOk result
+
+    debug "Adding local instance to the replica set $replicaSetName/$2"
+    result=$(runMongo "$replicaSetName/$1" "rs.add(\"$localAddress\")")
+    isOk=$(echo "$result" | jq -r .ok 2>/dev/null || :)
+
+    if [[ "$isOk" == "1" ]]; then
+        debug "Success"
+    else
+        debug "Failed to join - Abort"
+        return 6
+    fi
+}
+
+
+# Confirm that curl and jq are installed.
+#
+# Returns true on success, 1 on any error.
+checkForNecessaryCommands() {
+    local result
+
+    result=0
+    debug "Checking for necessary commands"
+
+    if ! hash curl > /dev/null 2>&1; then
+        echo "Curl not found on the system." >&2
+        result=1
+    fi
+
+    if ! hash jq > /dev/null 2>&1; then
+        echo "jq not found on the system." >&2
+        result=1
+    fi
+
+    return $result
+}
+
+
+# Ensure we have the necessary arguments to the script.
+#
+# Returns true on success, 5 on any error.
+checkForNecessarySettings() {
+    local result
+
+    result=0
+    debug "Checking configuration"
+
+    if [[ -z "$serviceName" ]]; then
+        echo "Must pass a service name."
+        result=5
+    fi
+
+    return $result
+}
+
+
+# Makes sure the current machine is added to consul.  Because this only
+# can get executed when there were no results and the only one that should
+# be added to the results is our own IP, we can just wait for `getMemberIp`
+# to return a non-empty string.
+confirmAddedToConsul() {
+    local ip result
+
+    debug "Confirming at least one node is node added to consul"
+    result=$(consulGet "health/service/$serviceName?passing")
+    debug "$result"
+    ip=$(echo "$result" | jq '.[].Node.Address' -r)
+    debug "IPs: $ip"
+
+    if [[ -z "$ip" ]]; then
+        return 1
+    fi
+}
+
+
+# Return success when the local mongo is ready
+confirmMongoReady() {
+    local isOk result
+
+    # Check the db.stats
+    result=$(runMongo "$localAddress" 'db.stats()')
+    isOk=$(echo "$result" | jq -r .ok 2>/dev/null || :)
+
+    if [[ "$isOk" != 1 ]]; then
+        debug "Database is not ready: $isOk"
+        return 1
+    fi
+
+    debug "Mongo database is ready"
+}
+
+
+# Return success when the local mongo's replica status is good.
+#
+# The resulting "JSON-esque" data includes a line like this:
+#
+#   "date" : ISODate("2015-12-30T19:29:07.480Z"),
+#
+# That is not valid JSON and so jq will die on that bit.  That's why we
+# use `sed` to manipulate ISODate chunks and similar things with Timestamp.
+confirmReplicaReady() {
+    local myState result
+
+    # Check replicaset status
+    result=$(runMongo "$localAddress" 'rs.status()')
+    myState=$(echo "$result" | sed 's/ISODate("\([^"]*\)")/"\1"/g' | sed 's/Timestamp(\([^)]*\))/"Timestamp \1"/g' | jq -r .myState 2>/dev/null || :)
+
+    if [[ "$myState" != 1 ]] && [[ "$myState" != 2 ]]; then
+        debug "Replica set is not ready: $myState"
+        return 2
+    fi
+
+    debug "Replica set is ready: $myState"
+}
+
+
+# Gets a URL from consul.
+#
+# $1 - Remainder of URL.
+#
+# Returns 3 on error.
+consulGet() {
+    debug "GET $consulEndpoint$1"
+    curl -L -f -s "$consulEndpoint$1" || return 3
+}
+
+
+# Writes a message to stderr if DEBUG is set to a non-empty value.
+debug() {
+    if [[ -n "${DEBUG-}" ]]; then
+        echo "$*" >&2
+    fi
+}
+
+
+# Delay until the local mongo is ready
+delayUntilReady() {
+    # This next line is detestable but necessary.  Without this line,
+    # mongo will report that it's up and ready even though it may not have
+    # joined a replica set or did not promote itself to master fully.
+    # With this line it gives mongo enough time to start the reconfiguration
+    # process so it will report that it's not ready until replication
+    # or promotion is complete.
+    debug "Delaying so mongo will start reconfiguring internally"
+    sleep 10
+
+    waitUntilMongoReady 1800
+
+    if timebox 1800 confirmReplicaReady; then
+        debug "Mongo replica set is ready"
+    else
+        debug "Mongo replica set was never ready"
+        return 6
+    fi
+
+    debug "Waiting until we are added to the set"
+
+    if timebox 60 confirmAddedToConsul; then
+        debug "Successfuly found a server in Consul"
+    else
+        debug "Failed to find a server in consul - aborting"
+        return 6
+    fi
+}
+
+
+# Enables a sort of "strict mode" for bash.
+enableStrictMode() {
+    debug "Enabling strict mode"
+    set -eEu -o pipefail
+    IFS=$'\n\t'
+}
+
+
+# Gets a single IP address if there's a member of a service
+getMemberIp() {
+    local ip result
+
+    result=$(consulGet "health/service/$1?passing")
+    debug "$result"
+    ip=$(echo "$result" | jq 'map(select(.Node.Node != "'"$(hostname)"'"))[].Node.Address' -r | head -n 1)
+    debug "IP: $ip"
+}
+
+
+# Gets the address that mongo is using.  This can come from a config file
+# as "bindIp", from a JSON config file as net.bindIp or default to 0.0.0.0,
+# meaning all interfaces.
+getMongoBoundAddress() {
+    local host whitespacePattern
+
+    debug "Detecting mongo's address"
+
+    # Pattern used for grep to detect optional whitespace and
+    # used in sed for eliminating whitespace
+    whitespacePattern='[ '$'\t'']*'
+
+    # Attempt to load JSON
+    host=$(jq -r '.net.bindIp // "localhost"' /etc/mongod.conf 2>/dev/null || :)
+    debug "JSON detection result: $host"
+
+    # If it failed, try again and look for the older style configuration
+    if [[ -z "$host" ]]; then
+        host=$(grep "^${whitespacePattern}bindIp${whitespacePattern}=" /etc/mongod.conf | cut -d '=' -f 2 | sed "s/${whitespacePattern}//g")
+        debug "Old config detection result: $host"
+    fi
+
+    # Unfortunately, no luck.  Fall back to an IP assigned to the designated
+    # iface.
+    if [[ -z "$host" ]] || [[ "$host" == "0.0.0.0" ]]; then
+        host=$(getMyIp)
+        debug "Fall back to iface IP: $host"
+    fi
+
+    echo "$host"
+}
+
+
+# Returns the IP address assigned to the current machine
+getMyIp() {
+    local ifconfigCommand ip
+
+    ifconfigCommand=(ifconfig -v)
+
+    if [[ -n "$iface" ]]; then
+        ifconfigCommand[${#ifconfigCommand[@]}]="$iface"
+    fi
+
+    ip=$("${ifconfigCommand[@]}" 2>/dev/null | grep inet\  | grep -v '[: ]127\.' | head -n 1 || echo "")
+    ip=${ip#*inet addr:}
+    ip=${ip#*inet }
+    ip=${ip%% *}
+
+    if [[ -z "$ip" ]]; then
+        return 1
+    fi
+
+    echo "$ip"
+}
+
+
+# Parses arguments and sets global variables.
+#
+# Returns 2 if there are problems parsing
+parseArguments() {
+    local myself
+
+    debug "Parsing arguments"
+    myself=$1
+    shift
+
+    while [[ "$1" == -* ]]; do
+        case "$1" in
+            -h | --help)
+                grep "^#/" "$myself" | cut -b 4-
+                exit 0
+                ;;
+
+            --iface=*)
+                iface=${iface#*=}
+                debug "Setting iface: $iface"
+                ;;
+
+            -*)
+                echo "Unknown option: $1"
+                exit 2
+                ;;
+        esac
+
+        shift
+    done
+    serviceName=$1
+}
+
+
+# Run a Mongo command
+#
+# $1 - Host
+# $2 - Query
+runMongo() {
+    local result
+
+    debug "Mongo ($1): $2"
+
+    # This is somewhat terrible.  It is difficult to get Mongo to dump
+    # structures when passing the queries on the command line.  This passes
+    # it in via stdin.  That's great, but there's some header stuff that
+    # Mongo always prints out.  So, I first make Mongo write out CUT HERE
+    # as a delimiter, then it executes the command.  Performance impact
+    # is negligible.  The newline before the CUT_HERE ensures there is a
+    # blank line before things get kicked off.
+    result=$(echo '""'$'\n''"CUT_HERE"'$'\n'"$2" | mongo --quiet --host "$1" | sed '1,/^CUT_HERE$/d' || :)
+    debug "Result:  $result"
+
+    echo "$result"
+}
+
+
+# Timebox a script.  Repeatedly call a function until the given time elaspes
+# or the function returns true.  No precautions are made to prevent the
+# function from consuming time well beyond the timebox.
+#
+# $1 - Maximum seconds to wait.
+# $2 - Function to call
+#
+# Returns 0 on success or 126 if the command never returned successfully
+# during the time period.
+timebox() {
+    local stopTime
+
+    debug "Timeboxing for $1 seconds: $2"
+    stopTime=$(($(date +%s) + $1))
+
+    while ! $2; do
+        sleep 5
+
+        if [[ "$(date +%s)" -gt "$stopTime" ]]; then
+            return 126
+        fi
+    done
+}
+
+
+# Wait an amount of time to see if Mongo is ready for connections.
+#
+# $1 - Number of seconds to wait
+#
+# Returns true on success, 6 on failure
+waitUntilMongoReady() {
+    debug "Waiting until mongo is ready"
+
+    if timebox "$1" confirmMongoReady; then
+        debug "Mongo is ready"
+    else
+        debug "Mongo was never ready"
+        return 6
+    fi
+}
+
+
+consulEndpoint=http://localhost:8500/v1/
+iface=
+localAddress=
+replicaSetName=rs0
+serviceName=
+
+# Preparation
+enableStrictMode
+parseArguments "$0" "$@"
+checkForNecessaryCommands
+checkForNecessarySettings
+
+# Decide if we are clustering or not
+localAddress=$(getMongoBoundAddress)
+waitUntilMongoReady 300
+memberIp=$(getMemberIp $serviceName)
+
+if [[ -z "$memberIp" ]]; then
+    becomeMaster
+else
+    becomeMember "$memberIp"
+fi
+
+delayUntilReady

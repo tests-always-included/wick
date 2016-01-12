@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Adds [Consul-Locker](https://github.com/fidian/consul-locker) to
+# `/usr/local/bin/` to enable process locking via Consul.
+#
+# Examples
+#
+#     wickFormula consul-locker
+#
+# Returns nothing.
+wickMakeFile consul-locker /usr/local/bin/ --mode=0744
