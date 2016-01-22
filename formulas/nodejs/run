@@ -13,14 +13,30 @@
 # Returns nothing.
 wickInfo "Installing Node.js"
 
+wickGetOption VERSION version "$@"
+
+if [[ -n "$VERSION" ]]; then
+    wickDebug "Grabbing the most recent 4 branch"
+
+    # I'd prefer to do this completely with JQ, but the JQ formula is currently
+    # only installing version 1.4, but test() isn't included until 1.5. There
+    # is an issue raised against JQ and the JQ wick formula, when these are
+    # resolved, this can be removed and the line below used instead.
+    DIR=$(wickGetUrl http://nodejs.org/dist/index.json | jq -r  'sort_by(.date)[] | .version ' | grep v"$VERSION"  | tail -1 )
+    #DIR=$(wickGetUrl http://nodejs.org/dist/index.json | jq -r  'sort_by(.date)  | map(select(.version | test("^v'$VERSION'\\."))) | last | .version')
+else
+    wickDebug "Grabbing the most recent branch and version"
+    DIR="latest"
+fi
+
 wickDebug "Getting latest version number"
-nodeBoth=$(wickGetUrl http://nodejs.org/dist/latest/SHASUMS256.txt | grep 'linux-x64.tar.gz')
+nodeBoth=$(wickGetUrl http://nodejs.org/dist/${DIR}/SHASUMS256.txt | grep 'linux-x64.tar.gz')
 nodeFile=$(echo "$nodeBoth" | awk '{ print $2 }')
 
 wickTempDir tempDir
 
 wickInfo "Downloading $nodeFile"
-wickGetUrl "http://nodejs.org/dist/latest/$nodeFile" "$tempDir/$nodeFile"
+wickGetUrl "http://nodejs.org/dist/${DIR}/$nodeFile" "$tempDir/$nodeFile"
 
 wickInfo "Installing Node.js"
 cd /usr/local/
