@@ -40,5 +40,5 @@ case "$arch" in
 esac
 
 wickInfo "Downloading and installing jq"
-wickGetUrl "http://stedolan.github.io/jq/download/$DIR/jq" /usr/bin/jq
+wickGetUrl "http://stedolan.github.io/jq-1.5/download/$DIR/jq" /usr/bin/jq
 chmod 755 /usr/bin/jq
