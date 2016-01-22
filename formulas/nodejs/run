@@ -9,6 +9,8 @@
 # Examples
 #
 #    wickFormula nodejs
+#    wickFormula nodejs --version=4
+#    wickformula nodejs --version=5.1
 #
 # Returns nothing.
 wickInfo "Installing Node.js"
@@ -16,7 +18,7 @@ wickInfo "Installing Node.js"
 wickGetOption VERSION version "$@"
 
 if [[ -n "$VERSION" ]]; then
-    wickDebug "Grabbing the most recent 4 branch"
+    wickDebug "Grabbing the most recent $VERSION branch"
 
     DIR=$(wickGetUrl http://nodejs.org/dist/index.json | jq -r  'sort_by(.date)  | map(select(.version | test("^v'$VERSION'\\."))) | last | .version')
 else
