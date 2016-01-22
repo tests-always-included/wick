@@ -11,11 +11,11 @@ wickExplorer arch wick-base arch
 
 case "$os" in
     centos|redhat|ubuntu)
-        DIR="linux"
+        NAME="linux"
         ;;
 
     osx)
-        DIR="osx"
+        NAME="osx"
         ;;
 
     *)
@@ -26,11 +26,11 @@ esac
 
 case "$arch" in
     amd64)
-        DIR="${DIR}64"
+        NAME="${NAME}64"
         ;;
 
     ia32)
-        DIR="${DIR}32"
+        NAME="${NAME}32"
         ;;
 
     *)
@@ -40,5 +40,5 @@ case "$arch" in
 esac
 
 wickInfo "Downloading and installing jq"
-wickGetUrl "http://stedolan.github.io/jq-1.5/download/$DIR/jq" /usr/bin/jq
+wickGetUrl "https://github.com/stedolan/jq/releases/download/jq-1.5/jq-$NAME" /usr/bin/jq
 chmod 755 /usr/bin/jq
