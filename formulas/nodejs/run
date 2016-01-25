@@ -9,18 +9,31 @@
 # Examples
 #
 #    wickFormula nodejs
+#    wickFormula nodejs --version=4
+#    wickformula nodejs --version=5.1
 #
 # Returns nothing.
 wickInfo "Installing Node.js"
 
+wickGetOption VERSION version "$@"
+
+if [[ -n "$VERSION" ]]; then
+    wickDebug "Grabbing the most recent $VERSION branch"
+
+    DIR=$(wickGetUrl http://nodejs.org/dist/index.json | jq -r  'sort_by(.date)  | map(select(.version | test("^v'$VERSION'\\."))) | last | .version')
+else
+    wickDebug "Grabbing the most recent branch and version"
+    DIR="latest"
+fi
+
 wickDebug "Getting latest version number"
-nodeBoth=$(wickGetUrl http://nodejs.org/dist/latest/SHASUMS256.txt | grep 'linux-x64.tar.gz')
+nodeBoth=$(wickGetUrl http://nodejs.org/dist/${DIR}/SHASUMS256.txt | grep 'linux-x64.tar.gz')
 nodeFile=$(echo "$nodeBoth" | awk '{ print $2 }')
 
 wickTempDir tempDir
 
 wickInfo "Downloading $nodeFile"
-wickGetUrl "http://nodejs.org/dist/latest/$nodeFile" "$tempDir/$nodeFile"
+wickGetUrl "http://nodejs.org/dist/${DIR}/$nodeFile" "$tempDir/$nodeFile"
 
 wickInfo "Installing Node.js"
 cd /usr/local/
