@@ -122,6 +122,6 @@ To build the `README.md` files from the content of the other files, run `make`. 
 [Tests]: tests/README.md
 [Travis CI]: http://travis-ci.org/tests-always-included/wick
 [Travis-Image]: https://secure.travis-ci.org/tests-always-included/wick.png
-[wickFormula]: bin/README.md
-[wickExplorer]: bin/README.md
+[wickFormula]: bin/README.md#wickformula
+[wickExplorer]: bin/README.md#wickexplorer
 [wick-infect]: formulas/wick-infect/README.md

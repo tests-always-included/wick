@@ -223,4 +223,4 @@ The files contained within the `templates/` folder are extremely similar to the 
 [strict mode]: ../doc/bash-strict-mode.md
 [templates]: ../doc/templates.md
 [wick-base]: wick-base/README.md
-[wickExplorer]: ../bin/README.md
+[wickExplorer]: ../bin/README.md#wickexplorer
