@@ -9,7 +9,8 @@ WICK_FORMULA_LIST=()
 WICK_FORMULA_LIST_WITH_ARGS=()
 
 # Public: Commands to execute in order to make the formula execute.  This
-# will only add an entry if there is a "run" script.
+# will only add an entry if there is a "run" script.  The command may have
+# arguments appended so try to avoid logging these.
 WICK_FORMULA_COMMANDS=()
 
 # Public: Mark a formula as required for a given role or as a dependency
