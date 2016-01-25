@@ -1,3 +1,4 @@
+CTAGS:=$(shell ctags --version 2>/dev/null)
 SHELL=/bin/bash
 SCRIPTS=bin/w* formulas/*/depends formulas/*/functions/* formulas/*/run lib/w*
 .PHONY: clean
@@ -21,13 +22,22 @@ formulas/%/README.md: formulas/%/run $$(wildcard formulas/%/functions/*) $$(wild
 	util/build-formula-readme $@ > $@.tmp
 	mv $@.tmp $@
 
-TAGS: $(SCRIPTS)
+perms:
 	chmod 755 $(SCRIPTS)
-	ctags -e --recurse $(SCRIPTS)
 
-tags: $(SCRIPTS)
-	chmod 755 $(SCRIPTS)
+TAGS: $(SCRIPTS) perms
+ifdef CTAGS
+	ctags -e --recurse $(SCRIPTS)
+else
+	$(warning ctags is not installed - not building $@)
+endif
+
+tags: $(SCRIPTS) perms
+ifdef CTAGS
 	ctags --recurse $(SCRIPTS)
+else
+	$(warning ctags is not installed - not building $@)
+endif
 
 clean:
 	#
