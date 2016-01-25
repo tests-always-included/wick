@@ -6,10 +6,15 @@ WICK_COMMANDS=()
 # Internal: List of helpful messages for what each command does.
 WICK_COMMAND_HELP=()
 
+# Internal: Function to run when the command with the same index is executed.
+# Note:  WICK_COMMANDS[n] relates to WICK_COMMAND_FUNCTIONS[n].
+WICK_COMMAND_FUNCTIONS=()
+
 # Public: Adds a command to the help system
 #
 # $1 - Name of command
-# $2 - Help description (optional)
+# $2 - Function to execute
+# $3 - Help description (optional)
 #
 # Examples
 #
@@ -20,9 +25,10 @@ wickAddCommand() {
     local line
 
     WICK_COMMANDS[${#WICK_COMMANDS[@]}]=$1
+    WICK_COMMAND_FUNCTIONS[${#WICK_COMMAND_FUNCTIONS[@]}]=$2
 
-    if [[ ! -z "$2" ]]; then
-        printf -v line "  %-15s  %s" "$1" "$2"
+    if [[ ! -z "$3" ]]; then
+        printf -v line "  %-15s  %s" "$1" "$3"
         WICK_COMMAND_HELP[${#WICK_COMMAND_HELP[@]}]=$line
     fi
 }

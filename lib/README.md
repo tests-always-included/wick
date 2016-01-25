@@ -103,6 +103,35 @@ Examples
 Returns nothing.
 
 
+`wickArraySearch()`
+-------------------
+
+Public: Check if a value is in an array.  Returns the index of the value if found.  If it is not in the array, this function returns an error.
+
+* $1   - Destination value for storing the index that is found.
+* $2   - The value to seek in the array.
+* $3-@ - Array elements.
+
+Examples
+
+    local index list
+
+    list=(one two three "four four")
+
+    if wickArraySearch index one "${list[@]}"; then
+        # This one works
+        echo "one is found at index $index"
+    fi
+
+    if wickInArray index four "${list[@]}"; then
+        echo "four should not be found"
+        echo "'four four' with a space would be found"
+        echo "$index will not be updated"
+    fi
+
+Returns success if $1 is found in the list of other arguments.
+
+
 `wickCommandExists()`
 ---------------------
 

@@ -71,13 +71,20 @@ Internal: List of commands that are available in Wick.
 Internal: List of helpful messages for what each command does.
 
 
+`WICK_COMMAND_FUNCTIONS`
+------------------------
+
+Internal: Function to run when the command with the same index is executed. Note:  WICK_COMMANDS[n] relates to WICK_COMMAND_FUNCTIONS[n].
+
+
 `wickAddCommand()`
 ------------------
 
 Public: Adds a command to the help system
 
 * $1 - Name of command
-* $2 - Help description (optional)
+* $2 - Function to execute
+* $3 - Help description (optional)
 
 Examples
 

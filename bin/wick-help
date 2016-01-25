@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wickOnLoad wickAddCommand help "This help screen"
+wickOnLoad wickAddCommand help wickHelp "This help screen"
 
 # Public: Show the help messages saved with wickAddCommand.  Writes output
 # to stdout.
