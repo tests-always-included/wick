@@ -34,7 +34,7 @@ wickArraySearch() {
 
     for check in "$@"; do
         if [[ "$needle" == "$check" ]]; then
-            local "$target" && wick-indirect "$target" "$index"
+            local "$target" && wickIndirect "$target" "$index"
             return 0
         fi
 
