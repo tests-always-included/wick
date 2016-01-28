@@ -11,6 +11,8 @@
 #/
 #/ -h, --help - Shows this help message.
 #/ DEBUG      - Set this environment variable to see more debug output.
+#/ $1         - Name of service to lock
+#/ $2-$@      - Arguments to pass to the service
 #/
 #/ Examples:
 #/
@@ -25,7 +27,7 @@
 #/ Returns a code from the following table:
 #/   0 - Everything succeeded.
 #/   1 - Curl or jq are not installed.
-#/   2 - Invalid option or too many arguments passed.
+#/   2 - Invalid option or missing arguments
 #/   3 - Unable to communicate with consul or errors when using HTTP API.
 #/   4 - Problem parsing JSON or finding values in JSON.
 #/   5 - Not enough settings or invalid configuration detected.
@@ -97,7 +99,10 @@ consulDelete() {
     local curlCommand
 
     clDebug "DELETE $consulEndpoint$1 : ${2-}"
-    curl -L -f -s -X DELETE "$consulEndpoint$1" || return 3
+    curl -L -f -s -X DELETE "$consulEndpoint$1" || {
+        echo "Unable to communicate with consul" >&2
+        return 3
+    }
 }
 
 
@@ -143,13 +148,16 @@ consulPut() {
     local curlCommand
 
     clDebug "PUT $consulEndpoint$1 : ${2-}"
-    curl -L -f -s -X PUT --data "${2-}" "$consulEndpoint$1" || return 3
+    curl -L -f -s -X PUT --data "${2-}" "$consulEndpoint$1" || {
+        echo "Unable to communicate with consul" >&2
+        return 3
+    }
 }
 
 
 # Destroys the current session.
 #
-# Returns 3 on error.
+# Returns 3 on error due to consulPut's return code.
 consulSessionDestroy() {
     local result
 
@@ -166,7 +174,7 @@ consulSessionDestroy() {
 
 # Pings the session renewal endpoint.
 #
-# Returns 3 on error.
+# Returns 3 on error due to consulPut's return code.
 consulSessionRenew() {
     local result
 
@@ -214,9 +222,11 @@ parseArguments() {
 
     clDebug "Parsing arguments"
     myself=$1
+    serviceScript=()
     shift
 
-    while [[ "$#" -gt 0 ]]; do
+    # Handle options first
+    while [[ "$#" -gt 0 ]] && [[ -z "$serviceName" ]]; do
         case "$1" in
             -h | --help)
                 grep "^#/" "$myself" | cut -b 4-
@@ -224,24 +234,24 @@ parseArguments() {
                 ;;
 
             -*)
-                echo "Unknown option: $1"
+                echo "Unknown option: $1" >&2
                 exit 2
                 ;;
 
             *)
-                if [[ -z "$serviceName" ]]; then
-                    serviceName="$1"
-                elif [[ -z "$serviceScript" ]]; then
-                    serviceScript="$1"
-                else
-                    echo "Too many arguments: $1"
-                    exit 2
-                fi
+                serviceName=$1
                 ;;
         esac
 
         shift
     done
+
+    serviceScript=("$@")
+
+    if [[ ${#serviceScript} -eq 0 ]]; then
+        echo "Missing a script to execute" >&2
+        exit 2
+    fi
 }
 
 
