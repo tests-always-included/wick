@@ -44,6 +44,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [OpenJDK 1.8 JDK Formula](openjdk-1.8-jdk/README.md) - Installs OpenJDK 1.8 JDK.
 * [OpenJDK 1.8](openjdk-1.8/README.md) - Installs OpenJDK 1.8 JRE.
 * [Python-Pip](python-pip/README.md) - Installs the Python package manager, pip.
+* [Python-virtualenv](python-virtualenv/README.md) - Installs the Python virtual environment manager, virtualenv.
 * [Redis](redis/README.md) - Installs redis onto the box.
 * [Rvm](rvm/README.md) - This installs RVM from [http://get.rvm.io/](http://get.rvm.io/).  Passes all extra parameters to the installer.
 * [S3cmd](s3cmd/README.md) - This installs a tool to work with Amazon S3 from the command-line.
