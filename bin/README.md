@@ -131,7 +131,7 @@ Public: List of formulas with their arguments.  Try to avoid logging these.
 `WICK_FORMULA_COMMANDS`
 -----------------------
 
-Public: Commands to execute in order to make the formula execute.  This will only add an entry if there is a "run" script.
+Public: Commands to execute in order to make the formula execute.  This will only add an entry if there is a "run" script.  The command may have arguments appended so try to avoid logging these.
 
 
 `wickFormula()`
