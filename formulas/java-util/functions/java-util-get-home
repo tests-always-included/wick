@@ -1,0 +1,25 @@
+#!/usr/bin/env
+# Gets the JAVA_HOME folder directly from Java.  Note:  This is for the Java
+# environment that is associated with `java`.  It could be a JRE or JDK.
+#
+# $1 - Destination variable name for JAVA_HOME.
+#
+# Examples
+#
+#   javaUtilGetHome VARNAME
+#   echo "$VARNAME" # Could write out /usr/lib/jvm/java-8-openjdk-amd64/jre
+#
+# Returns 0 on success, non-zero if there is any issue getting the home
+# folder.
+javaUtilGetHome() {
+    local javaHome location
+
+    wickFind location "formulas/java-util"
+    javaHome=$(java -jar "$location/files/DisplaySystemProps.jar" | grep "^java.home=" | cut -d = -f 2-")
+
+    if [[ -z "$javaHome" ]]; then
+        return 1
+    fi
+
+    local "$1" && wickIndirect "$1" "$javaHome"
+}

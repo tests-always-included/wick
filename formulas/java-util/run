@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Adds useful functions into the Wick environment that are related to Java.
+#
+# Examples
+#
+#   wickFormula java-util

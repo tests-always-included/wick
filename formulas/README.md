@@ -27,6 +27,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Encrypt Folder](encrypt-folder/README.md) - Creates a script that encrypts a folder on a machine.
 * [Erlang](erlang/README.md) - Determines the erlang package based on the OS distribution.
 * [Hostname](hostname/README.md) - Sets the hostname and domain.  Supports templates.  Can automatically update the hostname when network connections are made.
+* [Java-Util](java-util/README.md) - Adds useful functions into the Wick environment that are related to Java.
 * [Jq](jq/README.md) - Installs [jq](http://stedolan.github.io/jq/), a command-line tool to process JSON.
 * [Kermit](kermit/README.md) - This installs the Kermit (from the `ckermit` package), allowing file transfer to and from a remote machine.
 * [Lsof](lsof/README.md) - This installs the `lsof` command, which may be needed by other programs.
