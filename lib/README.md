@@ -23,6 +23,7 @@ Not too bad.  It also doesn't do much, but other functions exist and you can loo
 [argument processing]: ../doc/argument-processing.md
 [Bash concepts]: ../doc/bash-concepts.md
 [execution order]: ../doc/execution-order.md
+[formulas]: ../formulas/README.md
 [parents]: ../doc/parents.md
 [wick-infect]: ../formulas/wick-infect/README.md
 
