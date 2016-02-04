@@ -15,7 +15,7 @@ javaUtilGetHome() {
     local javaHome location
 
     wickFind location "formulas/java-util"
-    javaHome=$(java -jar "$location/files/DisplaySystemProps.jar" | grep "^java.home=" | cut -d = -f 2-")
+    javaHome=$(java -jar "$location/files/DisplaySystemProps.jar" | grep "^java.home=" | cut -d = -f 2-)
 
     if [[ -z "$javaHome" ]]; then
         return 1
