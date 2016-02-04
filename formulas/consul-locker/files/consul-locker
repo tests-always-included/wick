@@ -248,7 +248,7 @@ parseArguments() {
 
     serviceScript=("$@")
 
-    if [[ ${#serviceScript} -eq 0 ]]; then
+    if [[ ${#serviceScript[@]} -eq 0 ]]; then
         echo "Missing a script to execute" >&2
         exit 2
     fi
@@ -310,4 +310,4 @@ createSession
 
 # Get the lock and run the program
 renewWhileRunning consulLockObtain
-renewWhileRunning "$serviceScript"
+renewWhileRunning "${serviceScript[@]}"
