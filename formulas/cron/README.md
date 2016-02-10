@@ -31,7 +31,7 @@ Examples
     cronAdd delete_files delete_files.cron
 
     # Uses a template instead
-    cronAdd rebuild_index --template rebuild_index.cron
+    cronAdd rebuild_index --template rebuild_index.cron.sh
 
 Returns nothing.
 
