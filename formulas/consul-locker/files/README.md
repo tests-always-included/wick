@@ -18,11 +18,11 @@ How to Run
 
 Consul-Locker takes at least two parameters.
 
-    ./consul-locker [options] serviceName commandToRun [commandArguments]
+    consul-locker [options] serviceName commandToRun [commandArguments]
 
-* `options` - Options to pass to consul-locker.  Available options
-    * `--help` or `-h` - Show the help message.
-* `serviceName` - Name of service to lock in [Consul].  Should be a single string.  It's used in a URL so spaces, slashes and some symbols may cause problems.
+* `--help` or `-h` - Show the help message.
+* `--no-wait` - Do not wait for a lock, exit immediately if it is not obtained.
+* `serviceName` - Name of service to lock in [Consul].  Should be a single string.  It's used in a URL so properly URL-encode any special characters or just omit those.
 * `commandToRun` - The executable you want to run.
 * `commandArguments` - Any extra arguments or options to pass to the command.
 
@@ -32,7 +32,13 @@ Examples:
     ./consul-locker test examples/10-second-wait
 
     # Configure Mongo to either be a standalone master or join a cluster.
-    ./consul-locker mongodb examples/bootstrap-mongodb
+    ./consul-locker mongodb examples/mongodb-replicaset bootstrap
+
+    # Run our 10 second wait program
+    ./consul-locker test examples/10-second-wait
+
+    # And in a second shell, this will exit 1 immediately
+    ./consul-locker --no-wait test examples/10-second-wait
 
 Don't forget to check out the scripts in the [examples folder].
 
