@@ -10,6 +10,7 @@
 #/ continually running process that can not scale horizontally.
 #/
 #/ -h, --help - Shows this help message.
+#/ --no-wait  - Do not wait for a lock, exit immediately if it is not obtained.
 #/ DEBUG      - Set this environment variable to see more debug output.
 #/ $1         - Name of service to lock
 #/ $2-$@      - Arguments to pass to the service
@@ -130,6 +131,11 @@ consulLockObtain() {
     result=$(consulPut "kv/consul-locker-$serviceName?acquire=$sessionId" "$data")
     clDebug "$result"
 
+    if [[ "$result" != "true" ]] && [[ "$noWait" == "true" ]]; then
+        clDebug "Lock obtained by another process and --no-wait is enabled.  Aborting."
+        return 1
+    fi
+
     while [[ "$result" != "true" ]]; do
         sleep 2
         result=$(consulPut "kv/consul-locker-$serviceName?acquire=$sessionId" "$data")
@@ -233,6 +239,10 @@ parseArguments() {
                 exit 0
                 ;;
 
+            --no-wait)
+                noWait="true"
+                ;;
+
             -*)
                 echo "Unknown option: $1" >&2
                 exit 2
@@ -299,6 +309,7 @@ consulEndpoint=http://localhost:8500/v1/
 serviceName=
 serviceScript=
 sessionId=
+noWait=
 
 # Preparation
 enableStrictMode
