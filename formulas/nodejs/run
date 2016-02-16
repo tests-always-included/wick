@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Installs the latest Node.js (not a distribution's packaged version).
 #
 # --version - The specific version (or part of a version) you want to

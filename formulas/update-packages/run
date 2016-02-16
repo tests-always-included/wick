@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Updates all packages on the system except kernel updates.
 #
 # For RedHat and CentOS this will skip kernel updates because that may

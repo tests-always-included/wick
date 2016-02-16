@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Configures SELinux into a given state.
 #
 # $1 - Desired state.

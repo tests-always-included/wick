@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Returns success (0) when SELinux is installed and enabled.
 #
 # Examples
