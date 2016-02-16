@@ -18,9 +18,19 @@ echo ""
 
 # For each file in the same folder
 for f in "${1%/*}/"*; do
-    # Make sre we don't process ourself nor a similarly named temp file
+    # Make sure we don't process ourself nor a similarly named temp file
     if [[ $f != $1* ]]; then
-        # Pass through tomdoc
-        ${0%/*}/tomdoc.sh -m "$f"
+        # Prefer to get built-in help messages with lines beginning with #/
+        CONTENT=$(grep "^#/" "$f" | cut -b 4- || :)
+
+        if [[ -n "$CONTENT" ]]; then
+            echo "\`${f##*/}\`"
+            echo " ${f##*/} " | sed "s/./-/g"
+            echo ""
+            echo "$CONTENT"
+        else
+            # Pass through tomdoc
+            ${0%/*}/tomdoc.sh -m "$f"
+        fi
     fi
 done
