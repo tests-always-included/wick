@@ -1,15 +1,17 @@
 CTAGS:=$(shell ctags --version 2>/dev/null)
-SHELL=/bin/bash
-SCRIPTS=bin/w* formulas/*/depends formulas/*/functions/* formulas/*/run lib/w*
+SHELL=/usr/bin/env bash
+BINS=$(filter-out bin/README.md,$(wildcard bin/*))
+LIBS=$(filter-out lib/README.md,$(wildcard lib/*))
+SCRIPTS=$(BINS) formulas/*/depends formulas/*/functions/* formulas/*/run $(LIBS)
 .PHONY: clean
 FORMULA_READMES=$(patsubst %/./,%/README.md,$(wildcard formulas/*/./))
 all: bin/README.md lib/README.md formulas/README.md $(FORMULA_READMES) tags TAGS
 
-bin/README.md: bin/w*
+bin/README.md: $(BINS)
 	util/build-readme $@ > $@.tmp
 	mv $@.tmp $@
 
-lib/README.md: lib/w*
+lib/README.md: $(LIBS)
 	util/build-readme $@ > $@.tmp
 	mv $@.tmp $@
 
