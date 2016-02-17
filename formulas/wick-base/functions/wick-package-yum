@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Internal: Helper function to take action on yum-based systems.
 #
-# $1               - Desired package state.  One of "install", "uninstall" or
-#                    "exists".
-# $2               - Package name.
+# $1               - Desired package state.  One of "clean", "install",
+#                    "uninstall" or "exists".
+# $2               - Package name, required if state is not "clean".
 # $YUM_ENABLE_REPO - Enable additional repositories.
 #
 # Examples
@@ -19,6 +19,10 @@ wickPackageYum() {
     shift
 
     case "$state" in
+        clean)
+            yum -y clean all
+            ;;
+
         exists)
             if rpm -q "$@" > /dev/null 2>&1; then
                 wickDebug "Package exists: $@"

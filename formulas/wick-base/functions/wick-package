@@ -4,7 +4,8 @@
 # package is named differently on various systems, it is up to the formula to
 # address that, such as with the apache2 formula.
 #
-# $1               - Name of package to install.
+# $1               - Name of package to manage, typically required.
+# --clean          - Cleans the cache of packages on the system.
 # --exists         - When set, returns true if the package exists.  Does not
 #                    install nor uninstall any package.
 # --uninstall      - When set, this will uninstall the package instead.
@@ -17,8 +18,14 @@
 #
 # Examples
 #
-#   wickPackage --uninstall apache
+#   # Install apache2 - note that this must match for your OS/distro
 #   wickPackage apache2
+#
+#   # Uninstall httpd
+#   wickPackage --uninstall httpd
+#
+#   # Clean the package cache
+#   wickPackage --clean
 #
 #   # Enable Remi's repository for this one package so we install a
 #   # significantly newer version of Redis.
@@ -27,14 +34,19 @@
 # Returns true on success for normal execution.  When `--exists` is used, this
 # returns true if the specified package exists and is installed on the system.
 wickPackage() {
-    local exists os state uninstall unparsed
+    local clean exists os state uninstall unparsed
 
+    wickGetOption clean clean "$@"
     wickGetOption exists exists "$@"
     wickGetOption uninstall uninstall "$@"
     wickGetArguments unparsed "$@"
 
     # Intentionally append to state to flag errors
     state=""
+
+    if [[ -n "$clean" ]]; then
+        state="clean$state"
+    fi
 
     if [[ -n "$exists" ]]; then
         state="exists$state"

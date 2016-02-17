@@ -277,7 +277,8 @@ Returns true on success.
 
 Public: Install or remove packages on the target system.  This handles the OS-specific tools that are used to install or remove the packages.  If the package is named differently on various systems, it is up to the formula to address that, such as with the apache2 formula.
 
-* $1               - Name of package to install.
+* $1               - Name of package to manage, typically required.
+* --clean          - Cleans the cache of packages on the system.
 * --exists         - When set, returns true if the package exists.  Does not install nor uninstall any package.
 * --uninstall      - When set, this will uninstall the package instead.
 * $YUM_ENABLE_REPO - Allows additional yum repositories.
@@ -286,8 +287,14 @@ Uses the `YUM_ENABLE_REPO` environment variable if you need to enable additional
 
 Examples
 
-    wickPackage --uninstall apache
+    # Install apache2 - note that this must match for your OS/distro
     wickPackage apache2
+
+    # Uninstall httpd
+    wickPackage --uninstall httpd
+
+    # Clean the package cache
+    wickPackage --clean
 
     # Enable Remi's repository for this one package so we install a
     # significantly newer version of Redis.
@@ -307,8 +314,8 @@ Intentionally append to state to flag errors
 
 Internal: Helper function to take action on apt-based systems.
 
-* $1 - Desired package state.  One of "install", "uninstall" or "exists".
-* $2 - Package name.
+* $1 - Desired package state.  One of "clean", "install", "uninstall" or "exists".
+* $2 - Package name, required if state is not "clean".
 
 Examples
 
@@ -322,8 +329,8 @@ Return true on success.
 
 Internal: Helper function to take action on yum-based systems.
 
-* $1               - Desired package state.  One of "install", "uninstall" or "exists".
-* $2               - Package name.
+* $1               - Desired package state.  One of "clean", "install", "uninstall" or "exists".
+* $2               - Package name, required if state is not "clean".
 * $YUM_ENABLE_REPO - Enable additional repositories.
 
 Examples

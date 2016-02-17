@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Internal: Helper function to take action on apt-based systems.
 #
-# $1 - Desired package state.  One of "install", "uninstall" or "exists".
-# $2 - Package name.
+# $1 - Desired package state.  One of "clean", "install", "uninstall" or
+#      "exists".
+# $2 - Package name, required if state is not "clean".
 #
 # Examples
 #
@@ -16,6 +17,10 @@ wickPackageApt() {
     shift
 
     case "$state" in
+        clean)
+            apt-get clean
+            ;;
+
         exists)
             if apt-cache show "$@" > /dev/null 2>&1; then
                 wickDebug "Package exists: $@"
