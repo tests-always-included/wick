@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+# Adds a CA certificate to the system certificate store.  The cert is
+# renamed to match the fingerprint.
+#
+# DER style certificates are changed into PEM certificates.
+#
+# Examples
+#
+#   # Uses a file from the formula, like wickMakeFile.
+#   caCertificatesAdd newfile.crt
+#
+#   # Uses a file from stdin
+#   curl http://example.com/cert.pem | caCertificatesAdd
+#
+# Many thanks to the wonderful page that listed the commands:
+# http://kb.kerio.com/product/kerio-connect/server-configuration/ssl-certificates/adding-trusted-root-certificates-to-the-server-1605.html
+#
+# Returns true on success.  If unable to figure out how to add the cert to
+# the system's list, this returns 1.  If the certificate is invalid or is
+# unable to be parsed by openssl, returns 2.
+caCertificatesAdd() {
+    local contents fingerprint os osVersion output tempDir
+
+    # Get certificate
+    if [[ "$#" -gt 0 ]]; then
+        contents=$(wickMakeFile "$@")
+    else
+        contents=$(cat)
+    fi
+
+    # Get fingerprint
+    fingerprint=$(echo "$contents" | openssl x509 -noout -fingerprint || :)
+
+    if [[ -z "$fingerprint" ]]; then
+        # Attempt to convert from DER to PEM
+        contents=$(echo "$contents" | openssl x509 -inform der -outform pem || :)
+
+        # Get fingerprint again
+        fingerprint=$(echo "$contents" | openssl x509 -noout -fingerprint || :)
+    fi
+
+    if [[ -z "$fingerprint" ]]; then
+        wickError "Certificate appears to be invalid."
+        return 2
+    fi
+
+    fingerprint=${fingerprint#*=}
+    wickDebug "Fingerprint: $fingerprint"
+    wickExplorer os wick-base os
+
+    case "$os" in
+        debian|ubuntu)
+            wickDebug "Debian-based system"
+            echo "$contents" > "/usr/local/share/ca-certificates/${fingerprint}.pem"
+            chmod 644 "/usr/local/share/ca-certificates/${fingerprint}.pem"
+            sudo update-ca-certificates
+            ;;
+
+        osx)
+            wickDebug "Mac OSX"
+            wickTempDir tempDir
+            echo "$contents" > "$tempDir/new-root-cert.crt"
+            sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "$tempDir/new-root-cert.crt"
+            ;;
+
+        redhat|centos)
+            wickExplorer osVersion wick-base os-version
+
+            case "$osVersion" in
+                5.*)
+                    wickDebug "RedHat/CentOS 5"
+                    echo "$contents" | wickAddConfigSection /etc/pki/tls/certs/ca-bundle.crt "$fingerprint"
+                    ;;
+
+                6.*)
+                    wickDebug "RedHat/CentOS 6"
+                    wickPackage ca-certificates
+                    wickDebug "Updating CA trust"
+                    update-ca-trust force-enable
+                    wickDebug "Creating new cert"
+                    echo "$contents" > "/etc/pki/ca-trust/source/anchors/${fingerprint}.pem"
+                    chmod 644 "/etc/pki/ca-trust/source/anchors/${fingerprint}.pem"
+                    wickDebug "Updating CA trust again"
+                    update-ca-trust extract
+                    ;;
+
+                *)
+                    wickError "Unsupported version of RedHat / CentOS: $osVersion"
+                    return 1
+            esac
+            ;;
+
+        *)
+            wickError "Unsupported OS: $os"
+            return 1
+    esac
+
+    wickDebug "CA added"
+}
