@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Adds a function that will install a CA certificate in the system's
+# certificate store.
+#
+# Examples
+#
+#   # Add this as a dependency
+#   wick-formula ca-certificates
+#
+#   # Adds files/my-cert.cer from the formula into the system
+#   caCertificatesAdd my-cert.cer
+#
+# Returns nothing.

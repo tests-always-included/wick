@@ -21,21 +21,21 @@
 caCertificatesAdd() {
     local contents fingerprint os osVersion output tempDir
 
-    # Get certificate
+    #: Get certificate
     if [[ "$#" -gt 0 ]]; then
         contents=$(wickMakeFile "$@")
     else
         contents=$(cat)
     fi
 
-    # Get fingerprint
+    #: Get fingerprint
     fingerprint=$(echo "$contents" | openssl x509 -noout -fingerprint || :)
 
     if [[ -z "$fingerprint" ]]; then
-        # Attempt to convert from DER to PEM
+        #: Attempt to convert from DER to PEM
         contents=$(echo "$contents" | openssl x509 -inform der -outform pem || :)
 
-        # Get fingerprint again
+        #: Get fingerprint again
         fingerprint=$(echo "$contents" | openssl x509 -noout -fingerprint || :)
     fi
 
