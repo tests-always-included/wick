@@ -197,7 +197,7 @@ createSession() {
     local id result
 
     clDebug "Creating a session"
-    result=$(consulPut 'session/create' '{"Name":"consul-lock $service","TTL":"15s"}')
+    result=$(consulPut 'session/create' "{\"Name\":\"consul-lock $serviceName\",\"TTL\":\"15s\"}")
     clDebug "$result"
     id=$(echo "$result" | jq -r .ID || return 4)
     clDebug "Extracted ID $id"
