@@ -7,4 +7,4 @@
 #     wickFormula consul-locker
 #
 # Returns nothing.
-wickMakeFile consul-locker /usr/local/bin/ --mode=0744
+wickMakeFile consul-locker /usr/local/bin/ --mode=0755
