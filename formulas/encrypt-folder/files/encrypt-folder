@@ -35,7 +35,7 @@ encmount() {
 
     wickDebug "Mounting ecryptfs"
     mount -t ecryptfs \
-        -o "key=passphrase:passphrase_passwd_file=$PASSWORD_FILE" \
+        -o "key=passphrase:passphrase_passwd_file=$3" \
         -o ecryptfs_cipher=aes \
         -o ecryptfs_key_bytes=16 \
         -o ecryptfs_passthrough=n \
@@ -147,7 +147,7 @@ chmod 600 "$encryptionConfigFile"
 )
 
 wickDebug "Mounting the encrypted folder over the normal path"
-encmount "$encryptedFolder" "$clearFolder"
+encmount "$encryptedFolder" "$clearFolder" "$encryptionConfigFile"
 
 wickDebug "Wiping and removing password file"
 sed -i 's/./x/' "$encryptionConfigFile"
