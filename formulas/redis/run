@@ -19,7 +19,7 @@
 # Returns nothing.
 wickInfo "Installing redis"
 wickGetOption start start "$@"
-wickGetArgument password password "$@"
+wickGetOption password password "$@"
 sysctlSet vm.overcommit_memory 1
 sysctlSet net.core.somaxconn 512
 YUM_ENABLE_REPO=remi wickPackage redis
