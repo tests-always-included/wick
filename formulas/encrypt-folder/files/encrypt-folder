@@ -134,7 +134,7 @@ chmod 600 "$encryptionConfigFile"
         if [[ -e "$NAME" ]] && [[ "$NAME" != "$clearFolder/.ecryptfs" ]]; then
             if ! $isMounted; then
                 wickDebug "Mounting encrypted folder to copy existing files"
-                encmount "$encryptedFolder" "$encryptedFolder"
+                encmount "$encryptedFolder" "$encryptedFolder" "$encryptionConfigFile"
                 isMounted=true
             fi
 
