@@ -15,7 +15,8 @@
 #/
 #/   /usr/local/bin/encrypt-folder /var/log/secret-logs
 #/
-#/ Returns nothing.
+#/ Returns success (0) when the folder is made to be encrypted or if it
+#/ was already encrypted.  Returns an error status otherwise.
 . /usr/local/lib/wick-infect
 
 encmount() {
@@ -88,8 +89,10 @@ chown --reference="$clearFolder" "$encryptedFolder"
 chmod --reference="$clearFolder" "$encryptedFolder"
 
 if mount | fgrep -q "$encryptedFolder"; then
-    wickError "Already mounted: $clearFolder"
-    exit 1
+    # This is a successful situation - the folder is already encrypted
+    # so there is no need to report an error.
+    wickWarn "Already mounted: $clearFolder"
+    exit 0
 fi
 
 if [[ ! -e /dev/ecryptfs ]]; then
