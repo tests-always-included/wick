@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 # Installs redis onto the box.
 #
-# --password=PASS - Sets a password for this redis installation
-# --start         - Starts the service.  If not passed, the service will not
-#                   be running when the formula ends.
+# --master-password=PASS    - Sets "masterauth" in the configuration.  This should be
+#                             set to the value of the masters password if you are
+#                             replicating and the master requires auth.
+# --password=PASS           - Sets a password for this redis installation
+# --start                   - Starts the service.  If not passed, the service will not
+#                             be running when the formula ends.
 #
 # There are many other settings you can tweak for better performance beyond
 # what this formula set.  Each one should be tested to determine if they are
@@ -16,23 +19,21 @@
 #
 #   wickFormula redis --password="A very long password goes here"
 #
+#   wickFormula redis --password="My password" --master-password="Master password for replication"
+#
 # Returns nothing.
 wickInfo "Installing redis"
 wickGetOption start start "$@"
 wickGetOption password password "$@"
+wickGetOption masterPassword master-password "$@"
 sysctlSet vm.overcommit_memory 1
 sysctlSet net.core.somaxconn 512
 YUM_ENABLE_REPO=remi wickPackage redis
 
 # Listen on all interfaces
-sed -i 's/^bind/#bind/' /etc/redis.conf
-
-# Set or clear a password
-if [[ -z "$password" ]]; then
-    sed -i '/^requirepass/d' /etc/redis.conf
-else
-    wickSetConfigLine /etc/redis.conf "requirepass \"$password\""
-fi
+redisSetConfigLine "bind"
+redisSetConfigLine "requirepass" "$password"
+redisSetConfigLine "masterauth" "$masterPassword"
 
 wickService enable redis
 wickService force-state redis "$start"
