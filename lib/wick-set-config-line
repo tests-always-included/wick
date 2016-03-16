@@ -3,7 +3,8 @@
 # ensures a line exists in a file, not that it is in any particular order.
 #
 # $1 - File to update.
-# $2 - The full line to add.  It will be placed at the end.
+# $2 - The full line to add.  It will be placed at the end.  If this is an
+#      empty string, no blank line will be added.
 # $3 - Optional; the key that we are setting.  Defaults to a portion of `$2`.
 #
 # The line is not repeatedly added to the config file.  First, we attempt to
@@ -48,12 +49,20 @@
 #   wickSetConfigLine /etc/dhcp/dhclient.conf \
 #       "prepend nameservers 127.0.0.1" "prepend nameservers"
 #
+#   # Removes a line from the Redis config for the master password
+#   wickSetConfigLine /etc/redis.conf "" "masterPassword"
+#
 # Returns nothing.
 wickSetConfigLine() {
     local KEY TEMPFILE
 
     if [[ ! -f "$1" ]]; then
-        echo "$2" >> "$1"
+        if [[ -n "$2" ]]; then
+            echo "$2" >> "$1"
+        else
+            touch "$1"
+        fi
+
         return 0
     fi
 
@@ -72,7 +81,10 @@ wickSetConfigLine() {
     # but then forcibly add one newline because of the "echo"
     # on the left side.
     echo "$(cat "$1" | grep -v "^$KEY[ =:]" || true)" > "$TEMPFILE"
-    echo "$2" >> "$TEMPFILE"
+
+    if [[ -n "$2" ]]; then
+        echo "$2" >> "$TEMPFILE"
+    fi
 
     # Avoid using cp as this preserves file ownership and permissions
     cat "$TEMPFILE" > "$1"

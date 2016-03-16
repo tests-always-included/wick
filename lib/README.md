@@ -752,7 +752,7 @@ Returns nothing.
 Adds or updates a line in a config file.  This is a very basic tool that ensures a line exists in a file, not that it is in any particular order.
 
 * $1 - File to update.
-* $2 - The full line to add.  It will be placed at the end.
+* $2 - The full line to add.  It will be placed at the end.  If this is an empty string, no blank line will be added.
 * $3 - Optional; the key that we are setting.  Defaults to a portion of `$2`.
 
 The line is not repeatedly added to the config file.  First, we attempt to get the "key" for the line, either automatically or use a value that is passed in.  Most config files use a key value of some sort and this script usually can detect them - more on this later.  Next, we remove any lines with the same key from the file and finally we append the line you want onto the file.
@@ -780,6 +780,9 @@ Example:
     # Key is "prepend nameservers" because we specify it as a third
     # parameter.
     wickSetConfigLine /etc/dhcp/dhclient.conf       "prepend nameservers 127.0.0.1" "prepend nameservers"
+
+    # Removes a line from the Redis config for the master password
+    wickSetConfigLine /etc/redis.conf "" "masterPassword"
 
 Returns nothing.
 
