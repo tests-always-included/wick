@@ -440,13 +440,17 @@ Remove the action from the unparsed items
 
 Internal: Add a service and inform chkconfig.
 
-* $1 - Service name.
-* $2 - Source file, passed to `wickMakeFile`.
-* $@ - Other options, also passed to `wickMakeFile`.
+* --force - Force a service to be written even if it already exists.
+* $1      - Service name.
+* $2      - Source file, passed to `wickMakeFile`.
+* $@      - Other options, also passed to `wickMakeFile`.
 
 Examples
 
     wickServiceAdd redis redis.conf.sh --template
+
+    # This won't overwrite an existing service unless you also pass --force
+    wickServiceAdd redis redis.conf2.sh --template --force
 
 Returns nothing.
 
