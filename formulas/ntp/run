@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Installs `ntp` Network Time Protocol package and `ntpdate` set time utility.
+#
+# Examples
+# 
+#   wickFormula ntp
+# 
+# Returns nothing
+wickInfo "Installing ntp and ntpdate packages"
+wickPackage ntp ntpdate
+
+wickInfo "Enabling ntp"
+wickService enable ntpd
