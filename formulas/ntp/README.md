@@ -5,6 +5,6 @@ Installs `ntp` Network Time Protocol package and `ntpdate` set time utility.
 
 Examples
 
-  wickFormula ntp
+    wickFormula ntp
 
 Returns nothing
