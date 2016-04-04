@@ -41,6 +41,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Netcat](netcat/README.md) - Installs the netcat (`nc`) package.
 * [Node.js](nodejs/README.md) - Installs the latest Node.js (not a distribution's packaged version).
 * [NSCD](nscd/README.md) - This installs a name server caching daemon.  The `unscd` package is preferred over `nscd`, but the two are essentially interchangeable.
+* [NTP](ntp/README.md) - 
 * [OpenJDK 1.7 JDK](openjdk-1.7-jdk/README.md) - Installs OpenJDK 1.7 JDK.
 * [OpenJDK 1.7](openjdk-1.7/README.md) - Installs OpenJDK 1.7 JRE.
 * [OpenJDK 1.8 JDK Formula](openjdk-1.8-jdk/README.md) - Installs OpenJDK 1.8 JDK.
