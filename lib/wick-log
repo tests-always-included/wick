@@ -11,6 +11,9 @@
 # `logger` command to write a line to syslogd.  The facility defaults to user,
 # but you can use any facility; for example you can use the mail facility by
 # setting `WICK_LOGFILE="syslog:mail"`.
+# Additionally you can set a the tag by adding a second ":" followed by the 
+# desired tag; for example you can set the tag to myapp by setting 
+# `WICK_LOGFILE="syslog::myapp".
 #
 # Otherwise, `$WICK_LOGFILE` should be set to a filename.  Messages are
 # prefixed with a timestamp.
@@ -26,7 +29,7 @@
 #
 # Returns nothing.
 wickLog() {
-    local logLevel output priority
+    local logLevel output facility priority tag
 
     logLevel=$1
 
@@ -35,31 +38,48 @@ wickLog() {
     fi
 
     if [[ "${WICK_LOGFILE:0:7}" == "syslog:" ]]; then
-        priority=${WICK_LOGFILE:7}
+        facility=${WICK_LOGFILE:7}
+        tag=${facility#*:}
 
-        if [[ -z "$priority" ]]; then
-            priority="user"
+        if [[ "$facility" == "$tag" ]]; then
+            tag=""
+        fi
+
+        facility=${facility%%:*}
+
+        if [[ -z "$facility" ]]; then
+            facility="user"
         fi
 
         case "$logLevel" in
             ERROR)
-                priority="$priority.err"
+                priority="err"
                 ;;
 
             WARN)
-                priority="$priority.warning"
+                priority="warning"
                 ;;
 
             INFO)
-                priority="$priority.info"
+                priority="info"
                 ;;
 
             DEBUG)
-                priority="$priority.debug"
+                priority="debug"
                 ;;
         esac
 
-        logger -p "$priority" -- "$2"
+        loggerCmd=(logger -p "$facility"."$priority")
+
+        if [[ -n "$tag" ]]; then
+            loggerCmd[${#loggerCmd[@]}]=-t
+            loggerCmd[${#loggerCmd[@]}]=$tag
+        fi
+
+        loggerCmd[${#loggerCmd[@]}]=--
+        loggerCmd[${#loggerCmd[@]}]=$2
+        "${loggerCmd[@]}"
+
     elif [[ -n "$WICK_LOGFILE" ]]; then
         wickPrefixLines output "$(date -Iseconds) $logLevel: " "$2"
         echo "$output" >> "$WICK_LOGFILE"
