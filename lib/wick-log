@@ -35,7 +35,7 @@ wickLog() {
     fi
 
     if [[ "${WICK_LOGFILE:0:7}" == "syslog:" ]]; then
-        priority=${WICK_LOGFILE:8}
+        priority=${WICK_LOGFILE:7}
 
         if [[ -z "$priority" ]]; then
             priority="user"
