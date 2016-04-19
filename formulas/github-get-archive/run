@@ -3,11 +3,11 @@
 #
 # Usage
 #
-#   github-get-archive <repository> [tag/branch] [destination] [username] [password]
+#   github-get-archive <repository> [options]
 #
 # Example
 #
-#   github-get-archive kyle-long/pyshelf v1.0 /tmp/pyshelf.tar.gz
+#   github-get-archive kyle-long/pyshelf --tag=v1.0 --dest=/tmp/pyshelf.tar.gz
 #
 #   github-get-archive kyle-long/pyshelf | tar xz
 #
