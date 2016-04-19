@@ -1,15 +1,12 @@
 github-get-archive
-======
+==================
 
-Allows you to retrieve git repositories in tar format. By default the archive destination is repository-name.tar.gz.
-Usage
+This formula adds a function that allows you to pull down a github repository in tar format.
 
-    github-get-archive <account> <repository> <tag or branch> [destination] [username] [password]
+Examples
 
-Add the following to depends
+    github-get-archive <repository> [tag/branch] [destination] [username] [password]
 
-    wickFormula github-get-archive
+Returns nothing.
 
-Example of use
 
-    github-get-archive kyle-long pyshelf v1.0

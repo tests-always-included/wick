@@ -1,22 +1,16 @@
 #!/usr/bin/env bash
-#
-#   usage: github-get-archive <account> <repository> <tag or branch> [destination] [username] [password]
-#
-#   destination defaults to <repository>.tar.gz
-#   If username is not passed in it is assumed to be a public repository and not credentials are sent with request.
-#
+
 github-get-archive() {
-    account=$1
-    repo=$2
-    tag=${3:-master}
-    dest=${4:-"${repo##*/}.tar.gz"}
-    username=${5:-""}
-    password=${6:-""}
-    userOption=""
+    repo=$1
+    tag=${2:-master}
+    dest=${3:-"${repo##*/}.tar.gz"}
+    username=${4:-""}
+    password=${5:-""}
+    userOption=()
 
     if [[ -n $username ]]; then
-        userOption="--user '$username:$password'"
+        userOption=("--user '$username:$password'")
     fi
 
-    curl -s -L $userOption "https://github.com/$account/$repo/tarball/$tag" > "$dest"
+    curl -s -L ${userOption[@]} "https://github.com/$repo/tarball/$tag" > "$dest"
 }
