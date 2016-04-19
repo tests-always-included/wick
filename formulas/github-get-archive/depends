@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 wickFormula wick-base
-wickFormula wick-infect
 wickFormula curl
