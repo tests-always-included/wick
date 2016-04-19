@@ -1,16 +1,21 @@
 #!/usr/bin/env bash
 
 github-get-archive() {
-    repo=$1
-    tag=${2:-master}
-    dest=${3:-"${repo##*/}.tar.gz"}
-    username=${4:-""}
-    password=${5:-""}
-    userOption=()
+    repo="$1"
+    tag="${2:-master}"
+    dest="${3:-""}"
+    username="${4:-""}"
+    password="${5:-""}"
+    args=(-s -L)
 
-    if [[ -n $username ]]; then
-        userOption=("--user '$username:$password'")
+    if [[ -n "$username" ]]; then
+        args[${#args[@]}]="--user"
+        args[${#args[@]}]="$username:$password"
     fi
 
-    curl -s -L ${userOption[@]} "https://github.com/$repo/tarball/$tag" > "$dest"
+    if [[ -n "$dest" ]]; then
+        args[${#args[@]}]="-o"
+        args[${#args[@]}]="$dest"
+    fi
+    curl ${args[@]} "https://github.com/$repo/tarball/$tag"
 }
