@@ -27,7 +27,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Dnsmasq](dnsmasq/README.md) - Installs dnsmasq and adds it as a nameserver.
 * [Encrypt Folder](encrypt-folder/README.md) - Creates a script that encrypts a folder on a machine.
 * [Erlang](erlang/README.md) - Determines the erlang package based on the OS distribution.
-* [This formula adds a function that allows you to pull down a github repository in tar format.](github-get-archive/README.md) - 
+* [github-get-archive](github-get-archive/README.md) - This formula adds a function that allows you to pull down a github repository in tar format.
 * [Hostname](hostname/README.md) - Sets the hostname and domain.  Supports templates.  Can automatically update the hostname when network connections are made.
 * [Java-Util](java-util/README.md) - Adds useful functions into the Wick environment that are related to Java.
 * [Jq](jq/README.md) - Installs [jq](http://stedolan.github.io/jq/), a command-line tool to process JSON.
