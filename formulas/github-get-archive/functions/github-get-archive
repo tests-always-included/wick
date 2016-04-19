@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 github-get-archive() {
+    . /usr/local/lib/wick-infect
+
     wickGetArgument repo 0 "$@"
     wickGetOption tag tag "$@"
     wickGetOption dest dest "$@"
