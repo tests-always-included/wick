@@ -8,7 +8,7 @@ Usage
 
 Add the following to depends
 
-    wickFormula git-get-archive
+    wickFormula github-get-archive
 
 Example of use
 
