@@ -83,6 +83,8 @@ There are quite a few other tools out there that also perform the same tasks.  B
 
 First, it was important to have as few dependencies as possible.  I don't want to install package after package on the target system just so I can install more things.  It seemed odd that I would require Ruby, Python, Perl or a C compiler on a machine just to update some config files.  In an ideal world, nothing would be installed at all and the whole thing would happen over SSH.  By reducing the number of requirements, we also lower the barrier to entry and hopefully make things easier.
 
+As a side effect of having very few dependencies, it is possible to store the entire system in your source code management tool of choice.  Feel free to make a copy of Wick and drop it in your git, svn or cvs repository and it will continue to work.  Unlike other systems, this one can be completely embedded in your toolchain.
+
 Secondly, shell scripts are nearly universal.  Every administrator must know some shell commands.  Not every administrator wants to know additional languages to use the alternate tools.  Most of the time the other tools boil down to shell scripts anyway, so let's pare things down to 1 language.  Sure, there are sections here using some of the more advanced features of Bash, but the formulas should be extremely small, simple to write and easy to understand.
 
 Lastly, a lot of "fluff" or complexity has been eliminated.  For instance, you do not need to set up a server to allow for a client/server model.  I don't need to have a central repository of scripts.  There's no need for a database to track all of the instances.  Wick will just get a machine up and running quickly.
