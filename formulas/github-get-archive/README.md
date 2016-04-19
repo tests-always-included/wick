@@ -11,7 +11,7 @@ Example
 
     github-get-archive kyle-long/pyshelf v1.0 /tmp/pyshelf.tar.gz
 
-    github-get-archive kyle-long/pyshelf | tar -xvzf blah
+    github-get-archive kyle-long/pyshelf | tar xz
 
 Returns nothing.
 
