@@ -3,7 +3,7 @@ github-get-archive
 
 This formula adds a function that allows you to pull down a Github, Inc. repository in tar format.
 
-For more information on this function see [github-get-archive](functions/github-get-archive)
+For more information on this function see [github-get-archive](functions/github-get-archive).
 
 Returns nothing.
 
