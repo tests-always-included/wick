@@ -15,9 +15,7 @@
 #
 #   github-get-archive kyle-long/pyshelf --tag=v1.0 --dest=/tmp/pyshelf.tar.gz
 #
-#   github-get-archive kyle-long/pyshelf | tar xzUsage
-#
-#   github-get-archive <repository> [options]
+#   github-get-archive kyle-long/pyshelf | tar xz
 #
 github-get-archive() {
     wickGetArgument repository 0 "$@"
