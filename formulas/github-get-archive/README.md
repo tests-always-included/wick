@@ -3,13 +3,19 @@ github-get-archive
 
 This formula adds a function that allows you to pull down a github repository in tar format.
 
-Usage
+    <repository>        Path to Github repository.
 
-    github-get-archive <repository> [tag/branch] [destination] [username] [password]
+    --tag=TAG           Tag name or branch to pull from. Defaults to master.
+
+    --dest=DEST         Destination of tarball. Output to stdout if no destination given.
+
+    --username=USER     Username for private Github repositories.
+
+    --password=PASS     Password for private Github repositories.
 
 Example
 
-    github-get-archive kyle-long/pyshelf v1.0 /tmp/pyshelf.tar.gz
+    github-get-archive kyle-long/pyshelf --tag=v1.0 --dest=/tmp/pyshelf.tar.gz
 
     github-get-archive kyle-long/pyshelf | tar xz
 
