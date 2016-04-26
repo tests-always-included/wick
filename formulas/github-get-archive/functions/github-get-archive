@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Function retrieves Github repository as a tarball.
+#
 # $1              - Path to GitHub repository.
 #
 # $2              - Destination of tarball. Output to stdout if no destination given.
@@ -15,6 +17,7 @@
 #
 #   github-get-archive kyle-long/pyshelf | tar xz
 #
+# Returns nothing.
 github-get-archive() {
     wickGetArgument repository 0 "$@"
     wickGetArgument destination 1 "$@"
