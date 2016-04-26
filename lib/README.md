@@ -612,7 +612,7 @@ Internal: Write a log message to a file or to a logging system.  Used by `wickDe
 * $2            - The message to write.
 * $WICK_LOGFILE - Destination for log messages.
 
-Uses the environment variable `$WICK_LOGFILE` to determine where to log messages.  Will write a timestamped messsage to that file, creating the file if necessary.  If `$WICK_LOGFILE` starts with "syslog:", this will use the `logger` command to write a line to syslogd.  The facility defaults to user, but you can use any facility; for example you can use the mail facility by setting `WICK_LOGFILE="syslog:mail"`.
+Uses the environment variable `$WICK_LOGFILE` to determine where to log messages.  Will write a timestamped messsage to that file, creating the file if necessary.  If `$WICK_LOGFILE` starts with "syslog:", this will use the `logger` command to write a line to syslogd.  The facility defaults to user, but you can use any facility; for example you can use the mail facility by setting `WICK_LOGFILE="syslog:mail"`. Additionally you can set a the tag by adding a second ":" followed by the desired tag; for example you can set the tag to myapp by setting `WICK_LOGFILE="syslog::myapp".
 
 Otherwise, `$WICK_LOGFILE` should be set to a filename.  Messages are prefixed with a timestamp.
 
