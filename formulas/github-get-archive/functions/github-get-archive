@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Function retrieves Github repository as a tarball.
+# Function retrieves GitHub repository as a tarball.
 #
 # $1              - Path to GitHub repository.
 #

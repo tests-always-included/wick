@@ -6,7 +6,7 @@ This formula adds a function that allows you to pull down a Github, Inc. reposit
 `github-get-archive()`
 --------------------
 
-Function retrieves Github repository as a tarball.
+Function retrieves GitHub repository as a tarball.
 
 * $1              - Path to GitHub repository.
 
