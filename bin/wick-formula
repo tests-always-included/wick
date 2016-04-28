@@ -19,8 +19,19 @@ WICK_FORMULA_COMMANDS=()
 # $1   - Formula to require
 # $2-@ - Arguments for formula's run script
 #
-# If the formula was already marked as required, this will error as long as
-# the arguments don't match and there are arguments for this invocation.
+# When this is a new formula that is being registered, it just adds it to the
+# list of formulas.
+#
+# When the formula was already registered, this will error if the previous
+# registered formula has arguments and this one has different arguments.
+#
+# When the previous had no arguments, this will overwrite with the current
+# argument list.  Useful for dependencies loaded before you register the
+# formula with the right args.
+#
+# When the previous had arguments and the current one does not have
+# arguments, this will ignore it.  Useful for dependencies being registered
+# after your role has included the formula with arguments.
 #
 # Examples
 #
@@ -30,7 +41,7 @@ WICK_FORMULA_COMMANDS=()
 #
 # Returns true if formula was found and added to the list.
 wickFormula() {
-    local args file formula formulaEscaped location preservedPwd temp
+    local args file formula formulaEscaped location preservedPwd previousEntry temp
 
     formula="$1"
     wickArgumentString formulaEscaped "$formula"
@@ -67,12 +78,25 @@ wickFormula() {
         # was already added with arguments
         if [[ "$args" == "" ]]; then
             echo "Formula is already in list and has additional arguments: $formula"
+
+            return 0
+        fi
+
+        # If it was a dependency before and had no options and the new one has
+        # options, then overwrite the previous entry with the current list of
+        # arguments.
+        if wickInArray "$formulaEscaped" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"; then
+            echo "Formula is already in list and has no arguments, adding arguments: $formula"
+            wickArraySearch previousEntry "$formulaEscaped" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"
+            WICK_FORMULA_LIST_WITH_ARGS[$previousEntry]="$formulaEscaped$args"
+
             return 0
         fi
 
         # Mismatched arguments OR previously did not have arguments and current
         # one has arguments.  Do not continue.
         echo "Formula specified multiple times with different arguments: $formula" >&2
+
         return 1
     fi
 
