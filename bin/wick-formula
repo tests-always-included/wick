@@ -41,7 +41,7 @@ WICK_FORMULA_COMMANDS=()
 #
 # Returns true if formula was found and added to the list.
 wickFormula() {
-    local args file formula formulaEscaped location preservedPwd previousEntry temp position
+    local args file formula formulaEscaped location preservedPwd previousEntry temp
 
     formula="$1"
     wickArgumentString formulaEscaped "$formula"
@@ -89,13 +89,6 @@ wickFormula() {
             echo "Formula is already in list and has no arguments, adding arguments: $formula"
             wickArraySearch previousEntry "$formulaEscaped" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"
             WICK_FORMULA_LIST_WITH_ARGS[$previousEntry]="$formulaEscaped$args"
-
-            if [[ -f "$location/run" ]]; then
-                wickArgumentString temp "$location/run"
-                if wickArraySearch position "$temp" "${WICK_FORMULA_COMMANDS[@]}"; then
-                    WICK_FORMULA_COMMANDS[$position]=$temp$args
-                fi
-            fi
 
             return 0
         fi
