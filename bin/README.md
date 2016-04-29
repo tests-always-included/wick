@@ -142,7 +142,7 @@ Public: Mark a formula as required for a given role or as a dependency for other
 * $1   - Formula to require
 * $2-@ - Arguments for formula's run script
 
-If the formula was already marked as required, this will error as long as the arguments don't match and there are arguments for this invocation.
+If the formula was already marked as required, this will error as long as the arguments don't match and there are arguments for this invocation. We can't do this another way because the `depends` file would already have been executed with a set of arguments.
 
 Examples
 
