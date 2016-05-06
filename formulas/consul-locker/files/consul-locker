@@ -25,6 +25,9 @@
 #/
 #/ This requires `curl` and `jq` to be installed on the system.
 #/
+#/ You may source this file into a Bash environment.  When you do, call
+#/ the `consulLocker` function to perform the same action as the shell script.
+#/
 #/ Returns a code from the following table:
 #/   0 - Everything succeeded.
 #/   1 - Curl or jq are not installed.
@@ -260,6 +263,7 @@ parseArguments() {
 
     if [[ ${#serviceScript[@]} -eq 0 ]]; then
         echo "Missing a script to execute" >&2
+        echo "Try using --help" >&2
         exit 2
     fi
 }
@@ -305,20 +309,35 @@ renewWhileRunning() {
 }
 
 
-consulEndpoint=http://localhost:8500/v1/
-serviceName=
-serviceScript=
-sessionId=
-noWait=
+consulLocker() {
+    # Run in subshell to trigger the EXIT trap
+    (
+        # While it says "local", these are more like global variables
+        # for consul-locker.  They are declared as local here so they
+        # do not leak to the real global environment.
+        local consulEndpoint serviceName serviceScript sessionId noWait
+        consulEndpoint=http://localhost:8500/v1/
+        serviceName=
+        serviceScript=
+        sessionId=
+        noWait=
 
-# Preparation
-enableStrictMode
-parseArguments "$0" "$@"
-checkForNecessaryCommands
-checkForNecessarySettings
-trap cleanupTrap EXIT
-createSession
+        # Preparation
+        enableStrictMode
+        parseArguments "$0" "$@"
+        checkForNecessaryCommands
+        checkForNecessarySettings
+        trap cleanupTrap EXIT
+        createSession
 
-# Get the lock and run the program
-renewWhileRunning consulLockObtain
-renewWhileRunning "${serviceScript[@]}"
+        # Get the lock and run the program
+        renewWhileRunning consulLockObtain
+        renewWhileRunning "${serviceScript[@]}"
+    )
+}
+
+# If sourced, load all functions.
+# If executed, perform the actions as expected.
+if [[ "$0" == "$BASH_SOURCE" ]] || [[ -z "$BASH_SOURCE" ]]; then
+    consulLocker "$@"
+fi
