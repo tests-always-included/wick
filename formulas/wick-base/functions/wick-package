@@ -61,6 +61,10 @@ wickPackage() {
     wickExplorer os wick-base os
 
     case "$os" in
+        arch)
+            wickPackagePacman "$state" "${unparsed[@]-}"
+            ;;
+
         centos|redhat)
             wickPackageYum "$state" "${unparsed[@]-}"
             ;;

@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Internal: Helper function to take action on pacman-based systems.
+#
+# $1 - Desired package state.  One of "clean", "install", "uninstall" or
+#      "exists".
+# $2 - Package name, required if state is not "clean".
+#
+# Examples
+#
+#   wickPackagePacman install apache2
+#
+# Return true on success.
+wickPackagePackage() {
+    local state
+
+    state=$1
+    shift
+
+    case "$state" in
+        clean)
+            pacman -Sc
+            ;;
+
+        exists)
+            if pacman -Qsq ^"$@"\$ > /dev/null 2>&1; then
+                wickDebug "Package exists: $@"
+                return 0
+            fi
+
+            wickDebug "Package does not exist: $@"
+            return 1
+            ;;
+
+        install)
+            pacman -S --noconfirm "$@"
+            ;;
+
+        uninstall)
+            pacman -R --noconfirm "$@"
+            ;;
+
+        *)
+            echo "Unknown package state: $state"
+            return 1
+    esac
+}
