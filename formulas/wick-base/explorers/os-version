@@ -9,6 +9,12 @@
 wickExplorer os wick-base os || true
 
 case "$os" in
+    arch)
+        date --utc --iso-8601=minutes -d "$(date --iso-8601=minutes
+            -d "$(grep '\[PACMAN\] synchronizing package lists' /var/log/pacman.log | \
+            tail -1 | cut -b 2-17)")"
+        ;;
+
     centos)
         rpm -q centos-release | cut -d - -f 3- | cut -d . -f 1 | tr - .
         ;;
@@ -28,7 +34,6 @@ case "$os" in
 
     UNKNOWN)
         echo "UNKNOWN"
-        exit 1
         ;;
 
     *)
