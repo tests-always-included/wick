@@ -22,7 +22,7 @@ fi
 
 # Amazon's network can fail so we try the detection a couple times
 for I in {{1..3}}; do
-    if wickGetUrl http://169.254.169.254/latest/meta-data/ami-id > /dev/null; then
+    if wickGetUrl --timeout=1 http://169.254.169.254/latest/meta-data/ami-id > /dev/null; then
         wickDebug "Detected Amazon (url ami-id)"
         echo "amazon"
         exit
