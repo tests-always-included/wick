@@ -57,8 +57,13 @@ detectRealRedhat() {
     fi
 }
 
+if [[ -f /etc/arch-release ]]; then
+    echo "arch"
+    exit
+fi
+
 if wickCommandExists lsb_release; then
-    distributor=$(lsb-release -s -i 2>&1)
+    distributor=$(lsb_release -s -i 2>&1)
     wickDebug "Distributor: $distributor"
 
     case "$distributor" in
