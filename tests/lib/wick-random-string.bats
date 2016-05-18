@@ -18,8 +18,8 @@ setup() {
 
 @test "lib/wick-random-string: randomized" {
     local ONE TWO
-    wickRandomString ONE
-    wickRandomString TWO
+    wickRandomString ONE 20
+    wickRandomString TWO 20
     [ "$ONE" != "$TWO" ]
 }
 
