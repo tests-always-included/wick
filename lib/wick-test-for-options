@@ -49,7 +49,7 @@ wickTestForOptions() {
     result=0
     failureCommand=${WICK_TEST_FOR_OPTIONS_FAILURE:-wickTestForOptionsFailure}
 
-    while [[ ! -z "$1" ]] && [[ "$1" != "--" ]]; do
+    while [[ $# -gt 0 ]] && [[ "$1" != "--" ]]; do
         arg="$1"
 
         # Remove hyphens

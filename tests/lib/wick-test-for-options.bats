@@ -37,3 +37,11 @@ test-for-options-failure() {
     [[ "${FAILS[0]}" == "one" ]]
     [[ "${FAILS[1]}" == "two" ]]
 }
+
+@test "lib/wick-test-for-options: Missing double-hyphen" {
+    FAILS=()
+    # Note the missing space before the first double hyphen
+    ! WICK_TEST_FOR_OPTIONS_FAILURE=test-for-options-failure \
+        wickTestForOptions one two-- thing one two --too --three
+    [[ "${#FAILS[@]}" -gt 0 ]]
+}
