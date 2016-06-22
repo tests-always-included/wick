@@ -62,7 +62,7 @@ wickDebug() (
     wickPrefixLines output "DEBUG: " "$content"
 
     if [[ ! -z "${WICK_COLOR-}" ]]; then
-        output=$'\E[30;1m'"$output"$'\E[0m'
+        output=$'\E[90;1m'"$output"$'\E[0m'
     fi
 
     # Check if debugging is enabled for everything
