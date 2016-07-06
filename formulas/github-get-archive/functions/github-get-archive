@@ -20,7 +20,7 @@ github-get-archive() {
     wickGetOption tag tag "$@"
     wickGetOption username username "$@"
     wickGetOption password password "$@"
-    : ${tag="master"}
+    : ${tag:="master"}
     args=(-s -L)
 
     if [[ -n "$username" ]]; then
