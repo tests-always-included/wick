@@ -3,8 +3,9 @@ GitHub Get Archive
 
 This formula adds a function that allows you to pull down a GitHub repository in tar format.
 
-`github-get-archive()`
-----------------------
+
+`githubGetArchive()`
+--------------------
 
 Function retrieves GitHub repository as a tarball.
 
@@ -16,8 +17,10 @@ Function retrieves GitHub repository as a tarball.
 
 Examples
 
-	github-get-archive kyle-long/pyshelf --tag=v1.0 --dest=/tmp/pyshelf.tar.gz
+    githubGetArchive kyle-long/pyshelf --tag=v1.0 --dest=/tmp/pyshelf.tar.gz
 
-	github-get-archive kyle-long/pyshelf | tar xz
+    githubGetArchive kyle-long/pyshelf | tar xz
 
 Returns nothing.
+
+

@@ -9,12 +9,12 @@
 #
 # Examples
 #
-#   github-get-archive kyle-long/pyshelf --tag=v1.0 --dest=/tmp/pyshelf.tar.gz
+#   githubGetArchive kyle-long/pyshelf --tag=v1.0 --dest=/tmp/pyshelf.tar.gz
 #
-#   github-get-archive kyle-long/pyshelf | tar xz
+#   githubGetArchive kyle-long/pyshelf | tar xz
 #
 # Returns nothing.
-github-get-archive() {
+githubGetArchive() {
     wickGetArgument repository 0 "$@"
     wickGetArgument destination 1 "$@"
     wickGetOption tag tag "$@"
