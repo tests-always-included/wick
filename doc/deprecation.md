@@ -9,7 +9,7 @@ Wick experiences continual changes and improvements.  When there are important c
 
 Newer items are added to the top.
 
-### Standards
+### Standards (October 2015)
 
 Naming standards were enforced for variables and functions.  This caused functions that were hyphenated to be changed to camel case.  For instance, `wick-indirect-array` is now `wickIndirectArray`.  Internal variables are no longer all caps and they are also camel case, though ones that are exported and intended to be used outside the function are still all caps.  `$FORMULA_LIST` is now `$formulaList`.
 
