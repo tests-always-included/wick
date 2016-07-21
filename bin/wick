@@ -11,10 +11,6 @@ set -euo pipefail
 # running.
 WICK_DIR="${0%/*}"
 
-# TEMPORARY FIX - Load the deprecated functions during this period of
-# translating from wick-thing to wickThing for function names.
-. "$WICK_DIR/../lib/deprecated"
-
 # Public: Run wick commands.  These are provided by the other `wick-*`
 # functions in the [`bin/`](./) folder.
 #
