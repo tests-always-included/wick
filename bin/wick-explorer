@@ -24,7 +24,8 @@ wickExplorer() {
     wickTempDir tempdir
 
     (
-        . "$explorer" > "$tempdir/stdout" 2> "$tempdir/stderr" || echo "$" > "$tempdir/fail"
+        . "$explorer" > "$tempdir/stdout" 2> "$tempdir/stderr" || echo "$?" > "$tempdir/fail"
+        :
     )
 
     if [[ -f "$tempdir/fail" ]]; then
