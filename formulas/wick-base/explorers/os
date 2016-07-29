@@ -93,7 +93,7 @@ fi
 
 if wickCommandExists uname; then
     unameV=$(uname -v 2>&1)
-    wickDebug "unameV=$UNAME_V"
+    wickDebug "unameV=$unameV"
 
     if [[ "$unameV" == *"Ubuntu"* ]]; then
         echo "ubuntu"
