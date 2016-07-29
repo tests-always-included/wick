@@ -29,7 +29,7 @@ case "$os" in
         ;;
 
     ubuntu)
-        lsb-release -d | rev | cut -d ' ' -f 1 | rev
+        lsb_release -a | grep 'Release' | sed 's/Release:\s*//g'
         ;;
 
     UNKNOWN)
