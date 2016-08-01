@@ -324,8 +324,8 @@ Examples
 Return true on success.
 
 
-`wickPackagePackage()`
-----------------------
+`wickPackagePacman()`
+---------------------
 
 Internal: Helper function to take action on pacman-based systems.
 
