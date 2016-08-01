@@ -35,6 +35,5 @@ if cut -d'/' -f2 /proc/self/cgroup | grep '^docker$' 2>&1 > /dev/null; then
     exit
 fi
 
-
 wickDebug "Unable to determine machine type"
 echo "unknown"
