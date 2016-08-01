@@ -34,7 +34,9 @@ export options=("$@")
 
 serviceName=sshd
 
-if [[ "$(wickExplorer os)" == ubuntu ]]; then
+wickExplorer osType wick-base os
+
+if [[ "$osType" == ubuntu ]]; then
     serviceName=ssh
 fi
 
