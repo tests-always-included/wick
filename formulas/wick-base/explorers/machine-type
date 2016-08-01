@@ -14,6 +14,13 @@
 #   if [[ "$result" == "amazon" ]]; then
 #       echo "I am in Amazon AWS"
 #   fi
+
+# Try to detect if we are in a docker container
+if [[ -f /proc/self/cgroup ]] && cut -d / -f 2 /proc/self/cgroup | grep -q "^docker$"; then
+    echo "docker"
+    exit
+fi
+
 if getent hosts instance-data | grep -q "169.254.169.254 .*.compute.internal"; then
     wickDebug "Detected Amazon (getent hosts)"
     echo "amazon"
@@ -28,12 +35,6 @@ for I in {{1..3}}; do
         exit
     fi
 done
-
-# Try to detect if we are in a docker container
-if [[ -f /proc/self/cgroup ]] && cut -d / -f 2 /proc/self/cgroup | grep -q "^docker$"; then
-    echo "docker"
-    exit
-fi
 
 wickDebug "Unable to determine machine type"
 echo "unknown"
