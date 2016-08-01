@@ -24,7 +24,7 @@ case "$OS" in
         ;;
 
     debian|ubuntu)
-        apt-get update && apt-get upgrade
+        apt-get update && apt-get upgrade -y
         ;;
 
     *)
