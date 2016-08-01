@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#
+# Ensures `openssh-server` is installed which will provide sshd.
+#
+# Examples
+#
+#   wickFormula openssh-server
+wickPackage openssh-server
