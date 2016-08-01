@@ -29,7 +29,15 @@ case "$os" in
         ;;
 
     ubuntu)
-        lsb-release -d | rev | cut -d ' ' -f 1 | rev
+        if wickCommandExists lsb_release; then
+            lsb_release -a | grep ^Release: | sed 's/.*:\s*//'
+        elif [[ -f "/etc/lsb-release" ]]; then
+            grep 'DISTRIB_RELEASE=' /etc/lsb-release | cut -d'=' -f2
+        else
+            wickDebug 'Unable to find command "lsb_release" or file "/etc/lsb-release"'
+            exit 1
+        fi
+
         ;;
 
     UNKNOWN)
