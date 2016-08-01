@@ -10,7 +10,7 @@
 #   wickPackagePacman install apache2
 #
 # Return true on success.
-wickPackagePackage() {
+wickPackagePacman() {
     local state
 
     state=$1

@@ -32,6 +32,15 @@
 export config="/etc/ssh/sshd_config"
 export options=("$@")
 
+serviceName=sshd
+
+wickExplorer osType wick-base os
+
+if [[ "$osType" == ubuntu ]]; then
+    serviceName=ssh
+fi
+
+
 wickInfo "Tweaking SSH configuration"
 wickHash hashBefore "$config"
 sshdTweakSetting UseDNS use-dns
@@ -49,7 +58,7 @@ fi
 wickHash hashAfter "$config"
 
 if [[ "$hashBefore" != "$hashAfter" ]]; then
-    if wickService is-running sshd; then
-        wickService reload sshd
+    if wickService is-running "$serviceName"; then
+        wickService reload "$serviceName"
     fi
 fi
