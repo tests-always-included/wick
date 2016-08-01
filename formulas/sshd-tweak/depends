@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 local opt val
 
+wickFormula wick-base
+wickFormula openssh-server
+
 for opt in use-dns gssapi-auth password-auth agent-forwarding; do
     wickGetOption val "$opt"
     case "$val" in
