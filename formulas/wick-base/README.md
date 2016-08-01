@@ -324,6 +324,21 @@ Examples
 Return true on success.
 
 
+`wickPackagePackage()`
+----------------------
+
+Internal: Helper function to take action on pacman-based systems.
+
+* $1 - Desired package state.  One of "clean", "install", "uninstall" or "exists".
+* $2 - Package name, required if state is not "clean".
+
+Examples
+
+    wickPackagePacman install apache2
+
+Return true on success.
+
+
 `wickPackageYum()`
 ------------------
 
