@@ -32,10 +32,10 @@
 export config="/etc/ssh/sshd_config"
 export options=("$@")
 
-serviceName="sshd"
+serviceName=sshd
 
-if [[ "$(wickExplorer os)" == "ubuntu" ]]; then
-    serviceName="ssh"
+if [[ "$(wickExplorer os)" == ubuntu ]]; then
+    serviceName=ssh
 fi
 
 
