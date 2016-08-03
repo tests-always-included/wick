@@ -60,7 +60,7 @@ Example
 
     wickExplorer initSystem wick-base init-system
 
-Returns true if it was able to determine the init-system
+Returns true if it was able to determine the init-system.
 
 
 ### machine-type

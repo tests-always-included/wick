@@ -11,7 +11,7 @@
 #
 #   wickExplorer initSystem wick-base init-system
 #
-# Returns true if it was able to determine the init-system
+# Returns true if it was able to determine the init-system.
 
 if wickCommandExists systemctl && [[ "$(systemctl)" =~ -\.mount ]]; then
     # If we have mounted the root file system using systemd we assume we are
