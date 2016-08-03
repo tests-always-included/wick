@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Determines the init-system used.
+#
+# Detected values:
+#
+# * `systemd`
+# * `upstart`
+# * `sysv`
+#
+# Example
+#
+#   wickExplorer initSystem wick-base init-system
+#
+# Returns true if it was able to determine the init-system
+
+if wickCommandExists systemctl && [[ "$(systemctl)" =~ -\.mount ]]; then
+    # If we have mounted the root file system using systemd we assume we are
+    # using systemd.
+    echo systemd
+elif [[ -f /sbin/init && "$(/sbin/init --version 2&>1 > /dev/null)" =~ upstart ]]; then
+    # If /sbin/init --version outputs "upstart" anywhere in the description we can reasonably
+    # assume we are using upstart.
+    echo upstart
+elif [[ -f /etc/init.d/cron && ! -h /etc/init.d/cron ]]; then
+    # If we have an actually file in /etc/init.d that is NOT a symlink we basically
+    # default to sysv.  If there is not, we are unable to determine which system
+    # it is using.  The only reason we use cron is because cron is a service that is
+    # always installed.
+    echo sysv
+else
+    # Docker for instance, does not have any init system running by default.
+    echo unknown
+    exit 1
+fi
