@@ -48,6 +48,21 @@ Examples
 Returns nothing.
 
 
+### init-system
+
+Determines the init-system used.
+
+Detected values:
+
+* `systemd` * `upstart` * `sysv`
+
+Example
+
+    wickExplorer initSystem wick-base init-system
+
+Returns true if it was able to determine the init-system.
+
+
 ### machine-type
 
 Finds the type of machine we appear to be using.  Attempts to detect virtualization environments.  This explorer is a bit rudimentary and could be tricked.  Output is written to stdout.
