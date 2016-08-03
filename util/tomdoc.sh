@@ -93,6 +93,7 @@ generate_markdown() {
     last_was_option=false
     echo "$2" | uncomment | sed -e "s/$SPACE_RE$//" | while IFS='' read line; do
         if echo "$line" | grep -q "^$SPACE_RE$NOT_SPACE_RE $SPACE_RE- "; then
+            # This is for arguments
             if ! $did_newline; then
                 echo ""
             fi
@@ -105,6 +106,8 @@ generate_markdown() {
             fi
 
             last_was_option=true
+
+            # shellcheck disable=SC2030
             did_newline=false
         else
             case "$line" in
@@ -130,6 +133,12 @@ generate_markdown() {
                     fi
                     ;;
 
+                "* "*)
+                    # A list should not continue a previous paragraph.
+                    echo "$line"
+                    did_newline=true
+                    ;;
+
                 *)
                     # Paragraph text (does not start with a space)
                     case "$last" in
@@ -151,6 +160,7 @@ generate_markdown() {
         last="$line"
     done
 
+    # shellcheck disable=SC2031
     if ! $did_newline; then
         echo ""
     fi

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Installs the Python virtual environment manager, virtualenv
+# Installs the Python virtual environment manager, virtualenv.
 #
 # A Virtual Environment is a tool to keep the dependencies
 # required by different projects in separate places, by

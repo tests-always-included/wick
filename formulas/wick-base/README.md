@@ -22,7 +22,8 @@ Determines the architecture that the system is running upon.
 
 Detected values:
 
-* `amd64` * `ia32`
+* `amd64`
+* `ia32`
 
 Examples
 
@@ -54,7 +55,9 @@ Determines the init-system used.
 
 Detected values:
 
-* `systemd` * `upstart` * `sysv`
+* `systemd`
+* `upstart`
+* `sysv`
 
 Example
 
@@ -69,7 +72,8 @@ Finds the type of machine we appear to be using.  Attempts to detect virtualizat
 
 Detected values:
 
-* `amazon`: Running in Amazon AWS * `unknown`: All other results
+* `amazon`: Running in Amazon AWS
+* `unknown`: All other results
 
 Examples
 
@@ -85,7 +89,10 @@ Makes an educated guess to determine the OS that is running.  Writes the OS to s
 
 Detected values:
 
-* `apple`: Mac OS X * `centos`: CentOS * `redhat`: RedHat * `ubuntu`: Ubuntu
+* `apple`: Mac OS X
+* `centos`: CentOS
+* `redhat`: RedHat
+* `ubuntu`: Ubuntu
 
 Examples
 
