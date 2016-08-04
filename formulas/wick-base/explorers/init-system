@@ -17,7 +17,7 @@ if wickCommandExists systemctl && [[ "$(systemctl)" =~ -\.mount ]]; then
     # If we have mounted the root file system using systemd we assume we are
     # using systemd.
     echo systemd
-elif [[ -f /sbin/init && "$(/sbin/init --version 2&>1 > /dev/null)" =~ upstart ]]; then
+elif [[ -f /sbin/init && "$(/sbin/init --version 2> /dev/null)" =~ upstart ]]; then
     # If /sbin/init --version outputs "upstart" anywhere in the description we can reasonably
     # assume we are using upstart.
     echo upstart
