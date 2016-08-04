@@ -13,12 +13,24 @@
 # Returns true on success, non-zero if the file exists and should not be
 # clobbered.
 wickServiceMakeOverride() {
-    local dest force label lsb service src value
+    local dest force label lsb service src value initType path
 
     wickGetOption force force "$@"
     wickGetArgument service 0 "$@"
+
+    wickExplorer initType wick-base init-system
+
     src="/etc/init.d/$service"
     dest="/etc/chkconfig.d/$service"
+    if [[ "$initType" == systemd ]]; then
+        path="/etc/systemd/system/$service.service.d"
+
+        if [[ ! -d "$path" ]]; then
+            wickMakeDir "$path"
+        fi
+
+        dest="$path/override.conf"
+    fi
 
     wickInfo "Making override for service: $service"
 
