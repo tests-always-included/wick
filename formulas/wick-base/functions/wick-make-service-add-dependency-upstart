@@ -1,0 +1,12 @@
+#!/bin/bash
+
+wickServiceAddDependencyUpstart() {
+    local dependency service overridePath
+
+    wickGetArgument service 0 "$@"
+    wickGetArgument dependency 1 "$@"
+
+    overridePath="/etc/chkconfig.d/$service"
+    sed -i 's/^Should-Start:.*/& consul/' "$overridePath"
+    wickServiceOverride "$service"
+}
