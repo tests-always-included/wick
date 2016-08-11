@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Internal: Generates an override file so alternate dependencies may be
+# used with a service without modifying the original service file.
+#
+# $1      - Service name.
+# --force - Overwrite an override file if one exists.
+#
+# Examples
+#
+#   wickServiceMakeOverride mysql
+#
+# Returns true on success, non-zero if the file exists and should not be
+# clobbered.
+wickServiceMakeOverride() {
+    local initType
+
+    wickExplorer initType wick-base init-system
+
+    if [[ systemd == "$initType" ]]; then
+        wickServiceMakeOverrideSystemd "$@"
+    else
+        wickServiceMakeOverrideUpstart "$@"
+    fi
+}

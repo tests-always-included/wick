@@ -23,11 +23,11 @@ wickServiceAddDependency() {
         return 2
     fi
 
+    wickServiceMakeOverride "$@"
+
     if [[ systemd == "$initType" ]]; then
-        wickServiceMakeOverrideSystemd "$service"
         wickServiceAddDependencySystemd "$@"
     else
-        wickServiceMakeOverrideUpstart "$@"
         wickServiceAddDependencyUpstart "$@"
     fi
 }

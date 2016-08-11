@@ -51,6 +51,15 @@
 # STATE - If empty, the service is stopped.  If not empty the service is
 #         restarted (ensuring it is running properly).
 #
+# ### `make-override [--force] SERVICE`
+#
+# Creates `/etc/chkconfig.d/SERVICE` that is used by `chkconfig` to help
+# determine order.  This override file can be modified to list additional
+# dependencies to influence the boot order of scripts.  Make sure to call
+# `wickService override` when you update an override file.  When using
+# `--force`, this will overwrite any override file that may already exist.
+#
+#
 #
 # ### `override SERVICE`
 #
@@ -123,6 +132,10 @@ wickService() {
 
         is-running)
             wickServiceIsRunning "${unparsed[@]}" "${options[@]-}"
+            ;;
+
+        make-override)
+            wickServiceMakeOverride "${unparsed[@]}" "${options[@]-}"
             ;;
 
         override)
