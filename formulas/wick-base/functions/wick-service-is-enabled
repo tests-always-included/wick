@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+wickServiceIsEnabled() {
+    local initType service
+
+    wickGetArgument service 0 "$@"
+    wickExplorer initType wick-base init-system
+
+    if [[ systemd == "$initType" ]]; then
+        systemctl is-enabled "$service"
+    elif [[ upstart == "$initType" ]]; then
+        wickServiceIsEnabledSysv || wickServiceIsEnabledUpstart
+    else
+        wickServiceIsEnabledSysv
+    fi
+}

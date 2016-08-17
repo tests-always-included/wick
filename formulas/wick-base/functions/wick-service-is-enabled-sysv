@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+wickServiceIsEnabledSysv() {
+    local service result
+    wickGetArgument service 0 "$@"
+
+    result=$(chkconfig --list | grep "$service")
+
+    if [[ -n "$result" ]]; then
+        # after removing the service name the only thing that will
+        # be left is <runLevel>:<on|off>.  I look for it to be enabled
+        # at any run level.
+        if echo "$result" | sed 's/'"$service"'\s*//' | grep -q on; then
+            return 0
+        fi
+    fi
+
+    return 1
+
+}
