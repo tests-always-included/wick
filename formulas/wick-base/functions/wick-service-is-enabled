@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-
+# Internal: Checks to see if a service both exists and is
+# enabled.
+#
+# $1 - Name of the service to check.
+#
+# Returns true if the service is enabled.
 wickServiceIsEnabled() {
     local initType service
 

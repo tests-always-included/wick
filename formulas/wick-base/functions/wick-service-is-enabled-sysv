@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
-
+# Internal: Checks only for sysv style services which
+# include files in /etc/init.d/
+#
+# $1 - The name of the service to check.
+#
+# Returns true if the service is found and is enabled.
 wickServiceIsEnabledSysv() {
     local service result
     wickGetArgument service 0 "$@"
