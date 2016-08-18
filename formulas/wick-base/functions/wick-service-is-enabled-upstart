@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-wickServiceIsEnabledUpstart() {
-    local service
-    # returns the result of grep
-    initctl list | grep -q "$service"
-}
