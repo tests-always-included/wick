@@ -51,6 +51,12 @@
 # STATE - If empty, the service is stopped.  If not empty the service is
 #         restarted (ensuring it is running properly).
 #
+# ### `is-enabled` SERVICE
+#
+# Checks to see if a service both exists and is enabled so that it will
+# start on boot.  If any runlevel is enabled this will return true.
+#
+#
 # ### `make-override [--force] SERVICE`
 #
 # Creates `/etc/chkconfig.d/SERVICE` that is used by `chkconfig` to help
@@ -128,6 +134,10 @@ wickService() {
 
         force-state)
             wickServiceForceState "${unparsed[@]}" "${options[@]-}"
+            ;;
+
+        is-enabled)
+            wickServiceIsEnabled "${unparsed[@]}" "${options[@]-}"
             ;;
 
         is-running)

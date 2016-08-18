@@ -12,6 +12,11 @@ wickServiceIsEnabled() {
     local initType service
 
     wickGetArgument service 0 "$@"
+
+    if [[ -z "$service" ]]; then
+        wickError "First argument to ${FUNCNAME[0]} must be a service name."
+    fi
+
     wickExplorer initType wick-base init-system
 
     if [[ systemd == "$initType" ]]; then
