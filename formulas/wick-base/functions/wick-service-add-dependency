@@ -25,6 +25,7 @@ wickServiceAddDependency() {
 
     wickServiceMakeOverride "$@"
 
+    wickInfo "Adding dependency \"$dependency\" to service \"$service\""
     if [[ systemd == "$initType" ]]; then
         wickServiceAddDependencySystemd "$@"
     else
