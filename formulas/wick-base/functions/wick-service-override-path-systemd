@@ -7,7 +7,8 @@
 # $1 - Name of variable that should get the result.
 # $2 - Name of the service you want to build the path for.
 #
-# Example:
+# Examples
+#
 #   # Get the full path to the override file.
 #   wickServiceOverridePathSystemd paths "$service"
 #   wickArrayJoin overridePath "/" "${paths[@]}"
@@ -16,6 +17,7 @@
 #   wickServiceOverridePathSystemd paths "$service"
 #   serviceDirectory="${paths[0]}"
 #
+# Returns nothing.
 wickServiceOverridePathSystemd() {
     local service target
 

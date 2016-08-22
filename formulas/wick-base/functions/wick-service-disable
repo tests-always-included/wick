@@ -9,7 +9,7 @@
 #
 # Returns nothing.
 wickServiceDisable() {
-    local service initType
+    local initType service
 
     wickGetArgument service 0 "$@"
     wickInfo "Disabling service: $service"

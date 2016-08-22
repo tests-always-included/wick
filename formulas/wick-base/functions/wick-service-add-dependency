@@ -5,6 +5,10 @@
 # $1 - The name of the service you wish to add a dependency to.
 # $2 - The name of the service you wish to add as a dependency to the service.
 #
+# Examples
+#
+#   wickServiceAddDependency mongod virtual-network
+#
 # Returns: 1 if $1 is not provided and 2 if $2 is not provided.
 wickServiceAddDependency() {
     local dependency initType service
@@ -15,17 +19,20 @@ wickServiceAddDependency() {
 
     if [[ -z "$service" ]]; then
         wickError "wickServiceAddDependency requires a service to be provided as the first argument"
+
         return 1
     fi
 
     if [[ -z "$dependency" ]]; then
         wickError "wickServiceAddDependency requires a dependency to be provided as the second argument"
+
         return 2
     fi
 
     wickServiceMakeOverride "$@"
 
     wickInfo "Adding dependency \"$dependency\" to service \"$service\""
+
     if [[ systemd == "$initType" ]]; then
         wickServiceAddDependencySystemd "$@"
     else

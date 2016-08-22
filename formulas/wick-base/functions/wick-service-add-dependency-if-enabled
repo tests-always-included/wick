@@ -5,7 +5,11 @@
 # $1 - The service to add the dependency to
 # $2 - The service name you would like to add as a dependency to $1
 #
-# Returns nothing.
+# Examples
+#
+#   wickServiceAddDependencyIfEnabled mysql virtual-network
+#
+# Returns the result of wickServiceAddDependency.
 wickServiceAddDependencyIfEnabled() {
     local service dependency
 

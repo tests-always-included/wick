@@ -9,12 +9,13 @@
 #
 # Returns nothing.
 wickServiceEnable() {
-    local service initType
+    local initType service
 
     wickGetArgument service 0 "$@"
     wickInfo "Enabling service: $service"
 
     wickExplorer initType wick-base init-system
+
     if [[ "$initType" == systemd ]]; then
         systemctl enable "$service"
     else

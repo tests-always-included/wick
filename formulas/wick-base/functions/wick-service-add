@@ -27,6 +27,7 @@ wickServiceAdd() {
 
     if [[ ! -f "/etc/init.d/$service" ]] || [[ -n "$force" ]]; then
         wickMakeFile --mode=0755 --owner=root:root "$source" "/etc/init.d/$service" "${options[@]-}"
+
         if [[ "$initType" == systemd ]]; then
             systemctl daemon-reload
         else

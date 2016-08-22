@@ -4,8 +4,11 @@
 #
 # $1 - Service name.
 #
-# Examples:
-#     wickServiceIsEnabled mysql
+# Examples
+#
+#   if wickServiceIsEnabled mysql; then
+#       echo "MySQL is enabled"
+#   fi
 #
 # Returns true if it finds the service and it is enabled.
 wickServiceIsEnabled() {
