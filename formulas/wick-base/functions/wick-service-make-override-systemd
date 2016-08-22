@@ -13,7 +13,6 @@ wickServiceMakeOverrideSystemd() {
     local overridePath paths service serviceDir
 
     wickGetArgument service 0 "$@"
-
     wickServiceOverridePathSystemd paths "$service"
 
     serviceDir="${paths[0]}"
@@ -35,7 +34,7 @@ wickServiceMakeOverrideSystemd() {
         chmod 644 "$overridePath"
     fi
 
-    if ! grep "^[Unit]" "$overridePath"; then
+    if ! grep -q "^[Unit]" "$overridePath"; then
         wickDebug "Didn't find a [Unit] section in override.  Adding one"
         echo "[Unit]" >> "$overridePath"
     fi
