@@ -5,13 +5,13 @@
 # $2 - The name of the service you wish to add as a dependency to the service.
 #
 # Returns nothing.
-wickServiceAddDependencyUpstart() {
+wickServiceAddDependencySysv() {
     local dependency service overridePath
 
     wickGetArgument service 0 "$@"
     wickGetArgument dependency 1 "$@"
 
     overridePath="/etc/chkconfig.d/$service"
-    sed -i 's/^Should-Start:.*/& consul/' "$overridePath"
+    sed -i 's/^Should-Start:.*/& '"$dependency"'/' "$overridePath"
     wickServiceOverride "$service"
 }

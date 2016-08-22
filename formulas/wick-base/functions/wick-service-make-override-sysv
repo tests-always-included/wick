@@ -12,7 +12,7 @@
 #
 # Returns true on success, non-zero if the file exists and should not be
 # clobbered.
-wickServiceMakeOverrideUpstart() {
+wickServiceMakeOverrideSysv() {
     local dest force label lsb service src value
 
     wickGetOption force force "$@"

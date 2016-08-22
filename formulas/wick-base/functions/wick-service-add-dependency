@@ -29,6 +29,6 @@ wickServiceAddDependency() {
     if [[ systemd == "$initType" ]]; then
         wickServiceAddDependencySystemd "$@"
     else
-        wickServiceAddDependencyUpstart "$@"
+        wickServiceAddDependencySysv "$@"
     fi
 }
