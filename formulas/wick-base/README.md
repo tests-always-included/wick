@@ -512,6 +512,10 @@ Internal: Makes the service provided depend on another service which could chang
 * $1 - The name of the service you wish to add a dependency to.
 * $2 - The name of the service you wish to add as a dependency to the service.
 
+Examples
+
+    wickServiceAddDependency mongod virtual-network
+
 Returns: 1 if $1 is not provided and 2 if $2 is not provided.
 
 
@@ -523,8 +527,11 @@ Internal: Adds the dependency to the service if that dependency is enabled.
 * $1 - The service to add the dependency to
 * $2 - The service name you would like to add as a dependency to $1
 
-Returns nothing.
+Examples
 
+    wickServiceAddDependencyIfEnabled mysql virtual-network
+
+Returns the result of wickServiceAddDependency.
 
 
 `wickServiceAddDependencySystemd()`
@@ -535,13 +542,11 @@ Internal: Handles adding a dependency specifically if we are running systemd.
 * $1 - The name of the service you wish to add a dependency to.
 * $2 - The name of the service you wish to add as a dependency to the service.
 
+Examples
+
+    wickServiceAddDependencySystemd mysql virtual-network
+
 Returns nothing.
-
-
-`Wants`
--------
-
-Add a Wants= after the [Unit] section
 
 
 `wickServiceAddDependencySysv()`
@@ -551,6 +556,10 @@ Internal: Adds a dependency to a sysv service.
 
 * $1 - The name of the service you wish to add a dependency to.
 * $2 - The name of the service you wish to add as a dependency to the service.
+
+Examples
+
+    wickServiceAddDependencySysv mysql virtual-network
 
 Returns nothing.
 
@@ -627,7 +636,11 @@ Internal: Figures out if a service exists and is enabled. Enabled means it will 
 
 * $1 - Service name.
 
-Examples:      wickServiceIsEnabled mysql
+Examples
+
+    if wickServiceIsEnabled mysql; then
+        echo "MySQL is enabled"
+    fi
 
 Returns true if it finds the service and it is enabled.
 
@@ -638,6 +651,12 @@ Returns true if it finds the service and it is enabled.
 Internal: Checks if any sysv style scripts exist and are enabled. These services are the ones you will find in /etc/init.d/
 
 * $1 - Name of the service.
+
+Examples
+
+    if wickServiceIsEnabled mysql; then
+        echo "MySQL is enabled"
+    fi
 
 Returns true if the service is found and its enabled.
 
@@ -676,8 +695,13 @@ Returns true on success, non-zero if the file exists and should not be clobbered
 
 Internal: Creates the override file if it does not already exist.  Also puts it in a state usable by wickServiceAddDependencySystemd.
 
-* $1 - The name of the service you wish to add a dependency to.
+* $1 - The name of the service you wish to create an override file for.
 
+Examples
+
+    wickServiceMakeOverrideSystemd mongod
+
+Returns nothing.
 
 
 `wickServiceMakeOverrideSysv()`
@@ -719,7 +743,9 @@ Internal: Assigns an array to the variable provided with two elements.  The firs
 * $1 - Name of variable that should get the result.
 * $2 - Name of the service you want to build the path for.
 
-Example:    # Get the full path to the override file.
+Examples
+
+    # Get the full path to the override file.
     wickServiceOverridePathSystemd paths "$service"
     wickArrayJoin overridePath "/" "${paths[@]}"
 
@@ -727,6 +753,7 @@ Example:    # Get the full path to the override file.
     wickServiceOverridePathSystemd paths "$service"
     serviceDirectory="${paths[0]}"
 
+Returns nothing.
 
 
 `wickServiceReload()`
