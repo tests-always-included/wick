@@ -405,9 +405,7 @@ Examples
     wickService start consul
 
     # Make Apache require Consul before starting
-    wickService make-override apache2
-    sed -i 's/Required-Start:/Required-Start: consul/' /etc/chkconfig.d/apache2
-    wickService override apache2
+    wickService add-dependency apache2 consul
 
 Returns nothing.
 
@@ -415,6 +413,15 @@ Returns nothing.
 ### `add [--force] [--*] SERVICE FORMULA_FILE`
 
 Use `wickMakeFile` to copy the formula file to `/etc/init.d/` for the named service.  Does not enable nor start the service.  Does not add the service if the file already exists unless `--force` is also used.  You can also use any additional options that `wickMakeFile` supports.
+
+### `add-dependency <service> <dependency>`
+
+Makes the service provided depend on the service passed as the dependency.
+
+
+### `add-dependency-if-exists` <service> <dependency>
+
+Only adds the dependency of that dependency exists and is enabled to start at boot time.
 
 
 ### `disable SERVICE`
@@ -434,10 +441,15 @@ Used by other scripts to force the service to be running or stopped.
 * SERVICE - Name of service to manage.
 * STATE - If empty, the service is stopped.  If not empty the service is restarted (ensuring it is running properly).
 
+### `is-enabled` SERVICE
+
+Checks to see if a service both exists and is enabled so that it will start on boot.  If any runlevel is enabled this will return true.
+
 
 ### `make-override [--force] SERVICE`
 
 Creates `/etc/chkconfig.d/SERVICE` that is used by `chkconfig` to help determine order.  This override file can be modified to list additional dependencies to influence the boot order of scripts.  Make sure to call `wickService override` when you update an override file.  When using `--force`, this will overwrite any override file that may already exist.
+
 
 
 ### `override SERVICE`
@@ -488,6 +500,56 @@ Examples
 
     # This won't overwrite an existing service unless you also pass --force
     wickServiceAdd redis redis.conf2.sh --template --force
+
+Returns nothing.
+
+
+`wickServiceAddDependency()`
+----------------------------
+
+Internal: Makes the service provided depend on another service which could change the order services are loaded in at boot time.
+
+* $1 - The name of the service you wish to add a dependency to.
+* $2 - The name of the service you wish to add as a dependency to the service.
+
+Returns: 1 if $1 is not provided and 2 if $2 is not provided.
+
+
+`wickServiceAddDependencyIfExists()`
+------------------------------------
+
+Internal: Adds the dependency to the service if that dependency is enabled.
+
+* $1 - The service to add the dependency to
+* $2 - The service name you would like to add as a dependency to $1
+
+Returns nothing.
+
+
+
+`wickServiceAddDependencySystemd()`
+-----------------------------------
+
+Internal: Handles adding a dependency specifically if we are running systemd.
+
+* $1 - The name of the service you wish to add a dependency to.
+* $2 - The name of the service you wish to add as a dependency to the service.
+
+
+
+`Wants`
+-------
+
+Add an Wants= after the [Unit] section
+
+
+`wickServiceAddDependencySysv()`
+--------------------------------
+
+Internal: Adds a dependency to a sysv service.
+
+* $1 - The name of the service you wish to add a dependency to.
+* $2 - The name of the service you wish to add as a dependency to the service.
 
 Returns nothing.
 
@@ -557,6 +619,28 @@ Examples
 Returns nothing.
 
 
+`wickServiceIsEnabled()`
+------------------------
+
+Internal: Figures out if a service exists and is enabled. Enabled means it will start on boot.
+
+* $1 - Service name.
+
+Examples:      wickServiceIsEnabled mysql
+
+Returns true if it finds the service and it is enabled.
+
+
+`wickServiceIsEnabledSysv()`
+----------------------------
+
+Internal: Checks if any sysv style scripts exist and are enabled. These services are the ones you will find in /etc/init.d/
+
+* $1 - Name of the service.
+
+Returns true if the service is found and its enabled.
+
+
 `wickServiceIsRunning()`
 ------------------------
 
@@ -573,6 +657,30 @@ Returns nothing.
 
 `wickServiceMakeOverride()`
 ---------------------------
+
+Internal: Generates an override file so alternate dependencies may be used with a service without modifying the original service file.
+
+* $1      - Service name.
+* --force - Overwrite an override file if one exists.
+
+Examples
+
+    wickServiceMakeOverride mysql
+
+Returns true on success, non-zero if the file exists and should not be clobbered.
+
+
+`wickServiceMakeOverrideSystemd()`
+----------------------------------
+
+Internal: Creates the override file if it does not already exist.  Also puts it in a state usable by wickServiceAddDependencySystemd.
+
+* $1 - The name of the service you wish to add a dependency to.
+
+
+
+`wickServiceMakeOverrideSysv()`
+-------------------------------
 
 Internal: Generates an override file for use with chkconfig so alternate dependencies may be used with a service without modifying the original service file.
 
@@ -600,6 +708,24 @@ Examples
     wickServiceOverride ntp
 
 Returns nothing.
+
+
+`wickServiceOverridePathSystemd()`
+----------------------------------
+
+Internal: Assigns an array to the variable provided with two elements.  The first will be the path to the directory and the second will be the name of the override file.
+
+* $1 - Name of variable that should get the result.
+* $2 - Name of the service you want to build the path for.
+
+Example:    # Get the full path to the override file.
+    wickServiceOverridePathSystemd paths "$service"
+    wickArrayJoin overridePath "/" "${paths[@]}"
+
+    # Get just the directory
+    wickServiceOverridePathSystemd paths "$service"
+    serviceDirectory="${paths[0]}"
+
 
 
 `wickServiceReload()`
