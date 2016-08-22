@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Internal: Figures out if a service exists and is enabled.
+# Enabled means it will start on boot.
+#
+# $1 - Service name.
+#
+# Examples
+#
+#   if wickServiceIsEnabled mysql; then
+#       echo "MySQL is enabled"
+#   fi
+#
+# Returns true if it finds the service and it is enabled.
+wickServiceIsEnabled() {
+    local initType service
+
+    wickGetArgument service 0 "$@"
+
+    if [[ -z "$service" ]]; then
+        wickError "First argument to ${FUNCNAME[0]} must be a service name."
+    fi
+
+    wickExplorer initType wick-base init-system
+
+    if [[ systemd == "$initType" ]]; then
+        systemctl is-enabled "$service"
+    else
+        wickServiceIsEnabledSysv
+    fi
+}

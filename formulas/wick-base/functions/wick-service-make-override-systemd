@@ -1,0 +1,41 @@
+#!/bin/bash
+# Internal: Creates the override file if it does not already exist.  Also
+# puts it in a state usable by wickServiceAddDependencySystemd.
+#
+# $1 - The name of the service you wish to create an override file for.
+#
+# Examples
+#
+#   wickServiceMakeOverrideSystemd mongod
+#
+# Returns nothing.
+wickServiceMakeOverrideSystemd() {
+    local overridePath paths service serviceDir
+
+    wickGetArgument service 0 "$@"
+    wickServiceOverridePathSystemd paths "$service"
+
+    serviceDir="${paths[0]}"
+    wickArrayJoin overridePath "${paths[@]}"
+
+    if [[ ! -d "$serviceDir" ]]; then
+        wickDebug "Creating service directory: $serviceDir"
+
+        # This copies the permissions that systemctl creates itself
+        # when using systemctl edit <service>
+        wickMakeDir --owner=root:root --mode=755  "$serviceDir"
+    fi
+
+    if [[ ! -f "$overridePath" ]]; then
+        wickDebug "Creating override file: $overridePath"
+        touch "$overridePath"
+
+        # rw for root, r only for the rest
+        chmod 644 "$overridePath"
+    fi
+
+    if ! grep -q "^[Unit]" "$overridePath"; then
+        wickDebug "Didn't find a [Unit] section in override.  Adding one"
+        echo "[Unit]" >> "$overridePath"
+    fi
+}

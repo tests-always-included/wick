@@ -15,17 +15,24 @@
 #
 # Returns nothing.
 wickServiceAdd() {
-    local force options service source
+    local force options service source initType
 
     wickGetArgument service 0 "$@"
     wickGetArgument source 1 "$@"
     wickGetOptions options "$@"
-    wickGetOption FORCE force "$@"
+    wickGetOption force force "$@"
     wickInfo "Adding service: $service"
 
-    if [[ ! -f "/etc/init.d/$service" ]] || [[ -n "$FORCE" ]]; then
+    wickExplorer initType wick-base init-system
+
+    if [[ ! -f "/etc/init.d/$service" ]] || [[ -n "$force" ]]; then
         wickMakeFile --mode=0755 --owner=root:root "$source" "/etc/init.d/$service" "${options[@]-}"
-        chkconfig --add "$service"
+
+        if [[ "$initType" == systemd ]]; then
+            systemctl daemon-reload
+        else
+            chkconfig --add "$service"
+        fi
     else
         wickWarn "Service already exists and --force flag was not specified"
     fi

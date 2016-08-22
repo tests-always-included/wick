@@ -12,9 +12,18 @@
 #
 # Returns nothing.
 wickServiceOverride() {
-    local service
+    local initType service
 
     wickGetArgument service 0 "$@"
+    wickExplorer initType wick-base init-system
     wickInfo "Updating scripts with override for service: $service"
-    chkconfig --override "$service"
+
+    if [[ "$initType" == systemd ]]; then
+
+        # systemd will automatically pick up the override
+        # file but it must be reloaded.
+        systemctl daemon-reload
+    else
+        chkconfig --override "$service"
+    fi
 }

@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Internal: Adds the dependency to the service if that
+# dependency is enabled.
+#
+# $1 - The service to add the dependency to
+# $2 - The service name you would like to add as a dependency to $1
+#
+# Examples
+#
+#   wickServiceAddDependencyIfEnabled mysql virtual-network
+#
+# Returns the result of wickServiceAddDependency.
+wickServiceAddDependencyIfEnabled() {
+    local service dependency
+
+    wickGetArgument service 0 "$@"
+    wickGetArgument dependency 1 "$@"
+
+    if wickServiceIsEnabled "$dependency"; then
+        wickServiceAddDependency "$service" "$dependency"
+    else
+        wickInfo "Service $dependency does not exist.  No adding it as a dependency"
+    fi
+}

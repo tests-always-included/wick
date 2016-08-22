@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Internal: Checks if any sysv style scripts exist and are enabled.
+# These services are the ones you will find in /etc/init.d/
+#
+# $1 - Name of the service.
+#
+# Examples
+#
+#   if wickServiceIsEnabled mysql; then
+#       echo "MySQL is enabled"
+#   fi
+#
+# Returns true if the service is found and its enabled.
+wickServiceIsEnabledSysv() {
+    local service result
+    wickGetArgument service 0 "$@"
+
+    result=$(chkconfig --list | grep "$service")
+
+    if [[ -n "$result" ]]; then
+        # after removing the service name the only thing that will
+        # be left is <runLevel>:<on|off>.  I look for it to be enabled
+        # at any run level.
+        if echo "$result" | sed 's/'"$service"'\s*//' | grep -q on; then
+            return 0
+        fi
+    fi
+
+    return 1
+
+}

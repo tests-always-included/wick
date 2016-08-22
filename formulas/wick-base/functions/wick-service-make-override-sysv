@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Internal: Generates an override file for use with chkconfig so alternate
+# dependencies may be used with a service without modifying the original
+# service file.
+#
+# $1      - Service name.
+# --force - Overwrite an override file if one exists.
+#
+# Examples
+#
+#   wickServiceMakeOverride mysql
+#
+# Returns true on success, non-zero if the file exists and should not be
+# clobbered.
+wickServiceMakeOverrideSysv() {
+    local dest force label lsb service src value
+
+    wickGetOption force force "$@"
+    wickGetArgument service 0 "$@"
+
+    src="/etc/init.d/$service"
+    dest="/etc/chkconfig.d/$service"
+
+    wickInfo "Making override for service: $service"
+
+    if [[ -f "$dest" ]] && [[ -z "${force-}" ]]; then
+        wickWarn "Override already exists and --force flag was not specified"
+        return 0
+    fi
+
+    if [[ ! -f "$src" ]]; then
+        echo "Source service file does not exist: $src" >&2
+        return 1
+    fi
+
+    lsb=$(sed '0,/^### BEGIN INIT INFO/ d; /^### END INIT INFO/,$ d' "$src")
+    grep '^# chkconfig:' "$src" | head -n 1 > "$dest"
+    echo '### BEGIN INIT INFO' >> "$dest"
+
+    for label in Provides Default-Start Default-Stop Required-Start Required-Stop Should-Start Should-Stop; do
+        value=$(echo "$lsb" | grep '^# '"$label"':' || echo "")
+        echo "${value:-# ${label}:}" >> "$dest"
+    done
+
+    echo '### END INIT INFO' >> "$dest"
+}

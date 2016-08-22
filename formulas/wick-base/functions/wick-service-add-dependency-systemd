@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Internal: Handles adding a dependency specifically if we are
+# running systemd.
+#
+# $1 - The name of the service you wish to add a dependency to.
+# $2 - The name of the service you wish to add as a dependency to the service.
+#
+# Examples
+#
+#   wickServiceAddDependencySystemd mysql virtual-network
+#
+# Returns nothing.
+wickServiceAddDependencySystemd() {
+    local dependency overridePath paths service
+
+    wickGetArgument service 0 "$@"
+    wickGetArgument dependency 1 "$@"
+
+    wickServiceOverridePathSystemd paths "$service"
+    wickArrayJoin overridePath "/" "${paths[@]}"
+
+    wickDebug "Adding \"$dependency\" as a dependency of \"$service\""
+
+    # Add a Wants= after the [Unit] section
+    sed -i 's/^\[\Unit\]/&\nWants='"$dependency"'/' "$overridePath"
+
+    # To pick up changes
+    wickServiceOverride "$service"
+}

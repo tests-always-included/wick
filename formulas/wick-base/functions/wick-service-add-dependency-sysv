@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Internal: Adds a dependency to a sysv service.
+#
+# $1 - The name of the service you wish to add a dependency to.
+# $2 - The name of the service you wish to add as a dependency to the service.
+#
+# Examples
+#
+#   wickServiceAddDependencySysv mysql virtual-network
+#
+# Returns nothing.
+wickServiceAddDependencySysv() {
+    local dependency service overridePath
+
+    wickGetArgument service 0 "$@"
+    wickGetArgument dependency 1 "$@"
+
+    overridePath="/etc/chkconfig.d/$service"
+    sed -i 's/^Should-Start:.*/& '"$dependency"'/' "$overridePath"
+    wickServiceOverride "$service"
+}

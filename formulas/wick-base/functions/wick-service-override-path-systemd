@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Internal: Assigns an array to the variable provided
+# with two elements.  The first will be the path to the
+# directory and the second will be the name of the override
+# file.
+#
+# $1 - Name of variable that should get the result.
+# $2 - Name of the service you want to build the path for.
+#
+# Examples
+#
+#   # Get the full path to the override file.
+#   wickServiceOverridePathSystemd paths "$service"
+#   wickArrayJoin overridePath "/" "${paths[@]}"
+#
+#   # Get just the directory
+#   wickServiceOverridePathSystemd paths "$service"
+#   serviceDirectory="${paths[0]}"
+#
+# Returns nothing.
+wickServiceOverridePathSystemd() {
+    local service target
+
+    wickGetArgument target 0 "$@"
+    wickGetArgument service 1 "$@"
+    serviceDir="/etc/systemd/system/$service.service.d"
+    fileName="override.conf"
+
+    local "$target" && wickIndirectArray "$target" "$serviceDir" "$fileName"
+}
