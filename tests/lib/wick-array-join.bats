@@ -2,6 +2,7 @@
 
 setup() {
     load ../wick-test-base
+    . "$WICK_DIR/lib/wick-indirect"
     . "$WICK_DIR/lib/wick-array-join"
 }
 
@@ -13,8 +14,7 @@ setup() {
         is-good
     )
 
+    wickArrayJoin actual "/" "${arr[@]}"
 
-
-    wickArrayJoin actual "/" "$arr[@]"
     [[ "$actual" == my/path/is-good ]]
 }
