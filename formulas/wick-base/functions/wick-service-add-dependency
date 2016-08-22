@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Internal: Makes the service provided depend on another service
 # which could change the order services are loaded in at boot time.
 #

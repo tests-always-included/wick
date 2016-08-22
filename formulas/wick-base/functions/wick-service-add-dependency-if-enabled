@@ -6,8 +6,7 @@
 # $2 - The service name you would like to add as a dependency to $1
 #
 # Returns nothing.
-#
-wickServiceAddDependencyIfExists() {
+wickServiceAddDependencyIfEnabled() {
     local service dependency
 
     wickGetArgument service 0 "$@"

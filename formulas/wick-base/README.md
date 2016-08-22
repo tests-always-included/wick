@@ -419,9 +419,9 @@ Use `wickMakeFile` to copy the formula file to `/etc/init.d/` for the named serv
 Makes the service provided depend on the service passed as the dependency.
 
 
-### `add-dependency-if-exists` <service> <dependency>
+### `add-dependency-if-enabled` <service> <dependency>
 
-Only adds the dependency of that dependency exists and is enabled to start at boot time.
+Only adds the dependency if that dependency exists as a service and is enabled to start at boot time.
 
 
 ### `disable SERVICE`
@@ -515,8 +515,8 @@ Internal: Makes the service provided depend on another service which could chang
 Returns: 1 if $1 is not provided and 2 if $2 is not provided.
 
 
-`wickServiceAddDependencyIfExists()`
-------------------------------------
+`wickServiceAddDependencyIfEnabled()`
+-------------------------------------
 
 Internal: Adds the dependency to the service if that dependency is enabled.
 
@@ -535,12 +535,13 @@ Internal: Handles adding a dependency specifically if we are running systemd.
 * $1 - The name of the service you wish to add a dependency to.
 * $2 - The name of the service you wish to add as a dependency to the service.
 
+Returns nothing.
 
 
 `Wants`
 -------
 
-Add an Wants= after the [Unit] section
+Add a Wants= after the [Unit] section
 
 
 `wickServiceAddDependencySysv()`

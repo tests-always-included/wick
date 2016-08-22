@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Internal: Assigns an array to the variable provided
 # with two elements.  The first will be the path to the
 # directory and the second will be the name of the override

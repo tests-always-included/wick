@@ -32,10 +32,10 @@
 # Makes the service provided depend on the service passed as the dependency.
 #
 #
-# ### `add-dependency-if-exists` <service> <dependency>
+# ### `add-dependency-if-enabled` <service> <dependency>
 #
-# Only adds the dependency of that dependency exists and is enabled to start
-# at boot time.
+# Only adds the dependency if that dependency exists as a service and is enabled
+# to start at boot time.
 #
 #
 # ### `disable SERVICE`
@@ -126,8 +126,8 @@ wickService() {
             wickServiceAddDependency "${unparsed[@]}" "${options[@]-}"
             ;;
 
-        add-dependency-if-exists)
-            wickServiceAddDependencyIfExists "${unparsed[@]}" "${options[@]-}"
+        add-dependency-if-enabled)
+            wickServiceAddDependencyIfEnabled "${unparsed[@]}" "${options[@]-}"
             ;;
 
         conditional-restart)
@@ -180,7 +180,7 @@ wickService() {
 
         *)
             wickError "Unknown service command: $action"
-            wickError "Must be one of: add, add-dependency, add-dependency-if-exists, disable, is-enabled, enable, override, reload, restart, start, stop"
+            wickError "Must be one of: add, add-dependency, add-dependency-if-enabled, disable, is-enabled, enable, override, reload, restart, start, stop"
             return 1
             ;;
     esac
