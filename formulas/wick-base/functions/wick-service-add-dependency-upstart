@@ -1,5 +1,10 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
+# Internal: Adds a dependency to a sysv service.
+#
+# $1 - The name of the service you wish to add a dependency to.
+# $2 - The name of the service you wish to add as a dependency to the service.
+#
+# Returns nothing.
 wickServiceAddDependencyUpstart() {
     local dependency service overridePath
 
