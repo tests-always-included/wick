@@ -6,8 +6,17 @@
 #   wickFormula ntp
 #
 # Returns nothing
+declare os serviceName
+
+wickExplorer os wick-base os
+serviceName=ntpd
+
+if [[ "$os" == ubuntu ]]; then
+    serviceName=ntp
+fi
+
 wickInfo "Installing ntp and ntpdate packages"
 wickPackage ntp ntpdate
 
-wickInfo "Enabling ntp"
-wickService enable ntpd
+wickInfo "Enabling $serviceName"
+wickService enable "$serviceName"
