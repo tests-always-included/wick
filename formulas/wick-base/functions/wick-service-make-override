@@ -19,6 +19,6 @@ wickServiceMakeOverride() {
     if [[ systemd == "$initType" ]]; then
         wickServiceMakeOverrideSystemd "$@"
     else
-        wickServiceMakeOverrideUpstart "$@"
+        wickServiceMakeOverrideSysv "$@"
     fi
 }
