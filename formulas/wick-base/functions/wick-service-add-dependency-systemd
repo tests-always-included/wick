@@ -21,7 +21,7 @@ wickServiceAddDependencySystemd() {
 
     wickDebug "Adding \"$dependency\" as a dependency of \"$service\""
 
-    #: Add a Wants= after the [Unit] section
+    # Add a Wants= after the [Unit] section
     sed -i 's/^\[\Unit\]/&\nWants='"$dependency"'/' "$overridePath"
 
     # To pick up changes
