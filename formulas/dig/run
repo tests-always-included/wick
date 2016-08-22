@@ -6,10 +6,17 @@
 #   wickFormula dig
 #
 # Returns nothing.
+declare os
+
 wickExplorer os wick-base os
+
 case "$os" in
     centos|redhat)
         wickPackage bind-utils
+        ;;
+
+    ubuntu)
+        wickPackage dnsutils
         ;;
 
     *)
