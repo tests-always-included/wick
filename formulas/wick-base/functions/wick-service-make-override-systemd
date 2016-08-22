@@ -16,7 +16,7 @@ wickServiceMakeOverrideSystemd() {
     wickServiceOverridePathSystemd paths "$service"
 
     serviceDir="${paths[0]}"
-    wickArrayJoin overridePath "${paths[@]}"
+    wickArrayJoin overridePath "/" "${paths[@]}"
 
     if [[ ! -d "$serviceDir" ]]; then
         wickDebug "Creating service directory: $serviceDir"
