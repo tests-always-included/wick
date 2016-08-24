@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+wickServiceGetNameArgumentSystemd() {
+    local index target name
+
+    wickGetArgument target 0 "$@"
+    wickGetArgument index 1 "$@"
+
+    shift 2
+
+    wickGetArgument name "$index" "$@"
+
+    if [[ "$name" != *.target && "$name" != *.timer && "$name" != *.service ]]; then
+        name="$name.service"
+    fi
+
+    local "$target" && wickIndirect "$target" "$name"
+
+}
