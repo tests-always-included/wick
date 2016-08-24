@@ -34,7 +34,7 @@ wickServiceMakeOverrideSystemd() {
         chmod 644 "$overridePath"
     fi
 
-    if ! grep -q "^[Unit]" "$overridePath"; then
+    if ! grep -q "^\[Unit\]" "$overridePath"; then
         wickDebug "Didn't find a [Unit] section in override.  Adding one"
         echo "[Unit]" >> "$overridePath"
     fi
