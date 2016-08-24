@@ -13,8 +13,8 @@
 wickServiceAddDependencySystemd() {
     local dependency overridePath paths service
 
-    wickGetArgument service 0 "$@"
-    wickGetArgument dependency 1 "$@"
+    wickServiceGetNameArgumentSystemd service 0 "$@"
+    wickServiceGetNameArgumentSystemd dependency 1 "$@"
 
     wickServiceOverridePathSystemd paths "$service"
     wickArrayJoin overridePath "/" "${paths[@]}"

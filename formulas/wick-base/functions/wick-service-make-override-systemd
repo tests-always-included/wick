@@ -12,7 +12,7 @@
 wickServiceMakeOverrideSystemd() {
     local overridePath paths service serviceDir
 
-    wickGetArgument service 0 "$@"
+    wickServiceGetNameArgumentSystemd service 0 "$@"
     wickServiceOverridePathSystemd paths "$service"
 
     serviceDir="${paths[0]}"
