@@ -10,7 +10,7 @@
 # "network" instead of "$network".
 #
 ### BEGIN INIT INFO
-# Default-Start: 2345
+# Default-Start: 2 3 4 5
 # Default-Stop: 0 6
 # Required-Start: network
 # Required-Stop: network
