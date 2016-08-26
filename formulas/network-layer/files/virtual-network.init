@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+#
+# virtual-network   Make $network virtual to allow easier modification
+#
+# chkconfig: 2345 11 89
+# description: This lets you inject other scripts so they run before the
+#              $network service is considered started.
+#
+# In order to use this, you must alter /etc/init.d/network so it provides
+# "network" instead of "$network".
+#
+### BEGIN INIT INFO
+# Default-Start: 2345
+# Default-Stop: 0 6
+# Required-Start: network
+# Required-Stop: network
+# Provides: $network
+# Short-Description: Makes $network virtual
+# Description: Makes $network a virtual service
+### END INIT INFO
+
+RESULT_CODE=0
+
+case "$1" in
+    start)
+        echo $"No action to perform - virtual network interface started"
+        ;;
+
+    stop)
+        echo $"No action to perform - virtual network interface stopped"
+        ;;
+
+    restart|reload|force-reload)
+        $0 stop && $0 start
+        RESULT_CODE=$?
+        ;;
+
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|reload|force-reload}"
+        RESULT_CODE=2
+esac
+
+exit $RESULT_CODE
