@@ -18,6 +18,7 @@ networkLayerInclude() {
 
     dependency=network
     dependent="\$network"
+
     if [[ systemd == "$initType" ]]; then
         dependency=networking.service
         dependent=network.target
