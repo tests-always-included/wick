@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Provides a library that allows you to include services into the network layer.
+# Your service would be added after the rest of the network is up but before
+# the rest of the services that depend on the network.
+#
+# This could be used, for instance, to bring up a tunnel interface.
+#
+# CentOS 6 and RedHat 6 have a `$network` virtual service but it is provided
+# directly by `network` without exposing any ability to have `$network` require
+# other services before it's considered "up".  In this case, this  formula will
+# make a virtual `$network` service and overrides the `network` script so it
+# provides `network` instead of `$network`.
+#
+# Examples
+#
+#   wickFormula network-layer
+#
+# Returns nothing.
+
+declare initType
+
+wickExplorer initType wick-base init-system
+
+if [[ systemd != "$initType" ]]; then
+
+    # This is the only scenario where we need to fiddle with
+    # the network service.  Since network provides $network
+    # (which other services depend on) and does all the work
+    # to bring up the network there is no way to insert a service
+    # that MUST run in between.  This is why we create our own
+    # virtual-network service that will provide $network.
+    if grep -q "Provides: \$network" /etc/init.d/network; then
+        wickInfo "Installing virtual network service"
+        wickService add virtual-network virtual-network.init
+
+        wickInfo " ... prebuilding the override file for virtual network"
+        wickService make-override virtual-network
+
+        wickInfo " ... updating network script"
+        wickService make-override network
+        sed -i --follow-symlinks "s/Provides: \$network/Provides: network/" /etc/chkconfig.d/network
+        wickService override network
+
+        wickInfo " ... enabling service on boot"
+        wickService enable virtual-network
+
+        wickInfo " ... starting service"
+        wickService start virtual-network
+    fi
+fi

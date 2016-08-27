@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# External: Includes you service into the "network-layer" so
+# that it will run after the normal network is up but before
+# any of the services that depend on the network being up.
+#
+# $1 - The name of the service you would like to add.
+#
+# Examples
+#
+#     networkLayerInclude tunnel-interface
+#
+# Returns nothing.
+networkLayerInclude() {
+    local initType service dependency dependent
+
+    wickGetArgument service 0 "$@"
+    wickExplorer initType wick-base init-system
+
+    dependency=network
+    dependent="\$network"
+
+    if [[ systemd == "$initType" ]]; then
+        dependency=networking.service
+        dependent=network.target
+    elif wickService is-enabled virtual-network; then
+        dependency=network
+        dependent=virtual-network
+    fi
+
+    wickService add-dependency "$service" "$dependency"
+    wickService add-dependency "$dependent" "$service"
+}
