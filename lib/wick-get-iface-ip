@@ -26,6 +26,7 @@ wickGetIfaceIp() {
     wickGetArgument interface 1 "$@"
 
     list=()
+    allInterfaces=false
 
     if [[ "$interface" == "*" ]]; then
         interface=""
