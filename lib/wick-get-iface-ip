@@ -51,20 +51,24 @@ wickGetIfaceIp() {
         list=( $("${cmd[@]}" 2>/dev/null | grep -Po "inet\s+(addr:)?\K[\d.]+") )
     else
         wickError "Couldn't find a command to look up ip addresses"
+
         return 2
     fi
 
     if [[ "$allInterfaces" == true ]]; then
         if [[ ${#list[@]} -eq 0 ]]; then
             local "$target" && wickIndirectArray "$target"
+
             return 0
         fi
 
         local "$1" && wickIndirectArray "$1" "${list[@]}"
+
         return 0
     fi
 
     if [[ ${list[@]} -lt 1 ]]; then
+
         return 1
     fi
 
