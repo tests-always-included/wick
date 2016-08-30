@@ -20,20 +20,42 @@
 #
 # Returns 0 on success, non-zero on failure.
 wickGetIfaceIp() {
-    local ip list
+    local list target interface allInterfaces
 
-    if [[ "$2" == '*' ]]; then
-        list=()
+    wickGetArgument target 0 "$@"
+    wickGetArgument interface 1 "$@"
 
-        while read ip; do
-            ip=${ip#*inet addr:}
-            ip=${ip#*inet }
-            ip=${ip%% *}
-            list[${#list[@]}]=$ip
-        done < <(ifconfig -v 2>/dev/null | grep 'inet ' || echo "")
+    list=()
 
+    if [[ "$interface" == "*" ]]; then
+        interface=""
+        allInterfaces=true
+    fi
+
+    if wickCommandExists ip; then
+        cmd=(ip addr show)
+
+        if [[ -n "$interface" ]]; then
+            cmd[${#cmd[@]}]="$interface"
+        fi
+
+        list=( $("${cmd[@]}" 2>/dev/null | grep -Po "inet\s+\K[\d.]+") )
+    elif wickCommandExists ifconfig; then
+        cmd=(ifconfig -v)
+
+        if [[ -n "$interface" ]]; then
+            cmd[${#cmd[@]}]="$interface"
+        fi
+
+        list=( $("${cmd[@]}" 2>/dev/null | grep -Po "inet\s+(addr:)?\K[\d.]+") )
+    else
+        wickError "Couldn't find a command to look up ip addresses"
+        return 2
+    fi
+
+    if [[ "$allInterfaces" == true ]]; then
         if [[ ${#list[@]} -eq 0 ]]; then
-            local "$1" && wickIndirectArray "$1"
+            local "$target" && wickIndirectArray "$target"
             return 0
         fi
 
@@ -41,15 +63,10 @@ wickGetIfaceIp() {
         return 0
     fi
 
-    ip=$(ifconfig -v $2 2>/dev/null | grep inet\ | head -n 1 || echo "")
-    ip=${ip#*inet addr:}
-    ip=${ip#*inet }
-    ip=${ip%% *}
-
-    if [[ -z "$ip" ]]; then
+    if [[ ${list[@]} -lt 1 ]]; then
         return 1
     fi
 
-    local "$1" && wickIndirect "$1" "$ip"
+    local "$target" && wickIndirect "$target" "${list[0]}"
 }
 
