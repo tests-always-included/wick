@@ -19,7 +19,7 @@
 . /usr/local/lib/wick-infect
 wickStrictMode
 
-declare ip iface help verbose full reloadFlag
+declare full help iface ip reloadFlag verbose
 
 # Replaces a line in a file.
 #
