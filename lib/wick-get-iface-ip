@@ -40,7 +40,7 @@ wickGetIfaceIp() {
             cmd[${#cmd[@]}]="$interface"
         fi
 
-        list=( $("${cmd[@]}" 2>/dev/null | grep -Po "inet\s+\K[\d.]+") )
+        list=( $("${cmd[@]}" 2>/dev/null | grep -oe "inet [0-9.]\+" | grep -oe "[0-9\.]\+") )
     elif wickCommandExists ifconfig; then
         cmd=(ifconfig -v)
 
@@ -48,7 +48,7 @@ wickGetIfaceIp() {
             cmd[${#cmd[@]}]="$interface"
         fi
 
-        list=( $("${cmd[@]}" 2>/dev/null | grep -Po "inet\s+(addr:)?\K[\d.]+") )
+        list=( $("${cmd[@]}" 2>/dev/null | grep -oe "inet\s\+[addr:]*[0-9\.]\+" | grep -oe "[0-9\.]\+") )
     else
         wickError "Couldn't find a command to look up ip addresses"
 
