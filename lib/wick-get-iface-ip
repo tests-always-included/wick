@@ -20,7 +20,7 @@
 #
 # Returns 0 on success, non-zero on failure.
 wickGetIfaceIp() {
-    local list target interface allInterfaces
+    local allInterfaces interface list target
 
     wickGetArgument target 0 "$@"
     wickGetArgument interface 1 "$@"
