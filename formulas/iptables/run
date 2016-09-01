@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Installs `iptables` if it is not already installed.
+#
+# Examples
+#
+#     wickFormula iptables
+#
+# Returns nothing.
+wickPackage iptables
