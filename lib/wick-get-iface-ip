@@ -62,7 +62,7 @@ wickGetIfaceIp() {
             return 0
         fi
 
-        local "$1" && wickIndirectArray "$1" "${list[@]}"
+        local "$target" && wickIndirectArray "$target" "${list[@]}"
 
         return 0
     fi
