@@ -2,6 +2,14 @@
 
 setup() {
     load ../wick-test-base
+    . "$WICK_DIR/lib/wick-prefix-lines"
+    . "$WICK_DIR/lib/wick-log"
+    . "$WICK_DIR/lib/wick-array-join"
+    . "$WICK_DIR/lib/wick-error"
+    . "$WICK_DIR/lib/wick-debug-extreme"
+    . "$WICK_DIR/lib/wick-command-exists"
+    . "$WICK_DIR/lib/wick-get-arguments"
+    . "$WICK_DIR/lib/wick-get-argument"
     . "$WICK_DIR/lib/wick-indirect"
     . "$WICK_DIR/lib/wick-indirect-array"
     . "$WICK_DIR/lib/wick-get-iface-ip"
@@ -11,7 +19,9 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ip
     wickGetIfaceIp RESULT
+
     [ "$RESULT" == "172.17.42.1" ]
 }
 
@@ -19,6 +29,7 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ip
     wickGetIfaceIp RESULT '*'
     [ "${#RESULT[@]}" -eq 3 ]
     [ "${RESULT[0]}" == "172.17.42.1" ]
@@ -30,6 +41,7 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ip
     ! wickGetIfaceIp RESULT asdf
 }
 
@@ -37,6 +49,7 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ip
     wickGetIfaceIp RESULT lo
     [ "$RESULT" == $'127.0.0.1' ]
 }
@@ -45,6 +58,7 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/gnu
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ip
     ! wickGetIfaceIp RESULT noip
 }
 
@@ -52,6 +66,7 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ip
     wickGetIfaceIp RESULT
     [ "$RESULT" == "192.168.0.103" ]
 }
@@ -60,6 +75,7 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ip
     wickGetIfaceIp RESULT '*'
     [ "${#RESULT[@]}" -eq 3 ]
     [ "${RESULT[0]}" == "192.168.0.103" ]
@@ -71,6 +87,7 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ip
     ! wickGetIfaceIp RESULT asdf
 }
 
@@ -78,6 +95,7 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ip
     wickGetIfaceIp RESULT re1
     [ "$RESULT" == "192.168.0.103" ]
 }
@@ -86,5 +104,50 @@ setup() {
     local RESULT
 
     mock-command ifconfig wick-get-iface-ip/bsd
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ip
     ! wickGetIfaceIp RESULT noip
+}
+
+@test "lib/wick-get-iface-ip: ip command - All interfaces" {
+    local result
+
+    mock-command ip wick-get-iface-ip/ip
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-both
+
+    wickGetIfaceIp result '*'
+
+    [[ "${#result[@]}" == 3 ]]
+    [[ "${result[0]}" == 127.0.0.1 ]]
+    [[ "${result[1]}" == 192.168.70.238 ]]
+    [[ "${result[2]}" == 10.3.254.2 ]]
+}
+
+@test "lib/wick-get-iface-ip: ip command - Get first" {
+    local result
+
+    mock-command ip wick-get-iface-ip/ip
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-both
+
+    wickGetIfaceIp result
+
+    [[ "$result" == 127.0.0.1 ]]
+}
+
+@test "lib/wick-get-iface-ip: ip command - eth0" {
+    local result
+
+    mock-command ip wick-get-iface-ip/ip
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-both
+
+    wickGetIfaceIp result eth0
+
+    [[ "$result" == 192.168.70.238 ]]
+}
+
+@test "lib/wick-get-iface-ip: No commands found to get ips" {
+    local result
+
+    mock-command ifconfig wick-get-iface-ip/bsd
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-commands
+    ! wickGetIfaceIp result tun0
 }

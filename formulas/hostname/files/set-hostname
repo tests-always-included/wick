@@ -19,6 +19,8 @@
 . /usr/local/lib/wick-infect
 wickStrictMode
 
+declare full help iface ip reloadFlag verbose
+
 # Replaces a line in a file.
 #
 # $1 - The filename to update.
@@ -70,16 +72,8 @@ fi
 host=$(echo "$full" | cut -d '.' -f 1)
 domain=$(echo "$full" | cut -d '.' -f 2- -s)
 domain=${domain:-localdomain}
-ifconfigArgs=("-v")
 
-if [[ -n "$iface" ]]; then
-    ifconfigArgs[${#ifconfigArgs[@]}]=$iface
-fi
-
-ip=$(ifconfig "${ifconfigArgs[@]}" | grep inet\ addr | head -n 1)
-ip=${ip#*:}
-ip=${ip%% *}
-ip=${ip//./-}
+wickGetIfaceIp ip "$iface"
 host=${host//\{\{IP\}\}/$ip}
 full="${host}.${domain}"
 
