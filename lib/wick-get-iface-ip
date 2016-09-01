@@ -67,7 +67,7 @@ wickGetIfaceIp() {
         return 0
     fi
 
-    if [[ ${list[@]} -lt 1 ]]; then
+    if [[ "${#list[@]}" -lt 1 ]]; then
 
         return 1
     fi
