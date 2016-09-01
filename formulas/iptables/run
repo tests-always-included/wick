@@ -6,4 +6,11 @@
 #     wickFormula iptables
 #
 # Returns nothing.
+declare os
+
+wickExplorer os wick-base os
 wickPackage iptables
+
+if [[ "$os" == ubuntu ]]; then
+    wickMakeFile load-iptables-rules --mode=0700 /etc/network/if-pre-up.d/iptables
+fi

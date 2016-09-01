@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+iptablesSave() {
+    local initType os
+
+    wickExplorer initType wick-base init-system
+    wickExplorer os wick-base os
+
+    if [[ "$os" == redhat || "$os" == centos  ]] && [[ "$initType" != systemd ]]; then
+        # On RHEL operating systems iptables will exist
+        # as a service and have a save action.
+        services iptables save
+    elif [[ "$os" == ubuntu ]]; then
+        iptables-save > /etc/network/iptables.rules
+    else
+        wickError "Unhandled combination of initType=\"$initType\" and os=\"$os\" in \"${FUNCNAME[0]}\""
+        return 1
+    fi
+}

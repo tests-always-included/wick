@@ -1,0 +1,6 @@
+#!/bin/bash
+path=/etc/network/iptables.rules
+
+if [[ -f "$path" ]]; then
+    iptables-restore < "$path"
+fi
