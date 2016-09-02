@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Adds functions for interacting with GitHub repositories via GitHub's API.
+#
+# Example
+#
+#   wickFormula github
+#
+# Returns nothing.

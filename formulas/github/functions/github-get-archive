@@ -15,13 +15,21 @@
 #
 # Returns nothing.
 githubGetArchive() {
+    local args destination password repository tag username
+
     wickGetArgument repository 0 "$@"
     wickGetArgument destination 1 "$@"
     wickGetOption tag tag "$@"
     wickGetOption username username "$@"
     wickGetOption password password "$@"
-    : ${tag:="master"}
+    : "${tag:=master}"
     args=(-s -L)
+
+    if [[ -z "$repository" ]]; then
+        wickError "Missing argument. Please provide a repository."
+
+        return 1
+    fi
 
     if [[ -n "$username" ]]; then
         args[${#args[@]}]="--user"
@@ -33,5 +41,5 @@ githubGetArchive() {
         args[${#args[@]}]="$destination"
     fi
 
-    curl ${args[@]} "https://github.com/$repository/tarball/$tag"
+    curl "${args[@]}" "https://github.com/$repository/tarball/$tag"
 }
