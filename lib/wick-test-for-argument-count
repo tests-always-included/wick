@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Test to ensure there are a sufficient number of non-empty arguments.
+#
+# Examples
+#
+#   # Ensure the $@ has 4 non-empty arguments.
+#   wickTestForArgumentCount 4 "$@"
+#
+#   # This would fail the test and return 1.
+#   array=(first "" third)
+#   wickTestFormArgumentCount 3 "${array[@]}"
+#
+# Returns zero if arguments are present, one if not.
+wickTestForArgumentCount() {
+    local count args
+
+    wickGetArgument count 0 "$@"
+    shift
+
+    wickGetArguments args "$@"
+
+    if [[ "${#args[@]}" -ne "$count" ]]; then
+        return 1
+    fi
+
+    for arg in "${args[@]}"; do
+        if [[ -z "$arg" ]]; then
+            return 1
+        fi
+    done
+
+    return 0
+}

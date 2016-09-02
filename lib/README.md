@@ -697,11 +697,11 @@ Public: Prepend a string before each line in a variable.  Also converts all newl
 
 Example:
 
-    printf -v lines "one
- two "    # lines is three lines with nothing on the third line.
+    printf -v lines "onentwon"
+    # lines is three lines with nothing on the third line.
     wickPrefixLines result "Look:  " "$lines"
-    # Result is "Look:  one
- Look:  two Look:  "    # Even the last line is (intentionally) prefixed.
+    # Result is "Look:  onenLook:  twonLook:  "
+    # Even the last line is (intentionally) prefixed.
 
 Returns nothing.
 
@@ -925,6 +925,23 @@ Examples
     # Directory is automatically removed for you after this script.
 
 Returns nothing.
+
+
+`wickTestForArgumentCount()`
+----------------------------
+
+Test to ensure there are a sufficient number of non-empty arguments.
+
+Examples
+
+    # Ensure the $@ has 4 non-empty arguments.
+    wickTestForArgumentCount 4 "$@"
+
+    # This would fail the test and return 1.
+    array=(first "" third)
+    wickTestFormArgumentCount 3 "${array[@]}"
+
+Returns zero if arguments are present, one if not.
 
 
 `wickTestForOptions()`
