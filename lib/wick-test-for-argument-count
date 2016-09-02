@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Test to ensure there are a sufficient number of non-empty arguments.
 #
+# $1    - Number of elements that should be in $2.
+# $2-@  - Command line arguments to parse.  Typically this is `"$@"`.
+#
 # Examples
 #
 #   # Ensure the $@ has 4 non-empty arguments.
@@ -12,10 +15,17 @@
 #
 # Returns zero if arguments are present, one if not.
 wickTestForArgumentCount() {
-    local count args
+    local args count
 
     wickGetArgument count 0 "$@"
     shift
+
+    # Ensure count is there and a positive number.
+    if [[ -z "$count" ]] || [[ ! "$count" =~ ^[0-9]+$ ]]; then
+        wickError "Please provide a valid expected argument count."
+
+        return 1
+    fi
 
     wickGetArguments args "$@"
 

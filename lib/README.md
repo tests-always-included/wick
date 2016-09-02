@@ -932,6 +932,9 @@ Returns nothing.
 
 Test to ensure there are a sufficient number of non-empty arguments.
 
+* $1    - Number of elements that should be in $2.
+* $2-@  - Command line arguments to parse.  Typically this is `"$@"`.
+
 Examples
 
     # Ensure the $@ has 4 non-empty arguments.
@@ -975,7 +978,7 @@ Examples
     }
     WICK_TEST_FOR_OPTIONS_FAILURE=missingOption       wickTestForOptions mom dad -- "$@"
 
-Returns nothing.
+Returns zero if options exist, one if they do not.
 
 
 `wickTestForOptionsFailure()`
