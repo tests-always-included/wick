@@ -9,13 +9,17 @@
 #
 # Examples
 #
+#   # Retrieves release from quantumew/mustache-cli from tag v0.1 and
+#   # outputs the file contents to /tmp/mustache-cli.tar.gz
 #   githubGetRelease quantumew/mustache-cli --tag=v0.1 --dest=/tmp/mustache-cli.tar.gz
 #
+#   # Retrieves latest release from quantumew/mustache-cli and outputs it
+#   # to stdout which can be piped into tar.
 #   githubGetRelease quantumew/mustache-cli | tar xz
 #
-# Returns nothing.
+# Returns zero on success, non-zero if there is an error downloading or a missing argument.
 githubGetRelease() {
-    local args destination endpoint password repository tag username
+    local destination endpoint password repository tag username
 
     wickGetArgument repository 0 "$@"
     wickGetArgument destination 1 "$@"
@@ -29,13 +33,7 @@ githubGetRelease() {
         return 1
     fi
 
-    args=(-s -L)
     endpoint="https://api.github.com/repos/$repository/releases"
-
-    if [[ -n "$username" ]]; then
-        args[${#args[@]}]="--user"
-        args[${#args[@]}]="$username:$password"
-    fi
 
     if [[ -z "$tag" ]]; then
         tag=latest
@@ -44,13 +42,13 @@ githubGetRelease() {
     fi
 
     #: Get download endpoint.
-    releaseEndpoint=$(curl "${args[@]}" "$endpoint/$tag" | jq -r '.assets[] | .browser_download_url')
+    releaseEndpoint=$(wickGetUrl "$endpoint/$tag" | jq -r '.assets[] | .browser_download_url // ""')
 
-    if [[ "${destination:--}" != "-" ]]; then
-        args[${#args[@]}]="-o"
-        args[${#args[@]}]="$destination"
+    if [[ -z "$releaseEndpoint" ]]; then
+        wickError "Could not find release for \"$repository\"."
+
+        return 1
     fi
 
-    # Actually pull down the file GitHub redirects to S3 so -L is necessary.
-    curl "${args[@]}" "$releaseEndpoint"
+    wickGetUrl "$releaseEndpoint" "$destination" --username="$username" --password="$password"
 }

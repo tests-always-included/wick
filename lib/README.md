@@ -403,6 +403,8 @@ Public: Download a URL, writing it to stdout or optionally saving it to a file. 
 * $2                - Optional, filename to write with the resulting content. When not specified, this writes to stdout.
 * --progress        - Show progress information during downloads.
 * --timeout=SECONDS - Give up after this many seconds elapse.
+* --username=USER   - Username to use for request. Adds the --user "USER:PASS" option with curl.
+* --password=PASS   - Password to use for request.
 
 Examples
 
@@ -424,8 +426,16 @@ Internal: Download a file with curl.
 * $PROGRESS - Show progress bar when not an empty string.
 * $TIMEOUT  - Limit the command to run for the given number of seconds when this is not an empty string.
 * $URL      - The URL to download.
+* $USERNAME - Username to use for authentication.
+* $PASSWORD - Password to use for authentication.
 
 Returns non-zero on error.
+
+
+`redactedArgs`
+--------------
+
+Redacting password from debug log
 
 
 `wickGetUrlWget()`
@@ -437,8 +447,16 @@ Internal: Download a file with curl.
 * $PROGRESS - Show progress bar when not an empty string.
 * $TIMEOUT  - Limit the command to run for the given number of seconds when this is not an empty string.
 * $URL      - The URL to download.
+* $USERNAME - Username to use for authentication.
+* $PASSWORD - Password to use for authentication.
 
 Returns non-zero on error.
+
+
+`redactedArgs`
+--------------
+
+Redacting password from debug log
 
 
 `wickHash()`
@@ -697,11 +715,11 @@ Public: Prepend a string before each line in a variable.  Also converts all newl
 
 Example:
 
-    printf -v lines "one
- two "    # lines is three lines with nothing on the third line.
+    printf -v lines "onentwon"
+    # lines is three lines with nothing on the third line.
     wickPrefixLines result "Look:  " "$lines"
-    # Result is "Look:  one
- Look:  two Look:  "    # Even the last line is (intentionally) prefixed.
+    # Result is "Look:  onenLook:  twonLook:  "
+    # Even the last line is (intentionally) prefixed.
 
 Returns nothing.
 

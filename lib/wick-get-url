@@ -7,6 +7,8 @@
 #                     When not specified, this writes to stdout.
 # --progress        - Show progress information during downloads.
 # --timeout=SECONDS - Give up after this many seconds elapse.
+# --username=USER   - Username to use for request. Adds the --user "USER:PASS" option with curl.
+# --password=PASS   - Password to use for request.
 #
 # Examples
 #
@@ -21,10 +23,12 @@ wickGetUrl() {
     # These variables are intended to be used outside of wickGetUrl
     # by the child functions for each command, thus they should be
     # capitalized.
-    local DEST PROGRESS TIMEOUT URL
+    local DEST PASSWORD PROGRESS TIMEOUT URL USERNAME
 
-    wickGetOption PROGRESS progress "$@"
-    wickGetOption TIMEOUT timeout "$@"
+    wickGetOption PROGRESS --progress "$@"
+    wickGetOption TIMEOUT --timeout "$@"
+    wickGetOption USERNAME --username "$@"
+    wickGetOption PASSWORD --password "$@"
     wickGetArgument URL 0 "$@"
     wickGetArgument DEST 1 "$@"
     wickDebug "wickGetUrl url: $URL"
@@ -32,11 +36,13 @@ wickGetUrl() {
 
     if wickCommandExists curl; then
         wickGetUrlCurl || return 1
+
         return 0
     fi
 
     if wickCommandExists wget; then
         wickGetUrlWget || return 1
+
         return 0
     fi
 
