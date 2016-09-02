@@ -697,10 +697,10 @@ Public: Prepend a string before each line in a variable.  Also converts all newl
 
 Example:
 
-    printf -v lines "onentwon"
+    printf -v lines "one\ntwo\n"
     # lines is three lines with nothing on the third line.
     wickPrefixLines result "Look:  " "$lines"
-    # Result is "Look:  onenLook:  twonLook:  "
+    # Result is "Look:  one\nLook:  two\nLook:  "
     # Even the last line is (intentionally) prefixed.
 
 Returns nothing.
