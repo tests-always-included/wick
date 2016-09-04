@@ -14,6 +14,10 @@ setup() {
     wickTestForArgumentCount 3 one two three --option=test
 }
 
+@test "lib/wick-test-for-argument-count: Success. Perfectly fine test. 0 count." {
+    wickTestForArgumentCount 0
+}
+
 @test "lib/wick-test-for-argument-count: Empty argument failure" {
     ! wickTestForArgumentCount 2 one ""
 }
@@ -24,4 +28,8 @@ setup() {
 
 @test "lib/wick-test-for-argument-count: Too many arguments failure" {
     ! wickTestForArgumentCount 2 one two three
+}
+
+@test "lib/wick-test-for-argument-count: Invalid count" {
+    ! wickTestForArgumentCount -1 one two three
 }

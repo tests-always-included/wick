@@ -11,17 +11,16 @@
 #
 #   # This would fail the test and return 1.
 #   array=(first "" third)
-#   wickTestFormArgumentCount 3 "${array[@]}"
+#   wickTestForArgumentCount 3 "${array[@]}"
 #
-# Returns zero if arguments are present, one if not.
+# Returns zero if arguments are present and have non-empty values, one if not.
 wickTestForArgumentCount() {
     local args count
 
     wickGetArgument count 0 "$@"
     shift
 
-    # Ensure count is there and a positive number.
-    if [[ -z "$count" ]] || [[ ! "$count" =~ ^[0-9]+$ ]]; then
+    if [[ -z "$count" ]] || [[ ! "$count" -ge 0 ]]; then
         wickError "Please provide a valid expected argument count."
 
         return 1

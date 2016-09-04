@@ -942,9 +942,9 @@ Examples
 
     # This would fail the test and return 1.
     array=(first "" third)
-    wickTestFormArgumentCount 3 "${array[@]}"
+    wickTestForArgumentCount 3 "${array[@]}"
 
-Returns zero if arguments are present, one if not.
+Returns zero if arguments are present and have non-empty values, one if not.
 
 
 `wickTestForOptions()`
