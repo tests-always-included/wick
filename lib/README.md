@@ -697,11 +697,11 @@ Public: Prepend a string before each line in a variable.  Also converts all newl
 
 Example:
 
-    printf -v lines "one
- two "    # lines is three lines with nothing on the third line.
+    printf -v lines "one\ntwo\n"
+    # lines is three lines with nothing on the third line.
     wickPrefixLines result "Look:  " "$lines"
-    # Result is "Look:  one
- Look:  two Look:  "    # Even the last line is (intentionally) prefixed.
+    # Result is "Look:  one\nLook:  two\nLook:  "
+    # Even the last line is (intentionally) prefixed.
 
 Returns nothing.
 
@@ -927,6 +927,26 @@ Examples
 Returns nothing.
 
 
+`wickTestForArgumentCount()`
+----------------------------
+
+Test to ensure there are a sufficient number of non-empty arguments.
+
+* $1    - Number of elements that should be in $2.
+* $2-@  - Command line arguments to parse.  Typically this is `"$@"`.
+
+Examples
+
+    # Ensure the $@ has 4 non-empty arguments.
+    wickTestForArgumentCount 4 "$@"
+
+    # This would fail the test and return 1.
+    array=(first "" third)
+    wickTestForArgumentCount 3 "${array[@]}"
+
+Returns zero if arguments are present and have non-empty values, one if not.
+
+
 `wickTestForOptions()`
 ----------------------
 
@@ -958,7 +978,7 @@ Examples
     }
     WICK_TEST_FOR_OPTIONS_FAILURE=missingOption       wickTestForOptions mom dad -- "$@"
 
-Returns nothing.
+Returns zero if options exist, one if they do not.
 
 
 `wickTestForOptionsFailure()`

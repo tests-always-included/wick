@@ -41,7 +41,7 @@
 #   WICK_TEST_FOR_OPTIONS_FAILURE=missingOption \
 #       wickTestForOptions mom dad -- "$@"
 #
-# Returns nothing.
+# Returns zero if options exist, one if they do not.
 wickTestForOptions() {
     local arg failureCommand result seeking value
 
