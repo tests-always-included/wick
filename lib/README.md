@@ -432,12 +432,6 @@ Internal: Download a file with curl.
 Returns non-zero on error.
 
 
-`redactedArgs`
---------------
-
-Redacting password from debug log
-
-
 `wickGetUrlWget()`
 ------------------
 
@@ -451,12 +445,6 @@ Internal: Download a file with curl.
 * $PASSWORD - Password to use for authentication.
 
 Returns non-zero on error.
-
-
-`redactedArgs`
---------------
-
-Redacting password from debug log
 
 
 `wickHash()`
