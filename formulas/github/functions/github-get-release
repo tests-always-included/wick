@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Function retrieves GitHub repository as a tarball.
+#
+# $1              - Path to GitHub repository.
+# $2              - Destination of release. Output to stdout if no destination given.
+# --tag=TAG       - Tag name of release. Defaults to latest release.
+# --username=USER - Username for private GitHub repositories.
+# --password=PASS - Password for private GitHub repositories.
+#
+# Examples
+#
+#   # Retrieves release from quantumew/mustache-cli from tag v0.1 and
+#   # outputs the file contents to /tmp/mustache-cli.tar.gz
+#   githubGetRelease quantumew/mustache-cli --tag=v0.1 --dest=/tmp/mustache-cli.tar.gz
+#
+#   # Retrieves latest release from quantumew/mustache-cli and outputs it
+#   # to stdout which can be piped into tar.
+#   githubGetRelease quantumew/mustache-cli | tar xz
+#
+# Returns zero on success, non-zero if there is an error downloading or a missing argument.
+githubGetRelease() {
+    local destination endpoint password repository tag username
+
+    wickGetArgument repository 0 "$@"
+    wickGetArgument destination 1 "$@"
+    wickGetOption tag tag "$@"
+    wickGetOption username username "$@"
+    wickGetOption password password "$@"
+
+    if [[ -z "$repository" ]]; then
+        wickError "Missing argument. Please provide a repository."
+
+        return 1
+    fi
+
+    endpoint="https://api.github.com/repos/$repository/releases"
+
+    if [[ -z "$tag" ]]; then
+        tag=latest
+    else
+        tag="tags/$tag"
+    fi
+
+    #: Get download endpoint.
+    releaseEndpoint=$(wickGetUrl "$endpoint/$tag" | jq -r '.assets[] | .browser_download_url // ""')
+
+    if [[ -z "$releaseEndpoint" ]]; then
+        wickError "Could not find release for \"$repository\"."
+
+        return 1
+    fi
+
+    wickGetUrl "$releaseEndpoint" "$destination" --username="$username" --password="$password"
+}

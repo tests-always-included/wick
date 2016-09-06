@@ -6,28 +6,44 @@
 # $TIMEOUT  - Limit the command to run for the given number of seconds when
 #             this is not an empty string.
 # $URL      - The URL to download.
+# $USERNAME - Username to use for authentication.
+# $PASSWORD - Password to use for authentication.
 #
 # Returns non-zero on error.
 wickGetUrlCurl() {
-    local ARGS
+    local args redact redactedArgs
 
-    ARGS=(curl -L -f)
+    args=(curl -L -f)
 
     if [[ -z "$PROGRESS" ]]; then
-        ARGS[${#ARGS[@]}]="-s"
+        args[${#args[@]}]="-s"
     fi
 
-    if [[ ! -z "$TIMEOUT" ]]; then
-        ARGS[${#ARGS[@]}]="-m"
-        ARGS[${#ARGS[@]}]=$TIMEOUT
+    if [[ -n "$TIMEOUT" ]]; then
+        args[${#args[@]}]="-m"
+        args[${#args[@]}]="$TIMEOUT"
     fi
 
-    if [[ ! -z "$DEST" ]]; then
-        ARGS[${#ARGS[@]}]="-o"
-        ARGS[${#ARGS[@]}]=$DEST
+    if [[ -n "$DEST" ]]; then
+        args[${#args[@]}]="-o"
+        args[${#args[@]}]="$DEST"
     fi
 
-    ARGS[${#ARGS[@]}]=$URL
-    wickDebug "wickGetUrl:" "${ARGS[@]}"
-    "${ARGS[@]}"
+    if [[ -n "$USERNAME" ]]; then
+        args[${#args[@]}]="--user"
+        redact="${#args[@]}"
+        args[${#args[@]}]="$USERNAME:$PASSWORD"
+    fi
+
+    args[${#args[@]}]=$URL
+
+    #: Redacting password from debug log
+    redactedArgs=("${args[@]}")
+
+    if [[ -n "$USERNAME" ]]; then
+        redactedArgs["$redact"]="$USERNAME:XXXXXXX"
+    fi
+
+    wickDebug "wickGetUrl: ${redactedArgs[*]}"
+    "${args[@]}"
 }
