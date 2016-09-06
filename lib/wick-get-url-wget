@@ -41,6 +41,7 @@ wickGetUrlWget() {
     fi
 
     args[${#args[@]}]=$URL
+
     #: Redacting password from debug log
     redactedArgs=("${args[@]}")
 
