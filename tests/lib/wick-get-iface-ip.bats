@@ -112,7 +112,7 @@ setup() {
     local result
 
     mock-command ip wick-get-iface-ip/ip
-    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-both
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ifconfig
 
     wickGetIfaceIp result '*'
 
@@ -126,7 +126,7 @@ setup() {
     local result
 
     mock-command ip wick-get-iface-ip/ip
-    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-both
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ifconfig
 
     wickGetIfaceIp result
 
@@ -137,7 +137,7 @@ setup() {
     local result
 
     mock-command ip wick-get-iface-ip/ip
-    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-both
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ifconfig
 
     wickGetIfaceIp result eth0
 
@@ -150,4 +150,17 @@ setup() {
     mock-command ifconfig wick-get-iface-ip/bsd
     mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-commands
     ! wickGetIfaceIp result tun0
+}
+
+# This should only be the case temporarily.  It is affecting
+# the way it was being used because ifconfig orders the interfaces
+# differently than ip.
+@test "lib/wick-get-iface-ip: ifconfig is favored" {
+    local result
+
+    mock-command ifconfig wick-get-iface-ip/gnu
+    mock-command wickCommandExists wick-get-iface-ip/wick-command-exists-no-ip
+    wickGetIfaceIp result
+
+    [ "$result" == "172.17.42.1" ]
 }
