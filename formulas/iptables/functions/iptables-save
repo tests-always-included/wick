@@ -18,7 +18,7 @@ iptablesSave() {
     if [[ "$os" == redhat || "$os" == centos  ]] && [[ "$initType" != systemd ]]; then
         # On RHEL operating systems iptables will exist
         # as a service and have a save action.
-        services iptables save
+        service iptables save
     elif [[ "$os" == ubuntu ]]; then
         iptables-save > /etc/network/iptables.rules
     else
