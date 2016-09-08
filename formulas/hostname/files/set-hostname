@@ -74,6 +74,7 @@ domain=$(echo "$full" | cut -d '.' -f 2- -s)
 domain=${domain:-localdomain}
 
 wickGetIfaceIp ip "$iface"
+ip=${ip//./-}
 host=${host//\{\{IP\}\}/$ip}
 full="${host}.${domain}"
 
