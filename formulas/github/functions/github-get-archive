@@ -11,7 +11,7 @@
 #
 #   # Retrieves a tarball of kyle-long/pyshelf repository from tag v1.0
 #   # and outputs it to /tmp/pyshelf.tar.gz
-#   githubGetArchive kyle-long/pyshelf --tag=v1.0 --dest=/tmp/pyshelf.tar.gz
+#   githubGetArchive kyle-long/pyshelf --tag=v1.0 /tmp/pyshelf.tar.gz
 #
 #   # Retrieves a tarball of kyle-long/pyshelf and outputs it to stdout
 #   # which can be piped into tar.
@@ -19,7 +19,7 @@
 #
 # Returns zero on success, non-zero if there is an error downloading or a missing argument.
 githubGetArchive() {
-    local args destination password repository tag username
+    local destination password repository tag username
 
     wickGetArgument repository 0 "$@"
     wickGetArgument destination 1 "$@"
@@ -32,16 +32,6 @@ githubGetArchive() {
         wickError "Missing argument. Please provide a repository."
 
         return 1
-    fi
-
-    if [[ -n "$username" ]]; then
-        args[${#args[@]}]="--user"
-        args[${#args[@]}]="$username:$password"
-    fi
-
-    if [[ "${destination:--}" != "-" ]]; then
-        args[${#args[@]}]="-o"
-        args[${#args[@]}]="$destination"
     fi
 
     wickGetUrl "https://github.com/$repository/tarball/$tag" "$destination" --username="$username" --password="$password"
