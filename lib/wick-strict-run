@@ -30,9 +30,16 @@ wickStrictRun() {
     shift
     setOptions=$-
     set +eE
+    # Turning off the error trap for this context.  I don't
+    # need the stack trace for the line the command was executed
+    # on.  If the user would like a stack trace for the
+    # command they are running they can use a subshell.  For
+    # example: wickStrictRun result eval "(wickStrictMode; command)"
+    trap "" ERR
     "$@"
     result=$?
     set -"$setOptions"
+    trap 'wickStrictModeFail $?' ERR
 
     local "$dest" && wickIndirect "$dest" "$result"
 }
