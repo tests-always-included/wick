@@ -52,6 +52,7 @@ This outputs
     Didn't expect a success
 
 Two things to note:
+
 1. Without `-e` `errorCommand` continues even though the first command exited with a non-zero value (`false`).
 2. `errorCommand` exits with 0 because the `echo` command successfully completed.
 
