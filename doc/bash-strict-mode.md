@@ -11,6 +11,7 @@ As found on [another website](http://redsymbol.net/articles/unofficial-bash-stri
 A brief summary of what each option does:
 
 * `set -e`: Exit immediately if a command exits with a non-zero status, unless that command is part a test condition.  On failure this triggers the ERR trap.
+    * There are [some contexts](context-that-disable-exit-on-error.md) that will disable this setting.
 * `set -E`: The ERR trap is inherited by shell functions, command substitutions and commands in subshells.  This helps us use `wickStrictModeFail` wherever `set -e` is enabled.
 * `set -u`: Exit and trigger the ERR trap when accessing an unset variable.  This helps catch typos in variable names.
 * `set -o pipefail`: The return value of a pipeline is the value of the last (rightmost) command to exit with a non-zero status.  So, `a | b | c` can return `a`'s status when `b` and `c` both return a zero status.  It is easier to catch problems during the middle of processing a pipeline this way.
