@@ -1,7 +1,7 @@
 Contexts That Disable Exit On Error
 ===================================
 
-In wick, everything by default runs in [strict mode](bash-strict-mode.md).  This, among other things, sets `-e` which tells bash to exit if a command that was ran exitted with an error code.  It will also exit with the same error code as the command that failed.
+In Wick, everything by default runs in [strict mode](bash-strict-mode.md).  This, among other things, sets `-e` which tells Bash to exit if a command that was ran exited with an error code.  It will also exit with the same error code as the command that failed.
 
     set -e
 
