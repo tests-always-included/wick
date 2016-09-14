@@ -22,6 +22,11 @@
 #       wickInfo "some-string was not found"
 #   fi
 #
+#   # If the user would like to use strict mode for the
+#   # command they are running they can use a subshell
+#   # and manually enable wickStrictMode.
+#   wickStrictRun result eval "(wickStrictMode; command)"
+#
 # Returns nothing.
 wickStrictRun() {
     local dest result setOptions
@@ -32,9 +37,7 @@ wickStrictRun() {
     set +eE
     # Turning off the error trap for this context.  I don't
     # need the stack trace for the line the command was executed
-    # on.  If the user would like a stack trace for the
-    # command they are running they can use a subshell.  For
-    # example: wickStrictRun result eval "(wickStrictMode; command)"
+    # on.
     trap "" ERR
     "$@"
     result=$?
