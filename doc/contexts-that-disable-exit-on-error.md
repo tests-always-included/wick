@@ -84,4 +84,4 @@ This can happen in many contexts.  The descrption from [a bug logged](http://aus
 
 	(set -e; false; true) && echo "TEST"
 
-These are just simple examples.  More complex situations are harder to spot the problem.
+These are just simple examples.  More complex situations make it harder to spot the problem.
