@@ -22,7 +22,7 @@ This will exit with the code 1.  We sometimes use exit codes to our advantage.
     }
 
     if ! errorCommand; then
-        echo "It returned a non-zero code, signally false, or failure."
+        echo "It returned a non-zero code, signally false or failure."
         # continue to do other stuff.
     fi
 
@@ -52,8 +52,8 @@ This outputs
     Didn't expect a success
 
 Two things to note:
-    1. Without `-e` `errorCommand` continues even though one of the commands exited with a non-zero value (`false`).
-    2. `errorCommand` exits with 0 because the `echo` command successfully completed.
+1. Without `-e` `errorCommand` continues even though the first command exited with a non-zero value (`false`).
+2. `errorCommand` exits with 0 because the `echo` command successfully completed.
 
 Another thing to note is that there is no way to reenabled `-e` once inside of one of these contexts.  This applies even if you are running a subshell.
 
@@ -83,3 +83,5 @@ This can happen in many contexts.  The descrption from [a bug logged](http://aus
 	done
 
 	(set -e; false; true) && echo "TEST"
+
+These are just simple examples.  More complex situations are harder to spot the problem.
