@@ -47,7 +47,7 @@ wickRunFormula() {
     # an if statement) then it behaves as if -e is not set. See
     # https://github.com/tests-always-included/wick/blob/master/doc/contexts-that-disable-exit-on-error.md
     # for more information.
-    wickStrictRun result eval "(wickStrictMode ; . $formula)"
+    wickStrictRun result eval ". $formula"
 
     if [[ "$result" -ne 0 ]]; then
         echo "FAILURE DETECTED"
