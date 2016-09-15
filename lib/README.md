@@ -848,7 +848,7 @@ Examples
 
 [unofficial bash strict mode]: http://redsymbol.net/articles/unofficial-bash-strict-mode/
 
-[strict mode]: ../docs/bash-strict-mode.md
+[strict mode]: ../doc/bash-strict-mode.md
 
 Returns nothing.
 

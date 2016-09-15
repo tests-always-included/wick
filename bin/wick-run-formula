@@ -15,7 +15,7 @@
 #
 # Returns the status code from the formula.
 wickRunFormula() {
-    local formula WICK_FORMULA_DIR WICK_FORMULA_NAME
+    local formula result WICK_FORMULA_DIR WICK_FORMULA_NAME
 
     formula=$1
     shift
@@ -27,20 +27,29 @@ wickRunFormula() {
 
     # See escaping note above
     eval "WICK_FORMULA_DIR=($formula)"
-    WICK_FORMULA_DIR=${WICK_FORMULA_DIR[0]%/*}
-    WICK_FORMULA_NAME=${WICK_FORMULA_DIR##*/}
+    export WICK_FORMULA_DIR=${WICK_FORMULA_DIR[0]%/*}
+    export WICK_FORMULA_NAME=${WICK_FORMULA_DIR##*/}
 
-    if ! (
-        # See escaping note in function header
-        # Can't use `. $formula` by itself because parameters get
-        # double-escaped.
-        #
-        #   arg1() { printf "%q" "$1"; }
-        #   arg1 a\{b # prints "a\{b"
-        #   test="arg1 a\{b"
-        #   $test # prints "a\\\{b"
-        eval "wickStrictMode ; . $formula"
-    ); then
+    # See escaping note in function header
+    # Can't use `. $formula` by itself because parameters get
+    # double-escaped.
+    #
+    #   arg1() { printf "%q" "$1"; }
+    #   arg1 a\{b # prints "a\{b"
+    #   test="arg1 a\{b"
+    #   $test # prints "a\\\{b"
+    #
+    # We need to run this via wickStrictRun capture the exit code
+    # instead of in the if statement for the latest version of bash.
+    # In previous versions (4.1.2) this worked but in the later versions
+    # (4.3.46) it appears not to.  Apparently according to the POSIX
+    # when running anything within certain contexts (in our case inside
+    # an if statement) then it behaves as if -e is not set. See
+    # https://github.com/tests-always-included/wick/blob/master/doc/contexts-that-disable-exit-on-error.md
+    # for more information.
+    wickStrictRun result eval "(wickStrictMode ; . $formula)"
+
+    if [[ "$result" -ne 0 ]]; then
         echo "FAILURE DETECTED"
         # Only use echo - do not log this to the file because the arguments
         # may contain secret keys.  Logging just the formula's name would be
