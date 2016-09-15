@@ -22,27 +22,30 @@
 #       wickInfo "some-string was not found"
 #   fi
 #
-#   # If the user would like to use strict mode for the
-#   # command they are running they can use a subshell
-#   # and manually enable wickStrictMode.
-#   wickStrictRun result eval "(wickStrictMode; command)"
-#
 # Returns nothing.
 wickStrictRun() {
-    local dest result setOptions
+    local dest restoreErrors result
 
     dest=$1
     shift
-    setOptions=$-
+    # Gathering current settings and traps for ERR
+    # so we can restore them at will later.
+    restoreErrors="set \"-$-\";$(trap -p ERR)"
+
+    # Disabling errors only for executing this subshell.  For once,
+    # we don't want it to exit if the subshell fails and we don't
+    # want it logging a stack trace just for this line.  We do,
+    # however, want strict mode enabled inside the subshell.
     set +eE
-    # Turning off the error trap for this context.  I don't
-    # need the stack trace for the line the command was executed
-    # on.
     trap "" ERR
-    "$@"
+
+    (
+        eval "$restoreErrors"
+        "$@"
+    )
+
     result=$?
-    set -"$setOptions"
-    trap 'wickStrictModeFail $?' ERR
+    eval "$restoreErrors"
 
     local "$dest" && wickIndirect "$dest" "$result"
 }
