@@ -5,7 +5,7 @@
 #
 # Examples
 #
-#   appRepositoryApt ppa:bcandrea/consul
+#   addRepositoryApt ppa:bcandrea/consul
 #
 # Returns true if we are running an operating system that shouldn't
 # use apt or it returns the result of add-apt-repository or apt-get update.
