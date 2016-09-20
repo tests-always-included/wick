@@ -2,9 +2,11 @@
 # Exposes functions for adding a repository to a package management
 # system.
 #
-# Example
+# Examples
 #
 #   wickFormula add-repo
+#
+# Returns nothing.
 declare os
 
 wickExplorer os wick-base os
