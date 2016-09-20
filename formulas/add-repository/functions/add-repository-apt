@@ -5,11 +5,11 @@
 #
 # Examples
 #
-#   appRepoApt ppa:bcandrea/consul
+#   appRepositoryApt ppa:bcandrea/consul
 #
 # Returns true if we are running an operating system that shouldn't
 # use apt or it returns the result of add-apt-repository or apt-get update.
-addRepoApt() {
+addRepositoryApt() {
     local os repo
 
     wickGetArgument repo 0 "$@"
