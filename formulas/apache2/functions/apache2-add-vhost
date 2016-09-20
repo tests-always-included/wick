@@ -13,7 +13,7 @@ apache2AddVhost() {
 
     wickGetArgument site 0 "$@"
     wickGetOptions options "$@"
-    wickInfo "Adding Apache2 vhost: ${options[@]-} $site"
+    wickInfo "Adding Apache2 vhost:" "${options[@]-}" "$site"
     wickExplorer os wick-base os
 
     case "$os" in

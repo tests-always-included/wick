@@ -13,7 +13,7 @@ apache2AddConf() {
 
     wickGetArgument conf 0 "$@"
     wickGetOptions options "$@"
-    wickInfo "Adding Apache2 config: ${options[@]-} $conf"
+    wickInfo "Adding Apache2 config:" "${options[@]-}" "$conf"
     wickExplorer os wick-base os
 
     case "$os" in
