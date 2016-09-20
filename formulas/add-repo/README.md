@@ -1,5 +1,6 @@
 Add Repo
 ========
+
 Exposes functions for adding a repository to a package management system.
 
 Examples
