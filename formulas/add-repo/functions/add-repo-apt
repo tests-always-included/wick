@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# External: Adds a repository to apt.  If we find that you are running
+# an operating system that should not be using apt we do not attempt
+# to add it.
+#
+# Examples
+#
+#   appRepoApt ppa:bcandrea/consul
+#
+# Returns true if we are running an operating system that shouldn't
+# use apt or it returns the result of add-apt-repository or apt-get update.
+addRepoApt() {
+    local os repo
+
+    wickGetArgument repo 0 "$@"
+
+    wickExplorer os wick-base os
+
+    if [[ "$os" != ubuntu && "$os" != debian ]]; then
+        wickDebug "Detected this is an operating system that should not use apt.  Returning success."
+        return 0
+    fi
+
+    wickInfo "Adding repository $repo"
+    add-apt-repository --yes "$repo" && apt-get update
+}

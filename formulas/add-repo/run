@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Exposes functions for adding a repository to a package management
+# system.
+#
+# Example
+#
+#   wickFormula add-repo
+declare os
+
+wickExplorer os wick-base os
+
+if [[ "$os" == ubuntu || "$os" == debian ]]; then
+    # Required for minimal installations.  Most Debians
+    # and Ubuntus will have this already.
+    wickPackage software-properties-common
+fi
