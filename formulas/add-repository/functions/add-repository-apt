@@ -3,6 +3,8 @@
 # an operating system that should not be using apt we do not attempt
 # to add it.
 #
+# $1 -  The name of repository you would like to add.
+#
 # Examples
 #
 #   addRepositoryApt ppa:bcandrea/consul
