@@ -9,16 +9,20 @@
 #
 # Returns nothing.
 wickServiceIsRunning() {
-    local service initType
+    local service serviceCommandExists initType
 
     wickGetArgument service 0 "$@"
     wickExplorer initType wick-base init-system
 
     wickInfo "Checking if service is running: $service"
 
+    wickStrictRun serviceCommandExists wickCommandExists service
+
     if [[ "$initType" == systemd ]]; then
         systemctl status "$service"
-    else
+    elif [[ "$serviceCommandExists" -eq 0 ]]; then
         service "$service" status
+    else
+        "/etc/init.d/$service status"
     fi
 }
