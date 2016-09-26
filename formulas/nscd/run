@@ -12,9 +12,12 @@
 #   wickFormula nscd --start
 #
 # Returns nothing.
+declare start
+
 wickGetOption start start "$@"
 
 if wickPackage --exists unscd; then
+    wickInfo "Sometimes an error can occur at installation where unscd cannot connect to its socket. This does not prevent it from working. It only appears to happen when being installed."
     wickPackage unscd
     wickService enable unscd
     wickService force-state unscd "$start"
