@@ -9,16 +9,20 @@
 #
 # Returns nothing.
 wickServiceRestart() {
-    local service initType
+    local service serviceCommandExists initType
 
     wickGetArgument service 0 "$@"
     wickExplorer initType wick-base init-system
+
+    wickStrictRun serviceCommandExists wickCommandExists service
 
     wickInfo "Restarting service: $service"
 
     if [[ "$initType" == systemd ]]; then
         nohup systemctl restart "$service"
-    else
+    elif [[ "$serviceCommandExists" -eq 0 ]]; then
         nohup service "$service" restart
+    else
+        nohup "/etc/init.d/$service" restart
     fi
 }
