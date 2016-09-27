@@ -51,6 +51,21 @@ NOT_SPACE_RE='[^[:space:]][^[:space:]]*'
 # Regular expression matching shell function or variable name.
 NAME_RE='[a-zA-Z_][a-zA-Z0-9_]*'
 
+#: Determines what type of echo should be used. This echo should not handle
+#: escape sequences or should be told to not interpret escape sequences.
+TOMDOC_ECHO=$(which echo)
+
+if [ "$("$TOMDOC_ECHO" -E test)" = "-E test" ]; then
+    #: Mac and FreeBSD echo
+    TOMDOC_ECHO_OPTS=""
+    TOMDOC_ECHO_N_OPTS="-n"
+else
+    #: GNU and others
+    TOMDOC_ECHO_OPTS="-E"
+    TOMDOC_ECHO_N_OPTS="-En"
+fi
+
+
 # Writes content to stdout.  This is replacing the POSIX shell's echo command
 # with the one in the environment that supports flags and options.
 #
@@ -58,7 +73,11 @@ NAME_RE='[a-zA-Z_][a-zA-Z0-9_]*'
 #
 # Returns nothing.
 safe_echo() {
-    /usr/bin/env echo -E "$@"
+    if [ -z "$TOMDOC_ECHO_OPTS" ]; then
+        "$TOMDOC_ECHO" "$@"
+    else
+        "$TOMDOC_ECHO" "$TOMDOC_ECHO_OPTS" "$@"
+    fi
 }
 
 # Writes content to stdout.  Identical to safe_echo() except this also
@@ -68,7 +87,7 @@ safe_echo() {
 #
 # Returns nothing.
 safe_echo_n() {
-    /usr/bin/env echo -nE "$@"
+    "$TOMDOC_ECHO" "$TOMDOC_ECHO_N_OPTS" "$@"
 }
 
 # Strip leading whitespace and '#' from TomDoc strings.
