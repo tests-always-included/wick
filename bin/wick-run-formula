@@ -30,6 +30,9 @@ wickRunFormula() {
     export WICK_FORMULA_DIR=${WICK_FORMULA_DIR[0]%/*}
     export WICK_FORMULA_NAME=${WICK_FORMULA_DIR##*/}
 
+    # This one is safe to log because arguments have been removed.
+    wickDebug "Executing formula (arguments not shown): $WICK_FORMULA_NAME"
+
     # See escaping note in function header
     # Can't use `. $formula` by itself because parameters get
     # double-escaped.
@@ -49,17 +52,21 @@ wickRunFormula() {
     # for more information.
     wickStrictRun result eval ". $formula"
 
+    # This one is safe to log because arguments have been removed.
+    wickDebug "Done running formula (result $result): $WICK_FORMULA_NAME"
+
     if [[ "$result" -ne 0 ]]; then
-        echo "FAILURE DETECTED"
-        # Only use echo - do not log this to the file because the arguments
-        # may contain secret keys.  Logging just the formula's name would be
-        # acceptable.
+        # The formula name is safe to log.
+        wickError "FAILURE DETECTED: $WICK_FORMULA_NAME"
+
+        # Only use echo when using $formula because the arguments may contain
+        # secret keys.
         echo "Formula failure: $formula"
+
         return 1
     fi
 
     # Only use echo - do not log this to the file because the arguments
-    # may contain secret keys.  Logging just the formula's name would be
-    # acceptable.
+    # may contain secret keys.
     echo "Formula success: $formula"
 }
