@@ -13,7 +13,7 @@
 # Returns true on success, non-zero if the file exists and should not be
 # clobbered.
 wickServiceMakeOverrideSysv() {
-    local dest force label lsb service src value
+    local dest force label lsb pattern service src value
 
     wickGetOption force force "$@"
     wickGetArgument service 0 "$@"
@@ -34,7 +34,14 @@ wickServiceMakeOverrideSysv() {
     fi
 
     lsb=$(sed '0,/^### BEGIN INIT INFO/ d; /^### END INIT INFO/,$ d' "$src")
-    grep '^# chkconfig:' "$src" | head -n 1 > "$dest"
+    pattern='^# chkconfig:'
+
+    if grep -q "$pattern" "$src"; then
+        grep "$pattern" "$src" | head -n 1 > "$dest"
+    else
+        touch "$dest"
+    fi
+
     echo '### BEGIN INIT INFO' >> "$dest"
 
     for label in Provides Default-Start Default-Stop Required-Start Required-Stop Should-Start Should-Stop; do
