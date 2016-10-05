@@ -38,7 +38,7 @@ wickServiceMakeOverrideSysv() {
     # Ignoring the absence of the chkconfig line.
     chkConf=$(grep '^# chkconfig:' "$src" || :)
 
-    if [[ -z "$chkConf" ]]; then
+    if [[ -n "$chkConf" ]]; then
         echo "$chkConf" | head -n 1 > "$dest"
     else
         touch "$dest"
