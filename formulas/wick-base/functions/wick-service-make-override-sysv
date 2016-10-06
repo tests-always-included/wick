@@ -13,7 +13,7 @@
 # Returns true on success, non-zero if the file exists and should not be
 # clobbered.
 wickServiceMakeOverrideSysv() {
-    local chkConf dest force label lsb service src value
+    local dest force label lsb service src value
 
     wickGetOption force force "$@"
     wickGetArgument service 0 "$@"
@@ -36,13 +36,9 @@ wickServiceMakeOverrideSysv() {
     lsb=$(sed '0,/^### BEGIN INIT INFO/ d; /^### END INIT INFO/,$ d' "$src")
 
     # Ignoring the absence of the chkconfig line.
-    chkConf=$(grep '^# chkconfig:' "$src" || :)
-
-    if [[ -n "$chkConf" ]]; then
-        echo "$chkConf" | head -n 1 > "$dest"
-    else
-        touch "$dest"
-    fi
+    {
+        grep '^# chkconfig:' "$src" || :
+    } | head -n 1 > "$dest"
 
     echo '### BEGIN INIT INFO' >> "$dest"
 
