@@ -22,7 +22,7 @@ This will exit with the code 1.  We sometimes use exit codes to our advantage.
     }
 
     if ! errorCommand; then
-        echo "It returned a non-zero code, signally false or failure."
+        echo "It returned a non-zero code, signalling false or failure."
         # continue to do other stuff.
     fi
 
