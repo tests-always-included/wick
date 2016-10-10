@@ -79,7 +79,7 @@ This can happen in many contexts.  The descrption from [a bug logged](http://aus
 
 	while false; true; do
 		echo "TEST"
-		# To prevent an infinit loop
+		# To prevent an infinite loop
 		exit 0
 	done
 
