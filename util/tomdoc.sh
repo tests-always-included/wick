@@ -24,22 +24,40 @@ access=
 while test "$#" -ne 0; do
     case "$1" in
     -h|--h|--he|--hel|--help)
-        grep '^#/' <"$0" | cut -c4-; exit 0 ;;
+        grep '^#/' <"$0" | cut -c4-
+        exit 0
+        ;;
     --version)
-        echo "tomdoc.sh version $TOMDOCSH_VERSION"; exit 0 ;;
+        printf "tomdoc.sh version %s\n" "$TOMDOCSH_VERSION"
+        exit 0
+        ;;
     -t|--t|--te|--tex|--text)
-        generate=generate_text; shift ;;
+        generate=generate_text
+        shift
+        ;;
     -m|--m|--ma|--mar|--mark|--markd|--markdo|--markdow|--markdown)
-        generate=generate_markdown; shift ;;
+        generate=generate_markdown
+        shift
+        ;;
     -a|--a|--ac|--acc|--acce|--acces|--access)
-        test "$#" -ge 2 || { echo >&2 "error: $1 requires an argument"; exit 1; }
-        access="$2"; shift 2 ;;
+        test "$#" -ge 2 || {
+            printf "error: %s requires an argument\n" "$1" >&2
+            exit 1
+        }
+        access="$2"
+        shift 2
+        ;;
     --)
-        shift; break ;;
+        shift
+        break
+        ;;
     -|[!-]*)
-        break ;;
+        break
+        ;;
     -*)
-        echo >&2 "error: invalid option '$1'"; exit 1 ;;
+        printf "error: invalid option '%s'\n" "$1" >&2
+        exit 1
+        ;;
     esac
 done
 
@@ -50,45 +68,6 @@ SPACE_RE='[[:space:]]*'
 NOT_SPACE_RE='[^[:space:]][^[:space:]]*'
 # Regular expression matching shell function or variable name.
 NAME_RE='[a-zA-Z_][a-zA-Z0-9_]*'
-
-#: Determines what type of echo should be used. This echo should not handle
-#: escape sequences or should be told to not interpret escape sequences.
-TOMDOC_ECHO=$(which echo)
-
-if [ "$("$TOMDOC_ECHO" -E test)" = "-E test" ]; then
-    #: Mac and FreeBSD echo
-    TOMDOC_ECHO_OPTS=""
-    TOMDOC_ECHO_N_OPTS="-n"
-else
-    #: GNU and others
-    TOMDOC_ECHO_OPTS="-E"
-    TOMDOC_ECHO_N_OPTS="-En"
-fi
-
-
-# Writes content to stdout.  This is replacing the POSIX shell's echo command
-# with the one in the environment that supports flags and options.
-#
-# $@ - all arguments are passed to the echo command.
-#
-# Returns nothing.
-safe_echo() {
-    if [ -z "$TOMDOC_ECHO_OPTS" ]; then
-        "$TOMDOC_ECHO" "$@"
-    else
-        "$TOMDOC_ECHO" "$TOMDOC_ECHO_OPTS" "$@"
-    fi
-}
-
-# Writes content to stdout.  Identical to safe_echo() except this also
-# suppresses newlines.
-#
-# $@ - all arguments are passed to the echo command.
-#
-# Returns nothing.
-safe_echo_n() {
-    "$TOMDOC_ECHO" "$TOMDOC_ECHO_N_OPTS" "$@"
-}
 
 # Strip leading whitespace and '#' from TomDoc strings.
 #
@@ -109,7 +88,7 @@ generate_text() {
 --------------------------------------------------------------------------------
 $1
 
-$(safe_echo "$2" | uncomment)
+$(printf "%s" "$2" | uncomment)
 
 EOF
 }
@@ -124,41 +103,42 @@ EOF
 generate_markdown() {
     local line last did_newline last_was_option
 
-    safe_echo '`'"$1"'`'
-    safe_echo " $1 " | sed "s/./-/g"
-    echo ""
+    printf "%s\n" '`'"$1"'`'
+    printf "%s" " $1 " | tr -c - -
+    printf "\n\n"
 
     last=""
     did_newline=false
     last_was_option=false
-    safe_echo "$2" | uncomment | sed -e "s/$SPACE_RE$//" | while IFS='' read line; do
-        if safe_echo "$line" | grep -q "^$SPACE_RE$NOT_SPACE_RE $SPACE_RE- "; then
+
+    printf "%s\n" "$2" | uncomment | sed -e "s/$SPACE_RE$//" | while IFS='' read -r line; do
+        if printf "%s" "$line" | grep -q "^$SPACE_RE$NOT_SPACE_RE $SPACE_RE- "; then
             # This is for arguments
             if ! $did_newline; then
-                echo ""
+                printf "\n"
             fi
 
-            if safe_echo "$line" | grep -q "^$NOT_SPACE_RE"; then
-                safe_echo_n "* $line"
+            if printf "%s" "$line" | grep -q "^$NOT_SPACE_RE"; then
+                printf "%s" "* $line"
             else
-                safe_echo_n "    * "
-                safe_echo_n "$line" | sed "s/^$SPACE_RE//"
+                printf "    * "
+                printf "%s" "$line" | sed "s/^$SPACE_RE//"
             fi
 
             last_was_option=true
 
             # shellcheck disable=SC2030
-        
+
             did_newline=false
         else
             case "$line" in
                 "")
                     # Check for end of paragraph / section
                     if ! $did_newline; then
-                        echo ""
+                        printf "\n"
                     fi
 
-                    echo ""
+                    printf "\n"
                     did_newline=true
                     last_was_option=false
                     ;;
@@ -166,17 +146,17 @@ generate_markdown() {
                 "  "*)
                     # Examples and option continuation
                     if $last_was_option; then
-                        safe_echo_n "$line" | sed "s/^ */ /"
+                        printf "%s" "$line" | sed "s/^ */ /"
                         did_newline=false
                     else
-                        safe_echo "  $line"
+                        printf "  %s\n" "$line"
                         did_newline=true
                     fi
                     ;;
 
                 "* "*)
                     # A list should not continue a previous paragraph.
-                    safe_echo "$line"
+                    printf "%s\n" "$line"
                     did_newline=true
                     ;;
 
@@ -185,26 +165,28 @@ generate_markdown() {
                     case "$last" in
                         "")
                             # Start a new paragraph - no space at the beginning
-                            safe_echo_n "$line"
+                            printf "%s" "$line"
                             ;;
 
                         *)
                             # Continue this line - include space at the beginning
-                            safe_echo_n " $line"
+                            printf " %s" "$line"
                             ;;
                     esac
+
                     did_newline=false
                     last_was_option=false
                     ;;
             esac
         fi
+
         last="$line"
     done
 
     # shellcheck disable=SC2031
 
     if ! $did_newline; then
-        echo ""
+        printf "\n"
     fi
 }
 
@@ -243,7 +225,7 @@ parse_tomdoc() {
                     doc=; continue ;;
                 esac
 
-                name="$(safe_echo "$line" | parse_code)"
+                name="$(printf "%s" "$line" | parse_code)"
                 test -n "$name" && "$generate" "$name" "$doc"
             }
             doc=
