@@ -28,8 +28,9 @@ wickStrictRun() {
 
     dest=$1
     shift
-    # Gathering current settings and traps for ERR
-    # so we can restore them at will later.
+
+    #: Gathering current settings and traps for ERR
+    #: so we can restore them at will later.
     restoreErrors="set \"-$-\";$(trap -p ERR)"
 
     # Disabling errors only for executing this subshell.  For once,

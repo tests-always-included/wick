@@ -44,7 +44,7 @@ Examples
     wickArgumentString exampleResult one two three "four five"
     set | fgrep "exampleResult"
     # Output:
-    # exampleResult='one two three four five'
+    # exampleResult='one two three four\ five'
 
 Returns nothing.
 
@@ -127,7 +127,7 @@ Examples
     if wickInArray index four "${list[@]}"; then
         echo "four should not be found"
         echo "'four four' with a space would be found"
-        echo "$index will not be updated"
+        echo "\$index will not be updated"
     fi
 
 Returns success if $1 is found in the list of other arguments.
@@ -705,6 +705,7 @@ Example:
 
     printf -v lines "one\ntwo\n"
     # lines is three lines with nothing on the third line.
+
     wickPrefixLines result "Look:  " "$lines"
     # Result is "Look:  one\nLook:  two\nLook:  "
     # Even the last line is (intentionally) prefixed.
@@ -785,7 +786,8 @@ Example:
     # Update DHCP settings
     # Key is "prepend nameservers" because we specify it as a third
     # parameter.
-    wickSetConfigLine /etc/dhcp/dhclient.conf       "prepend nameservers 127.0.0.1" "prepend nameservers"
+    wickSetConfigLine /etc/dhcp/dhclient.conf \
+        "prepend nameservers 127.0.0.1" "prepend nameservers"
 
     # Removes a line from the Redis config for the master password
     wickSetConfigLine /etc/redis.conf "" "masterPassword"
@@ -982,7 +984,8 @@ Examples
     missingOption() {
         echo "Hey, you need to specify --$1 as an argument"
     }
-    WICK_TEST_FOR_OPTIONS_FAILURE=missingOption       wickTestForOptions mom dad -- "$@"
+    WICK_TEST_FOR_OPTIONS_FAILURE=missingOption \
+        wickTestForOptions mom dad -- "$@"
 
 Returns zero if options exist, one if they do not.
 

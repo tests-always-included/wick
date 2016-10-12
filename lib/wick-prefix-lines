@@ -10,6 +10,7 @@
 #
 #   printf -v lines "one\ntwo\n"
 #   # lines is three lines with nothing on the third line.
+#
 #   wickPrefixLines result "Look:  " "$lines"
 #   # Result is "Look:  one\nLook:  two\nLook:  "
 #   # Even the last line is (intentionally) prefixed.

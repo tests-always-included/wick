@@ -15,7 +15,7 @@ Returns nothing.
 
 Adds a repository to apt.  If we find that you are running an operating system that should not be using apt we do not attempt to add it.
 
-* $1 -  The name of repository you would like to add.
+* $1 - The name of repository you would like to add.
 
 Examples
 

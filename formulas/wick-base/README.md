@@ -284,7 +284,8 @@ Examples:
 
     # Create a system account that can't login.  It is used to
     # run a special server that's installed in /opt/myserver.
-    wickMakeUser --home=/opt/myserver --name="MyServer"       --shell=/bin/false --no-skel --system myserver
+    wickMakeUser --home=/opt/myserver --name="MyServer" \
+        --shell=/bin/false --no-skel --system myserver
 
     # The exact same command but it uses --daemon to specify
     # several options automatically.

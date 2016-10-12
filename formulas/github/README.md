@@ -25,7 +25,7 @@ Examples
 
     # Retrieves a tarball of kyle-long/pyshelf repository from tag v1.0
     # and outputs it to /tmp/pyshelf.tar.gz
-    githubGetArchive kyle-long/pyshelf --tag=v1.0 --dest=/tmp/pyshelf.tar.gz
+    githubGetArchive kyle-long/pyshelf --tag=v1.0 /tmp/pyshelf.tar.gz
 
     # Retrieves a tarball of kyle-long/pyshelf and outputs it to stdout
     # which can be piped into tar.

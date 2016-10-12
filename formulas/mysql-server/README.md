@@ -61,7 +61,8 @@ Examples
 
     echo "FLUSH PRIVILEGES" | mysqlServerExecuteSql mysql
 
-    wickMakeFile --template --formula=mysql-server create-db.mo |       mysqlServerExecuteSql mysql
+    wickMakeFile --template --formula=mysql-server create-db.mo | \
+        mysqlServerExecuteSql mysql
 
 Returns nothing.
 

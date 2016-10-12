@@ -31,7 +31,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [GitHub](github/README.md) - Adds functions for interacting with GitHub repositories via GitHub's API.
 * [Hostname](hostname/README.md) - Sets the hostname and domain.  Supports templates.  Can automatically update the hostname when network connections are made.
 * [htop](htop/README.md) - Installs the [htop](http://hisham.hm/htop/) interactive process viewer.
-* [Installs `iptables` if it is not already installed.](iptables/README.md) - 
+* [IPTables](iptables/README.md) - Installs `iptables` if it is not already installed.
 * [Java-Util](java-util/README.md) - Adds useful functions into the Wick environment that are related to Java.
 * [Jq](jq/README.md) - Installs [jq](http://stedolan.github.io/jq/), a command-line tool to process JSON.
 * [Kermit](kermit/README.md) - This installs the Kermit (from the `ckermit` package), allowing file transfer to and from a remote machine.
