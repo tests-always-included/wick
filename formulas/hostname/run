@@ -25,6 +25,8 @@
 #
 #   wickFormula hostname --dynamic app1-{{IP}}.example.com
 #   wickFormula hostname machine1
+declare desired dynamic
+
 wickGetOption dynamic dynamic "$@"
 wickGetArgument desired 0 "$@"
 
@@ -37,7 +39,7 @@ else
 
     hookFile="/etc/dhcp/dhclient-exit-hooks"
     wickInfo "Creating/updating hook file: $hookFile"
-    :> "$hookFile"
+    :>> "$hookFile"
     chmod 755 "$hookFile"
     wickSetConfigLine "$hookFile" "/usr/local/bin/set-hostname '$desired'"
 
@@ -45,6 +47,7 @@ else
     /usr/local/bin/set-hostname --verbose "$desired"
 
     cloudFile="/etc/cloud/cloud.cfg"
+
     if [ -f "$cloudFile" ]; then
         wickInfo "Updating cloud-init: $cloudFile"
         wickSetConfigLine "$cloudFile" "preserve_hostname: true"
