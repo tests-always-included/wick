@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Sets the hostname and domain.  Supports templates.  Can automatically update the hostname when network connections are made.
 #
-# $1        - Hostname to set or template for dynamic hostnames.
-# --dynamic - Option that enables a dynamic hostname.
+# $1            - Hostname to set or template for dynamic hostnames.
+# --dynamic     - Option that enables a dynamic hostname.
+# --iface=IFACE - Use a specified adapter for retrieving the IP address.
 #
 # When `--dynamic` is used, the hostname will get updated whenever new DHCP
 # leases are established.
@@ -23,11 +24,21 @@
 #
 # Examples
 #
-#   wickFormula hostname --dynamic app1-{{IP}}.example.com
+#   # Set the hostname to "machine1"
 #   wickFormula hostname machine1
-declare desired dynamic
+#
+#   # Set the hostname to something like "app1-192-168-0-1.example.com"
+#   wickFormula hostname --dynamic app1-{{IP}}.example.com
+#
+#   # Set the hostname as above but specify a network adapter instead
+#   # of picking one arbitrarily.
+#   wickFormula hostname --dynamic app1-{{IP}} --iface=eth0
+#
+# Returns nothing.
+declare desired dynamic iface
 
-wickGetOption dynamic dynamic "$@"
+wickGetOption dynamic --dynamic "$@"
+wickGetOption iface --iface "$@"
 wickGetArgument desired 0 "$@"
 
 if [ -z "$dynamic" ]; then
@@ -41,10 +52,10 @@ else
     wickInfo "Creating/updating hook file: $hookFile"
     :>> "$hookFile"
     chmod 755 "$hookFile"
-    wickSetConfigLine "$hookFile" "/usr/local/bin/set-hostname '$desired'"
+    wickSetConfigLine "$hookFile" "/usr/local/bin/set-hostname '$desired' --iface=\"$iface\""
 
     wickInfo "Setting the hostname: $desired"
-    /usr/local/bin/set-hostname --verbose "$desired"
+    /usr/local/bin/set-hostname --verbose "$desired" --iface="$iface"
 
     cloudFile="/etc/cloud/cloud.cfg"
 

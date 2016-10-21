@@ -3,8 +3,9 @@ Hostname
 
 Sets the hostname and domain.  Supports templates.  Can automatically update the hostname when network connections are made.
 
-* $1        - Hostname to set or template for dynamic hostnames.
-* --dynamic - Option that enables a dynamic hostname.
+* $1            - Hostname to set or template for dynamic hostnames.
+* --dynamic     - Option that enables a dynamic hostname.
+* --iface=IFACE - Use a specified adapter for retrieving the IP address.
 
 When `--dynamic` is used, the hostname will get updated whenever new DHCP leases are established.
 
@@ -18,7 +19,16 @@ When using templated hostnames, you will likely want to also use `--dynamic` so 
 
 Examples
 
-    wickFormula hostname --dynamic app1-{{IP}}.example.com
+    # Set the hostname to "machine1"
     wickFormula hostname machine1
+
+    # Set the hostname to something like "app1-192-168-0-1.example.com"
+    wickFormula hostname --dynamic app1-{{IP}}.example.com
+
+    # Set the hostname as above but specify a network adapter instead
+    # of picking one arbitrarily.
+    wickFormula hostname --dynamic app1-{{IP}} --iface=eth0
+
+Returns nothing.
 
 
