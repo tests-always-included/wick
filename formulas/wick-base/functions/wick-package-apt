@@ -18,6 +18,7 @@ wickPackageApt() {
 
     case "$state" in
         clean)
+            wickWaitFor 600 wickIsAptAvailable
             apt-get clean
             ;;
 
@@ -32,10 +33,12 @@ wickPackageApt() {
             ;;
 
         install)
+            wickWaitFor 600 wickIsAptAvailable
             apt-get install -y "$@"
             ;;
 
         uninstall)
+            wickWaitFor 600 wickIsAptAvailable
             apt-get purge -y "$@"
             ;;
 

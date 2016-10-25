@@ -183,6 +183,18 @@ This searches the file for a section with the same name and removes it. Next it 
 Returns 0 on success, 1 on argument validation errors.
 
 
+`wickIsAptAvailable()`
+----------------------
+
+Checks whether Apt and Dpkg type applications are running.
+
+Examples
+
+    wickIsAptAvailable
+
+Returns 0 when no Apt or Dpkg type applications are found running. Returns >0 when an Apt or Dpkg type application is found running.
+
+
 `wickMakeDir()`
 ---------------
 
