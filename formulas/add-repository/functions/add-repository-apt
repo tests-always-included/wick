@@ -24,5 +24,7 @@ addRepositoryApt() {
     fi
 
     wickInfo "Adding repository $repo"
-    add-apt-repository --yes "$repo" && apt-get update
+    add-apt-repository --yes "$repo"
+    wickWaitFor 600 wickIsAptAvailable
+    apt-get update
 }

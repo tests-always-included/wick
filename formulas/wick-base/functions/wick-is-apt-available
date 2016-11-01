@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Checks whether Apt and Dpkg type applications are running.
+#
+# Examples
+#
+#   wickIsAptAvailable
+#
+# Returns 0 when no Apt or Dpkg type applications are found running.
+# Returns > 0 when an Apt or Dpkg type application is found running.
+wickIsAptAvailable() {
+    pidof dpkg > /dev/null 2>&1 && return 1
+    pidof apt-get > /dev/null 2>&1 && return 2
+    pidof synaptic > /dev/null 2>&1 && return 3
+    pidof apt > /dev/null 2>&1 && return 4
+    pidof aptitude > /dev/null 2>&1 && return 5
+
+    return 0
+}

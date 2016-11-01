@@ -24,7 +24,10 @@ case "$OS" in
         ;;
 
     debian|ubuntu)
-        apt-get update && apt-get upgrade -y
+        wickWaitFor 600 wickIsAptAvailable
+        apt-get update
+        wickWaitFor 600 wickIsAptAvailable
+        apt-get upgrade -y
         ;;
 
     *)
