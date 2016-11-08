@@ -6,6 +6,7 @@
 # $1 - Config file.
 # $2 - Name of the section (very important).
 # $3 - Line comment delimeter, defaults to "#"
+# --top - Add section to the top (default adds to the bottom).
 # stdin - Lines of configuration
 #
 # This searches the file for a section with the same name and removes it.
@@ -13,23 +14,39 @@
 #
 # Returns 0 on success, 1 on argument validation errors.
 wickAddConfigSection() {
-    if [[ -z "$1" ]]; then
+    local args top oldContent section
+    wickGetOption top --top "$@"
+    wickGetArguments args "$@"
+
+    if [[ -z "${args[0]}" ]]; then
         wickError "A file must be specified for wickAddConfigSection"
         return 1
     fi
 
-    if [[ -z "$2" ]]; then
+    if [[ -z "${args[1]}" ]]; then
         wickError "You must specify a name for wickAddConfigSection"
         return 1
     fi
 
-    if [[ -f "$1" ]]; then
-        wickRemoveConfigSection "$1" "$2" "${3-}"
+    if [[ -f "${args[0]}" ]]; then
+        wickRemoveConfigSection "${args[0]}" "${args[1]}" "${args[2]-}"
     fi
 
-    {
-        echo "${3:-#} BEGIN wickAddConfigSection: $2"
+    oldContent=$(cat "${args[0]}")
+
+    section=$(
+        echo "${args[2]:-#} BEGIN wickAddConfigSection: ${args[1]}"
         cat
-        echo "${3:-#} END wickAddConfigSection: $2"
-    } >> "$1"
+        echo "${args[2]:-#} END wickAddConfigSection: ${args[1]}"
+    )
+
+    {
+        if [[ -z "$top" ]]; then
+            echo "$oldContent"
+            echo "$section"
+        else
+            echo "$section"
+            echo "$oldContent"
+        fi
+    } > "${args[0]}"
 }
