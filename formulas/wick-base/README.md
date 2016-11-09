@@ -176,6 +176,7 @@ Writes a section to the end of a config file.  Idempotent - will not add another
 * $1 - Config file.
 * $2 - Name of the section (very important).
 * $3 - Line comment delimeter, defaults to "#"
+* --top - Add section to the top (default adds to the bottom).
 * stdin - Lines of configuration
 
 This searches the file for a section with the same name and removes it. Next it creates a new section with the given name at the end of the file.
@@ -192,7 +193,7 @@ Examples
 
     wickIsAptAvailable
 
-Returns 0 when no Apt or Dpkg type applications are found running. Returns >0 when an Apt or Dpkg type application is found running.
+Returns 0 when no Apt or Dpkg type applications are found running. Returns > 0 when an Apt or Dpkg type application is found running.
 
 
 `wickMakeDir()`
