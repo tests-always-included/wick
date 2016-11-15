@@ -85,8 +85,18 @@ wickDebug "Setting hostname to $full"
 #
 reload=false
 
-if replaceInFile /etc/sysconfig/network HOSTNAME=$full HOSTNAME=; then
-    reload=true
+if [[ -f /etc/hostname ]]; then
+    if [[ "$(cat /etc/hostname)" !=  "$host" ]]; then
+        wickDebug "Setting /etc/hostname to $host"
+        echo "$host" > /etc/hostname
+        reload=true
+    fi
+fi
+
+if [[ -f /etc/sysconfig/network ]]; then
+    if replaceInFile /etc/sysconfig/network HOSTNAME=$full HOSTNAME=; then
+        reload=true
+    fi
 fi
 
 if replaceInFile /etc/sysctl.conf kernel.hostname=$host kernel.hostname=; then
