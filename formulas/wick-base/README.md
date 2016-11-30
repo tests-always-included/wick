@@ -293,7 +293,7 @@ Examples
     wickMakeUser fidian
 
     # Update that same user with a new shell.
-    wickMakeUser --shell=/bin/zsh
+    wickMakeUser fidian --shell=/bin/zsh
 
     # Create a system account that can't login.  It is used to
     # run a special server that's installed in /opt/myserver.
@@ -305,7 +305,7 @@ Examples
     # --daemon enables --no-skel --system and disables --move-home
     wickMakeUser --daemon --home=/opt/myserver --name="MyServer" myserver
 
-Returns zero on success, one if required arguments are not passed in.
+Returns 0 on success, 1 if required arguments are not passed in.
 
 
 `wickPackage()`
