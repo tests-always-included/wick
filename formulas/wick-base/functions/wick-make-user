@@ -72,12 +72,12 @@ wickMakeUser() {
 
         if [[ -n "$setHome" ]]; then
             args[${#args[@]}]=-d
-            args[${#args[@]}]="$setHome"
+            args[${#args[@]}]=$setHome
         fi
 
         if [[ -n "$setName" ]]; then
             args[${#args[@]}]=-c
-            args[${#args[@]}]="$setName"
+            args[${#args[@]}]=$setName
         fi
 
         if [[ -n "$noSkelFlag" ]]; then
@@ -86,7 +86,7 @@ wickMakeUser() {
 
         if [[ -n "$setShell" ]]; then
             args[${#args[@]}]=-s
-            args[${#args[@]}]="$setShell"
+            args[${#args[@]}]=$setShell
         fi
 
         if [[ -n "$systemFlag" ]]; then
@@ -102,7 +102,7 @@ wickMakeUser() {
 
         if [[ -n "$setHome" ]]; then
             args[${#args[@]}]=-d
-            args[${#args[@]}]="$setHome"
+            args[${#args[@]}]=$setHome
         fi
 
         if [[ -n "$moveHomeFlag" ]]; then
@@ -111,16 +111,16 @@ wickMakeUser() {
 
         if [[ -n "$setName" ]]; then
             args[${#args[@]}]=-c
-            args[${#args[@]}]="$setName"
+            args[${#args[@]}]=$setName
         fi
 
         if [[ -n "$setShell" ]]; then
             args[${#args[@]}]=-s
-            args[${#args[@]}]="$setShell"
+            args[${#args[@]}]=$setShell
         fi
 
         if [[ "${#args[@]}" -gt 1 ]]; then
-            args[${#args[@]}]="$username"
+            args[${#args[@]}]=$username
             wickDebug "Command:" "${args[@]}"
             "${args[@]}"
         else
