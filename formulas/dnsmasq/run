@@ -4,6 +4,11 @@
 # --start - Starts the service.  If not specified, the service will not be
 #           running when the formula finishes.
 #
+# --protect-dns - Runs the protect-dns-resolver-config file, which will rewrite
+#                 the part of dhclient that overwrites /etc/resolv.conf. A full
+#                 box can prevent /etc/resolv.conf from being overwritten fully,
+#                 which makes it very difficult to ssh onto the box.
+#
 # When `--start` is used, `/etc/resolv.conf` is updated to use dnsmasq.
 # Without `--start`, the nameserver entry is not added.  It would be assumed
 # that either the machine will be rebooted (and thus dnsmasq's nameserver
@@ -16,8 +21,11 @@
 #
 #   wickFormula dnsmasq --start
 #
+#   wickFormula dnsmasq --protect-dns
+#
 # Returns nothing
 wickGetOption start start "$@"
+wickGetOption protectDns --protect-dns "$@"
 wickPackage dnsmasq
 wickMakeDir /etc/dnsmasq.d/
 wickSetConfigLine /etc/dnsmasq.conf "conf-dir=/etc/dnsmasq.d"
@@ -28,14 +36,19 @@ wickService force-state dnsmasq "$start"
 #
 # The normal, one-line method may not work in all situations.
 # http://www.fidian.com/problems-only-tyler-has/dhclient-not-honoring-prepend-config
-#wickSetConfigLine /etc/dhcp/dhclient.conf "prepend domain-name-servers 127.0.0.1;" "prepend domain-name-servers"
+# wickSetConfigLine /etc/dhcp/dhclient.conf "prepend domain-name-servers 127.0.0.1;" "prepend domain-name-servers"
 
 if [[ ! -f /etc/dhcp/dhclient-enter-hooks ]]; then
     echo "#!/bin/sh" > /etc/dhcp/dhclient-enter-hooks
     chmod 755 /etc/dhcp/dhclient-enter-hooks
 fi
 
-wickMakeFile dnsmasq - | wickAddConfigSection /etc/dhcp/dhclient-enter-hooks "dnsmasq"
+wickMakeFile dnsmasq - | wickAddConfigSection /etc/dhcp/dhclient-enter-hooks dnsmasq
+
+# When --protect-dns is used, enable protect-dns-resolver-config.
+if [[ -n "$protectDns" ]]; then
+    wickMakeFile protect-dns-resolver-config - | wickAddConfigSection /etc/dhcp/dhclient-enter-hooks protect-dns-resolver-config
+fi
 
 # When --start is used, enable dnsmasq.
 if [[ -n "$start" ]]; then
