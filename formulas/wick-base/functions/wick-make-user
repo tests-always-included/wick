@@ -16,14 +16,16 @@
 #
 # For consistency, the home directory is always created if it does not exist
 # and the ownership of the home directory is always set to `USERNAME:USERNAME`.
+# If the given user already exists and no options are given `usermod` will not
+# be run.
 #
-# Examples:
+# Examples
 #
-#   # Create a normal user
+#   # Create a normal user.
 #   wickMakeUser fidian
 #
-#   # Update that same user with a new shell
-#   wickMakeUser --shell=/bin/zsh
+#   # Update that same user with a new shell.
+#   wickMakeUser fidian --shell=/bin/zsh
 #
 #   # Create a system account that can't login.  It is used to
 #   # run a special server that's installed in /opt/myserver.
@@ -35,7 +37,7 @@
 #   # --daemon enables --no-skel --system and disables --move-home
 #   wickMakeUser --daemon --home=/opt/myserver --name="MyServer" myserver
 #
-# Returns true on success.
+# Returns 0 on success, 1 if required arguments are not passed in.
 wickMakeUser() {
     local args daemonFlag moveHomeFlag noSkelFlag passwd setHome setName setShell systemFlag userhome username
 
@@ -50,11 +52,12 @@ wickMakeUser() {
 
     if [[ -z "$username" ]]; then
         wickError "You must specify a username for wickMakeUser"
+
         return 1
     fi
 
-    # Set reasonable defaults for daemons
-    if [[ ! -z "$daemonFlag" ]]; then
+    # Set reasonable defaults for daemons.
+    if [[ -n "$daemonFlag" ]]; then
         moveHomeFlag=""
         noSkelFlag=true
         setShell=/bin/false
@@ -67,26 +70,26 @@ wickMakeUser() {
         wickInfo "Creating user: $username"
         args=(useradd)
 
-        if [[ ! -z "$setHome" ]]; then
+        if [[ -n "$setHome" ]]; then
             args[${#args[@]}]=-d
             args[${#args[@]}]=$setHome
         fi
 
-        if [[ ! -z "$setName" ]]; then
+        if [[ -n "$setName" ]]; then
             args[${#args[@]}]=-c
             args[${#args[@]}]=$setName
         fi
 
-        if [[ ! -z "$noSkelFlag" ]]; then
+        if [[ -n "$noSkelFlag" ]]; then
             args[${#args[@]}]=-M
         fi
 
-        if [[ ! -z "$setShell" ]]; then
+        if [[ -n "$setShell" ]]; then
             args[${#args[@]}]=-s
             args[${#args[@]}]=$setShell
         fi
 
-        if [[ ! -z "$systemFlag" ]]; then
+        if [[ -n "$systemFlag" ]]; then
             args[${#args[@]}]=-r
         fi
 
@@ -97,28 +100,32 @@ wickMakeUser() {
         wickInfo "Altering user: $username"
         args=(usermod)
 
-        if [[ ! -z "$setHome" ]]; then
+        if [[ -n "$setHome" ]]; then
             args[${#args[@]}]=-d
             args[${#args[@]}]=$setHome
         fi
 
-        if [[ ! -z "$moveHomeFlag" ]]; then
+        if [[ -n "$moveHomeFlag" ]]; then
             args[${#args[@]}]=-m
         fi
 
-        if [[ ! -z "$setName" ]]; then
+        if [[ -n "$setName" ]]; then
             args[${#args[@]}]=-c
             args[${#args[@]}]=$setName
         fi
 
-        if [[ ! -z "$setShell" ]]; then
+        if [[ -n "$setShell" ]]; then
             args[${#args[@]}]=-s
             args[${#args[@]}]=$setShell
         fi
 
-        args[${#args[@]}]=$username
-        wickDebug "Command:" "${args[@]}"
-        "${args[@]}"
+        if [[ "${#args[@]}" -gt 1 ]]; then
+            args[${#args[@]}]=$username
+            wickDebug "Command:" "${args[@]}"
+            "${args[@]}"
+        else
+            wickInfo "Provided user exists and no options were given, continuing on without altering user."
+        fi
     fi
 
     userhome=$(getent passwd "$username" | cut -d : -f 6)

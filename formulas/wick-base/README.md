@@ -285,15 +285,15 @@ Create or manage a user on the system.
 * --shell=SHELL - Optional; set a shell that isn't the default for the user.
 * --system      - Optional; uses a lower user ID when available when creating the user.
 
-For consistency, the home directory is always created if it does not exist and the ownership of the home directory is always set to `USERNAME:USERNAME`.
+For consistency, the home directory is always created if it does not exist and the ownership of the home directory is always set to `USERNAME:USERNAME`. If the given user already exists and no options are given `usermod` will not be run.
 
-Examples:
+Examples
 
-    # Create a normal user
+    # Create a normal user.
     wickMakeUser fidian
 
-    # Update that same user with a new shell
-    wickMakeUser --shell=/bin/zsh
+    # Update that same user with a new shell.
+    wickMakeUser fidian --shell=/bin/zsh
 
     # Create a system account that can't login.  It is used to
     # run a special server that's installed in /opt/myserver.
@@ -305,7 +305,7 @@ Examples:
     # --daemon enables --no-skel --system and disables --move-home
     wickMakeUser --daemon --home=/opt/myserver --name="MyServer" myserver
 
-Returns true on success.
+Returns 0 on success, 1 if required arguments are not passed in.
 
 
 `wickPackage()`
