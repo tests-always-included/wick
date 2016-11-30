@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+eval "$(
+    funcBody=$(declare -f make_resolv_conf)
+    echo "${funcBody/make_resolv_conf/make_resolv_conf_real}"
+);"
+
+make_resolv_conf() {
+    resolvConf=$(readlink -f "/etc/resolv.conf" 2>/dev/null) || resolvConf="/etc/resolv.conf"
+
+    # Exit immediately if resolve.conf can't be copied, so that resolve.conf
+    # won't be overwritten by dhclient.
+    if ! cp "$resolvConf" "${resolvConf}.tmp"; then
+        return 1
+    fi
+
+    # This is the easiest and most surefire way to capture the output. Writing
+    # the output to a file may not work if the machine is completely full.
+    makeResolvConfOutput=$(make_resolve_conf_real 2>&1)
+
+    if [ -n "$makeResolvConfOutput" ]; then
+        echo "$makeResolfConfOutput" >&2
+        mv "${resolvConf}.tmp" "$resolvConf"
+    else
+        rm "${resolvConf}.tmp"
+    fi
+}
+
