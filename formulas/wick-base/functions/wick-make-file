@@ -115,6 +115,13 @@ wickMakeFile() {
         wickMakeDir "${dest%/*}" "--owner=$setOwner"
     fi
 
+    # Remove file as overwriting can cause issues.
+    # We ran into an issue where reprovisioning an instance would complete
+    # succesfully but print an error at the end. This was because a library
+    # was overwritten which is used by sudo. As the provision task itself uses
+    # sudo this caused the error. Removing the file first prevents this.
+    rm -f "$dest" || return 1
+
     if [[ -z "$useTemplate" ]]; then
         # Not a template - just copy
         wickDebug "Copying $src to $dest"
