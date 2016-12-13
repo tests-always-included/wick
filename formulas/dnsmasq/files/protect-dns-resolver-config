@@ -1,28 +1,51 @@
-#!/usr/bin/env bash
+#!/bin/sh
+# This script should be added to `/etc/dhcp/dhclient-enter-hooks`. This will
+# protect against the very rare occurrence that a service running as root
+# completely fills the disc including the system reserve. This will cause
+# `make_resolv_conf` to fail to build a proper temporary `resolv.conf`. Instead
+# of just stopping, `dhclient` just continues on and calls `change_resolv_conf`,
+# which outputs the incomplete contents of the temporary `resolv.conf` to
+# `/etc/resolv.conf`. This results in an empty or partial `resolv.conf`.
+# Fortunately, `change_resolv_conf` checks the exit code of the `echo` command
+# and only invalidates the DNS cache if it is 0. Unfortunately, you are still
+# left with a corrupt `resolv.conf`.
+# This is sh not Bash!
 
-eval "$(
-    funcBody=$(declare -f make_resolv_conf)
-    echo "${funcBody/make_resolv_conf/make_resolv_conf_real}"
-);"
+# Replacing calls to `make_resolv_conf` with a call to our override function.
+# In reference to the command, we are making sure to preserve any indentation
+# while also avoiding an endless line of `make_resolv_conf_override` calls.
+sed -i 's/\(^ *\)make_resolv_conf *$/\1make_resolv_conf_override || make_resolv_conf/' /sbin/dhclient-script
 
-make_resolv_conf() {
+# Attempts to make a copy of the original `resolv.conf`. If it cannot
+# `make_resolv_conf` is not called. If `make_resolv_conf` fails the original
+# `resolv.conf` is restored.
+#
+# Examples
+#
+#   # Calls through to make_resolv_conf if a copy of made.
+#   # Restores resolv.conf with the copy if make_resolv_conf fails.
+#   make_resolv_conf_override
+#
+# Returns nothing.
+make_resolv_conf_override() {
     resolvConf=$(readlink -f "/etc/resolv.conf" 2>/dev/null) || resolvConf="/etc/resolv.conf"
+    temp="${resolvConf}.tmp"
+    cp "$resolvConf" "$temp"
 
-    # Exit immediately if resolve.conf can't be copied, so that resolve.conf
-    # won't be overwritten by dhclient.
-    if ! cp "$resolvConf" "${resolvConf}.tmp"; then
-        return 1
+    # dhclient does not safely overwrite the resolv.conf file. Appears
+    # they are just banking on the 5% system reservation.
+    # If we cannot cat a copy of it we cannot overwrite it.
+    if [ $? -eq 0 ]; then
+        # This is the easiest and most surefire way to capture the output. Writing
+        # the output to a file may not work if the machine is completely full.
+        output=$(make_resolv_conf 2>&1)
+
+        if [ -n "$output" ]; then
+            echo "$output" >&2
+            mv -f "$temp" > "$resolvConf"
+        fi
     fi
 
-    # This is the easiest and most surefire way to capture the output. Writing
-    # the output to a file may not work if the machine is completely full.
-    makeResolvConfOutput=$(make_resolve_conf_real 2>&1)
-
-    if [ -n "$makeResolvConfOutput" ]; then
-        echo "$makeResolfConfOutput" >&2
-        mv "${resolvConf}.tmp" "$resolvConf"
-    else
-        rm "${resolvConf}.tmp"
-    fi
+    rm -f "$temp"
 }
 
