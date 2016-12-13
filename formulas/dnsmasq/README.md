@@ -11,6 +11,9 @@ When `--start` is used, `/etc/resolv.conf` is updated to use dnsmasq. Without `-
 
 Examples
 
+    # Installs dnsmasq.
+    wickFormula dnsmasq
+
     # Installs dnsmasq and starts it immediately.
     wickFormula dnsmasq --start
 

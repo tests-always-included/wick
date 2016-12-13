@@ -21,6 +21,9 @@
 #
 # Examples
 #
+#   # Installs dnsmasq.
+#   wickFormula dnsmasq
+#
 #   # Installs dnsmasq and starts it immediately.
 #   wickFormula dnsmasq --start
 #
