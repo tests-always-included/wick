@@ -28,6 +28,7 @@ This will exit with the code 1.  We sometimes use exit codes to our advantage.
 
 Most of the time this works fine, but there are situations that might cause confusion.  What the `if` does in this case is disables the `-e` flag which is why it doesn't just exit at that line.
 
+
 Examples
 --------
 
@@ -71,7 +72,7 @@ Which outputs
 
     Didn't expect a success
 
-This can happen in many contexts.  The descrption from [a bug logged](http://austingroupbugs.net/view.php?id=52) to fix the documentation says it can happen for any context including `while`, `until`, `if`, `elif` or `!`.  Below are some examples.  Each of which will output "TEST".
+This can happen in many contexts.  The description from [a bug logged](http://austingroupbugs.net/view.php?id=52) to fix the documentation says it can happen for any context including `while`, `until`, `if`, `elif` or `!`.  Below are some examples.  Each of which will output "TEST".
 
 	set -e
 
@@ -86,3 +87,21 @@ This can happen in many contexts.  The descrption from [a bug logged](http://aus
 	(set -e; false; true) && echo "TEST"
 
 These are just simple examples.  More complex situations make it harder to spot the problem.
+
+
+How to Fix
+----------
+
+The solution for Wick is fairly straightforward.  Change this code ...
+
+    if someBashFunction; then
+
+... into this type of code ...
+
+    local result
+
+    wickStrictRun result someBashFunction
+
+    if [[ "$result" -eq 0 ]]; then
+
+It is not necessary to make this change when the program being executed is supposed to be an external program, like `grep` or `cat`.

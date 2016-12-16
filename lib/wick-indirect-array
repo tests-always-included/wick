@@ -25,6 +25,7 @@
 #       # Be careful when `set -u` is enabled
 #       if [[ ${#value[@]} -eq 0 ]]; then
 #           local "$1" && wickIndirectArray "$1"
+#
 #           return
 #       fi
 #
@@ -51,5 +52,5 @@
 # Returns nothing.
 wickIndirectArray() {
     unset -v "$1"
-    eval $1=\(\"\${@:2}\"\)
+    eval "$1"=\(\"\$\{@:2\}\"\)
 }

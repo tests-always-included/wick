@@ -10,7 +10,7 @@
 #
 # Returns nothing.
 timezoneUpdateTimezone() {
-    local AMENDED
+    local amended
 
     wickDebug "Updating timezone using tzdata: $2"
     rm "$2"
@@ -18,9 +18,9 @@ timezoneUpdateTimezone() {
     chown root:root "$2"
     chmod 0644 "$2"
     dpkg-reconfigure -f noninteractive tzdata
-    AMENDED=$(cat "$2")
+    amended=$(cat "$2")
 
-    if [[ "$1" != "$AMENDED" ]]; then
-        wickWarn "dpkg-reconfigure changed the timezone: $AMENDED"
+    if [[ "$1" != "$amended" ]]; then
+        wickWarn "dpkg-reconfigure changed the timezone: $amended"
     fi
 }

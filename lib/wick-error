@@ -13,18 +13,21 @@
 # Examples
 #
 #    wickError "Could not find some vital thing"
+#
 #    exit 1
 #
 # Returns nothing.
 wickError() (
     set +x
+    # Disable debug in this function.  Note: this function uses a subshell!
+
     local content output
 
     wickArrayJoin content " " "$@"
     wickLog "ERROR" "$content"
     wickPrefixLines output "ERROR: " "$content"
 
-    if [[ ! -z "${WICK_COLOR-}" ]]; then
+    if [[ -n "${WICK_COLOR-}" ]]; then
         output=$'\E[41;37;1m'"$output"$'\E[0m'
     fi
 

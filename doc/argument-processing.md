@@ -34,7 +34,7 @@ Consider the times when you want a simple flag that would enable features, such 
     # Find if `--verbose` was passed.
     wickGetOption VERBOSE_FLAG verbose "$@"
 
-    [[ ! -z "$VERBOSE_FLAG" ]] && echo "Verbose mode enabled"
+    [[ -n "$VERBOSE_FLAG" ]] && echo "Verbose mode enabled"
 
 Checking if a flag was passed in seems easy.  It's not any harder to also look for particular values.
 
@@ -53,7 +53,7 @@ Checking if a flag was passed in seems easy.  It's not any harder to also look f
     echo "USER:  $USER"
     echo "ROLE:  $ROLE"
 
-    [[ ! -z "$VERBOSE" ]] && echo "Verbose flag enabled"
+    [[ -n "$VERBOSE" ]] && echo "Verbose flag enabled"
 
 
 Retrieving Single Arguments

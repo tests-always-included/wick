@@ -106,11 +106,13 @@ wickService() {
 
     if [[ ${#unparsed[@]} -lt 1 ]]; then
         wickError "Specify action to take and the service name to act upon."
+
         return 1
     fi
 
     if [[ ${#unparsed[@]} -lt 2 ]]; then
         wickError "Must specify service name to act upon"
+
         return 1
     fi
 

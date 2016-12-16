@@ -12,8 +12,11 @@
 #   wickExplorer initSystem wick-base init-system
 #
 # Returns true if it was able to determine the init-system.
+declare systemctlExists
 
-if wickCommandExists systemctl && [[ "$(systemctl)" =~ -\.mount ]]; then
+wickStrictRun systemctlExists wickCommandExists systemctl
+
+if [[ "$systemctlExists" -eq 0 ]] && [[ "$(systemctl)" =~ -\.mount ]]; then
     # If we have mounted the root file system using systemd we assume we are
     # using systemd.
     echo systemd
@@ -30,5 +33,6 @@ elif [[ -f /etc/init.d/cron && ! -h /etc/init.d/cron ]]; then
 else
     # Docker for instance, does not have any init system running by default.
     echo unknown
+
     exit 1
 fi

@@ -11,7 +11,7 @@
 #
 # Returns 1 if there is a problem loading the role.
 wickLoadRole() {
-    local location role WICK_ROLE_DIR
+    local location result role
 
     if [[ $# -eq 0 ]]; then
         echo "You must specify a role to load."
@@ -21,14 +21,16 @@ wickLoadRole() {
 
     role=$1
     shift
+    wickStrictRun result wickFind location "roles/$role"
 
-    if ! wickFind location "roles/$role"; then
+    if [[ "$result" -ne 0 ]]; then
         echo "Unable to find role $role"
 
         return 1
     fi
 
-    echo "Using role $role ($@) at $location"
-    WICK_ROLE_DIR=${location%/*}
+    echo "Using role $role ($*) at $location"
+    export WICK_ROLE_DIR=${location%/*}
     . "$location" "$@"
+    unset WICK_ROLE_DIR
 }

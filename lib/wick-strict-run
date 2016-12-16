@@ -6,7 +6,11 @@
 # $1   - Name of variable that should get the return value / status code.
 # $2-@ - Command and arguments to run.
 #
-# This is intended to be used along with `wickStrictMode`.
+# This is intended to be used along with `wickStrictMode`.  It helps counter
+# the newer Bash behavior where the error exit flag is suppressed in
+# specific contexts.  See the [error context] documentation for further info.
+#
+# [error context]: ../doc/contexts-that-disable-exit-on-error.md
 #
 # Example:
 #
@@ -16,7 +20,7 @@
 #
 #   wickStrictRun result grep "some-string" /etc/some-file.cfg > /dev/null 2>&1
 #
-#   if [[ $result -eq 0 ]]; then
+#   if [[ "$result" -eq 0 ]]; then
 #       wickInfo "some-string was found"
 #   else
 #       wickInfo "some-string was not found"

@@ -6,7 +6,9 @@
 #   wickExplorer
 #
 # Returns true on success.
-wickExplorer os wick-base os || true
+declare os result
+
+wickExplorer os wick-base os || :
 
 case "$os" in
     arch)
@@ -21,6 +23,7 @@ case "$os" in
 
     osx)
         echo "Unsupported OS: $os"
+
         exit 1
         ;;
 
@@ -29,12 +32,15 @@ case "$os" in
         ;;
 
     ubuntu)
-        if wickCommandExists lsb_release; then
+        wickStrictRun result wickCommandExists lsb_release
+
+        if [[ "$result" -eq 0 ]]; then
             lsb_release -a | grep ^Release: | sed 's/.*:\s*//'
         elif [[ -f "/etc/lsb-release" ]]; then
             grep 'DISTRIB_RELEASE=' /etc/lsb-release | cut -d'=' -f2
         else
             wickDebug 'Unable to find command "lsb_release" or file "/etc/lsb-release"'
+
             exit 1
         fi
 
@@ -46,6 +52,7 @@ case "$os" in
 
     *)
         echo "Unknown OS: $os"
+
         exit 1
         ;;
 esac

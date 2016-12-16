@@ -51,7 +51,9 @@
 # Returns nothing.
 wickDebug() (
     set +x
-    local content list name output
+    # Disable debug in this function.  Note: this function uses a subshell!
+
+    local content list name output result
 
     # Do not log unless the DEBUG environment variable is set
     if [[ -z "${DEBUG-}" ]]; then
@@ -61,7 +63,7 @@ wickDebug() (
     wickArrayJoin content " " "$@"
     wickPrefixLines output "DEBUG: " "$content"
 
-    if [[ ! -z "${WICK_COLOR-}" ]]; then
+    if [[ -n "${WICK_COLOR-}" ]]; then
         output=$'\E[90;1m'"$output"$'\E[0m'
     fi
 
@@ -69,13 +71,15 @@ wickDebug() (
     if [[ "$DEBUG" == "*" ]] || [[ "$DEBUG" == "all" ]] || [[ "$DEBUG" == "true" ]]; then
         wickLog "DEBUG" "$content"
         echo "$output" >&2
+
         return
     fi
 
     #: Here is the more complex checking if any value in the DEBUG variable
     #: is in the FUNCNAME array.
     list="$DEBUG"
-    while [[ ! -z "$list" ]]; do
+
+    while [[ -n "$list" ]]; do
         name=${DEBUG%% *}
         list=${list#* }
 
@@ -83,10 +87,15 @@ wickDebug() (
             list=""
         fi
 
-        if [[ ! -z "$name" ]] && [[ ${#FUNCNAME[@]} -gt 0 ]] && wickInArray "$name" "${FUNCNAME[@]}"; then
-            wickLog "DEBUG" "$content"
-            echo "$output" >&2
-            return
+        if [[ -n "$name" ]] && [[ ${#FUNCNAME[@]} -gt 0 ]]; then
+            wickStrictRun result wickInArray "$name" "${FUNCNAME[@]}"
+
+            if [[ "$result" -eq 0 ]]; then
+                wickLog "DEBUG" "$content"
+                echo "$output" >&2
+
+                return
+            fi
         fi
     done
 )

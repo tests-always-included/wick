@@ -7,16 +7,21 @@
 #
 # Examples
 #
-#   local list
+#   # This example may look complex, but that is because of how newer versions
+#   # of Bash ignore the error exit in specific contexts.
+#   local list result
 #
 #   list=(one two three "four four")
+#   wickStrictRun result wickInArray one "${list[@]}"
 #
-#   if wickInArray one "${list[@]}"; then
+#   if [[ "$result" -eq 0 ]]; then
 #       # This one works
 #       echo "one is found"
 #   fi
 #
-#   if wickInArray four "${list[@]}"; then
+#   wickStrictRun result wickInArray four "${list[@]}"
+#
+#   if [[ "$result" -eq 0 ]]; then
 #       echo "four should not be found"
 #       echo "'four four' with a space would be found"
 #   fi

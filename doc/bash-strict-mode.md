@@ -10,8 +10,7 @@ As found on [another website](http://redsymbol.net/articles/unofficial-bash-stri
 
 A brief summary of what each option does:
 
-* `set -e`: Exit immediately if a command exits with a non-zero status, unless that command is part a test condition.  On failure this triggers the ERR trap.
-    * There are [some contexts](contexts-that-disable-exit-on-error.md) that will disable this setting.
+* `set -e`: Exit immediately if a command exits with a non-zero status, unless that command is part a test condition.  On failure this triggers the ERR trap. **There are [some contexts][exit on error] that will disable this setting!**
 * `set -E`: The ERR trap is inherited by shell functions, command substitutions and commands in subshells.  This helps us use `wickStrictModeFail` wherever `set -e` is enabled.
 * `set -u`: Exit and trigger the ERR trap when accessing an unset variable.  This helps catch typos in variable names.
 * `set -o pipefail`: The return value of a pipeline is the value of the last (rightmost) command to exit with a non-zero status.  So, `a | b | c` can return `a`'s status when `b` and `c` both return a zero status.  It is easier to catch problems during the middle of processing a pipeline this way.
@@ -85,12 +84,12 @@ The `formatter` command is pretty simple and will always return 0 (success).  Yo
 To counter this issue, you really want to ignore the return value from `myProgram`.
 
     # You can ignore just the return code for myProgram
-    (myProgram || true) | formatter
+    (myProgram || :) | formatter
 
     # You can ignore the return code for the whole line
-    myProgram | formatter || true
+    myProgram | formatter || :
 
-The better option is to ignore only the return code for `myProgram`.  That way errors from other parts of the line can still be caught.
+The better option is to ignore only the return code for `myProgram`.  That way errors from other parts of the line can still be caught.  Also, be wary of using Bash functions in pipes like this because [errors can be disabled][exit on error].
 
 
 ### `Unbound variable $1` and optional parameters
@@ -222,3 +221,4 @@ Normally, you do not need to use `set +E` as that only determines if the ERR tra
 
 
 [bash concepts]: bash-concepts.md
+[exit on error]: contexts-that-disable-exit-on-error.md

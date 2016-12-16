@@ -15,12 +15,13 @@
 #       exit 1
 #   fi
 #
-# Returns true when the architecute could be determined.
+# Returns true when the architecture could be determined.
+local unameM
 
-UNAME_M=$(uname -m)
-wickDebug "uname -m: $UNAME_M"
+unameM=$(uname -m)
+wickDebug "uname -m: $unameM"
 
-case "$UNAME_M" in
+case "$unameM" in
     x86_64)
         echo "amd64"
         ;;
@@ -30,8 +31,9 @@ case "$UNAME_M" in
         ;;
 
     *)
-        wickError "Unable to detect architecture"
+        wickError "Unable to detect architecture from \"$unameM\""
         echo "UNKNOWN"
+
         exit 1
         ;;
 esac

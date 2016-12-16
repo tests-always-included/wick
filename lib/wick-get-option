@@ -63,7 +63,7 @@ wickGetOption() {
             -*)
                 arg="${1:1}"
 
-                while [[ ! -z "$arg" ]]; do
+                while [[ -n "$arg" ]]; do
                     if [[ "${arg:0:1}" == "$name" ]]; then
                         returnValue=true
                     fi

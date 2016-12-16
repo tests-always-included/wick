@@ -25,16 +25,16 @@ wickPackageYum() {
 
         exists)
             if rpm -q "$@" > /dev/null 2>&1; then
-                wickDebug "Package exists: $@"
+                wickDebug "Package exists: $*"
                 return 0
             fi
 
-            wickDebug "Package does not exist: $@"
+            wickDebug "Package does not exist: $*"
             return 1
             ;;
 
         install)
-            if [[ ! -z "${YUM_ENABLE_REPO-}" ]]; then
+            if [[ -n "${YUM_ENABLE_REPO-}" ]]; then
                 args[${#args[@]}]="--enablerepo=$YUM_ENABLE_REPO"
             fi
 

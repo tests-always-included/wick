@@ -9,7 +9,7 @@
 #
 # Returns nothing.
 wickServiceIsRunning() {
-    local service serviceCommandExists initType
+    local initType service serviceCommandExists
 
     wickGetArgument service 0 "$@"
     wickExplorer initType wick-base init-system

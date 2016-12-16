@@ -35,4 +35,4 @@ mock-command-internals() {
     )
 }
 
-WICK_DIR=${BATS_PREFIX%/*}
+export WICK_DIR=${BATS_PREFIX%/*}

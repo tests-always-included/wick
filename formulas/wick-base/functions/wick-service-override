@@ -19,7 +19,6 @@ wickServiceOverride() {
     wickInfo "Updating scripts with override for service: $service"
 
     if [[ "$initType" == systemd ]]; then
-
         # systemd will automatically pick up the override
         # file but it must be reloaded.
         systemctl daemon-reload

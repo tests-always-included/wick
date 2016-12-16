@@ -15,6 +15,8 @@
 #   YUM_ENABLE_REPO="remi" wickPackage redis
 #
 # Returns nothing.
+declare os temp
+
 wickExplorer os wick-base os
 
 case "$os" in
@@ -29,8 +31,9 @@ esac
 
 installed=$(rpm -qa | grep ^remi-release- || true)
 
-if [[ ! -z "$installed" ]]; then
+if [[ -n "$installed" ]]; then
     wickInfo "Remi package already installed: $installed"
+
     exit
 fi
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 # This script should be added to `/etc/dhcp/dhclient-enter-hooks`. This will
 # protect against the very rare occurrence that a service running as root
 # completely fills the disc including the system reserve. This will cause
@@ -9,6 +9,7 @@
 # Fortunately, `change_resolv_conf` checks the exit code of the `echo` command
 # and only invalidates the DNS cache if it is 0. Unfortunately, you are still
 # left with a corrupt `resolv.conf`.
+#
 # This is sh not Bash!
 
 # Replacing calls to `make_resolv_conf` with a call to our override function.

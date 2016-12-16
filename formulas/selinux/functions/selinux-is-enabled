@@ -3,23 +3,34 @@
 #
 # Examples
 #
-#   if selinuxIsEnabled; then
+#   # Convoluted, but necessary because of strict mode and newer Bash.
+#   # See doc/contexts-that-disable-exit-on-error.md
+#   local result
+#
+#   wickStrictRun result selinuxIsEnabled
+#
+#   if [[ "$result" -eq 0 ]]; then
 #       wickWarn "This does not work well with SELinux enabled"
 #   fi
 #
 # Returns true if it is enabled and it is being enforced.
 selinuxIsEnabled() {
-    local ENFORCED
+    local enforced getenforceExists semanageExists
 
-    if ! wickCommandExists getenforce && ! wickCommandExists semanage; then
+    wickStrictRun getenforceExists wickCommandExists getenforce
+    wickStrictRun semanageExists wickCommandExists semanage
+
+    if [[ "$getenforceExists" -ne 0 && "$semanageExists" -ne 0 ]]; then
         wickDebug "SELinux appears to be not installed"
+
         return 1
     fi
 
-    ENFORCED=$(getenforce)
+    enforced=$(getenforce)
 
-    if [[ "$ENFORCED" == "Disabled" ]] || [[ "$ENFORCED" == "Permissive" ]]; then
+    if [[ "$enforced" == "Disabled" ]] || [[ "$enforced" == "Permissive" ]]; then
         wickDebug "SELinux is not enforced"
+
         return 1
     fi
 

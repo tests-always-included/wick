@@ -20,7 +20,7 @@ wickTestForArgumentCount() {
     wickGetArgument count 0 "$@"
     shift
 
-    if [[ -z "$count" ]] || [[ ! "$count" -ge 0 ]]; then
+    if [[ -z "$count" ]] || [[ "$count" -lt 0 ]]; then
         wickError "Please provide a valid expected argument count."
 
         return 1

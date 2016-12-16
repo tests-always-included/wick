@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Sets the hostname and domain.  Supports templates.  Can automatically update the hostname when network connections are made.
+# Sets the hostname and domain.  Supports templates.  Can automatically update
+# the hostname when network connections are made.
 #
 # $1            - Hostname to set or template for dynamic hostnames.
 # --dynamic     - Option that enables a dynamic hostname.
@@ -41,7 +42,7 @@ wickGetOption dynamic --dynamic "$@"
 wickGetOption iface --iface "$@"
 wickGetArgument desired 0 "$@"
 
-if [ -z "$dynamic" ]; then
+if [[ -z "$dynamic" ]]; then
     wickInfo "Setting the hostname: $desired"
     "$WICK_FORMULA_DIR/files/set-hostname" --verbose "$desired"
 else
@@ -59,7 +60,7 @@ else
 
     cloudFile="/etc/cloud/cloud.cfg"
 
-    if [ -f "$cloudFile" ]; then
+    if [[ -f "$cloudFile" ]]; then
         wickInfo "Updating cloud-init: $cloudFile"
         wickSetConfigLine "$cloudFile" "preserve_hostname: true"
     else

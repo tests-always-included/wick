@@ -6,8 +6,10 @@
 #   wickFormula jq
 #
 # Returns nothing.
-wickExplorer os wick-base os
+declare arch os
+
 wickExplorer arch wick-base arch
+wickExplorer os wick-base os
 
 case "$os" in
     centos|redhat|ubuntu)

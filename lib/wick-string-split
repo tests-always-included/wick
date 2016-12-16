@@ -19,8 +19,8 @@
 wickStringSplit() {
     local delim result str target
 
-    target=$1
-    str=$2
+    target=${1-}
+    str=${2-}
     delim=${3:- }
     result=()
 
@@ -33,6 +33,7 @@ wickStringSplit() {
 
     if [[ "${#result[@]}" -gt 0 ]]; then
         local "$target" && wickIndirectArray "$target" "${result[@]}"
+
         return
     fi
 

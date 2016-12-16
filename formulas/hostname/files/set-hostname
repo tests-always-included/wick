@@ -19,7 +19,7 @@
 . /usr/local/lib/wick-infect
 wickStrictMode
 
-declare full help iface ip reloadFlag verbose
+declare full help iface ip reloadFlag result verbose
 
 # Replaces a line in a file.
 #
@@ -61,11 +61,12 @@ wickGetOption iface iface "$@"
 wickGetArgument full 0 "$@"
 
 if [[ -n "$verbose" ]]; then
-    DEBUG=true
+    export DEBUG=true
 fi
 
 if [[ -n "$help" ]] || [[ -z "$full" ]]; then
     showHelp
+
     exit 1
 fi
 
@@ -94,16 +95,22 @@ if [[ -f /etc/hostname ]]; then
 fi
 
 if [[ -f /etc/sysconfig/network ]]; then
-    if replaceInFile /etc/sysconfig/network HOSTNAME=$full HOSTNAME=; then
+    wickStrictRun result replaceInFile /etc/sysconfig/network HOSTNAME="$full" HOSTNAME=
+
+    if [[ "$result" -eq 0 ]]; then
         reload=true
     fi
 fi
 
-if replaceInFile /etc/sysctl.conf kernel.hostname=$host kernel.hostname=; then
+wickStrictRun result replaceInFile /etc/sysctl.conf kernel.hostname="$host" kernel.hostname=
+
+if [[ "$result" -eq 0 ]]; then
     reload=true
 fi
 
-if replaceInFile /etc/hosts "127.0.0.1 $full $host localhost" "127.0.0.1"; then
+wickStrictRun result replaceInFile /etc/hosts "127.0.0.1 $full $host localhost" "127.0.0.1"
+
+if [[ "$result" -eq 0 ]]; then
     reload=true
 fi
 
@@ -123,10 +130,10 @@ else
     wickDebug "Domainname is already changed"
 fi
 
-if [[ -n "$reloadFlag" ]] && $reload; then
+if [[ -n "$reloadFlag" ]] && "$reload"; then
     wickDebug "Restarting network to get hostname updated everywhere"
     service network restart
-elif $reload; then
+elif [[ "$reload" == "true" ]]; then
     wickDebug "Not reloading even though changes were made"
 else
     wickDebug "Skipping network reload because no changes were made"

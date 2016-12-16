@@ -19,7 +19,7 @@ WICK_DIR="${0%/*}"
 #
 # Returns the result of the command.
 wick() {
-    local cmd index line onLoadCommands
+    local cmd index line onLoadCommands result
 
     cmd=${1-}
     shift || :
@@ -27,9 +27,12 @@ wick() {
 
     # Load all library functions so the commands have access to them.
     # Wick commands need library functions to use `wickOnLoad`.
+    # These commands CAN RUN like this without worry about strict
+    # mode being disabled because strict mode is not enabled yet.
     if ! wickLoadLib .; then
         if ! wickLoadLib ..; then
             echo "Unable to load library functions." >&2
+
             exit 1
         fi
     fi
@@ -62,7 +65,9 @@ wick() {
         exit 1
     fi
 
-    if ! wickArraySearch index "$cmd" "${WICK_COMMANDS[@]}"; then
+    wickStrictRun result wickArraySearch index "$cmd" "${WICK_COMMANDS[@]}"
+
+    if [[ "$result" -ne 0 ]]; then
         echo "No such command: $cmd"
         echo "See 'wick help'"
         exit 1
@@ -97,11 +102,13 @@ wickIsValidScript() {
 #
 # Returns nothing.
 wickLoadLib() {
-    local file loaded
+    local file loaded result
 
     loaded=false
 
     if [[ -d "$1/parent" ]]; then
+        # Strict mode is NOT enabled here and neither are libraries.
+        # Do not worry about the "exit on error" being disabled.
         if wickLoadLib "$1/parent"; then
             loaded=true
         fi
@@ -110,7 +117,7 @@ wickLoadLib() {
     if [[ -d "$1/lib" ]]; then
         for file in "$1/lib/"*; do
             if wickIsValidScript "$file"; then
-                if [[ ! -z "${DEBUG-}" ]]; then
+                if [[ -n "${DEBUG-}" ]]; then
                     echo "Loading library: $file"
                 fi
 

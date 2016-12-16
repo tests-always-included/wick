@@ -16,6 +16,7 @@
 #     wickFormula CST6CDT
 #
 # Returns nothing.
+declare os timezoneValue
 
 wickExplorer os wick-base os
 wickGetArgument timezoneValue 0 "$@"
@@ -33,11 +34,10 @@ wickInfo "Updating timezone: $timezoneValue"
 timezoneFile=/etc/timezone
 tzDataDir=/usr/share/zoneinfo
 localtimeFile=/etc/localtime
-useSymlink=false
 
 case "$os" in
     amazon)
-        timezoneUpdateLocaltime "$localtimeFile" "$tzDataDir/$timezoneValue" "$useSymlink"
+        timezoneUpdateLocaltime "$localtimeFile" "$tzDataDir/$timezoneValue"
         timezoneUpdateSysconfigClock "$timezoneValue"
         ;;
 
@@ -56,5 +56,5 @@ case "$os" in
     *)
         wickWarn "Unknown OS: $os"
         wickWarn "Updating the timezone with a generic method"
-        timezoneUpdateLocaltime "$localtimeFile" "$tzDataDir/$timezoneValue" "$useSymlink"
+        timezoneUpdateLocaltime "$localtimeFile" "$tzDataDir/$timezoneValue"
 esac

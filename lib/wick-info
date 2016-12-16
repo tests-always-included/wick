@@ -13,6 +13,8 @@
 # Returns nothing.
 wickInfo() (
     set +x
+    # Disable debug in this function.  Note: this function uses a subshell!
+
     local content output
 
     wickArrayJoin content " " "$@"
@@ -21,7 +23,7 @@ wickInfo() (
     if [[ -z "${WICK_LOG_QUIET-}" ]]; then
         wickPrefixLines output "INFO: " "$content"
 
-        if [[ ! -z "${WICK_COLOR-}" ]]; then
+        if [[ -n "${WICK_COLOR-}" ]]; then
             output=$'\E[32m'"$output"$'\E[0m'
         fi
 

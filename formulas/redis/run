@@ -22,6 +22,8 @@
 #   wickFormula redis --password="My password" --master-password="Master password for replication"
 #
 # Returns nothing.
+declare masterPassword password start
+
 wickInfo "Installing redis"
 wickGetOption start start "$@"
 wickGetOption password password "$@"

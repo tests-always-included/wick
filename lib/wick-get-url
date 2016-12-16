@@ -20,10 +20,13 @@
 #
 # Returns zero on success, non-zero if there is an error downloading.
 wickGetUrl() {
-    # These variables are intended to be used outside of wickGetUrl
+    # Many variables are intended to be used outside of wickGetUrl
     # by the child functions for each command, thus they should be
-    # capitalized.
-    local DEST PASSWORD PROGRESS TIMEOUT URL USERNAME
+    # capitalized.  They should not be exported to the outside
+    # environment and only should be visible within Bash, so we ignore
+    # the linter's warning that they should be exported.
+    # shellcheck disable=SC2034
+    local DEST PASSWORD PROGRESS result TIMEOUT URL USERNAME
 
     wickGetOption PROGRESS --progress "$@"
     wickGetOption TIMEOUT --timeout "$@"
@@ -33,19 +36,23 @@ wickGetUrl() {
     wickGetArgument DEST 1 "$@"
     wickDebug "wickGetUrl url: $URL"
     wickDebug "wickGetUrl dest: $DEST"
+    wickStrictRun result wickCommandExists curl
 
-    if wickCommandExists curl; then
+    if [[ "$result" -eq 0 ]]; then
         wickGetUrlCurl || return 1
 
         return 0
     fi
 
-    if wickCommandExists wget; then
+    wickStrictRun result wickCommandExists wget
+
+    if [[ "$result" -eq 0 ]]; then
         wickGetUrlWget || return 1
 
         return 0
     fi
 
     wickError "Unable to download url - no suitable programs found"
+
     return 1
 }

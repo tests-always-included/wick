@@ -61,7 +61,7 @@
 #
 # Returns true on success.
 wickMakeFile() {
-    local dest owner setMode setOwner src srcFile useFormula useTemplate
+    local dest result setMode setOwner src srcFile useFormula useTemplate
 
     wickGetOption useFormula formula "$@"
     wickGetOption setMode mode "$@"
@@ -71,7 +71,7 @@ wickMakeFile() {
     wickGetArgument dest 1 "$@"
     src="$WICK_FORMULA_DIR"
 
-    if [[ ! -z "$useFormula" ]]; then
+    if [[ -n "$useFormula" ]]; then
         wickFind src "formulas/$useFormula"
     fi
 
@@ -129,15 +129,19 @@ wickMakeFile() {
     else
         # Use a template
         wickDebug "Converting template $src into $dest"
-        formulaTemplate "$src" > "$dest" || return 1
+        wickStrictRun result formulaTemplate "$src" > "$dest"
+
+        if [[ "$result" -ne 0 ]]; then
+            return 1
+        fi
     fi
 
-    if [[ ! -z "$setOwner" ]]; then
+    if [[ -n "$setOwner" ]]; then
         wickDebug "Changing ownership: $setOwner"
         chown "$setOwner" "$dest" || return 1
     fi
 
-    if [[ ! -z "$setMode" ]]; then
+    if [[ -n "$setMode" ]]; then
         wickDebug "Changing mode: $setMode"
         chmod "$setMode" "$dest" || return 1
     fi

@@ -11,12 +11,13 @@
 #
 # Returns the result of wickServiceAddDependency.
 wickServiceAddDependencyIfEnabled() {
-    local service dependency
+    local dependency result service
 
     wickGetArgument service 0 "$@"
     wickGetArgument dependency 1 "$@"
+    wickStrictRun result wickServiceIsEnabled "$dependency"
 
-    if wickServiceIsEnabled "$dependency"; then
+    if [[ "$result" -eq 0 ]]; then
         wickServiceAddDependency "$service" "$dependency"
     else
         wickInfo "Service $dependency does not exist.  No adding it as a dependency"

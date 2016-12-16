@@ -34,12 +34,12 @@ Returns nothing.
 
 Internal: Changes a single setting for sshd based on the value from an option passed to the formula.
 
-* $1       - Setting to change
-* $2       - Name of the option
-* $options - All options passed to the formula.
-* $config  - Config file to update.
+* $1   - Config file to update
+* $2   - Setting to change
+* $3   - Name of the option
+* $4-@ - All options passed to the formula.
 
-Scans through `$options` for `--$2` or `--$2=no`.  If the value is "no", disables the option (adds "$1 no" to the config file).  When the value is "true" (because that's how wickGetOption works) it enables the setting in the config file.
+Scans through `$options` for `--$3` or `--$3=no`.  If the value is "no", disables the option (adds "$1 no" to the config file).  When the value is "true" (because that's how wickGetOption works) it enables the setting in the config file.
 
 Returns nothing.
 

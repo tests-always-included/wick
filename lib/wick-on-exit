@@ -25,7 +25,7 @@ wickOnExit() {
     # Note:  I am not a fan of eval.  If you have a better way to do this that
     # uses fewer evaluated statements that also works from Bash 3 through the
     # latest release and with "set -eu", then I'd LOVE to know.
-    eval "length=\${#$name[@]}"
+    eval "length=\${#""$name""[@]}"
     wickArgumentString cmd "$@"
     wickDebug "Adding wickOnExit item [$BASHPID $length]: ${cmd}"
     eval "$name[$length]=\$cmd"

@@ -27,7 +27,7 @@ wickAddCommand() {
     WICK_COMMANDS[${#WICK_COMMANDS[@]}]=$1
     WICK_COMMAND_FUNCTIONS[${#WICK_COMMAND_FUNCTIONS[@]}]=$2
 
-    if [[ ! -z "$3" ]]; then
+    if [[ -n "${3-}" ]]; then
         printf -v line "  %-15s  %s" "$1" "$3"
         WICK_COMMAND_HELP[${#WICK_COMMAND_HELP[@]}]=$line
     fi

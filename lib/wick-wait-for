@@ -20,9 +20,16 @@
 #
 #   # Wait up to 30 seconds for a file to exist
 #   # You must use a shell command here.  Bash built-ins won't work,
-#   # so use `[` or `test` instead of `[[`.
-#   if ! wickWaitFor 30 [ -f /var/run/other-process/run.lock ]; then
+#   # so use `[` or `test` instead of `[[`.  Also, we prefer for error
+#   # exit to work, so this uses wickStrictRun to capture the return
+#   # code in a context that "if" would negate.
+#   local result
+#
+#   wickStrictRun result wickWaitFor 30 [ -f /var/run/other-process/run.lock ]
+#
+#   if [[ "$result" -ne 0 ]]; then
 #       echo "File was not created in time"
+#
 #       exit 1
 #   fi
 #
@@ -38,17 +45,21 @@ wickWaitFor() {
     (
         # The latch
         (
-            while ! "$@"; do
+            wickStrictRun result "$@"
+
+            while [[ "$result" -ne 0 ]]; do
                 echo "latch fail"
                 sleep 1
+                wickStrictRun result "$@"
             done
+
             echo "latch success"
         ) > /dev/null 2>&1 &
         latchProcess=$!
 
         # The timeout
         (
-            sleep $sleepTime
+            sleep "$sleepTime"
             kill "$latchProcess"
         ) > /dev/null 2>&1 &
         sleepProcess=$!
@@ -56,11 +67,11 @@ wickWaitFor() {
         # Delay until one of the processes finish
         # Avoid "wait -n" because older bash does not support it
         # This also hides a "Terminated" message
-        wait $latchProcess > /dev/null 2>&1
+        wait "$latchProcess" > /dev/null 2>&1
         result=$?
 
         # On success, the timeout process is likely still running
-        if [[ $result -eq 0 ]]; then
+        if [[ "$result" -eq 0 ]]; then
             kill $sleepProcess > /dev/null 2>&1
         fi
 

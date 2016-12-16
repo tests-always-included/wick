@@ -22,6 +22,8 @@
 #    wickformula nodejs --version=5.1
 #
 # Returns nothing.
+declare tempDir
+
 wickInfo "Installing Node.js"
 
 wickGetOption VERSION version "$@"
@@ -29,7 +31,7 @@ wickGetOption VERSION version "$@"
 if [[ -n "$VERSION" ]]; then
     wickDebug "Grabbing the most recent $VERSION branch"
 
-    DIR=$(wickGetUrl http://nodejs.org/dist/index.json | jq -r  'sort_by(.date)  | map(select(.version | test("^v'$VERSION'\\."))) | last | .version')
+    DIR=$(wickGetUrl http://nodejs.org/dist/index.json | jq -r  'sort_by(.date)  | map(select(.version | test("^v'"$VERSION"'\\."))) | last | .version')
 else
     wickDebug "Grabbing the most recent branch and version"
     DIR="latest"
@@ -49,6 +51,7 @@ cd /usr/local/
 tar xzf "$tempDir/$nodeFile" --strip=1 --no-overwrite-dir --owner=root
 
 wickInfo "Creating symlinks for binaries"
+
 for F in bin/node lib/node bin/npm bin/node-waf; do
     rm -f "/usr/$F"
 

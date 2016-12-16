@@ -12,6 +12,8 @@
 #   wickFormula mysql-server
 #
 # Returns nothing.
+declare password start
+
 wickInfo "Installing MySql server"
 wickGetOption start start "$@"
 wickPackage mysql-server

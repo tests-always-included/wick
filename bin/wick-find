@@ -21,6 +21,7 @@ wickFind() {
         full="${file%/*}"
         file="${file:${#full}}"
         full=$(cd "$full"; pwd)
+
         local "$1" && wickIndirect "$1" "$full$file" && return 0
     fi
 

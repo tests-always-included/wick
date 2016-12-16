@@ -6,17 +6,19 @@
 #
 # Starting in deepest parent, write lib/* with a header
 showAllLibFunctions() {
-    local FILE
+    local file result
 
     if [[ -d "$1/parent" ]]; then
         showAllLibFunctions "$1/parent"
     fi
 
     if [[ -d "$1/lib" ]]; then
-        for FILE in "$1/lib/"*; do
-            if wickIsValidScript "$FILE"; then
-                echo "# $FILE"
-                cat "$FILE"
+        for file in "$1/lib/"*; do
+            wickStrictRun result wickIsValidScript "$file"
+
+            if [[ "$result" -eq 0 ]]; then
+                echo "# $file"
+                cat "$file"
                 echo ""
             fi
         done
@@ -28,8 +30,14 @@ showAllLibFunctions() {
     echo "#"
     echo "# This file was created by the wick-infect formula"
     echo ""
-    echo '[ ! -z "$BASH_VERSION" ] || return 1'
-    echo '[[ "$POSIXLY_CORRECT" != "y" ]] || return 1'
+
+    # This line must work with sh in case it is sourced by the wrong
+    # shell interpreter.
+    echo "[ -n \"\$BASH_VERSION\" ] || return 1"
+
+    # Having $POSIXLY_CORRECT enabled can cause problems because Bash
+    # limits itself to only POSIX commands.  We want full Bash.
+    echo "[[ \"\$POSIXLY_CORRECT\" != \"y\" ]] || return 1"
     echo ""
     showAllLibFunctions .
 ) > "$WICK_FORMULA_DIR/files/wick-infect"
