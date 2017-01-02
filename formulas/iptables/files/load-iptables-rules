@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 path=/etc/network/iptables.rules
 
 if [[ -f "$path" ]]; then

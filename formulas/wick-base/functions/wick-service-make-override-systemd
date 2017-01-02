@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Internal: Creates the override file if it does not already exist.  Also
 # puts it in a state usable by wickServiceAddDependencySystemd.
 #
