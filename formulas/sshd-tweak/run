@@ -34,7 +34,7 @@ declare config fasterLogin hashAfter hashBefore osType result
 config="/etc/ssh/sshd_config"
 serviceName=sshd
 
-wickGetOption fasterLogin faster-login "$@"
+wickGetOption fasterLogin --faster-login "$@"
 wickExplorer osType wick-base os
 
 if [[ "$osType" == ubuntu ]]; then
