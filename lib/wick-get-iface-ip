@@ -9,10 +9,14 @@
 #
 # Examples
 #
-#   local ip
+#   # Convoluted because newer versions of Bash disable some error checking.
+#   local ip result
 #
-#   if ! wickGetIfaceIp ip tun0; then
+#   wickStrictRun result wickGetIfaceIp ip tun0
+#
+#   if [[ "$result" -ne 0 ]]; then
 #       echo "Tunnel is not yet established"
+#
 #       exit 1
 #   fi
 #
@@ -20,7 +24,7 @@
 #
 # Returns 0 on success, non-zero on failure.
 wickGetIfaceIp() {
-    local allInterfaces interface list target
+    local allInterfaces interface list result target
 
     wickGetArgument target 0 "$@"
     wickGetArgument interface 1 "$@"
@@ -33,7 +37,9 @@ wickGetIfaceIp() {
         allInterfaces=true
     fi
 
-    if wickCommandExists ifconfig; then
+    wickStrictRun result wickCommandExists ifconfig
+
+    if [[ "$result" -eq 0 ]]; then
         cmd=(ifconfig -v)
 
         if [[ -n "$interface" ]]; then
@@ -41,18 +47,22 @@ wickGetIfaceIp() {
         fi
 
         list=( $("${cmd[@]}" 2>/dev/null | grep -oe "inet\s\+[addr:]*[0-9\.]\+" | grep -oe "[0-9\.]\+") )
-    elif wickCommandExists ip; then
-        cmd=(ip addr show)
-
-        if [[ -n "$interface" ]]; then
-            cmd[${#cmd[@]}]="$interface"
-        fi
-
-        list=( $("${cmd[@]}" 2>/dev/null | grep -oe "inet [0-9.]\+" | grep -oe "[0-9\.]\+") )
     else
-        wickError "Couldn't find a command to look up ip addresses"
+        wickStrictRun result wickCommandExists ip
 
-        return 2
+        if [[ "$result" -eq 0 ]]; then
+            cmd=(ip addr show)
+
+            if [[ -n "$interface" ]]; then
+                cmd[${#cmd[@]}]="$interface"
+            fi
+
+            list=( $("${cmd[@]}" 2>/dev/null | grep -oe "inet [0-9.]\+" | grep -oe "[0-9\.]\+") )
+        else
+            wickError "Couldn't find a command to look up ip addresses"
+
+            return 2
+        fi
     fi
 
     if [[ "$allInterfaces" == true ]]; then

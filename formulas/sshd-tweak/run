@@ -29,28 +29,26 @@
 #   wickFormula sshd-tweak --agent-forwarding --password-auth=no
 #
 # Returns nothing.
-export config="/etc/ssh/sshd_config"
-export options=("$@")
+declare config fasterLogin hashAfter hashBefore osType result
 
+config="/etc/ssh/sshd_config"
 serviceName=sshd
 
+wickGetOption fasterLogin --faster-login "$@"
 wickExplorer osType wick-base os
 
 if [[ "$osType" == ubuntu ]]; then
     serviceName=ssh
 fi
 
-
 wickInfo "Tweaking SSH configuration"
 wickHash hashBefore "$config"
-sshdTweakSetting UseDNS use-dns
-sshdTweakSetting GSSAPIAuthentication gssapi-auth
-sshdTweakSetting PasswordAuthentication password-auth
-sshdTweakSetting AllowAgentForwarding agent-forwarding
+sshdTweakSetting "$config" UseDNS use-dns "$@"
+sshdTweakSetting "$config" GSSAPIAuthentication gssapi-auth "$@"
+sshdTweakSetting "$config" PasswordAuthentication password-auth "$@"
+sshdTweakSetting "$config" AllowAgentForwarding agent-forwarding "$@"
 
-wickGetOption fasterLogin faster-login "$@"
-
-if [[ -n $fasterLogin ]]; then
+if [[ -n "$fasterLogin" ]]; then
     wickSetConfigLine "$config" "GSSAPIAuthentication no"
     wickSetConfigLine "$config" "UseDNS no"
 fi
@@ -58,7 +56,9 @@ fi
 wickHash hashAfter "$config"
 
 if [[ "$hashBefore" != "$hashAfter" ]]; then
-    if wickService is-running "$serviceName"; then
+    wickStrictRun result wickService is-running "$serviceName"
+
+    if [[ "$result" -eq 0 ]]; then
         wickService reload "$serviceName"
     fi
 fi

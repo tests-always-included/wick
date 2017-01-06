@@ -34,7 +34,7 @@ Examples
         exit 1
     fi
 
-Returns true when the architecute could be determined.
+Returns true when the architecture could be determined.
 
 
 ### bash-version

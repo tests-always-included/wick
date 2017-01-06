@@ -6,6 +6,8 @@
 #   wickFormula mysql-client
 #
 # Returns nothing.
+declare result
+
 wickInfo "Installing MySql client"
 packageName="mysql"
 

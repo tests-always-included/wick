@@ -8,7 +8,11 @@
 #
 # Returns nothing.
 nscdRestart() {
-    if wickPackage --exists unscd; then
+    local result
+
+    wickStrictRun result wickPackage --exists unscd
+
+    if [[ "$result" -eq 0 ]]; then
         wickService restart unscd
     else
         wickService restart nscd

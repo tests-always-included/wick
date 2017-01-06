@@ -27,13 +27,20 @@
 #   esac
 #
 # Returns 0 on success or 1 when the OS can't be determined.
+declare lsbReleaseExists unameExists
 
 # On RedHat-like systems you can see if there's a package called
 # `centos-release`.  If so, you are on CentOS.
 #
 # Examples
 #
-#   if isReallyCentos; then
+#   # Need to use this convoluted technique because the errors are consumed
+#   # by newer versions of Bash.
+#   local result
+#
+#   wickStrictRun result isReallyCentos
+#
+#   if [[ "$result" -eq 0 ]]; then
 #       echo "This is CentOS, not RedHat"
 #   fi
 #
@@ -50,7 +57,11 @@ isReallyCentos() {
 #
 # Returns nothing.
 detectRealRedhat() {
-    if isReallyCentos; then
+    local result
+
+    wickStrictRun result isReallyCentos
+
+    if [[ "$result" -eq 0 ]]; then
         echo "centos"
     else
         echo "redhat"
@@ -59,21 +70,26 @@ detectRealRedhat() {
 
 if [[ -f /etc/arch-release ]]; then
     echo "arch"
+
     exit
 fi
 
-if wickCommandExists lsb_release; then
+wickStrictRun lsbReleaseExists wickCommandExists lsb_release
+
+if [[ "$lsbReleaseExists" -eq 0 ]]; then
     distributor=$(lsb_release -s -i 2>&1)
     wickDebug "Distributor: $distributor"
 
     case "$distributor" in
         RedHatEnterprise*)
             detectRealRedhat
+
             exit
             ;;
 
         Ubuntu)
             echo "ubuntu"
+
             exit
             ;;
     esac
@@ -83,24 +99,30 @@ wickDebug "MACHTYPE=$MACHTYPE"
 
 if [[ "$MACHTYPE" == *"-redhat-"* ]]; then
     detectRealRedhat
+
     exit
 fi
 
 if [[ "$MACHTYPE" == *"-apple-"* ]]; then
     echo "osx"
+
     exit
 fi
 
-if wickCommandExists uname; then
+wickStrictRun unameExists wickCommandExists uname
+
+if [[ "$unameExists" -eq 0 ]]; then
     unameV=$(uname -v 2>&1)
     wickDebug "unameV=$unameV"
 
     if [[ "$unameV" == *"Ubuntu"* ]]; then
         echo "ubuntu"
+
         exit
     fi
 fi
 
 wickError "Unable to detect OS"
 echo "UNKNOWN"
+
 exit 1

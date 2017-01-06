@@ -11,7 +11,7 @@
 #
 # Returns nothing.
 networkLayerInclude() {
-    local initType service dependency dependent
+    local dependency dependent initType service result
 
     wickGetArgument service 0 "$@"
     wickExplorer initType wick-base init-system
@@ -22,9 +22,13 @@ networkLayerInclude() {
     if [[ systemd == "$initType" ]]; then
         dependency=networking.service
         dependent=network.target
-    elif wickService is-enabled virtual-network; then
-        dependency=network
-        dependent=virtual-network
+    else
+        wickStrictRun result wickService is-enabled virtual-network
+
+        if [[ "$result" -eq 0 ]]; then
+            dependency=network
+            dependent=virtual-network
+        fi
     fi
 
     wickService add-dependency "$service" "$dependency"

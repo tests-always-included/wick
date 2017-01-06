@@ -50,7 +50,7 @@ Just like the `run` script of [formulas], roles can take parameters from the com
     wickLoadRole "our-base-formulas"
 
     # Use the command-line argument
-    if [[ ! -z "$EXTRA" ]]; then
+    if [[ -n "$EXTRA" ]]; then
         wickLoadRole "our-extra-formulas"
     fi
 
@@ -73,7 +73,7 @@ Just like the `run` script of [formulas], roles can take parameters from the com
     esac
 
     # Finally check an environment variable
-    if [[ ! -z "$NEEDS_APACHE" ]]; then
+    if [[ -n "$NEEDS_APACHE" ]]; then
         wickFormula apache2
     fi
 

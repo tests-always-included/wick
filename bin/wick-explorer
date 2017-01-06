@@ -10,33 +10,48 @@
 #
 # Returns true when explorer ran successfully, false otherwise.
 wickExplorer() {
-    local explorer tempdir
+    local explorer restoreErrors result statusCode tempdir
 
     explorer="formulas/$2/explorers/$3"
+    wickStrictRun result wickFind explorer "$explorer"
 
-    if ! wickFind explorer "$explorer"; then
+    if [[ "$result" -ne 0 ]]; then
         wickError "Unable to find explorer: $explorer"
 
         return 1
     fi
 
-    # Run the explorer
     wickTempDir tempdir
 
+    #: Just like wickStrictRun, this needs to temporarily disable
+    #: error settings and traps.
+    restoreErrors="set \"-$-\";$(trap -p ERR)"
+
+    # Disable errors only for the subshell and run the explorer.
+    set +eE
+    trap "" ERR
+
     (
-        . "$explorer" > "$tempdir/stdout" 2> "$tempdir/stderr" || echo "$?" > "$tempdir/fail"
-        :
+        eval "$restoreErrors"
+        . "$explorer" > "$tempdir/stdout" 2> "$tempdir/stderr"
     )
 
-    if [[ -f "$tempdir/fail" ]]; then
+    statusCode=$?
+    eval "$restoreErrors"
+    wickDebug "Explorer stdout:"
+    wickDebug "$(<"$tempdir/stdout")"
+    wickDebug "Explorer stderr:"
+    wickDebug "$(<"$tempdir/stdout")"
+    wickDebug "End of explorer output"
+
+    if [[ "$statusCode" -ne 0 ]]; then
         wickError "Explorer failed: $explorer"
-        wickError "Status code:  $(<"$tempdir/fail")"
+        wickError "Status code:  $statusCode"
 
         return 1
     fi
 
     wickDebug "Explorer success"
-    wickDebug "$(<"$tempdir/stdout")"
 
     local "$1" && wickIndirect "$1" "$(<"$tempdir/stdout")"
 }

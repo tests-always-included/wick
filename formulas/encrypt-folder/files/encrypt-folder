@@ -17,6 +17,8 @@
 #/
 #/ Returns success (0) when the folder is made to be encrypted or if it
 #/ was already encrypted.  Returns an error status otherwise.
+declare encryptionPassword
+
 . /usr/local/lib/wick-infect
 
 encmount() {
@@ -58,10 +60,11 @@ if [[ "$(whoami)" != "root" ]]; then
     exit 1
 fi
 
-if [[ -z "$1" ]]; then
+if [[ -z "${1-}" ]]; then
     wickError "Specify directory to encrypt"
     echo ""
     wickShowUsage "$0"
+
     exit 1
 fi
 
@@ -75,6 +78,7 @@ encryptedFolder="$clearFolder/.ecryptfs"
 
 if [[ ! -d "$clearFolder" ]]; then
     wickError "Not a directory: $clearFolder"
+
     exit 1
 fi
 
@@ -92,6 +96,7 @@ if mount | fgrep -q "$encryptedFolder"; then
     # This is a successful situation - the folder is already encrypted
     # so there is no need to report an error.
     wickWarn "Already mounted: $clearFolder"
+
     exit 0
 fi
 

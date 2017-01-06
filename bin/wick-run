@@ -9,9 +9,9 @@ wickOnLoad wickAddCommand run wickRun "Execute the formulas for a given role"
 #
 # Returns true on success, 1 if there are problems with the role.
 wickRun() {
-    local formula i location role
+    local formula i
 
-    if [[ -z "$1" ]]; then
+    if [[ -z "${1-}" ]]; then
         echo "You must specify a role to execute." >&2
 
         return 1

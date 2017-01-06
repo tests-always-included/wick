@@ -2,6 +2,8 @@
 
 setup() {
     load ../wick-test-base
+    . "$WICK_DIR/lib/wick-indirect"
+    . "$WICK_DIR/lib/wick-strict-run"
     . "$WICK_DIR/lib/wick-wait-for"
 }
 

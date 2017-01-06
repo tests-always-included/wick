@@ -25,6 +25,7 @@ Updates the localtime file.
 
 * $1 - Time zone
 * $2 - File to update
+* $3 - Use a symlink when this is a non-empty string
 
 Example:
 

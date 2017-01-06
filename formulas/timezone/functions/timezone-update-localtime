@@ -3,6 +3,7 @@
 #
 # $1 - Time zone
 # $2 - File to update
+# $3 - Use a symlink when this is a non-empty string
 #
 # Example:
 #
@@ -19,7 +20,7 @@ timezoneUpdateLocaltime() {
 
     rm "$1"
 
-    if $3; then
+    if [[ -n "${3-}" ]]; then
         # Use symlink
         wickDebug "Setting timezone with symlink"
         ln -s "$2" "$1"

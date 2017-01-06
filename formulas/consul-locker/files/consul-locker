@@ -100,11 +100,10 @@ cleanupTrap() {
 #
 # Returns 3 on error.
 consulDelete() {
-    local curlCommand
-
     clDebug "DELETE $consulEndpoint$1 : ${2-}"
     curl -L -f -s -X DELETE "$consulEndpoint$1" || {
         echo "Unable to communicate with consul" >&2
+
         return 3
     }
 }
@@ -136,6 +135,7 @@ consulLockObtain() {
 
     if [[ "$result" != "true" ]] && [[ "$noWait" == "true" ]]; then
         clDebug "Lock obtained by another process and --no-wait is enabled.  Aborting."
+
         return 1
     fi
 
@@ -154,11 +154,10 @@ consulLockObtain() {
 #
 # Returns 3 on error.
 consulPut() {
-    local curlCommand
-
     clDebug "PUT $consulEndpoint$1 : ${2-}"
     curl -L -f -s -X PUT --data "${2-}" "$consulEndpoint$1" || {
         echo "Unable to communicate with consul" >&2
+
         return 3
     }
 }
@@ -172,6 +171,7 @@ consulSessionDestroy() {
 
     if [[ -z "$sessionId" ]]; then
         clDebug "No session found to destroy"
+
         return
     fi
 
@@ -239,6 +239,7 @@ parseArguments() {
         case "$1" in
             -h | --help)
                 grep "^#/" "$myself" | cut -b 4-
+
                 exit 0
                 ;;
 
@@ -248,6 +249,7 @@ parseArguments() {
 
             -*)
                 echo "Unknown option: $1" >&2
+
                 exit 2
                 ;;
 
@@ -264,6 +266,7 @@ parseArguments() {
     if [[ ${#serviceScript[@]} -eq 0 ]]; then
         echo "Missing a script to execute" >&2
         echo "Try using --help" >&2
+
         exit 2
     fi
 }
@@ -279,7 +282,7 @@ parseArguments() {
 renewWhileRunning() {
     local realProcess renewProcess returnCode
 
-    clDebug "Renewing the session while running: ""$@"
+    clDebug "Renewing the session while running: ""$*"
 
     # Run everything in a subshell to enable monitoring
     (
@@ -304,6 +307,7 @@ renewWhileRunning() {
         enableStrictMode
         kill "$renewProcess"
         clDebug "Return code: $returnCode"
+
         return $returnCode
     )
 }
@@ -316,6 +320,7 @@ consulLocker() {
         # for consul-locker.  They are declared as local here so they
         # do not leak to the real global environment.
         local consulEndpoint serviceName serviceScript sessionId noWait
+
         consulEndpoint=http://localhost:8500/v1/
         serviceName=
         serviceScript=
@@ -338,6 +343,6 @@ consulLocker() {
 
 # If sourced, load all functions.
 # If executed, perform the actions as expected.
-if [[ "$0" == "$BASH_SOURCE" ]] || [[ -z "$BASH_SOURCE" ]]; then
+if [[ "$0" == "$BASH_SOURCE" ]] || [[ -z "${BASH_SOURCE-}" ]]; then
     consulLocker "$@"
 fi

@@ -3,7 +3,7 @@ Apache2
 
 Installs the Apache 2.x web server and enables named virtual hosts.  Provides functions to add virtual hosts and config files.
 
-* --start - Start the service as well.  When ommitted, this will ensure the service is not started.
+* --start - Start the service as well.  When omitted, this will ensure the service is not started.
 
 Examples
 

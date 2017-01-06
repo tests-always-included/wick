@@ -9,9 +9,16 @@
 #
 # Examples
 #
-#   if ! wickCommandExists ls; then
+#   # Must use this roundabout way because newer versions of Bash disable
+#   # error exit in specific contexts.
+#   local result
+#
+#   wickStrictRun result wickCommandExists ls
+#
+#   if [[ "$result" -ne 0 ]]; then
 #       echo 'Oh no, ls does not exist!'
 #       echo 'How do you list your files?'
+#
 #       exit 1
 #   fi
 #

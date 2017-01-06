@@ -20,7 +20,7 @@
 #
 # Returns nothing.
 mysqlServerGrant() {
-    local db host userhost username
+    local all db host userhost username
 
     wickGetArgument userhost 0 "$@"
     wickGetArgument db 1 "$@"

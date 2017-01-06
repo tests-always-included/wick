@@ -27,7 +27,7 @@
 #         wickGetOption verbose verbose "$@"
 #         wickGetArgument target 0 "$@"
 #
-#         if [[ ! -z "$verbose" ]]; then
+#         if [[ -n "$verbose" ]]; then
 #             echo "Verbose mode enabled"
 #         fi
 #

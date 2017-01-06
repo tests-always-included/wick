@@ -34,7 +34,7 @@
 #
 # [strict mode]: ../doc/bash-strict-mode.md
 wickArrayFilter() {
-    local filter result target
+    local filter result returnCode target
 
     target=$1
     filter=$2
@@ -42,7 +42,9 @@ wickArrayFilter() {
     shift 2
 
     while [[ $# -gt 0 ]]; do
-        if "$filter" "$1"; then
+        wickStrictRun returnCode "$filter" "$1"
+
+        if [[ "$returnCode" -eq 0 ]]; then
             result[${#result[@]}]=$1
         fi
 
@@ -51,6 +53,7 @@ wickArrayFilter() {
 
     if [[ ${#result[@]} -eq 0 ]]; then
         local "$target" && wickIndirectArray "$target"
+
         return
     fi
 

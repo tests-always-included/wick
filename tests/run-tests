@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 
 cd "${0%/*}"
+
+# Intentional word splitting
+# shellcheck disable=SC2046
 bats/bats $(find . -name \*.bats)

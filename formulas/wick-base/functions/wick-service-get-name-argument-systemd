@@ -15,5 +15,4 @@ wickServiceGetNameArgumentSystemd() {
     fi
 
     local "$target" && wickIndirect "$target" "$name"
-
 }

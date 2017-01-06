@@ -61,9 +61,9 @@ fi
 # When --start is used, enable dnsmasq.
 if [[ -n "$start" ]]; then
     RESOLV=$(
-        grep -v ^nameserver /etc/resolv.conf || true
+        grep -v ^nameserver /etc/resolv.conf || :
         echo "nameserver 127.0.0.1"
-        grep ^nameserver /etc/resolv.conf | grep -v "^nameserver[ \t][ \t]*127\\." || true
+        grep ^nameserver /etc/resolv.conf | grep -v "^nameserver[ \t][ \t]*127\\." || :
     )
     echo "$RESOLV" > /etc/resolv.conf
 fi

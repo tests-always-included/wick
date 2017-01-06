@@ -39,12 +39,12 @@ wickMakeDir() {
     wickDebug "Making directory: $dest"
     mkdir -p "$dest"
 
-    if [ ! -z "$owner" ]; then
+    if [[ -n "$owner" ]]; then
         wickDebug "Changing ownership: $owner"
         chown "$owner" "$dest"
     fi
 
-    if [ ! -z "$mode" ]; then
+    if [[ -n "$mode" ]]; then
         wickDebug "Changing mode: $mode"
         chmod "$mode" "$dest"
     fi

@@ -6,7 +6,10 @@
 #   wickFormula netcat
 #
 # Returns nothing.
+declare os
+
 wickExplorer os wick-base os
+
 case "$os" in
     centos|redhat)
         wickPackage nc

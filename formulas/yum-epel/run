@@ -7,6 +7,8 @@
 #   wickFormula yum-epel
 #
 # Returns nothing.
+declare os temp
+
 wickExplorer os wick-base os
 
 case "$os" in
@@ -21,8 +23,9 @@ esac
 
 installed=$(rpm -qa | grep ^epel-release- || true)
 
-if [[ ! -z "$installed" ]]; then
+if [[ -n "$installed" ]]; then
     wickInfo "EPEL package already installed: $installed"
+
     exit
 fi
 

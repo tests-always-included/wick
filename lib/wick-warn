@@ -19,13 +19,15 @@
 # Returns nothing.
 wickWarn() (
     set +x
+    # Disable debug in this function.  Note: this function uses a subshell!
+
     local content output
 
     wickArrayJoin content " " "$@"
     wickLog "WARN" "$content"
     wickPrefixLines output "WARN: " "$content"
 
-    if [[ ! -z "${WICK_COLOR-}" ]]; then
+    if [[ -n "${WICK_COLOR-}" ]]; then
         output=$'\E[33;1m'"$output"$'\E[0m'
     fi
 

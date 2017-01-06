@@ -54,10 +54,10 @@
 #
 # Returns nothing.
 wickSetConfigLine() {
-    local KEY TEMPFILE
+    local key tempfile
 
     if [[ ! -f "$1" ]]; then
-        if [[ -n "$2" ]]; then
+        if [[ -n "${2-}" ]]; then
             echo "$2" >> "$1"
         else
             touch "$1"
@@ -66,26 +66,27 @@ wickSetConfigLine() {
         return 0
     fi
 
-    KEY=${3-}
+    key=${3-}
 
-    if [[ -z "$KEY" ]]; then
-        KEY=${2/ *}
-        KEY=${KEY/=*}
-        KEY=${KEY/:*}
+    if [[ -z "$key" ]]; then
+        key=${2/ *}
+        key=${key/=*}
+        key=${key/:*}
     fi
 
-    wickTempDir TEMP
-    TEMPFILE="$TEMP/add-line"
+    wickTempDir tempfile
+    tempfile="$tempfile/add-line"
 
     # Run this in a subshell to eliminate all newlines at the end
     # but then forcibly add one newline because of the "echo"
     # on the left side.
-    echo "$(cat "$1" | grep -v "^$KEY[ =:]" || true)" > "$TEMPFILE"
+    # shellcheck disable=SC2005
+    echo "$(grep -v "^$key[ =:]" < "$1" || :)" > "$tempfile"
 
     if [[ -n "$2" ]]; then
-        echo "$2" >> "$TEMPFILE"
+        echo "$2" >> "$tempfile"
     fi
 
     # Avoid using cp as this preserves file ownership and permissions
-    cat "$TEMPFILE" > "$1"
+    cat "$tempfile" > "$1"
 }

@@ -22,8 +22,9 @@ wickTempDir() {
 
     base="/tmp"
 
-    if [ ! -z "${TMPdir:-}" ] && [ -d "$TMPdir" ]; then
-        base="$TMPdir"
+    # Use $TMPDIR if set to a directory.
+    if [[ -n "${TMPDIR:-}" ]] && [[ -d "${TMPDIR:-}" ]]; then
+        base="$TMPDIR"
     fi
 
     base="${base}/wick."
@@ -32,11 +33,12 @@ wickTempDir() {
         wickRandomString dir 16
         dir="$base$dir"
 
-        if [ ! -e "$dir" ]; then
+        if [[ ! -e "$dir" ]]; then
             if mkdir -m 0700 "$dir" 2>/dev/null; then
                 wickDebug "Temporary directory created: $dir"
                 wickOnExit rm -rf "$dir"
                 local "$1" && wickIndirect "$1" "$dir"
+
                 return 0
             fi
 

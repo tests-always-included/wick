@@ -15,9 +15,12 @@
 #
 # Returns nothing.
 redisSetConfigLine() {
+    local configKey configValue
+
     wickGetArgument configKey 0 "$@"
     wickGetArgument configValue 1 "$@"
     redisConfPath="/etc/redis.conf"
+
     if [[ -z "$configValue" ]]; then
         wickInfo "Unsetting $configKey in $redisConfPath"
         wickSetConfigLine "$redisConfPath" "" "$configKey"

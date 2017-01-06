@@ -16,19 +16,20 @@
 #
 # Returns nothing.
 mysqlServerExecuteSql() {
-    local db killAfter
+    local db killAfter result
 
     wickGetArgument db 0 "$@"
     killAfter=false
+    wickStrictMode result wickService is-running mysql
 
-    if ! wickService is-running mysql; then
+    if [[ "$result" -ne 0 ]]; then
         killAfter=true
         wickService start mysql
     fi
 
     cat | mysql -u root "$db"
 
-    if $killAfter; then
+    if [[ "$killAfter" == "true" ]]; then
         wickService stop mysql
     fi
 }

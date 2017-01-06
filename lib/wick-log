@@ -11,8 +11,8 @@
 # `logger` command to write a line to syslogd.  The facility defaults to user,
 # but you can use any facility; for example you can use the mail facility by
 # setting `WICK_LOGFILE="syslog:mail"`.
-# Additionally you can set a the tag by adding a second ":" followed by the 
-# desired tag; for example you can set the tag to myapp by setting 
+# Additionally you can set a the tag by adding a second ":" followed by the
+# desired tag; for example you can set the tag to myapp by setting
 # `WICK_LOGFILE="syslog::myapp".
 #
 # Otherwise, `$WICK_LOGFILE` should be set to a filename.  Messages are
@@ -79,8 +79,7 @@ wickLog() {
         loggerCmd[${#loggerCmd[@]}]=--
         loggerCmd[${#loggerCmd[@]}]=$2
         "${loggerCmd[@]}"
-
-    elif [[ -n "$WICK_LOGFILE" ]]; then
+    elif [[ -n "${WICK_LOGFILE-}" ]]; then
         wickPrefixLines output "$(date -Iseconds) $logLevel: " "$2"
         echo "$output" >> "$WICK_LOGFILE"
     fi

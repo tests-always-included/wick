@@ -1,6 +1,10 @@
+#!/usr/bin/env sh
 # Force 127.0.0.1 to be prepended to the list of new domain name servers.
 # This works around a bug in dhclient.
+#
 # See: http://www.fidian.com/problems-only-tyler-has/dhclient-not-honoring-prepend-config
+#
+# This is sh not Bash!
 if [ -n "$new_domain_name_servers" ]; then
     new_domain_name_servers="127.0.0.1 $new_domain_name_servers"
 fi

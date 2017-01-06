@@ -22,12 +22,14 @@ wickPackagePacman() {
             ;;
 
         exists)
-            if pacman -Qsq ^"$@"\$ > /dev/null 2>&1; then
-                wickDebug "Package exists: $@"
+            if pacman -Qsq ^"$*"\$ > /dev/null 2>&1; then
+                wickDebug "Package exists: $*"
+
                 return 0
             fi
 
-            wickDebug "Package does not exist: $@"
+            wickDebug "Package does not exist: $*"
+
             return 1
             ;;
 
@@ -41,6 +43,7 @@ wickPackagePacman() {
 
         *)
             echo "Unknown package state: $state"
+
             return 1
     esac
 }

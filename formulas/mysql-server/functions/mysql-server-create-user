@@ -21,6 +21,7 @@ mysqlServerCreateUser() {
     mysqlServerSplitUsername userhost "$userhost"
     export host=${username[1]}
     export username=${username[0]}
+    export password
 
     wickInfo "Creating mysql user: $username@$host"
     wickMakeFile --template --formula=mysql-server create-user.mo | mysqlServerExecuteSql mysql

@@ -6,6 +6,8 @@
 #   wickFormula openjdk-1.7
 #
 # Returns nothing
+declare os
+
 wickExplorer os wick-base os
 
 case "$os" in

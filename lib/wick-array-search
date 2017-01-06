@@ -6,18 +6,24 @@
 # $2   - The value to seek in the array.
 # $3-@ - Array elements.
 #
+# The destination variable is only set when the element is found.
+#
 # Examples
 #
-#   local index list
+#   # Convoluted because newer versions of Bash disable error exit.
+#   local index list result
 #
 #   list=(one two three "four four")
+#   wickStrictRun result wickArraySearch index one "${list[@]}"
 #
-#   if wickArraySearch index one "${list[@]}"; then
+#   if [[ "$result" -eq 0 ]]; then
 #       # This one works
 #       echo "one is found at index $index"
 #   fi
 #
-#   if wickInArray index four "${list[@]}"; then
+#   wickStrictRun result wickArraySearch index four "${list[@]}"
+#
+#   if [[ "$result" -eq 0 ]]; then
 #       echo "four should not be found"
 #       echo "'four four' with a space would be found"
 #       echo "\$index will not be updated"
@@ -38,7 +44,7 @@ wickArraySearch() {
             return 0
         fi
 
-        index=$(($index + 1))
+        index=$((index + 1))
     done
 
     return 1

@@ -15,9 +15,13 @@
 #   wickFormula selinux disable
 #
 # Returns nothing.
+declare result
+
 case "$1" in
     disable)
-        if selinuxIsEnabled; then
+        wickStrictRun result selinuxIsEnabled
+
+        if [[ "$result" -eq 0 ]]; then
             wickDebug "Disabling SELinux."
             echo "0" > /selinux/enforce
             wickSetConfigLine "/etc/selinux/config" "SELINUX=disabled"
@@ -29,5 +33,6 @@ case "$1" in
 
     *)
         wickError "Desired state '$1' is not supported for formula selinux"
+
         exit 1
 esac

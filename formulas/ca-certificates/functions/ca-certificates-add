@@ -19,7 +19,7 @@
 # the system's list, this returns 1.  If the certificate is invalid or is
 # unable to be parsed by openssl, returns 2.
 caCertificatesAdd() {
-    local contents fingerprint os osVersion output tempDir
+    local contents fingerprint os osVersion tempDir
 
     #: Get certificate
     if [[ "$#" -gt 0 ]]; then
@@ -41,6 +41,7 @@ caCertificatesAdd() {
 
     if [[ -z "$fingerprint" ]]; then
         wickError "Certificate appears to be invalid."
+
         return 2
     fi
 

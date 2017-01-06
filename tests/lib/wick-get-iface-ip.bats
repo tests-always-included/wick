@@ -13,6 +13,7 @@ setup() {
     . "$WICK_DIR/lib/wick-indirect"
     . "$WICK_DIR/lib/wick-indirect-array"
     . "$WICK_DIR/lib/wick-get-iface-ip"
+    . "$WICK_DIR/lib/wick-strict-run"
 }
 
 @test "lib/wick-get-iface-ip: gnu - first iface" {
