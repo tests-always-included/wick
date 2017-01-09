@@ -33,13 +33,7 @@
 #
 # Examples
 #
-#   # Need to use this convoluted technique because the errors are consumed
-#   # by newer versions of Bash.
-#   local result
-#
-#   wickStrictRun result isReallyCentos
-#
-#   if [[ "$result" -eq 0 ]]; then
+#   if isReallyCentos; then
 #       echo "This is CentOS, not RedHat"
 #   fi
 #
