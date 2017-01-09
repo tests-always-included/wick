@@ -37,12 +37,11 @@ wickFormula() {
     formula="$1"
     wickArgumentString formulaEscaped "$formula"
     shift
+    args=""
 
     if [[ $# -gt 0 ]]; then
         wickArgumentString args "$@"
         args=" $args"
-    else
-        args=""
     fi
 
     if [[ -z "$formula" ]]; then
