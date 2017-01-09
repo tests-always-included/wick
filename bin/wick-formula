@@ -57,7 +57,7 @@ wickFormula() {
         return 1
     fi
 
-    wickInArray "$formula" "${WICK_FORMULA_LIST[@]}"
+    wickInArray "$formula" "${WICK_FORMULA_LIST[@]-}"
     result=$?
 
     if [[ "${#WICK_FORMULA_LIST[@]}" -gt 0 ]] && [[ "$result" -eq 0 ]]; then
