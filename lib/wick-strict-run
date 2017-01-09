@@ -10,6 +10,10 @@
 # the newer Bash behavior where the error exit flag is suppressed in
 # specific contexts.  See the [error context] documentation for further info.
 #
+# Execution of a command happens in a subshell.  If you are running a function
+# with `wickStrictRun`, please keep in mind that it can not export values
+# to the parent context for use by the caller.
+#
 # [error context]: ../doc/contexts-that-disable-exit-on-error.md
 #
 # Example:

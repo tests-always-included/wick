@@ -49,6 +49,6 @@ wickGetUrlWget() {
         redactedArgs["$redact"]=XXXXXXX
     fi
 
-    wickDebug "wickGetUrl:" "${redactedArgs[@]}"
+    wickDebug "wickGetUrl:" "${redactedArgs[@]}" || return $?
     "${args[@]}"
 }

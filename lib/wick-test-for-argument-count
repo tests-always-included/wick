@@ -17,8 +17,7 @@
 wickTestForArgumentCount() {
     local args count
 
-    wickGetArgument count 0 "$@"
-    shift
+    wickGetArgument count 0 "$@" || return $?
 
     if [[ -z "$count" ]] || [[ "$count" -lt 0 ]]; then
         wickError "Please provide a valid expected argument count."
@@ -26,7 +25,10 @@ wickTestForArgumentCount() {
         return 1
     fi
 
-    wickGetArguments args "$@"
+    wickGetArguments args "$@" || return $?
+
+    # Add 1 to the count in order to compensate for the count itself.
+    count=$((count + 1))
 
     if [[ "${#args[@]}" -ne "$count" ]]; then
         return 1

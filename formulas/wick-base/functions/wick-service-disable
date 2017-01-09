@@ -11,14 +11,14 @@
 wickServiceDisable() {
     local initType service
 
-    wickGetArgument service 0 "$@"
-    wickInfo "Disabling service: $service"
+    wickGetArgument service 0 "$@" || return $?
+    wickInfo "Disabling service: $service" || return $?
 
-    wickExplorer initType wick-base init-system
+    wickExplorer initType wick-base init-system || return $?
 
     if [[ "$initType" == systemd ]]; then
-        systemctl disable "$service"
+        systemctl disable "$service" || return $?
     else
-        chkconfig "$service" off
+        chkconfig "$service" off || return $?
     fi
 }

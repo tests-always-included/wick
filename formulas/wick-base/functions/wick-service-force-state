@@ -20,13 +20,13 @@
 wickServiceForceState() {
     local service state
 
-    wickGetArgument service 0 "$@"
-    wickGetArgument state 1 "$@"
+    wickGetArgument service 0 "$@" || return $?
+    wickGetArgument state 1 "$@" || return $?
 
     if [[ -n "$state" ]]; then
-        wickServiceRestart "$service"
+        wickServiceRestart "$service" || return $?
     else
-        wickServiceStop "$service"
+        wickServiceStop "$service" || return $?
     fi
 }
 

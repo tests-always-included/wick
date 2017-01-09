@@ -70,10 +70,10 @@ wickTestForOptions() {
 
     for arg in "${seeking[@]}"; do
         value=""
-        wickGetOption value "$arg" "$@"
+        wickGetOption value "$arg" "$@" || return $?
 
         if [[ -z "$value" ]]; then
-            "$failureCommand" "$arg"
+            "$failureCommand" "$arg" || :
             result=1
         fi
     done

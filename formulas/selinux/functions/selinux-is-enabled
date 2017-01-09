@@ -15,12 +15,9 @@
 #
 # Returns true if it is enabled and it is being enforced.
 selinuxIsEnabled() {
-    local enforced getenforceExists semanageExists
+    local enforced
 
-    wickStrictRun getenforceExists wickCommandExists getenforce
-    wickStrictRun semanageExists wickCommandExists semanage
-
-    if [[ "$getenforceExists" -ne 0 && "$semanageExists" -ne 0 ]]; then
+    if ! wickCommandExists getenforce && ! wickCommandExists semanage; then
         wickDebug "SELinux appears to be not installed"
 
         return 1

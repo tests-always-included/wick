@@ -14,17 +14,17 @@
 wickServiceIsEnabled() {
     local initType service
 
-    wickGetArgument service 0 "$@"
+    wickGetArgument service 0 "$@" || return $?
 
     if [[ -z "$service" ]]; then
-        wickError "First argument to ${FUNCNAME[0]} must be a service name."
+        wickError "First argument to ${FUNCNAME[0]} must be a service name." || return $?
     fi
 
-    wickExplorer initType wick-base init-system
+    wickExplorer initType wick-base init-system || return $?
 
     if [[ systemd == "$initType" ]]; then
-        systemctl is-enabled "$service"
+        systemctl is-enabled "$service" || return $?
     else
-        wickServiceIsEnabledSysv
+        wickServiceIsEnabledSysv || return $?
     fi
 }

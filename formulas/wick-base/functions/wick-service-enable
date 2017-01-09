@@ -11,14 +11,14 @@
 wickServiceEnable() {
     local initType service
 
-    wickGetArgument service 0 "$@"
-    wickInfo "Enabling service: $service"
+    wickGetArgument service 0 "$@" || return $?
+    wickInfo "Enabling service: $service" || return $?
 
-    wickExplorer initType wick-base init-system
+    wickExplorer initType wick-base init-system || return $?
 
     if [[ "$initType" == systemd ]]; then
-        systemctl enable "$service"
+        systemctl enable "$service" || return $?
     else
-        chkconfig "$service" on
+        chkconfig "$service" on || return $?
     fi
 }

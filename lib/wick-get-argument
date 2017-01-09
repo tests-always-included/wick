@@ -23,7 +23,7 @@ wickGetArgument() {
     target=$1
     index=$2
     shift 2
-    wickGetArguments args "$@"
+    wickGetArguments args "$@" || return $?
 
     local "$target" && wickIndirect "$target" "${args[$index]-}"
 }

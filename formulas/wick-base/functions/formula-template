@@ -22,13 +22,13 @@ formulaTemplate() {
     engine=${1##*.}
 
     if [[ ! -f "$1" ]]; then
-        wickError "Template not found: $1"
+        wickError "Template not found: $1" || return $?
 
         return 1
     fi
 
     (
         # Run in subshell in case this function changes directories.
-        "${engine}FormulaTemplate" "$1"
+        "${engine}FormulaTemplate" "$1" || return $?
     )
 }

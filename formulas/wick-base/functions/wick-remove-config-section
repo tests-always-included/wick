@@ -9,13 +9,13 @@
 # Returns nothing.
 wickRemoveConfigSection() {
     if [[ -z "${1-}" ]]; then
-        wickError "A file must be specified for wickRemoveConfigSection"
+        wickError "A file must be specified for wickRemoveConfigSection" || return $?
 
         return 1
     fi
 
     if [[ -z "${2-}" ]]; then
-        wickError "You must specify a name for wickRemoveConfigSection"
+        wickError "You must specify a name for wickRemoveConfigSection" || return $?
 
         return 1
     fi

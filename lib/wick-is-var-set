@@ -5,21 +5,14 @@
 #
 # Examples
 #
-#   # This is a bit strange because we want error exit to work, but newer
-#   # versions of bash disable it in specific contexts.
-#   local result
-#
 #   unset missing
 #   empty=""
-#   wickStrictRun result wickIsVarSet missing
 #
-#   if [[ "$result" -eq 0 ]]; then
+#   if wickIsVarSet missing; then
 #       echo "This never is called."
 #   fi
 #
-#   wickStrictRun result wickIsVarSet empty
-#
-#   if [[ "$result" -eq 0 ]]; then
+#   if wickIsVarSet empty; then
 #       echo "This is called even though $empty is set to an empty string."
 #   fi
 #

@@ -51,21 +51,18 @@ wickFormula() {
         return 1
     fi
 
-    wickStrictRun result wickFind location "formulas/$formula"
-
-    if [[ "$result" -ne 0 ]]; then
+    if ! wickFind location "formulas/$formula"; then
         echo "Unable to find formula $formula" >&2
 
         return 1
     fi
 
-    wickStrictRun result wickInArray "$formula" "${WICK_FORMULA_LIST[@]}"
+    wickInArray "$formula" "${WICK_FORMULA_LIST[@]}"
+    result=$?
 
     if [[ "${#WICK_FORMULA_LIST[@]}" -gt 0 ]] && [[ "$result" -eq 0 ]]; then
         # Specifying the same formula is ok as long as the arguments are the same
-        wickStrictRun result wickInArray "$formulaEscaped$args" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"
-
-        if [[ "$result" -eq 0 ]]; then
+        if wickInArray "$formulaEscaped$args" "${WICK_FORMULA_LIST_WITH_ARGS[@]}"; then
             echo "Formula is already in list: $formula"
 
             return 0

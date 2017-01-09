@@ -13,9 +13,10 @@
 # Returns true if the service is found and its enabled.
 wickServiceIsEnabledSysv() {
     local service result
-    wickGetArgument service 0 "$@"
 
-    result=$(chkconfig --list | grep "$service")
+    wickGetArgument service 0 "$@" || return $?
+
+    result=$(chkconfig --list | grep "$service" || :)
 
     if [[ -n "$result" ]]; then
         # after removing the service name the only thing that will

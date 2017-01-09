@@ -100,18 +100,18 @@
 wickService() {
     local action options unparsed
 
-    wickGetOptions options "$@"
-    wickGetArgument action 0 "$@"
-    wickGetArguments unparsed "$@"
+    wickGetOptions options "$@" || return $?
+    wickGetArgument action 0 "$@" || return $?
+    wickGetArguments unparsed "$@" || return $?
 
     if [[ ${#unparsed[@]} -lt 1 ]]; then
-        wickError "Specify action to take and the service name to act upon."
+        wickError "Specify action to take and the service name to act upon." || return $?
 
         return 1
     fi
 
     if [[ ${#unparsed[@]} -lt 2 ]]; then
-        wickError "Must specify service name to act upon"
+        wickError "Must specify service name to act upon" || return $?
 
         return 1
     fi
@@ -121,68 +121,69 @@ wickService() {
 
     case "$action" in
         add)
-            wickServiceAdd "${unparsed[@]}" "${options[@]-}"
+            wickServiceAdd "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         add-dependency)
-            wickServiceAddDependency "${unparsed[@]}" "${options[@]-}"
+            wickServiceAddDependency "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         add-dependency-if-enabled)
-            wickServiceAddDependencyIfEnabled "${unparsed[@]}" "${options[@]-}"
+            wickServiceAddDependencyIfEnabled "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         conditional-restart)
-            wickServiceConditionalRestart "${unparsed[@]}" "${options[@]-}"
+            wickServiceConditionalRestart "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         disable)
-            wickServiceDisable "${unparsed[@]}" "${options[@]-}"
+            wickServiceDisable "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         enable)
-            wickServiceEnable "${unparsed[@]}" "${options[@]-}"
+            wickServiceEnable "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         force-state)
-            wickServiceForceState "${unparsed[@]}" "${options[@]-}"
+            wickServiceForceState "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         is-enabled)
-            wickServiceIsEnabled "${unparsed[@]}" "${options[@]-}"
+            wickServiceIsEnabled "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         is-running)
-            wickServiceIsRunning "${unparsed[@]}" "${options[@]-}"
+            wickServiceIsRunning "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         make-override)
-            wickServiceMakeOverride "${unparsed[@]}" "${options[@]-}"
+            wickServiceMakeOverride "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         override)
-            wickServiceOverride "${unparsed[@]}" "${options[@]-}"
+            wickServiceOverride "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         reload)
-            wickServiceReload "${unparsed[@]}" "${options[@]-}"
+            wickServiceReload "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         restart)
-            wickServiceRestart "${unparsed[@]}" "${options[@]-}"
+            wickServiceRestart "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         start)
-            wickServiceStart "${unparsed[@]}" "${options[@]-}"
+            wickServiceStart "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         stop)
-            wickServiceStop "${unparsed[@]}" "${options[@]-}"
+            wickServiceStop "${unparsed[@]}" "${options[@]-}" || return $?
             ;;
 
         *)
-            wickError "Unknown service command: $action"
-            wickError "Must be one of: add, add-dependency, add-dependency-if-enabled, disable, is-enabled, enable, override, reload, restart, start, stop"
+            wickError "Unknown service command: $action" || return $?
+            wickError "Must be one of: add, add-dependency, add-dependency-if-enabled, disable, is-enabled, enable, override, reload, restart, start, stop" || return $?
+
             return 1
             ;;
     esac

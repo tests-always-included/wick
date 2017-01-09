@@ -27,7 +27,6 @@
 #   esac
 #
 # Returns 0 on success or 1 when the OS can't be determined.
-declare lsbReleaseExists unameExists
 
 # On RedHat-like systems you can see if there's a package called
 # `centos-release`.  If so, you are on CentOS.
@@ -46,7 +45,7 @@ declare lsbReleaseExists unameExists
 #
 # Returns true if this is CentOS.
 isReallyCentos() {
-    rpm -q centos-release > /dev/null 2>&1
+    rpm -q centos-release > /dev/null 2>&1 || return $?
 }
 
 # Determines if this is truly RedHat or a derivative.  Writes the OS to stdout.
@@ -57,11 +56,7 @@ isReallyCentos() {
 #
 # Returns nothing.
 detectRealRedhat() {
-    local result
-
-    wickStrictRun result isReallyCentos
-
-    if [[ "$result" -eq 0 ]]; then
+    if isReallyCentos; then
         echo "centos"
     else
         echo "redhat"
@@ -74,15 +69,13 @@ if [[ -f /etc/arch-release ]]; then
     exit
 fi
 
-wickStrictRun lsbReleaseExists wickCommandExists lsb_release
-
-if [[ "$lsbReleaseExists" -eq 0 ]]; then
-    distributor=$(lsb_release -s -i 2>&1)
-    wickDebug "Distributor: $distributor"
+if wickCommandExists lsb_release; then
+    distributor=$(lsb_release -s -i 2>&1) || exit $?
+    wickDebug "Distributor: $distributor" || exit $?
 
     case "$distributor" in
         RedHatEnterprise*)
-            detectRealRedhat
+            detectRealRedhat || exit $?
 
             exit
             ;;
@@ -95,10 +88,10 @@ if [[ "$lsbReleaseExists" -eq 0 ]]; then
     esac
 fi
 
-wickDebug "MACHTYPE=$MACHTYPE"
+wickDebug "MACHTYPE=$MACHTYPE" || exit $?
 
 if [[ "$MACHTYPE" == *"-redhat-"* ]]; then
-    detectRealRedhat
+    detectRealRedhat || exit $?
 
     exit
 fi
@@ -109,11 +102,9 @@ if [[ "$MACHTYPE" == *"-apple-"* ]]; then
     exit
 fi
 
-wickStrictRun unameExists wickCommandExists uname
-
-if [[ "$unameExists" -eq 0 ]]; then
-    unameV=$(uname -v 2>&1)
-    wickDebug "unameV=$unameV"
+if wickCommandExists uname; then
+    unameV=$(uname -v 2>&1) || exit $?
+    wickDebug "unameV=$unameV" || exit $?
 
     if [[ "$unameV" == *"Ubuntu"* ]]; then
         echo "ubuntu"

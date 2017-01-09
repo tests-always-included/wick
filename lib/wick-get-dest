@@ -62,7 +62,7 @@ wickGetDest() {
     file=${3-}
 
     if [[ -z "$dest" ]]; then
-        wickError "A destination path is required for wickGetDest"
+        wickError "A destination path is required for wickGetDest" || return $?
 
         return 1
     fi

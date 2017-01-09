@@ -10,20 +10,16 @@
 #
 # Examples
 #
-#   # Convoluted because newer versions of Bash disable error exit.
-#   local index list result
+#   local index list
 #
 #   list=(one two three "four four")
-#   wickStrictRun result wickArraySearch index one "${list[@]}"
 #
-#   if [[ "$result" -eq 0 ]]; then
+#   if wickArraySearch index one "${list[@]}"; then
 #       # This one works
 #       echo "one is found at index $index"
 #   fi
 #
-#   wickStrictRun result wickArraySearch index four "${list[@]}"
-#
-#   if [[ "$result" -eq 0 ]]; then
+#   if wickArraySearch index four "${list[@]}"; then
 #       echo "four should not be found"
 #       echo "'four four' with a space would be found"
 #       echo "\$index will not be updated"
@@ -41,6 +37,7 @@ wickArraySearch() {
     for check in "$@"; do
         if [[ "$needle" == "$check" ]]; then
             local "$target" && wickIndirect "$target" "$index"
+
             return 0
         fi
 

@@ -41,17 +41,17 @@
 wickMakeUser() {
     local args daemonFlag moveHomeFlag noSkelFlag passwd setHome setName setShell systemFlag userhome username
 
-    wickGetOption daemonFlag daemon "$@"
-    wickGetOption setHome home "$@"
-    wickGetOption moveHomeFlag move-home "$@"
-    wickGetOption setName name "$@"
-    wickGetOption noSkelFlag no-skel "$@"
-    wickGetOption setShell shell "$@"
-    wickGetOption systemFlag system "$@"
-    wickGetArgument username 0 "$@"
+    wickGetOption daemonFlag daemon "$@" || return $?
+    wickGetOption setHome home "$@" || return $?
+    wickGetOption moveHomeFlag move-home "$@" || return $?
+    wickGetOption setName name "$@" || return $?
+    wickGetOption noSkelFlag no-skel "$@" || return $?
+    wickGetOption setShell shell "$@" || return $?
+    wickGetOption systemFlag system "$@" || return $?
+    wickGetArgument username 0 "$@" || return $?
 
     if [[ -z "$username" ]]; then
-        wickError "You must specify a username for wickMakeUser"
+        wickError "You must specify a username for wickMakeUser" || return $?
 
         return 1
     fi
@@ -67,7 +67,7 @@ wickMakeUser() {
     passwd=$(getent passwd "$username" || :)
 
     if [[ -z "$passwd" ]]; then
-        wickInfo "Creating user: $username"
+        wickInfo "Creating user: $username" || return $?
         args=(useradd)
 
         if [[ -n "$setHome" ]]; then
@@ -94,8 +94,8 @@ wickMakeUser() {
         fi
 
         args[${#args[@]}]=$username
-        wickDebug "Command:" "${args[@]}"
-        "${args[@]}"
+        wickDebug "Command:" "${args[@]}" || return $?
+        "${args[@]}" || return $?
     else
         wickInfo "Altering user: $username"
         args=(usermod)
@@ -121,13 +121,13 @@ wickMakeUser() {
 
         if [[ "${#args[@]}" -gt 1 ]]; then
             args[${#args[@]}]=$username
-            wickDebug "Command:" "${args[@]}"
-            "${args[@]}"
+            wickDebug "Command:" "${args[@]}" || return $?
+            "${args[@]}" || return $?
         else
-            wickInfo "Provided user exists and no options were given, continuing on without altering user."
+            wickInfo "Provided user exists and no options were given, continuing on without altering user." || return $?
         fi
     fi
 
-    userhome=$(getent passwd "$username" | cut -d : -f 6)
-    wickMakeDir --owner="$username:$username" --mode=0755 "$userhome"
+    userhome=$(getent passwd "$username" | cut -d : -f 6) || return $?
+    wickMakeDir --owner="$username:$username" --mode=0755 "$userhome" || return $?
 }

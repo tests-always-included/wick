@@ -19,7 +19,7 @@ WICK_DIR="${0%/*}"
 #
 # Returns the result of the command.
 wick() {
-    local cmd index line onLoadCommands result
+    local cmd index line onLoadCommands
 
     cmd=${1-}
     shift || :
@@ -62,14 +62,14 @@ wick() {
     # Check if we have the listed command.
     if [[ "${#WICK_COMMANDS[@]}" -eq 0 ]]; then
         echo "No commands loaded."
+
         exit 1
     fi
 
-    wickStrictRun result wickArraySearch index "$cmd" "${WICK_COMMANDS[@]}"
-
-    if [[ "$result" -ne 0 ]]; then
+    if ! wickArraySearch index "$cmd" "${WICK_COMMANDS[@]}"; then
         echo "No such command: $cmd"
         echo "See 'wick help'"
+
         exit 1
     fi
 
@@ -102,7 +102,7 @@ wickIsValidScript() {
 #
 # Returns nothing.
 wickLoadLib() {
-    local file loaded result
+    local file loaded
 
     loaded=false
 

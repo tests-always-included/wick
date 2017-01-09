@@ -14,11 +14,11 @@
 wickServiceMakeOverride() {
     local initType
 
-    wickExplorer initType wick-base init-system
+    wickExplorer initType wick-base init-system || return $?
 
     if [[ systemd == "$initType" ]]; then
-        wickServiceMakeOverrideSystemd "$@"
+        wickServiceMakeOverrideSystemd "$@" || return $?
     else
-        wickServiceMakeOverrideSysv "$@"
+        wickServiceMakeOverrideSysv "$@" || return $?
     fi
 }

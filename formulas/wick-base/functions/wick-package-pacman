@@ -18,27 +18,27 @@ wickPackagePacman() {
 
     case "$state" in
         clean)
-            pacman -Sc
+            pacman -Sc || return $?
             ;;
 
         exists)
             if pacman -Qsq ^"$*"\$ > /dev/null 2>&1; then
-                wickDebug "Package exists: $*"
+                wickDebug "Package exists: $*" || return $?
 
                 return 0
             fi
 
-            wickDebug "Package does not exist: $*"
+            wickDebug "Package does not exist: $*" || return $?
 
             return 1
             ;;
 
         install)
-            pacman -S --noconfirm "$@"
+            pacman -S --noconfirm "$@" || return $?
             ;;
 
         uninstall)
-            pacman -R --noconfirm "$@"
+            pacman -R --noconfirm "$@" || return $?
             ;;
 
         *)

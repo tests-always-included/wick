@@ -30,10 +30,10 @@ wickRandomString() {
     # string like "${letters:22:1}${letters:43:1}" Careful, there's ${#letters}
     # in there and it must be changed into a number in this step - do not
     # escape its `$`.
-    eval "printf -v output '\${letters:\$RANDOM%%${#letters}:1}%.0s' {1..$2}"
+    eval "printf -v output '\${letters:\$RANDOM%%${#letters}:1}%.0s' {1..$2}" || return $?
 
     # Convert that string into the desired random letters
-    eval "output=\"$output\""
+    eval "output=\"$output\"" || return $?
 
     local "$1" && wickIndirect "$1" "$output"
 }

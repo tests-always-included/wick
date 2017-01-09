@@ -26,28 +26,23 @@ wickGetUrl() {
     # environment and only should be visible within Bash, so we ignore
     # the linter's warning that they should be exported.
     # shellcheck disable=SC2034
-    local DEST PASSWORD PROGRESS result TIMEOUT URL USERNAME
+    local DEST PASSWORD PROGRESS TIMEOUT URL USERNAME
 
-    wickGetOption PROGRESS --progress "$@"
-    wickGetOption TIMEOUT --timeout "$@"
-    wickGetOption USERNAME --username "$@"
-    wickGetOption PASSWORD --password "$@"
-    wickGetArgument URL 0 "$@"
-    wickGetArgument DEST 1 "$@"
-    wickDebug "wickGetUrl url: $URL"
-    wickDebug "wickGetUrl dest: $DEST"
-    wickStrictRun result wickCommandExists curl
+    wickGetOption PROGRESS --progress "$@" || return $?
+    wickGetOption TIMEOUT --timeout "$@" || return $?
+    wickGetOption USERNAME --username "$@" || return $?
+    wickGetOption PASSWORD --password "$@" || return $?
+    wickGetArgument URL 0 "$@" || return $?
+    wickGetArgument DEST 1 "$@" || return $?
+    wickDebug "wickGetUrl url: $URL" || return $?
+    wickDebug "wickGetUrl dest: $DEST" || return $?
 
-    if [[ "$result" -eq 0 ]]; then
-        wickGetUrlCurl || return 1
+    if wickCommandExists curl; then
+        wickGetUrlCurl || return $?
 
         return 0
-    fi
-
-    wickStrictRun result wickCommandExists wget
-
-    if [[ "$result" -eq 0 ]]; then
-        wickGetUrlWget || return 1
+    elif wickCommandExists wget; then
+        wickGetUrlWget || return $?
 
         return 0
     fi

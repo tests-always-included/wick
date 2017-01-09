@@ -9,12 +9,7 @@
 #
 # Examples
 #
-#   # Convoluted because newer versions of Bash disable some error checking.
-#   local ip result
-#
-#   wickStrictRun result wickGetIfaceIp ip tun0
-#
-#   if [[ "$result" -ne 0 ]]; then
+#   if ! wickGetIfaceIp ip tun0; then
 #       echo "Tunnel is not yet established"
 #
 #       exit 1
@@ -24,10 +19,10 @@
 #
 # Returns 0 on success, non-zero on failure.
 wickGetIfaceIp() {
-    local allInterfaces interface list result target
+    local allInterfaces interface list target
 
-    wickGetArgument target 0 "$@"
-    wickGetArgument interface 1 "$@"
+    wickGetArgument target 0 "$@" || return $?
+    wickGetArgument interface 1 "$@" || return $?
 
     list=()
     allInterfaces=false
@@ -37,32 +32,26 @@ wickGetIfaceIp() {
         allInterfaces=true
     fi
 
-    wickStrictRun result wickCommandExists ifconfig
-
-    if [[ "$result" -eq 0 ]]; then
+    if wickCommandExists ifconfig; then
         cmd=(ifconfig -v)
 
         if [[ -n "$interface" ]]; then
             cmd[${#cmd[@]}]="$interface"
         fi
 
-        list=( $("${cmd[@]}" 2>/dev/null | grep -oe "inet\s\+[addr:]*[0-9\.]\+" | grep -oe "[0-9\.]\+") )
-    else
-        wickStrictRun result wickCommandExists ip
+        list=( $("${cmd[@]}" 2>/dev/null | grep -oe "inet\s\+[addr:]*[0-9\.]\+" | grep -oe "[0-9\.]\+") ) || return $?
+    elif wickCommandExists ip; then
+        cmd=(ip addr show)
 
-        if [[ "$result" -eq 0 ]]; then
-            cmd=(ip addr show)
-
-            if [[ -n "$interface" ]]; then
-                cmd[${#cmd[@]}]="$interface"
-            fi
-
-            list=( $("${cmd[@]}" 2>/dev/null | grep -oe "inet [0-9.]\+" | grep -oe "[0-9\.]\+") )
-        else
-            wickError "Couldn't find a command to look up ip addresses"
-
-            return 2
+        if [[ -n "$interface" ]]; then
+            cmd[${#cmd[@]}]="$interface"
         fi
+
+        list=( $("${cmd[@]}" 2>/dev/null | grep -oe "inet [0-9.]\+" | grep -oe "[0-9\.]\+") ) || return $?
+    else
+        wickError "Couldn't find a command to look up ip addresses" || return $?
+
+        return 2
     fi
 
     if [[ "$allInterfaces" == true ]]; then
@@ -78,7 +67,6 @@ wickGetIfaceIp() {
     fi
 
     if [[ "${#list[@]}" -lt 1 ]]; then
-
         return 1
     fi
 

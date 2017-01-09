@@ -18,30 +18,30 @@ wickPackageApt() {
 
     case "$state" in
         clean)
-            wickWaitFor 600 wickIsAptAvailable
-            apt-get clean
+            wickWaitFor 600 wickIsAptAvailable || return $?
+            apt-get clean || return $?
             ;;
 
         exists)
             if apt-cache show "$@" > /dev/null 2>&1; then
-                wickDebug "Package exists: $*"
+                wickDebug "Package exists: $*" || return $?
 
                 return 0
             fi
 
-            wickDebug "Package does not exist: $*"
+            wickDebug "Package does not exist: $*" || return $?
 
             return 1
             ;;
 
         install)
-            wickWaitFor 600 wickIsAptAvailable
-            apt-get install -y "$@"
+            wickWaitFor 600 wickIsAptAvailable || return $?
+            apt-get install -y "$@" || return $?
             ;;
 
         uninstall)
-            wickWaitFor 600 wickIsAptAvailable
-            apt-get purge -y "$@"
+            wickWaitFor 600 wickIsAptAvailable || return $?
+            apt-get purge -y "$@" || return $?
             ;;
 
         *)

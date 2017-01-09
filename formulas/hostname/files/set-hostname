@@ -19,7 +19,7 @@
 . /usr/local/lib/wick-infect
 wickStrictMode
 
-declare full help iface ip reloadFlag result verbose
+declare full help iface ip reloadFlag verbose
 
 # Replaces a line in a file.
 #
@@ -38,15 +38,17 @@ replaceInFile() {
     if ! grep -q "^$wanted" "$fn"; then
         if grep -q "^$search" "$fn"; then
             wickDebug "Updating $fn: $wanted"
-            sed -i --follow-symlinks 's/^'"$search"'.*/'"$wanted"'/' "$fn"
+            sed -i --follow-symlinks 's/^'"$search"'.*/'"$wanted"'/' "$fn" || return $?
         else
             wickDebug "Adding to $fn: $wanted"
-            echo "$wanted" >> "$fn"
+            echo "$wanted" >> "$fn" || return $?
         fi
+
         return 0
     fi
 
     wickDebug "$fn is already changed"
+
     return 1
 }
 
@@ -95,22 +97,16 @@ if [[ -f /etc/hostname ]]; then
 fi
 
 if [[ -f /etc/sysconfig/network ]]; then
-    wickStrictRun result replaceInFile /etc/sysconfig/network HOSTNAME="$full" HOSTNAME=
-
-    if [[ "$result" -eq 0 ]]; then
+    if replaceInFile /etc/sysconfig/network HOSTNAME="$full" HOSTNAME=; then
         reload=true
     fi
 fi
 
-wickStrictRun result replaceInFile /etc/sysctl.conf kernel.hostname="$host" kernel.hostname=
-
-if [[ "$result" -eq 0 ]]; then
+if replaceInFile /etc/sysctl.conf kernel.hostname="$host" kernel.hostname=; then
     reload=true
 fi
 
-wickStrictRun result replaceInFile /etc/hosts "127.0.0.1 $full $host localhost" "127.0.0.1"
-
-if [[ "$result" -eq 0 ]]; then
+if replaceInFile /etc/hosts "127.0.0.1 $full $host localhost" "127.0.0.1"; then
     reload=true
 fi
 

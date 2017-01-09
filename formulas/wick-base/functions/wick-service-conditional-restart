@@ -9,12 +9,11 @@
 #
 # Returns nothing.
 wickServiceConditionalRestart() {
-    local result service
+    local service
 
-    wickGetArgument service 0 "$@"
-    wickStrictRun result wickService is-running "$service"
+    wickGetArgument service 0 "$@" || return $?
 
-    if [[ "$result" -eq 0 ]]; then
-        wickService restart "$service"
+    if wickService is-running "$service"; then
+        wickService restart "$service" || return $?
     fi
 }

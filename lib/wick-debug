@@ -49,53 +49,53 @@
 #   wickMakeFile config.ini /opt/my-app/
 #
 # Returns nothing.
-wickDebug() (
-    set +x
-    # Disable debug in this function.  Note: this function uses a subshell!
+wickDebug() {
+    (
+        set +x
+        # Disable debug in this function.  Note: this function uses a subshell!
 
-    local content list name output result
+        local content list name output
 
-    # Do not log unless the DEBUG environment variable is set
-    if [[ -z "${DEBUG-}" ]]; then
-        return
-    fi
-
-    wickArrayJoin content " " "$@"
-    wickPrefixLines output "DEBUG: " "$content"
-
-    if [[ -n "${WICK_COLOR-}" ]]; then
-        output=$'\E[90;1m'"$output"$'\E[0m'
-    fi
-
-    # Check if debugging is enabled for everything
-    if [[ "$DEBUG" == "*" ]] || [[ "$DEBUG" == "all" ]] || [[ "$DEBUG" == "true" ]]; then
-        wickLog "DEBUG" "$content"
-        echo "$output" >&2
-
-        return
-    fi
-
-    #: Here is the more complex checking if any value in the DEBUG variable
-    #: is in the FUNCNAME array.
-    list="$DEBUG"
-
-    while [[ -n "$list" ]]; do
-        name=${DEBUG%% *}
-        list=${list#* }
-
-        if [[ "$list" == "$name" ]]; then
-            list=""
+        # Do not log unless the DEBUG environment variable is set
+        if [[ -z "${DEBUG-}" ]]; then
+            return
         fi
 
-        if [[ -n "$name" ]] && [[ ${#FUNCNAME[@]} -gt 0 ]]; then
-            wickStrictRun result wickInArray "$name" "${FUNCNAME[@]}"
+        wickArrayJoin content " " "$@" || return $?
+        wickPrefixLines output "DEBUG: " "$content" || return $?
 
-            if [[ "$result" -eq 0 ]]; then
-                wickLog "DEBUG" "$content"
-                echo "$output" >&2
+        if [[ -n "${WICK_COLOR-}" ]]; then
+            output=$'\E[90;1m'"$output"$'\E[0m'
+        fi
 
-                return
+        # Check if debugging is enabled for everything
+        if [[ "$DEBUG" == "*" ]] || [[ "$DEBUG" == "all" ]] || [[ "$DEBUG" == "true" ]]; then
+            wickLog "DEBUG" "$content" || return $?
+            echo "$output" >&2
+
+            return
+        fi
+
+        #: Here is the more complex checking if any value in the DEBUG variable
+        #: is in the FUNCNAME array.
+        list="$DEBUG"
+
+        while [[ -n "$list" ]]; do
+            name=${DEBUG%% *}
+            list=${list#* }
+
+            if [[ "$list" == "$name" ]]; then
+                list=""
             fi
-        fi
-    done
-)
+
+            if [[ -n "$name" ]] && [[ ${#FUNCNAME[@]} -gt 0 ]]; then
+                if wickInArray "$name" "${FUNCNAME[@]}"; then
+                    wickLog "DEBUG" "$content" || return $?
+                    echo "$output" >&2
+
+                    return
+                fi
+            fi
+        done
+    )
+}

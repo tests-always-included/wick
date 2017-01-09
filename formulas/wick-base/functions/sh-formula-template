@@ -7,5 +7,5 @@
 #
 # Returns the status code of the shell script.
 shFormulaTemplate() {
-    /bin/sh "$1"
+    /bin/sh "$1" || return $?
 }

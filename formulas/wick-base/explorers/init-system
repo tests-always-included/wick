@@ -12,11 +12,7 @@
 #   wickExplorer initSystem wick-base init-system
 #
 # Returns true if it was able to determine the init-system.
-declare systemctlExists
-
-wickStrictRun systemctlExists wickCommandExists systemctl
-
-if [[ "$systemctlExists" -eq 0 ]] && [[ "$(systemctl)" =~ -\.mount ]]; then
+if wickCommandExists systemctl && [[ "$(systemctl)" =~ -\.mount ]]; then
     # If we have mounted the root file system using systemd we assume we are
     # using systemd.
     echo systemd

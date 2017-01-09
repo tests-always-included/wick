@@ -30,21 +30,21 @@ wickTempDir() {
     base="${base}/wick."
 
     while true; do
-        wickRandomString dir 16
+        wickRandomString dir 16 || return $?
         dir="$base$dir"
 
         if [[ ! -e "$dir" ]]; then
             if mkdir -m 0700 "$dir" 2>/dev/null; then
-                wickDebug "Temporary directory created: $dir"
-                wickOnExit rm -rf "$dir"
+                wickDebug "Temporary directory created: $dir" || return $?
+                wickOnExit rm -rf "$dir" || return $?
                 local "$1" && wickIndirect "$1" "$dir"
 
                 return 0
             fi
 
-            wickDebug "Temporary directory could not be created: $dir"
+            wickDebug "Temporary directory could not be created: $dir" || return $?
         else
-            wickDebug "Temporary directory already exists: $dir"
+            wickDebug "Temporary directory already exists: $dir" || return $?
         fi
     done
 }
