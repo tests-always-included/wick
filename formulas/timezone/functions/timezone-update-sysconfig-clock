@@ -9,11 +9,7 @@
 #
 # Returns nothing.
 timezoneUpdateSysconfigClock() {
-    local result
-
-    wickStrictMode result wickCommandExists timedatectl
-
-    if [[ "$result" -eq 0 ]]; then
+    if wickCommandExists timedatectl; then
         wickDebug "Using timedatectl to set timezone"
         timedatectl --no-ask-password set-timezone "$1"
     else

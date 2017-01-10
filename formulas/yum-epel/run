@@ -18,6 +18,7 @@ case "$os" in
 
     *)
         wickInfo "EPEL repository not needed for this OS: $os"
+
         exit
 esac
 

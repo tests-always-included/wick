@@ -36,7 +36,7 @@ wickGetOption() {
     done
 
     returnValue=""
-    wickSafeVariableName name "$name"
+    wickSafeVariableName name "$name" || return $?
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
@@ -53,7 +53,7 @@ wickGetOption() {
                     arg=${arg%%=*}
                 fi
 
-                wickSafeVariableName arg "$arg"
+                wickSafeVariableName arg "$arg" || return $?
 
                 if [[ "$arg" == "$name" ]]; then
                     returnValue="$value"

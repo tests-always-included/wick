@@ -9,20 +9,17 @@
 #
 # Returns nothing.
 wickServiceReload() {
-    local initType service serviceCommandExists
+    local initType service
 
-    wickGetArgument service 0 "$@"
-    wickExplorer initType wick-base init-system
-
-    wickStrictRun serviceCommandExists wickCommandExists service
-
-    wickInfo "Reloading service: $service"
+    wickGetArgument service 0 "$@" || return $?
+    wickExplorer initType wick-base init-system || return $?
+    wickInfo "Reloading service: $service" || return $?
 
     if [[ "$initType" == systemd ]]; then
-        nohup systemctl reload "$service"
-    elif [[ "$serviceCommandExists" -eq 0 ]]; then
-        nohup service "$service" reload
+        nohup systemctl reload "$service" || return $?
+    elif wickCommandExists service; then
+        nohup service "$service" reload || return $?
     else
-        nohup "/etc/init.d/$service reload"
+        nohup "/etc/init.d/$service reload" || return $?
     fi
 }

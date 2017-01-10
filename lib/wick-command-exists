@@ -3,24 +3,25 @@
 # report failure in different ways, this is an attempt to abstract away those
 # alternate error messages and provide a consistent interface.
 #
+# This differs from using `hash` in that `hash` will return success if there
+# is a function with the given name.  Using `which` will return an error.
+#
 # $1 - Name of the command you wish to execute.  It would not make sense to
 #      use a full path here since the intent is to search the `PATH` for
 #      the command.
 #
 # Examples
 #
-#   # Must use this roundabout way because newer versions of Bash disable
-#   # error exit in specific contexts.
-#   local result
-#
-#   wickStrictRun result wickCommandExists ls
-#
-#   if [[ "$result" -ne 0 ]]; then
+#   if ! wickCommandExists ls; then
 #       echo 'Oh no, ls does not exist!'
 #       echo 'How do you list your files?'
 #
 #       exit 1
 #   fi
+#
+#   # Show the difference between hash and which
+#   hash wickCommandExists || echo "hash succeeds with function names"
+#   wickCommandExists wickCommandExists || echo "this will fail with functions"
 #
 # Returns 0 when found and an error status when the command was not found.
 wickCommandExists() {
@@ -30,11 +31,14 @@ wickCommandExists() {
         return 5
     fi
 
-    result=$(which "${1-}" 2>&1)
-
     # Command failed to execute or reported failure
-    if [[ $? -ne 0 ]]; then
+    if ! result=$(which "${1-}" 2>&1); then
         return 1
+    fi
+
+    # Empty output means it was not found
+    if [[ -z "$result" ]]; then
+        return 6
     fi
 
     # Some OSs report "no PROGRAM_NAME"

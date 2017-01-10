@@ -92,16 +92,30 @@ These are just simple examples.  More complex situations make it harder to spot 
 How to Fix
 ----------
 
-The solution for Wick is fairly straightforward.  Change this code ...
+There are two options.  This one is great when you are executing a command or a function that acts like a command.  It's for situations where the environment should not change (such as a function that could return a status code and that's it).
 
+    # Change code like this
     if someBashFunction; then
 
-... into this type of code ...
-
+    # Into code like this
     local result
 
     wickStrictRun result someBashFunction
 
     if [[ "$result" -eq 0 ]]; then
 
-It is not necessary to make this change when the program being executed is supposed to be an external program, like `grep` or `cat`.
+It is not necessary to make this change when the program being executed is guaranteed to be an external program, like `grep` or `cat`.  Use this when you don't know if you are executing a function or a binary.
+
+Also, if you are executing functions, you could make the function safe to run directly by capturing every possible command that could have stopped execution and forcing the end of the function.
+
+    # Old code
+    result=$(ls some-file)
+    list=( "some" "words" $(runSomething) )
+    grep -q "words" in-this-file
+    wickGetIfaceIp ipAddress tun0
+
+    # New code
+    result=$(ls some-file) || return $?
+    list=( "some" "words" $(runSomething) ) || return $?
+    grep -q "words" in-this-file || return $?
+    wickGetIfaceIp ipAddress tun0 || return $?

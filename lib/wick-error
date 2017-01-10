@@ -17,19 +17,21 @@
 #    exit 1
 #
 # Returns nothing.
-wickError() (
-    set +x
-    # Disable debug in this function.  Note: this function uses a subshell!
+wickError() {
+    (
+        set +x
+        # Disable debug in this function.  Note: this function uses a subshell!
 
-    local content output
+        local content output
 
-    wickArrayJoin content " " "$@"
-    wickLog "ERROR" "$content"
-    wickPrefixLines output "ERROR: " "$content"
+        wickArrayJoin content " " "$@" || return $?
+        wickLog "ERROR" "$content" || return $?
+        wickPrefixLines output "ERROR: " "$content" || return $?
 
-    if [[ -n "${WICK_COLOR-}" ]]; then
-        output=$'\E[41;37;1m'"$output"$'\E[0m'
-    fi
+        if [[ -n "${WICK_COLOR-}" ]]; then
+            output=$'\E[41;37;1m'"$output"$'\E[0m'
+        fi
 
-    echo "$output" >&2
-)
+        echo "$output" >&2
+    )
+}

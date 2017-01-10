@@ -13,17 +13,17 @@
 wickServiceAddDependencySystemd() {
     local dependency overridePath paths service
 
-    wickServiceGetNameArgumentSystemd service 0 "$@"
-    wickServiceGetNameArgumentSystemd dependency 1 "$@"
+    wickServiceGetNameArgumentSystemd service 0 "$@" || return $?
+    wickServiceGetNameArgumentSystemd dependency 1 "$@" || return $?
 
-    wickServiceOverridePathSystemd paths "$service"
-    wickArrayJoin overridePath "/" "${paths[@]}"
+    wickServiceOverridePathSystemd paths "$service" || return $?
+    wickArrayJoin overridePath "/" "${paths[@]}" || return $?
 
-    wickDebug "Adding \"$dependency\" as a dependency of \"$service\""
+    wickDebug "Adding \"$dependency\" as a dependency of \"$service\"" || return $?
 
     # Add a Wants= after the [Unit] section
-    sed -i 's/^\[\Unit\]/&\nWants='"$dependency"'\nAfter='"$dependency"'/' "$overridePath"
+    sed -i 's/^\[\Unit\]/&\nWants='"$dependency"'\nAfter='"$dependency"'/' "$overridePath" || return $?
 
     # To pick up changes
-    wickServiceOverride "$service"
+    wickServiceOverride "$service" || return $?
 }

@@ -17,23 +17,23 @@
 wickServiceAdd() {
     local force options service source initType
 
-    wickGetArgument service 0 "$@"
-    wickGetArgument source 1 "$@"
-    wickGetOptions options "$@"
-    wickGetOption force force "$@"
-    wickInfo "Adding service: $service"
+    wickGetArgument service 0 "$@" || return $?
+    wickGetArgument source 1 "$@" || return $?
+    wickGetOptions options "$@" || return $?
+    wickGetOption force force "$@" || return $?
+    wickInfo "Adding service: $service" || return $?
 
-    wickExplorer initType wick-base init-system
+    wickExplorer initType wick-base init-system || return $?
 
     if [[ ! -f "/etc/init.d/$service" ]] || [[ -n "$force" ]]; then
-        wickMakeFile --mode=0755 --owner=root:root "$source" "/etc/init.d/$service" "${options[@]-}"
+        wickMakeFile --mode=0755 --owner=root:root "$source" "/etc/init.d/$service" "${options[@]-}" || return $?
 
         if [[ "$initType" == systemd ]]; then
-            systemctl daemon-reload
+            systemctl daemon-reload || return $?
         else
-            chkconfig --add "$service"
+            chkconfig --add "$service" || return $?
         fi
     else
-        wickWarn "Service already exists and --force flag was not specified"
+        wickWarn "Service already exists and --force flag was not specified" || return $?
     fi
 }

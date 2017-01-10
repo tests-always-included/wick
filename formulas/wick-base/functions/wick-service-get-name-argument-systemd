@@ -3,12 +3,12 @@
 wickServiceGetNameArgumentSystemd() {
     local index target name
 
-    wickGetArgument target 0 "$@"
-    wickGetArgument index 1 "$@"
+    wickGetArgument target 0 "$@" || return $?
+    wickGetArgument index 1 "$@" || return $?
 
     shift 2
 
-    wickGetArgument name "$index" "$@"
+    wickGetArgument name "$index" "$@" || return $?
 
     if [[ "$name" != *.target && "$name" != *.timer && "$name" != *.service ]]; then
         name="$name.service"

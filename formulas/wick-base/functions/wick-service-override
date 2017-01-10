@@ -14,15 +14,15 @@
 wickServiceOverride() {
     local initType service
 
-    wickGetArgument service 0 "$@"
-    wickExplorer initType wick-base init-system
-    wickInfo "Updating scripts with override for service: $service"
+    wickGetArgument service 0 "$@" || return $?
+    wickExplorer initType wick-base init-system || return $?
+    wickInfo "Updating scripts with override for service: $service" || return $?
 
     if [[ "$initType" == systemd ]]; then
         # systemd will automatically pick up the override
         # file but it must be reloaded.
-        systemctl daemon-reload
+        systemctl daemon-reload || return $?
     else
-        chkconfig --override "$service"
+        chkconfig --override "$service" || return $?
     fi
 }

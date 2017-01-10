@@ -29,7 +29,7 @@
 #   wickFormula sshd-tweak --agent-forwarding --password-auth=no
 #
 # Returns nothing.
-declare config fasterLogin hashAfter hashBefore osType result
+declare config fasterLogin hashAfter hashBefore osType
 
 config="/etc/ssh/sshd_config"
 serviceName=sshd
@@ -56,9 +56,7 @@ fi
 wickHash hashAfter "$config"
 
 if [[ "$hashBefore" != "$hashAfter" ]]; then
-    wickStrictRun result wickService is-running "$serviceName"
-
-    if [[ "$result" -eq 0 ]]; then
+    if wickService is-running "$serviceName"; then
         wickService reload "$serviceName"
     fi
 fi

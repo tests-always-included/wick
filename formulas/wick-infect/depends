@@ -6,19 +6,17 @@
 #
 # Starting in deepest parent, write lib/* with a header
 showAllLibFunctions() {
-    local file result
+    local file
 
     if [[ -d "$1/parent" ]]; then
-        showAllLibFunctions "$1/parent"
+        showAllLibFunctions "$1/parent" || return $?
     fi
 
     if [[ -d "$1/lib" ]]; then
         for file in "$1/lib/"*; do
-            wickStrictRun result wickIsValidScript "$file"
-
-            if [[ "$result" -eq 0 ]]; then
+            if wickIsValidScript "$file"; then
                 echo "# $file"
-                cat "$file"
+                cat "$file" || return $?
                 echo ""
             fi
         done
@@ -39,7 +37,7 @@ showAllLibFunctions() {
     # limits itself to only POSIX commands.  We want full Bash.
     echo "[[ \"\$POSIXLY_CORRECT\" != \"y\" ]] || return 1"
     echo ""
-    showAllLibFunctions .
+    showAllLibFunctions . || exit $?
 ) > "$WICK_FORMULA_DIR/files/wick-infect"
 
 wickFormula wick-base

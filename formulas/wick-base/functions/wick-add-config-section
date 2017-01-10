@@ -15,30 +15,33 @@
 # Returns 0 on success, 1 on argument validation errors.
 wickAddConfigSection() {
     local args top oldContent section
-    wickGetOption top --top "$@"
-    wickGetArguments args "$@"
+
+    wickGetOption top --top "$@" || return $?
+    wickGetArguments args "$@" || return $?
 
     if [[ -z "${args[0]}" ]]; then
         wickError "A file must be specified for wickAddConfigSection"
+
         return 1
     fi
 
     if [[ -z "${args[1]}" ]]; then
         wickError "You must specify a name for wickAddConfigSection"
+
         return 1
     fi
 
     if [[ -f "${args[0]}" ]]; then
-        wickRemoveConfigSection "${args[0]}" "${args[1]}" "${args[2]-}"
+        wickRemoveConfigSection "${args[0]}" "${args[1]}" "${args[2]-}" || return $?
     fi
 
-    oldContent=$(cat "${args[0]}")
+    oldContent=$(cat "${args[0]}") || return $?
 
     section=$(
         echo "${args[2]:-#} BEGIN wickAddConfigSection: ${args[1]}"
         cat
         echo "${args[2]:-#} END wickAddConfigSection: ${args[1]}"
-    )
+    ) || return $?
 
     {
         if [[ -z "$top" ]]; then

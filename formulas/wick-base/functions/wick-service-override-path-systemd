@@ -21,8 +21,8 @@
 wickServiceOverridePathSystemd() {
     local service target
 
-    wickGetArgument target 0 "$@"
-    wickGetArgument service 1 "$@"
+    wickGetArgument target 0 "$@" || return $?
+    wickGetArgument service 1 "$@" || return $?
     serviceDir="/etc/systemd/system/$service.d"
     fileName="override.conf"
 

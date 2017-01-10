@@ -36,10 +36,10 @@
 wickPackage() {
     local clean exists os state uninstall unparsed
 
-    wickGetOption clean clean "$@"
-    wickGetOption exists exists "$@"
-    wickGetOption uninstall uninstall "$@"
-    wickGetArguments unparsed "$@"
+    wickGetOption clean clean "$@" || return $?
+    wickGetOption exists exists "$@" || return $?
+    wickGetOption uninstall uninstall "$@" || return $?
+    wickGetArguments unparsed "$@" || return $?
 
     # Intentionally append to state to flag errors
     state=""
@@ -56,25 +56,26 @@ wickPackage() {
         state="uninstall$state"
     fi
 
-    : ${state:=install}
+    : "${state:=install}"
 
-    wickExplorer os wick-base os
+    wickExplorer os wick-base os || return $?
 
     case "$os" in
         arch)
-            wickPackagePacman "$state" "${unparsed[@]-}"
+            wickPackagePacman "$state" "${unparsed[@]-}" || return $?
             ;;
 
         centos|redhat)
-            wickPackageYum "$state" "${unparsed[@]-}"
+            wickPackageYum "$state" "${unparsed[@]-}" || return $?
             ;;
 
         ubuntu|debian)
-            wickPackageApt "$state" "${unparsed[@]-}"
+            wickPackageApt "$state" "${unparsed[@]-}" || return $?
             ;;
 
         *)
-            wickError "Unable to determine package manager"
+            wickError "Unable to determine package manager" || return $?
+
             return 1
             ;;
     esac

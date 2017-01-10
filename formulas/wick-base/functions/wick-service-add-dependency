@@ -13,29 +13,29 @@
 wickServiceAddDependency() {
     local dependency initType service
 
-    wickExplorer initType wick-base init-system
-    wickGetArgument service 0 "$@"
-    wickGetArgument dependency 1 "$@"
+    wickExplorer initType wick-base init-system || return $?
+    wickGetArgument service 0 "$@" || return $?
+    wickGetArgument dependency 1 "$@" || return $?
 
     if [[ -z "$service" ]]; then
-        wickError "wickServiceAddDependency requires a service to be provided as the first argument"
+        wickError "wickServiceAddDependency requires a service to be provided as the first argument" || return $?
 
         return 1
     fi
 
     if [[ -z "$dependency" ]]; then
-        wickError "wickServiceAddDependency requires a dependency to be provided as the second argument"
+        wickError "wickServiceAddDependency requires a dependency to be provided as the second argument" || return $?
 
         return 2
     fi
 
-    wickServiceMakeOverride "$@"
+    wickServiceMakeOverride "$@" || return $?
 
-    wickInfo "Adding dependency \"$dependency\" to service \"$service\""
+    wickInfo "Adding dependency \"$dependency\" to service \"$service\"" || return $?
 
     if [[ systemd == "$initType" ]]; then
-        wickServiceAddDependencySystemd "$@"
+        wickServiceAddDependencySystemd "$@" || return $?
     else
-        wickServiceAddDependencySysv "$@"
+        wickServiceAddDependencySysv "$@" || return $?
     fi
 }

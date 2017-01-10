@@ -10,22 +10,17 @@
 #
 # Examples
 #
-#   # Confirm a web server is listening.  A bit convoluted because newer
-#   # versions of Bash disable error exit in some contexts.
-#   local result
-#
-#   wickStrictRun result wickPortUp TCP 80
-#
-#   if [[ "$result" -ne 0 ]]; then
+#   # Confirm a web server is listening.
+#   if wickPortUp TCP 80; then
 #       echo "There is no web server listening on port 80."
 #   fi
 #
 #   # Wait for a server to start
 #   wickService start my-web-server
-#   wickStrictRun result wickWaitFor 120 wickPortUp TCP 80
 #
-#   if [[ "$result" -ne 0 ]]; then
+#   if ! wickWaitFor 120 wickPortUp TCP 80; then
 #       echo "Tried to wait for 2 minutes but nothing listened on port 80"
+#       exit 1
 #   fi
 #
 # Returns true on success and non-zero for any failure.
@@ -36,11 +31,11 @@ wickPortUp() {
 
     case $1 in
         tcp|TCP)
-            result=$(netstat -ln | awk '$1 == "tcp" && $4 ~/:'"$port"'$/ && $6 == "LISTEN" {print $4}')
+            result=$(netstat -ln | awk '$1 == "tcp" && $4 ~/:'"$port"'$/ && $6 == "LISTEN" {print $4}' || :)
             ;;
 
         udp|UDP)
-            result=$(netstat -ln | awk '$1 == "udp" && $4 ~/:'"$port"'$/ {print $4}')
+            result=$(netstat -ln | awk '$1 == "udp" && $4 ~/:'"$port"'$/ {print $4}' || :)
             ;;
 
         *)

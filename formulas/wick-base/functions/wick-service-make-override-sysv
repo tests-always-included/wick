@@ -15,16 +15,16 @@
 wickServiceMakeOverrideSysv() {
     local dest force label lsb service src value
 
-    wickGetOption force force "$@"
-    wickGetArgument service 0 "$@"
+    wickGetOption force force "$@" || return $?
+    wickGetArgument service 0 "$@" || return $?
 
     src="/etc/init.d/$service"
     dest="/etc/chkconfig.d/$service"
 
-    wickInfo "Making override for service: $service"
+    wickInfo "Making override for service: $service" || return $?
 
     if [[ -f "$dest" ]] && [[ -z "${force-}" ]]; then
-        wickWarn "Override already exists and --force flag was not specified"
+        wickWarn "Override already exists and --force flag was not specified" || return $?
 
         return 0
     fi
@@ -35,7 +35,7 @@ wickServiceMakeOverrideSysv() {
         return 1
     fi
 
-    lsb=$(sed '0,/^### BEGIN INIT INFO/ d; /^### END INIT INFO/,$ d' "$src")
+    lsb=$(sed '0,/^### BEGIN INIT INFO/ d; /^### END INIT INFO/,$ d' "$src" || :)
 
     # Ignoring the absence of the chkconfig line.
     {

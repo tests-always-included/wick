@@ -43,7 +43,10 @@ wickRunFormula() {
     #   $test # prints "a\\\{b"
     #
     # Also, careful with the new behavior of Bash.  See
-    # doc/contexts-that-disable-exit-on-error.md
+    # doc/contexts-that-disable-exit-on-error.md.  `wickStrictRun` will
+    # execute the formula in a subshell, so it will not be able to affect
+    # anything permanently, preventing it from adjusting the PATH as well
+    # as disallowing any other environment changes.
     wickStrictRun result eval ". $formula"
 
     # This one is safe to log because arguments have been removed.

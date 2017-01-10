@@ -20,7 +20,7 @@ wickArgumentString() {
 
     target="$1"
     shift
-    printf -v escaped " %q" "$@"
+    printf -v escaped " %q" "$@" || return $?
 
     local "$target" && wickIndirect "$target" "${escaped:1}"
 }

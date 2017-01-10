@@ -36,6 +36,7 @@ wickGetOptions() {
 
     if [[ "${#options[@]}" -eq 0 ]]; then
         local "$target" && wickIndirectArray "$target"
+
         return
     fi
 

@@ -32,12 +32,12 @@ wickOnExitTrap() {
         return
     fi
 
-    wickDebug "Running wickOnExit trap [$BASHPID]"
+    wickDebug "Running wickOnExit trap [$BASHPID]" || return $?
 
     for cmd in "${!itemArray}"; do
-        wickDebug "Running wickOnExit command: $cmd"
+        wickDebug "Running wickOnExit command: $cmd" || return $?
         eval "$cmd"
     done
 
-    wickDebug "Done running wickOnExit traps"
+    wickDebug "Done running wickOnExit traps" || return $?
 }

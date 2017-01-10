@@ -33,19 +33,19 @@
 wickMakeDir() {
     local dest mode owner
 
-    wickGetOption mode mode "$@"
-    wickGetOption owner owner "$@"
-    wickGetArgument dest 0 "$@"
-    wickDebug "Making directory: $dest"
-    mkdir -p "$dest"
+    wickGetOption mode mode "$@" || return $?
+    wickGetOption owner owner "$@" || return $?
+    wickGetArgument dest 0 "$@" || return $?
+    wickDebug "Making directory: $dest" || return $?
+    mkdir -p "$dest" || return $?
 
     if [[ -n "$owner" ]]; then
-        wickDebug "Changing ownership: $owner"
-        chown "$owner" "$dest"
+        wickDebug "Changing ownership: $owner" || return $?
+        chown "$owner" "$dest" || return $?
     fi
 
     if [[ -n "$mode" ]]; then
-        wickDebug "Changing mode: $mode"
-        chmod "$mode" "$dest"
+        wickDebug "Changing mode: $mode" || return $?
+        chmod "$mode" "$dest" || return $?
     fi
 }

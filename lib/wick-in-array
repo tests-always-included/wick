@@ -34,7 +34,9 @@ wickInArray() {
     shift
 
     for check in "$@"; do
-        [[ "$needle" == "$check" ]] && return 0
+        if [[ "$needle" == "$check" ]]; then
+            return 0
+        fi
     done
 
     return 1

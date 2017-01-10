@@ -11,22 +11,24 @@
 # $WICK_LOG_QUIET - When set to a non-empty value, the output is suppressed.
 #
 # Returns nothing.
-wickInfo() (
-    set +x
-    # Disable debug in this function.  Note: this function uses a subshell!
+wickInfo() {
+    (
+        set +x
+        # Disable debug in this function.  Note: this function uses a subshell!
 
-    local content output
+        local content output
 
-    wickArrayJoin content " " "$@"
-    wickLog INFO "$content"
+        wickArrayJoin content " " "$@" || return $?
+        wickLog INFO "$content" || return $?
 
-    if [[ -z "${WICK_LOG_QUIET-}" ]]; then
-        wickPrefixLines output "INFO: " "$content"
+        if [[ -z "${WICK_LOG_QUIET-}" ]]; then
+            wickPrefixLines output "INFO: " "$content" || return $?
 
-        if [[ -n "${WICK_COLOR-}" ]]; then
-            output=$'\E[32m'"$output"$'\E[0m'
+            if [[ -n "${WICK_COLOR-}" ]]; then
+                output=$'\E[32m'"$output"$'\E[0m'
+            fi
+
+            echo "$output"
         fi
-
-        echo "$output"
-    fi
-)
+    )
+}

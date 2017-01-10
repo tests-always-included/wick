@@ -69,7 +69,7 @@ wickLog() {
                 ;;
         esac
 
-        loggerCmd=(logger -p "$facility"."$priority")
+        loggerCmd=(logger -p "$facility"."$priority") || return $?
 
         if [[ -n "$tag" ]]; then
             loggerCmd[${#loggerCmd[@]}]=-t
@@ -80,7 +80,7 @@ wickLog() {
         loggerCmd[${#loggerCmd[@]}]=$2
         "${loggerCmd[@]}"
     elif [[ -n "${WICK_LOGFILE-}" ]]; then
-        wickPrefixLines output "$(date -Iseconds) $logLevel: " "$2"
+        wickPrefixLines output "$(date -Iseconds) $logLevel: " "$2" || return $?
         echo "$output" >> "$WICK_LOGFILE"
     fi
 }

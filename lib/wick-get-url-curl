@@ -44,6 +44,6 @@ wickGetUrlCurl() {
         redactedArgs["$redact"]="$USERNAME:XXXXXXX"
     fi
 
-    wickDebug "wickGetUrl:" "${redactedArgs[@]}"
+    wickDebug "wickGetUrl:" "${redactedArgs[@]}" || return $?
     "${args[@]}"
 }

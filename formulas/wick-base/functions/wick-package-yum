@@ -20,16 +20,18 @@ wickPackageYum() {
 
     case "$state" in
         clean)
-            yum -y clean all
+            yum -y clean all || return $?
             ;;
 
         exists)
             if rpm -q "$@" > /dev/null 2>&1; then
-                wickDebug "Package exists: $*"
+                wickDebug "Package exists: $*" || return $?
+
                 return 0
             fi
 
-            wickDebug "Package does not exist: $*"
+            wickDebug "Package does not exist: $*" || return $?
+
             return 1
             ;;
 
@@ -39,18 +41,19 @@ wickPackageYum() {
             fi
 
             if [[ ${#args[@]} -eq 0 ]]; then
-                yum install -y "$@"
+                yum install -y "$@" || return $?
             else
-                yum "${args[@]}" install -y "$@"
+                yum "${args[@]}" install -y "$@" || return $?
             fi
             ;;
 
         uninstall)
-            yum remove -y "$@"
+            yum remove -y "$@" || return $?
             ;;
 
         *)
             echo "Unknown package state: $state"
+
             return 1
     esac
 }

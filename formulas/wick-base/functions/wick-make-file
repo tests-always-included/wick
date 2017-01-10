@@ -61,18 +61,18 @@
 #
 # Returns true on success.
 wickMakeFile() {
-    local dest result setMode setOwner src srcFile useFormula useTemplate
+    local dest setMode setOwner src srcFile useFormula useTemplate
 
-    wickGetOption useFormula formula "$@"
-    wickGetOption setMode mode "$@"
-    wickGetOption setOwner owner "$@"
-    wickGetOption useTemplate template "$@"
-    wickGetArgument srcFile 0 "$@"
-    wickGetArgument dest 1 "$@"
+    wickGetOption useFormula formula "$@" || return $?
+    wickGetOption setMode mode "$@" || return $?
+    wickGetOption setOwner owner "$@" || return $?
+    wickGetOption useTemplate template "$@" || return $?
+    wickGetArgument srcFile 0 "$@" || return $?
+    wickGetArgument dest 1 "$@" || return $?
     src="$WICK_FORMULA_DIR"
 
     if [[ -n "$useFormula" ]]; then
-        wickFind src "formulas/$useFormula"
+        wickFind src "formulas/$useFormula" || return $?
     fi
 
     if [[ -z "$useTemplate" ]]; then
@@ -85,7 +85,7 @@ wickMakeFile() {
 
     # Make sure the file exists
     if [[ ! -f "$src" ]]; then
-        wickError "Unable to find source file: $src"
+        wickError "Unable to find source file: $src" || return $?
 
         return 1
     fi
@@ -93,26 +93,26 @@ wickMakeFile() {
     # Write to stdout if there is no destination
     if [[ -z "$dest" ]] || [[ "$dest" == "-" ]]; then
         if [[ -z "$useTemplate" ]]; then
-            wickDebug "Writing file to stdout: $src"
-            cat "$src"
+            wickDebug "Writing file to stdout: $src" || return $?
+            cat "$src" || return $?
         else
-            wickDebug "Writing template to stdout: $src"
-            formulaTemplate "$src"
+            wickDebug "Writing template to stdout: $src" || return $?
+            formulaTemplate "$src" || return $?
         fi
 
         return 0
     fi
 
     if [[ -z "$useTemplate" ]]; then
-        wickGetDest dest "$dest" "$srcFile"
+        wickGetDest dest "$dest" "$srcFile" || return $?
     else
-        wickGetDest dest "$dest" "${srcFile%.*}"
+        wickGetDest dest "$dest" "${srcFile%.*}" || return $?
     fi
 
     # Ensure the directory exists
     if [[ ! -d "${dest%/*}" ]]; then
         # Preserve the owner if one was passed
-        wickMakeDir "${dest%/*}" "--owner=$setOwner"
+        wickMakeDir "${dest%/*}" "--owner=$setOwner" || return $?
     fi
 
     # Remove file as overwriting can cause issues.
@@ -124,25 +124,21 @@ wickMakeFile() {
 
     if [[ -z "$useTemplate" ]]; then
         # Not a template - just copy
-        wickDebug "Copying $src to $dest"
-        cp "$src" "$dest" || return 1
+        wickDebug "Copying $src to $dest" || return $?
+        cp "$src" "$dest" || return $?
     else
         # Use a template
-        wickDebug "Converting template $src into $dest"
-        wickStrictRun result formulaTemplate "$src" > "$dest"
-
-        if [[ "$result" -ne 0 ]]; then
-            return 1
-        fi
+        wickDebug "Converting template $src into $dest" || return $?
+        formulaTemplate "$src" > "$dest" || return $?
     fi
 
     if [[ -n "$setOwner" ]]; then
-        wickDebug "Changing ownership: $setOwner"
-        chown "$setOwner" "$dest" || return 1
+        wickDebug "Changing ownership: $setOwner" || return $?
+        chown "$setOwner" "$dest" || return $?
     fi
 
     if [[ -n "$setMode" ]]; then
-        wickDebug "Changing mode: $setMode"
-        chmod "$setMode" "$dest" || return 1
+        wickDebug "Changing mode: $setMode" || return $?
+        chmod "$setMode" "$dest" || return $?
     fi
 }

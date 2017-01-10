@@ -26,8 +26,8 @@ wickOnExit() {
     # uses fewer evaluated statements that also works from Bash 3 through the
     # latest release and with "set -eu", then I'd LOVE to know.
     eval "length=\${#""$name""[@]}"
-    wickArgumentString cmd "$@"
-    wickDebug "Adding wickOnExit item [$BASHPID $length]: ${cmd}"
+    wickArgumentString cmd "$@" || return $?
+    wickDebug "Adding wickOnExit item [$BASHPID $length]: ${cmd}" || return $?
     eval "$name[$length]=\$cmd"
 
     # Always set or reset the trap

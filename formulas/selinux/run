@@ -15,13 +15,9 @@
 #   wickFormula selinux disable
 #
 # Returns nothing.
-declare result
-
 case "$1" in
     disable)
-        wickStrictRun result selinuxIsEnabled
-
-        if [[ "$result" -eq 0 ]]; then
+        if selinuxIsEnabled; then
             wickDebug "Disabling SELinux."
             echo "0" > /selinux/enforce
             wickSetConfigLine "/etc/selinux/config" "SELINUX=disabled"

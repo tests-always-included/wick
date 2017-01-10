@@ -12,10 +12,10 @@
 wickServiceAddDependencySysv() {
     local dependency service overridePath
 
-    wickGetArgument service 0 "$@"
-    wickGetArgument dependency 1 "$@"
+    wickGetArgument service 0 "$@" || return $?
+    wickGetArgument dependency 1 "$@" || return $?
 
     overridePath="/etc/chkconfig.d/$service"
-    sed -i 's/^#\s*Should-Start:.*/& '"$dependency"'/' "$overridePath"
-    wickServiceOverride "$service"
+    sed -i 's/^#\s*Should-Start:.*/& '"$dependency"'/' "$overridePath" || return $?
+    wickServiceOverride "$service" || return $?
 }

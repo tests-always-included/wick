@@ -8,12 +8,12 @@
 # Returns nothing.
 wickTestForOptionsFailure() {
     if [[ -n "${FORMULA-}" ]]; then
-        wickError "Formula $FORMULA requires option: --$1"
+        wickError "Formula $FORMULA requires option: --$1" || return 1
     else
         if [[ -n "${ROLE-}" ]]; then
-            wickError "Role $ROLE requires option: --$1"
+            wickError "Role $ROLE requires option: --$1" || return 1
         else
-            wickError "Missing required option:  --$1"
+            wickError "Missing required option:  --$1" || return 1
         fi
     fi
 }
