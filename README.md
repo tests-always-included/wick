@@ -7,7 +7,7 @@ The idea is that you would write installation scripts for individual tasks.  We 
 
 This relies heavily on Bash concepts.  For help with understanding them, there is documentation covering the key [Bash concepts].
 
-[![Build Status][travis-image]][Travis CI]
+[![Build Status][travis-badge]][travis-link]
 
 
 How do I get started?
@@ -122,8 +122,8 @@ To build the `README.md` files from the content of the other files, run `make`. 
 [Puppet]: http://puppetlabs.com/
 [Roles]: roles/README.md
 [Tests]: tests/README.md
-[Travis CI]: http://travis-ci.org/tests-always-included/wick
-[Travis-Image]: https://secure.travis-ci.org/tests-always-included/wick.png
+[travis-badge]: https://img.shields.io/travis/tests-always-included/wick/master.svg
+[travis-link]: http://travis-ci.org/tests-always-included/wick
 [wickFormula]: bin/README.md#wickformula
 [wickExplorer]: bin/README.md#wickexplorer
 [wick-infect]: formulas/wick-infect/README.md
