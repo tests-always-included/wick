@@ -25,13 +25,7 @@ Returns success (0) when SELinux is installed and enabled.
 
 Examples
 
-    # Convoluted, but necessary because of strict mode and newer Bash.
-    # See doc/contexts-that-disable-exit-on-error.md
-    local result
-
-    wickStrictRun result selinuxIsEnabled
-
-    if [[ "$result" -eq 0 ]]; then
+    if selinuxIsEnabled; then
         wickWarn "This does not work well with SELinux enabled"
     fi
 

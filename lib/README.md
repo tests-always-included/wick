@@ -117,20 +117,16 @@ The destination variable is only set when the element is found.
 
 Examples
 
-    # Convoluted because newer versions of Bash disable error exit.
-    local index list result
+    local index list
 
     list=(one two three "four four")
-    wickStrictRun result wickArraySearch index one "${list[@]}"
 
-    if [[ "$result" -eq 0 ]]; then
+    if wickArraySearch index one "${list[@]}"; then
         # This one works
         echo "one is found at index $index"
     fi
 
-    wickStrictRun result wickArraySearch index four "${list[@]}"
-
-    if [[ "$result" -eq 0 ]]; then
+    if wickArraySearch index four "${list[@]}"; then
         echo "four should not be found"
         echo "'four four' with a space would be found"
         echo "\$index will not be updated"
@@ -144,22 +140,22 @@ Returns success if $1 is found in the list of other arguments.
 
 Public: Tests to see if a command is in the path.  Because some systems report failure in different ways, this is an attempt to abstract away those alternate error messages and provide a consistent interface.
 
+This differs from using `hash` in that `hash` will return success if there is a function with the given name.  Using `which` will return an error.
+
 * $1 - Name of the command you wish to execute.  It would not make sense to use a full path here since the intent is to search the `PATH` for the command.
 
 Examples
 
-    # Must use this roundabout way because newer versions of Bash disable
-    # error exit in specific contexts.
-    local result
-
-    wickStrictRun result wickCommandExists ls
-
-    if [[ "$result" -ne 0 ]]; then
+    if ! wickCommandExists ls; then
         echo 'Oh no, ls does not exist!'
         echo 'How do you list your files?'
 
         exit 1
     fi
+
+    # Show the difference between hash and which
+    hash wickCommandExists || echo "hash succeeds with function names"
+    wickCommandExists wickCommandExists || echo "this will fail with functions"
 
 Returns 0 when found and an error status when the command was not found.
 
@@ -349,12 +345,7 @@ Public: Determines the IP address associated with a given network interface. If 
 
 Examples
 
-    # Convoluted because newer versions of Bash disable some error checking.
-    local ip result
-
-    wickStrictRun result wickGetIfaceIp ip tun0
-
-    if [[ "$result" -ne 0 ]]; then
+    if ! wickGetIfaceIp ip tun0; then
         echo "Tunnel is not yet established"
 
         exit 1
@@ -571,14 +562,12 @@ Examples
             [[ "${#value[@]}" -lt 5 ]] && value[${#value[@]}]=$file
         done
 
-        # Be careful when `set -u` is enabled
-        if [[ ${#value[@]} -eq 0 ]]; then
-            local "$1" && wickIndirectArray "$1"
-
-            return
-        fi
-
-        local "$1" && wickIndirectArray "$1" "${value[@]}"
+        # Be careful when `set -u` is enabled.  This next line is EXTREMELY
+        # IMPORTANT to get right.  The variable at the end is intentionally
+        # not quoted so this works with empty arrays and arrays that contain
+        # empty strings.
+        # shellcheck disable=SC2068
+        local "$1" && wickIndirectArray "$1" ${value[@]+"${value[@]}"}
     }
 
     files=""
@@ -619,21 +608,14 @@ $1 = Variable name to check
 
 Examples
 
-    # This is a bit strange because we want error exit to work, but newer
-    # versions of bash disable it in specific contexts.
-    local result
-
     unset missing
     empty=""
-    wickStrictRun result wickIsVarSet missing
 
-    if [[ "$result" -eq 0 ]]; then
+    if wickIsVarSet missing; then
         echo "This never is called."
     fi
 
-    wickStrictRun result wickIsVarSet empty
-
-    if [[ "$result" -eq 0 ]]; then
+    if wickIsVarSet empty; then
         echo "This is called even though $empty is set to an empty string."
     fi
 
@@ -708,22 +690,17 @@ Public: Determines if a port is open or not.  Works with TCP and UDP ports. If t
 
 Examples
 
-    # Confirm a web server is listening.  A bit convoluted because newer
-    # versions of Bash disable error exit in some contexts.
-    local result
-
-    wickStrictRun result wickPortUp TCP 80
-
-    if [[ "$result" -ne 0 ]]; then
+    # Confirm a web server is listening.
+    if wickPortUp TCP 80; then
         echo "There is no web server listening on port 80."
     fi
 
     # Wait for a server to start
     wickService start my-web-server
-    wickStrictRun result wickWaitFor 120 wickPortUp TCP 80
 
-    if [[ "$result" -ne 0 ]]; then
+    if ! wickWaitFor 120 wickPortUp TCP 80; then
         echo "Tried to wait for 2 minutes but nothing listened on port 80"
+        exit 1
     fi
 
 Returns true on success and non-zero for any failure.
@@ -912,6 +889,8 @@ Public: Runs a command and captures its return code, even when [strict mode] is 
 
 This is intended to be used along with `wickStrictMode`.  It helps counter the newer Bash behavior where the error exit flag is suppressed in specific contexts.  See the [error context] documentation for further info.
 
+Execution of a command happens in a subshell.  If you are running a function with `wickStrictRun`, please keep in mind that it can not export values to the parent context for use by the caller.
+
 [error context]: ../doc/contexts-that-disable-exit-on-error.md
 
 Example:
@@ -1059,14 +1038,8 @@ Examples
 
     # Wait up to 30 seconds for a file to exist
     # You must use a shell command here.  Bash built-ins won't work,
-    # so use `[` or `test` instead of `[[`.  Also, we prefer for error
-    # exit to work, so this uses wickStrictRun to capture the return
-    # code in a context that "if" would negate.
-    local result
-
-    wickStrictRun result wickWaitFor 30 [ -f /var/run/other-process/run.lock ]
-
-    if [[ "$result" -ne 0 ]]; then
+    # so use `[` or `test` instead of `[[`.
+    if ! wickWaitFor 30 [ -f /var/run/other-process/run.lock ]; then
         echo "File was not created in time"
 
         exit 1

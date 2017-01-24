@@ -51,11 +51,6 @@ wickArrayFilter() {
         shift
     done
 
-    if [[ ${#result[@]} -eq 0 ]]; then
-        local "$target" && wickIndirectArray "$target"
-
-        return
-    fi
-
-    local "$target" && wickIndirectArray "$target" "${result[@]}"
+    # shellcheck disable=SC2068
+    local "$target" && wickIndirectArray "$target" ${result[@]+"${result[@]}"}
 }

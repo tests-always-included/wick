@@ -34,11 +34,6 @@ wickGetArguments() {
         shift
     done
 
-    if [[ ${#args[@]} -eq 0 ]]; then
-        local "$target" && wickIndirectArray "$target"
-
-        return
-    fi
-
-    local "$target" && wickIndirectArray "$target" "${args[@]}"
+    # shellcheck disable=SC2068
+    local "$target" && wickIndirectArray "$target" ${args[@]+"${args[@]}"}
 }
