@@ -62,9 +62,9 @@ wickWaitFor() {
 
         sleepProcess=$!
 
-        # Delay until one of the processes finish
-        # Avoid "wait -n" because older bash does not support it
-        # This also hides a "Terminated" message
+        #: Delay until one of the processes finish
+        #: Avoid "wait -n" because older bash does not support it
+        #: This also hides a "Terminated" message
         result=0
         wait "$latchProcess" > /dev/null 2>&1 || result=$?
 

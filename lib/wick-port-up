@@ -20,6 +20,7 @@
 #
 #   if ! wickWaitFor 120 wickPortUp TCP 80; then
 #       echo "Tried to wait for 2 minutes but nothing listened on port 80"
+#
 #       exit 1
 #   fi
 #

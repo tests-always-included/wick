@@ -34,11 +34,6 @@ wickGetOptions() {
         shift
     done
 
-    if [[ "${#options[@]}" -eq 0 ]]; then
-        local "$target" && wickIndirectArray "$target"
-
-        return
-    fi
-
-    local "$target" && wickIndirectArray "$target" "${options[@]}"
+    # shellcheck disable=SC2068
+    local "$target" && wickIndirectArray "$target" ${options[@]+"${options[@]}"}
 }

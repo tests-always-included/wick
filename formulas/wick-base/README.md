@@ -128,7 +128,7 @@ Returns true on success.
 `bashFormulaTemplate()`
 -----------------------
 
-Run a Bash shell script as a template.
+Run a Bash shell script as a template.  Sources the file.
 
 Examples
 

@@ -31,11 +31,6 @@ wickStringSplit() {
 
     result[${#result[@]}]=$str
 
-    if [[ "${#result[@]}" -gt 0 ]]; then
-        local "$target" && wickIndirectArray "$target" "${result[@]}"
-
-        return
-    fi
-
-    local "$target" && wickIndirectArray "$target"
+    # shellcheck disable=SC2068
+    local "$target" && wickIndirectArray "$target" ${result[@]+"${result[@]}"}
 }

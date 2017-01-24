@@ -55,13 +55,8 @@ wickGetIfaceIp() {
     fi
 
     if [[ "$allInterfaces" == true ]]; then
-        if [[ ${#list[@]} -eq 0 ]]; then
-            local "$target" && wickIndirectArray "$target"
-
-            return 0
-        fi
-
-        local "$target" && wickIndirectArray "$target" "${list[@]}"
+        # shellcheck disable=SC2068
+        local "$target" && wickIndirectArray "$target" ${list[@]+"${list[@]}"}
 
         return 0
     fi

@@ -22,14 +22,12 @@
 #           [[ "${#value[@]}" -lt 5 ]] && value[${#value[@]}]=$file
 #       done
 #
-#       # Be careful when `set -u` is enabled
-#       if [[ ${#value[@]} -eq 0 ]]; then
-#           local "$1" && wickIndirectArray "$1"
-#
-#           return
-#       fi
-#
-#       local "$1" && wickIndirectArray "$1" "${value[@]}"
+#       # Be careful when `set -u` is enabled.  This next line is EXTREMELY
+#       # IMPORTANT to get right.  The variable at the end is intentionally
+#       # not quoted so this works with empty arrays and arrays that contain
+#       # empty strings.
+#       # shellcheck disable=SC2068
+#       local "$1" && wickIndirectArray "$1" ${value[@]+"${value[@]}"}
 #   }
 #
 #   files=""

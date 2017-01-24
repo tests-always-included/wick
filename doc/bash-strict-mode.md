@@ -97,7 +97,7 @@ The better option is to ignore only the return code for `myProgram`.  That way e
 With `set -u` enabled, you are unable to use positional parameters that are not defined.  Let's say you have a function that will `echo` the first parameter.
 
     # This is the old function
-    function echoFirst() {
+    echoFirst() {
         echo $1
     }
 
@@ -105,21 +105,21 @@ When you run `echoFirst` with no arguments, the above will fail.  To adapt this 
 
     # You can default to an empty value, which is similar to how Bash
     # would interpret this without set -u
-    function echoFirst() {
-        echo ${1-}
+    echoFirst() {
+        echo "${1-}"
     }
 
     # Alternately you can test for the number of arguments
-    function echoFirst() {
+    echoFirst() {
         if [[ $# -gt 0 ]]; then
-            echo $1
+            echo "$1"
         fi
     }
 
 Strangely enough, `$@` will never give an error even in strict mode.
 
-    # This always works
-    function showArgs() {
+    # This always works, but it does pass an empty argument to echo.
+    showArgs() {
         echo "$@"
     }
 
@@ -151,18 +151,27 @@ When working with arrays, Bash exhibits some odd behavior and it varies based on
     # cause problems with other functions.
     echo "All elements in the array:" "${ARR[@]-}"
 
+    # Option 3 (best)
+    # Use some interesting Bash syntax that translates into "If ARR is set
+    # then use the value of the expanded array".  Please note that there
+    # is intentionally no surrounding quotes!
+    echo "All elements in the array:" ${ARR[@]+"${ARR[@]}"}
+
 
 ### Appending to an array
 
 There are several ways to append values to an array.
 
-    # Define an array
+    # Define an array.
     ARR=()
 
-    # Does not work when ARR is empty
+    # Does not work when ARR is empty.
     ARR=("${ARR[@]}" "another value")
 
-    # Use this instead
+    # Bash 4.3 and newer, which Wick does not use.
+    ARR+=("another value")
+
+    # Use this instead.  Works in Bash 3 and newer.
     ARR[${#ARR[@]}]="another value"
 
 
@@ -177,7 +186,7 @@ We used to be able to run a command and catch its return code.
         echo "There was a failure that will need to get handled"
     fi
 
-With the strict mode in place it is much harder to do that.  One option is to use `set +e` and then `set -e` again.  There is a function, `wickStrictRun` that does this for you.  A full description is in [library functions](../lib/README.md).
+With the strict mode in place it is much harder to do that.  One option is to use `set +e` and then `set -e` again.  You also need to worry about traps.  There is a function, `wickStrictRun` that does this for you.  A full description is in [library functions](../lib/README.md).
 
     # Use this syntax
     wickStrictRun RESULT someCommandThatMayFail

@@ -27,7 +27,7 @@ wickTestForArgumentCount() {
 
     wickGetArguments args "$@" || return $?
 
-    # Add 1 to the count in order to compensate for the count itself.
+    #: Add 1 to the count in order to compensate for the count itself.
     count=$((count + 1))
 
     if [[ "${#args[@]}" -ne "$count" ]]; then
