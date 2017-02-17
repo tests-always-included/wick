@@ -24,5 +24,6 @@ wickServiceOverride() {
         systemctl daemon-reload || return $?
     else
         chkconfig --override "$service" || return $?
+        chkconfig "$service" reset || return $?
     fi
 }
