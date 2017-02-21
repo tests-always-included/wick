@@ -92,21 +92,7 @@ These are just simple examples.  More complex situations make it harder to spot 
 How to Fix
 ----------
 
-There are two options.  This one is great when you are executing a command or a function that acts like a command.  It's for situations where the environment should not change (such as a function that could return a status code and that's it).
-
-    # Change code like this
-    if someBashFunction; then
-
-    # Into code like this
-    local result
-
-    wickStrictRun result someBashFunction
-
-    if [[ "$result" -eq 0 ]]; then
-
-It is not necessary to make this change when the program being executed is guaranteed to be an external program, like `grep` or `cat`.  Use this when you don't know if you are executing a function or a binary.
-
-Also, if you are executing functions, you could make the function safe to run directly by capturing every possible command that could have stopped execution and forcing the end of the function.
+The best option is to ensure all bash functions are written to operate in this special mode. You do that by capturing every possible command that could have stopped execution and force an end of the function.
 
     # Old code
     result=$(ls some-file)
@@ -119,3 +105,5 @@ Also, if you are executing functions, you could make the function safe to run di
     list=( "some" "words" $(runSomething) ) || return $?
     grep -q "words" in-this-file || return $?
     wickGetIfaceIp ipAddress tun0 || return $?
+
+When you ensure that all functions are written this way, then they will always exit early regardless of strict mode and regardless of this error exit context. Consistent, predictable results from your code makes it far more reliable.
