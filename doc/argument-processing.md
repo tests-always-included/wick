@@ -101,14 +101,17 @@ Passing Arguments Through
 Imagine a function that will consume one argument and pass the rest to another function.  Perhaps we get a username as the first argument and a home directory as a second.
 
     setupUserDir() {
-        local ARGS
+        local args oldIfs
 
         # Get a list of all non-option arguments
-        wickGetArguments ARGS "$@"
+        wickGetArguments args "$@"
 
         # Remove the first item from the list. The IFS notation is to
         # ensure this works even in bash 3, regardless of IFS settings.
-        IFS=" " ARGS=("${ARGS[@]:1}")
+        oldIfs=$IFS
+        IFS=
+        args=("${args[@]:1}")
+        IFS=$oldIfs
 
         # Pass the remaining arguments to another function
         setupDir "${ARGS[@]}"
