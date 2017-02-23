@@ -50,5 +50,5 @@
 # Returns nothing.
 wickIndirectArray() {
     unset -v "$1"
-    eval "$1"=\(\"\$\{@:2\}\"\)
+    eval "$(printf "IFS= %s=(\"\${@:2}\") IFS=%q" "$1" "$IFS")"
 }
