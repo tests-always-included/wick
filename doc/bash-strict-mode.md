@@ -229,5 +229,15 @@ Please do not do this unless you have no other option.  When you do, try to only
 Normally, you do not need to use `set +E` as that only determines if the ERR trap is inherited or not.  Since `set +e` and `set +u` would both stop the ERR trap from firing, you wouldn't need to worry about the existence of the trap.
 
 
+### Slicing an Array
+
+The syntax `("${array[@]:1}")` is supposed to return a copy of `$array` without the first element. Until Bash 4.0-rc1, this does not work when IFS is set to a non-standard value. Unsetting IFS or setting it to a space works.  So, here's the best way to slice the array:
+
+    oldIfs=$IFS
+    IFS=
+    arrayCopy=("${array[@]:1}")
+    IFS=$oldIfs
+
+
 [bash concepts]: bash-concepts.md
 [exit on error]: contexts-that-disable-exit-on-error.md

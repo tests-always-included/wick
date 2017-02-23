@@ -98,7 +98,7 @@
 # Stops the service.
 #
 wickService() {
-    local action options unparsed
+    local action oldIfs options unparsed
 
     wickGetOptions options "$@" || return $?
     wickGetArgument action 0 "$@" || return $?
@@ -119,7 +119,10 @@ wickService() {
     # Remove the action from the unparsed items. The IFS setting is required
     # for this to work in bash 3 regardless to the IFS setting.
     # See https://github.com/fidian/gg-core/pull/7
-    IFS=" " unparsed=("${unparsed[@]:1}")
+    oldIfs=$IFS
+    IFS=
+    unparsed=("${unparsed[@]:1}")
+    IFS=$oldIfs
 
     case "$action" in
         add)
