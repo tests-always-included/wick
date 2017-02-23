@@ -108,7 +108,7 @@ Imagine a function that will consume one argument and pass the rest to another f
 
         # Remove the first item from the list. The IFS notation is to
         # ensure this works even in bash 3, regardless of IFS settings.
-        IFS= ARGS=("${ARGS[@]:1}")
+        IFS=" " ARGS=("${ARGS[@]:1}")
 
         # Pass the remaining arguments to another function
         setupDir "${ARGS[@]}"
