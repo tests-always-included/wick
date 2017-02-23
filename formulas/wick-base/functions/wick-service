@@ -119,7 +119,7 @@ wickService() {
     # Remove the action from the unparsed items. The IFS setting is required
     # for this to work in bash 3 regardless to the IFS setting.
     # See https://github.com/fidian/gg-core/pull/7
-    IFS=" " unparsed=("${unparsed[@]:1}")
+    IFS= unparsed=("${unparsed[@]:1}")
 
     case "$action" in
         add)
