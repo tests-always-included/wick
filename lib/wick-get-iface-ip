@@ -32,7 +32,17 @@ wickGetIfaceIp() {
         allInterfaces=true
     fi
 
-    if wickCommandExists ifconfig; then
+    # Works for systemd distros
+    if wickCommandExists networkctl; then
+        cmd=(networkctl status)
+
+	if [[ -n "$interface" ]]; then
+	    cmd[${#cmd[@]}]="$interface"
+	fi
+
+       # FIXME: Unfortunately, IPv4 only
+       list=( $("${cmd[@]}" 2>/dev/null | grep -oP "\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b") )
+    elif wickCommandExists ifconfig; then
         cmd=(ifconfig -v)
 
         if [[ -n "$interface" ]]; then

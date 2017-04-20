@@ -63,6 +63,19 @@ if [[ -f /etc/arch-release ]]; then
     exit
 fi
 
+# Check os-release files for ID
+if [[ -f /etc/os-release ]]; then
+    . /etc/os-release
+elif [[ -f /usr/lib/os-release ]]; then
+    . /usr/lib/os-release
+fi
+# ID is lowercase distro name and defaults to "linux" if missing
+if [[ -n "${ID-}" ]] && [[ "$ID" != "linux" ]]; then
+    wickDebug "os ID: $ID"
+    echo "$ID"
+    exit
+fi
+				    
 if wickCommandExists lsb_release; then
     distributor=$(lsb_release -s -i 2>&1) || exit $?
     wickDebug "Distributor: $distributor" || exit $?
