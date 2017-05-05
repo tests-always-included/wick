@@ -85,8 +85,11 @@ NOT_SPACE_RE='[^[:space:]][^[:space:]]*'
 # Must translate to raw characters because Mac OS X's sed does not work with
 # escape sequences.  All escapes are handled by printf.
 #
+# Must use a hyphen first because otherwise it is an invalid range expression.
+#
 # [issue #8]: https://github.com/tests-always-included/tomdoc.sh/issues/8
-FUNC_NAME_RE=$(printf "[^\\001\\011 \"#$&'()\\055;<>\\134\\140|\\177][^\\001\\011 \"$&'();<=>[\\134\\140|\\177]*")
+FUNC_NAME_RE=$(printf "[^-\\001\\011 \"#$&'();<>\\134\\140|\\177][^\\001\\011 \"$&'();<=>[\\134\\140|\\177]*")
+
 
 # Regular expression matching variable names.  Similar to FUNC_NAME_RE.
 # Variables are far more restrictive.
