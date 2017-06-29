@@ -10,7 +10,7 @@
 #   wickKvGet MSG test.message
 #   echo "$MSG"  # "Hi"
 #
-# Returns true on succes, 1 if the KV store is not initialized. Does not error
+# Returns true on success, 1 if the KV store is not initialized. Does not error
 # if the key is not set.
 wickKvGet() {
     local key result
