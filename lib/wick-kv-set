@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Public: Assigns a value to the KV store.
+#
+# $1 - Key to set.
+# $2 - Value to save.
+#
+# Examples:
+#
+#   wickKvSet test.message "Hi"
+#   wickKvGet MSG test.message
+#   echo "$MSG"  # "Hi"
+#
+# Returns true on succes, 1 if the KV store is not initialized.
+wickKvSet() {
+    local key
+
+    if ! wickKvIsReady; then
+        wickError "KV store not initialized"
+
+        return 1
+    fi
+
+    wickHex key "$1"
+
+    # Adding an extra period here in case there's whitespace in $2.
+    # We want to preserve it. The way we read a file in wickKvGet
+    # would normally destroy the whitespace.
+    echo -n "${2}." > "$WICK_KV_DIR/$key"
+}

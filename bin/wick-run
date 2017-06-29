@@ -17,6 +17,12 @@ wickRun() {
         return 1
     fi
 
+    # Set up the KV store. If Wick gets split so the prep work can be done
+    # on one machine and the execution of formulas can be done on a target
+    # machine, the KV store will need to get migrated to the target machine.
+    wickKvInit
+
+    # Run the role.
     wickLoadRole "$@"
 
     if [[ ${#WICK_FORMULA_COMMANDS[@]} -eq 0 ]]; then

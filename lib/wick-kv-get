@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Public: Retrieve a value from the KV store.
+#
+# $1 - Destination variable name.
+# $2 - Key to retrieve.
+#
+# Examples:
+#
+#   wickKvSet test.message "Hi"
+#   wickKvGet MSG test.message
+#   echo "$MSG"  # "Hi"
+#
+# Returns true on succes, 1 if the KV store is not initialized. Does not error
+# if the key is not set.
+wickKvGet() {
+    local key result
+
+    if ! wickKvIsReady; then
+        wickError "KV store not initialized"
+
+        return 1
+    fi
+
+    wickHex key "$2"
+
+    if [[ -f "$WICK_KV_DIR/$key" ]]; then
+        result=$(< "$WICK_KV_DIR/$key")
+    else
+        result="."
+    fi
+
+    result="${result%?}"
+
+    local $1 && wickIndirect "$1" "$result"
+}

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Internal: Creates the KV store and sets the necessary environment variable to
+# the directory where the KV store is located.
+#
+# Examples
+#
+#   wickKvInit
+#
+# Returns nothing.
+wickKvInit() {
+    if wickKvIsReady; then
+        wickDebug "Using existing KV store: $WICK_KV_DIR"
+    else
+        wickDebug "Creating KV store directory"
+        wickTempDir WICK_KV_DIR
+        wickDebug "Created KV store: $WICK_KV_DIR"
+    fi
+}
