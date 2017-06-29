@@ -10,9 +10,18 @@
 #
 # Returns true when explorer ran successfully, false otherwise.
 wickExplorer() {
-    local explorer restoreErrors statusCode tempdir
+    local cacheKey cacheValue explorer restoreErrors statusCode tempdir
 
     explorer="formulas/$2/explorers/$3"
+    cacheKey="wick.explorer.$explorer"
+
+    if wickKvIsSet "$cacheKey"; then
+        wickDebug "Explorer is cached: $explorer"
+        wickKvGet cacheValue "$cacheKey"
+        local "$1" && wickIndirect "$1" "$cacheValue"
+
+        return
+    fi
 
     if ! wickFind explorer "$explorer"; then
         wickError "Unable to find explorer: $explorer"
@@ -42,6 +51,7 @@ wickExplorer() {
     wickDebug "Explorer stderr:"
     wickDebug "$(<"$tempdir/stdout")"
     wickDebug "End of explorer output"
+    wickKvSet "$cacheKey" "$(<"$tempdir/stdout")"
 
     if [[ "$statusCode" -ne 0 ]]; then
         wickError "Explorer failed: $explorer"
