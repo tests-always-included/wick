@@ -492,10 +492,10 @@ Stops the service.
 
 
 
-`unparsed`
-----------
+`oldIfs`
+--------
 
-Remove the action from the unparsed items
+Remove the action from the unparsed items. The IFS setting is required for this to work in bash 3 regardless to the IFS setting. See https://github.com/fidian/gg-core/pull/7
 
 
 `wickServiceAdd()`

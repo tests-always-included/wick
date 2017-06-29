@@ -474,6 +474,17 @@ Examples
 Returns nothing.
 
 
+`wickHex()`
+-----------
+
+Public: Encode a string as hex.
+
+* $1 - Destination variable for the hex encoded version of the data.
+* $2 - The string to encode as hex.
+
+Returns nothing.
+
+
 `wickInArray()`
 ---------------
 
@@ -622,6 +633,92 @@ Examples
 Returns true if the variable is set, 1 if the variable is unset.
 
 
+`wickKvGet()`
+-------------
+
+Public: Retrieve a value from the KV store.
+
+* $1 - Destination variable name.
+* $2 - Key to retrieve.
+
+Examples:
+
+    wickKvSet test.message "Hi"
+    wickKvGet MSG test.message
+    echo "$MSG"  # "Hi"
+
+Returns true on success, 1 if the KV store is not initialized. Does not error if the key is not set.
+
+
+`wickKvInit()`
+--------------
+
+Internal: Creates the KV store and sets the necessary environment variable to the directory where the KV store is located.
+
+Examples
+
+    wickKvInit
+
+Returns nothing.
+
+
+`wickKvIsReady()`
+-----------------
+
+Internal: Checks if the KV store has been initialized.
+
+Examples
+
+    # Starting with this not ready. Prints "Not ready."
+    wickKvIsReady || echo "Not ready."
+
+    # Initialize
+    wickKvInit
+
+    # Now this is ready. Prints "Ready."
+    wickKvIsReady && echo "Ready."
+
+Returns true if it is ready, anything else if it is not ready.
+
+
+`wickKvIsSet()`
+---------------
+
+Public: Check if a key is set in the KV store.
+
+* $1 - Name of the key.
+
+Examples:
+
+    # Start with it not set. This prints "Not set."
+    wickKvIsSet test.message || echo "Not set."
+
+    # Assign a value
+    wickKvSet test.message "Hi"
+
+    # Now it exists. Prints "Key is assigned a value."
+    wickKvIsSet test.message && echo "Key is assigned a value."
+
+Returns true when the key exists, false otherwise.
+
+
+`wickKvSet()`
+-------------
+
+Public: Assigns a value to the KV store.
+
+* $1 - Key to set.
+* $2 - Value to save.
+
+Examples:
+
+    wickKvSet test.message "Hi"
+    wickKvGet MSG test.message
+    echo "$MSG"  # "Hi"
+
+Returns true on success, 1 if the KV store is not initialized.
+
+
 `wickLog()`
 -----------
 
@@ -700,6 +797,7 @@ Examples
 
     if ! wickWaitFor 120 wickPortUp TCP 80; then
         echo "Tried to wait for 2 minutes but nothing listened on port 80"
+
         exit 1
     fi
 
