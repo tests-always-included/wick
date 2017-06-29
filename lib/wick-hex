@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Public: Encode a string as hex.
+#
+# $1 - Destination variable for the hex encoded version of the data.
+# $2 - The string to encode as hex.
+#
+# Returns nothing.
+wickHex() {
+    local c index out
+
+    in="$2"
+    out=
+    index=0
+
+    while [[ "${#in}" -gt "$index" ]]; do
+        c=${in:$index:1}
+        printf -v c "%02x" "'$c"
+        out="$out$c"
+        index=$((index + 1))
+    done
+
+    local "$1" && wickIndirect "$1" "$out"
+}

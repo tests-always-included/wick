@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Public: Check if a key is set in the KV store.
+#
+# $1 - Name of the key.
+#
+# Examples:
+#
+#   # Start with it not set. This prints "Not set."
+#   wickKvIsSet test.message || echo "Not set."
+#
+#   # Assign a value
+#   wickKvSet test.message "Hi"
+#
+#   # Now it exists. Prints "Key is assigned a value."
+#   wickKvIsSet test.message && echo "Key is assigned a value."
+#
+# Returns true when the key exists, false otherwise.
+wickKvIsSet() {
+    local key
+
+    if ! wickKvIsReady; then
+        wickError "KV store not initialized"
+
+        return 1
+    fi
+
+    wickHex key "$1"
+
+    [[ -f "$WICK_KV_DIR/$key" ]]
+}

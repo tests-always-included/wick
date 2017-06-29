@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Internal: Checks if the KV store has been initialized.
+#
+# Examples
+#
+#   # Starting with this not ready. Prints "Not ready."
+#   wickKvIsReady || echo "Not ready."
+#
+#   # Initialize
+#   wickKvInit
+#
+#   # Now this is ready. Prints "Ready."
+#   wickKvIsReady && echo "Ready."
+#
+# Returns true if it is ready, anything else if it is not ready.
+wickKvIsReady() {
+    [[ -n "${WICK_KV_DIR-}" && -d "$WICK_KV_DIR" ]]
+}

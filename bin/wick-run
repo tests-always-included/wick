@@ -17,6 +17,11 @@ wickRun() {
         return 1
     fi
 
+    # Set up the KV store. This must be migrated to the destination machine
+    # when Wick gets split into a provisioner/provisionee model.
+    wickKvInit
+
+    # Run the role.
     wickLoadRole "$@"
 
     if [[ ${#WICK_FORMULA_COMMANDS[@]} -eq 0 ]]; then
