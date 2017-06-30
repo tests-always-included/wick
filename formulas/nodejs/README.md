@@ -16,7 +16,7 @@ Examples
      wickFormula nodejs --version=4
 
      # Installs Node 5.1.x
-     wickformula nodejs --version=5.1
+     wickFormula nodejs --version=5.1
 
 Returns nothing.
 
