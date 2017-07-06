@@ -44,7 +44,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Netcat](nc/README.md) - Installs `nc`, the netcat package.
 * [Netcat](netcat/README.md) - Installs the netcat (`nc`) package.
 * [network-layer](network-layer/README.md) - Provides a library that allows you to include services into the network layer. Your service would be added after the rest of the network is up but before the rest of the services that depend on the network.
-* [Node.js](nodejs/README.md) - Installs the latest Node.js (not a distribution's packaged version).
+* [Node.js](nodejs/README.md) - Installs Node.js from their website, not a distribution's packaged version.
 * [NSCD](nscd/README.md) - This installs a name server caching daemon.  The `unscd` package is preferred over `nscd`, but the two are essentially interchangeable.
 * [NTP](ntp/README.md) - Installs `ntp` Network Time Protocol package and `ntpdate` set time utility.
 * [OpenJDK 1.7 JDK](openjdk-1.7-jdk/README.md) - Installs OpenJDK 1.7 JDK.

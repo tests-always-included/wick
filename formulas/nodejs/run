@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
-# Installs the latest Node.js (not a distribution's packaged version).
+# Installs Node.js from their website, not a distribution's packaged version.
 #
-# --version - The specific version (or part of a version) you want to
-#             install. You may specify `4` for latest of the `4` branch
-#             or an exact version number.  This defaults to the latest
-#             version of Node.
+# --version=VERSION - The specific version (or part of a version) you want to
+#                     install. You may specify `4` for latest of the `4` branch
+#                     or an exact version number.  This defaults to the latest
+#                     version of Node.
 #
 # Installs node.js to the current machine.  The files are installed into
 # `/usr/local/` and symlinks are added to `/usr/`.  Does not use the
-# platform's packaged version and instead downloads it from the source.
+# platform's packaged version and instead downloads it from the official
+# website.
 #
 # Examples
 #
