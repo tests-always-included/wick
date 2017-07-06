@@ -56,6 +56,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Python-virtualenv](python-virtualenv/README.md) - Installs the Python virtual environment manager, virtualenv.
 * [Redis](redis/README.md) - Installs redis onto the box.
 * [Rvm](rvm/README.md) - This installs RVM from [http://get.rvm.io/](http://get.rvm.io/).  Passes all extra parameters to the installer.
+* [Node.js](s3-cli/README.md) - Alternate version of s3cmd, parallelizes operations.
 * [S3cmd](s3cmd/README.md) - This installs a tool to work with Amazon S3 from the command-line.
 * [Screen](screen/README.md) - Installs GNU screen package.
 * [SELinux](selinux/README.md) - Configures SELinux into a given state.
