@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Utility for freezing writes to a device.
+#
+# Examples
+#
+#   # Installs the utility
+#   wickFormula fsfreeze
+#
+# Returns nothing.
+
+declare os
+
+wickExplorer os wick-base os
+
+case "$os" in
+    centos|redhat)
+        wickPackage util-linux-ng
+        ;;
+
+    *)
+        wickPackage util-linux
+        ;;
+esac
