@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Installs the Gnu C++ compiler (g++).
+#
+# Examples
+#
+#   wickFormula g++
+#
+# Returns nothing.
+wickPackage gcc

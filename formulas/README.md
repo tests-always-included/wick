@@ -29,7 +29,9 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Encrypt Folder](encrypt-folder/README.md) - Creates a script that encrypts a folder on a machine.
 * [Erlang](erlang/README.md) - Determines the erlang package based on the OS distribution.
 * [fsfreeze](fsfreeze/README.md) - Utility for freezing writes to a device.
+* [gcc](gcc/README.md) - Installs the Gnu C compiler (gcc).
 * [GitHub](github/README.md) - Adds functions for interacting with GitHub repositories via GitHub's API.
+* [g++](g++/README.md) - Installs the Gnu C++ compiler (g++).
 * [Hostname](hostname/README.md) - Sets the hostname and domain.  Supports templates.  Can automatically update the hostname when network connections are made.
 * [htop](htop/README.md) - Installs the [htop](http://hisham.hm/htop/) interactive process viewer.
 * [IPTables](iptables/README.md) - Installs `iptables` if it is not already installed.
