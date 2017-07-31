@@ -24,10 +24,39 @@ case "$OS" in
         ;;
 
     debian|ubuntu)
-        wickWaitFor 600 wickIsAptAvailable
-        apt-get update
-        wickWaitFor 600 wickIsAptAvailable
-        apt-get upgrade -y
+        tryNumber=0
+
+        while [[ "$tryNumber" -lt 3 ]]; do
+            tryNumber=$((tryNumber + 1))
+            wickInfo "Attempting update (try $tryNumber of 3)"
+
+            if ! wickWaitFor 600 wickIsAptAvailable; then
+                wickError "Apt stayed locked for more than 600 seconds. Aborting."
+
+                exit 1
+            fi
+
+            if apt-get update; then
+                tryNumber=100
+            fi
+        done
+
+        tryNumber=0
+
+        while [[ "$tryNumber" -lt 3 ]]; do
+            tryNumber=$((tryNumber + 1))
+            wickInfo "Attempting upgrade (try $tryNumber of 3)"
+
+            if ! wickWaitFor 600 wickIsAptAvailable; then
+                wickError "Apt stayed locked for more than 600 seconds. Aborting."
+
+                exit 1
+            fi
+
+            if apt-get upgrade -y; then
+                tryNumber=100
+            fi
+        done
         ;;
 
     *)

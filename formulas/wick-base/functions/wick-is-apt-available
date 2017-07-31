@@ -6,13 +6,32 @@
 #   wickIsAptAvailable
 #
 # Returns 0 when no Apt or Dpkg type applications are found running.
-# Returns > 0 when an Apt or Dpkg type application is found running.
+# Returns > 0 when an Apt or Dpkg type application is found running. The
+# values returned correspond to this version of the function ONLY and should
+# not be used to determine what was detected.
 wickIsAptAvailable() {
+    wickInfo "$(
+        echo "PS LIST"
+        ps aux || :
+    )"
+
+    for FN in /var/lib/dpkg/lock /var/cache/apt/archives/lock /var/cache/debconf/config.dat; do
+        wickInfo "$(
+            echo "TEST: $FN"
+            fuser -u "$FN" && echo "clean" || echo "fuser error $?"
+        )"
+    done
+
     pidof dpkg > /dev/null 2>&1 && return 1
     pidof apt-get > /dev/null 2>&1 && return 2
     pidof synaptic > /dev/null 2>&1 && return 3
     pidof apt > /dev/null 2>&1 && return 4
     pidof aptitude > /dev/null 2>&1 && return 5
+
+    # fuser returns success (0) when the file is locked
+    fuser -s /var/lib/dpkg/lock && return 6
+    fuser -s /var/cache/apt/archives/lock && return 7
+    fuser -s /var/cache/debconf/config.dat && return 8
 
     return 0
 }

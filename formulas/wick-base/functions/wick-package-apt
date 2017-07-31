@@ -11,15 +11,22 @@
 #
 # Return true on success.
 wickPackageApt() {
-    local state
+    local loop state
 
     state=$1
     shift
 
     case "$state" in
         clean)
-            wickWaitFor 600 wickIsAptAvailable || return $?
-            apt-get clean || return $?
+            for loop in {1..3}; do
+                wickInfo "Cleaning (try $loop of 3)"
+                wickWaitFor 600 wickIsAptAvailable || return $?
+                apt-get clean && return 0
+            done
+
+            wickError "Could not run apt-get clean"
+
+            return 1
             ;;
 
         exists)
@@ -35,13 +42,27 @@ wickPackageApt() {
             ;;
 
         install)
-            wickWaitFor 600 wickIsAptAvailable || return $?
-            apt-get install -y "$@" || return $?
+            for loop in {1..3}; do
+                wickInfo "Installing (try $loop of 3)"
+                wickWaitFor 600 wickIsAptAvailable || return $?
+                apt-get install -y "$@" && return 0
+            done
+
+            wickError "Could not install package"
+
+            return 1
             ;;
 
         uninstall)
-            wickWaitFor 600 wickIsAptAvailable || return $?
-            apt-get purge -y "$@" || return $?
+            for loop in {1..3}; do
+                wickInfo "Uninstalling (try $loop of 3)"
+                wickWaitFor 600 wickIsAptAvailable || return $?
+                apt-get purge -y "$@" && return 0
+            done
+
+            wickError "Could not uninstall package"
+
+            return 1
             ;;
 
         *)
