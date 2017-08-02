@@ -57,6 +57,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Openssh Server](openssh-server/README.md) - Ensures `openssh-server` is installed which will provide sshd/ssh.
 * [Python-Pip](python-pip/README.md) - Installs the Python package manager, pip.
 * [Python-virtualenv](python-virtualenv/README.md) - Installs the Python virtual environment manager, virtualenv.
+* [Redhat LSB Core](redhat-lsb-core/README.md) - Installs the requirements that most init scripts depend upon without including many unnecessary dependencies.
 * [Redis](redis/README.md) - Installs redis onto the box.
 * [Rvm](rvm/README.md) - This installs RVM from [http://get.rvm.io/](http://get.rvm.io/).  Passes all extra parameters to the installer.
 * [Node.js](s3-cli/README.md) - Alternate version of s3cmd, parallelizes operations.
