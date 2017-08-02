@@ -193,7 +193,7 @@ Examples
 
     wickIsAptAvailable
 
-Returns 0 when no Apt or Dpkg type applications are found running. Returns > 0 when an Apt or Dpkg type application is found running.
+Returns 0 when no Apt or Dpkg type applications are found running. Returns > 0 when an Apt or Dpkg type application is found running. The values returned correspond to this version of the function ONLY and should not be used to determine what was detected.
 
 
 `wickMakeDir()`
