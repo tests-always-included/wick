@@ -13,9 +13,10 @@
 #/
 #/    mo [--false] [--help] [--source=FILE] filenames...
 #/
-#/ --false       - Treat the string "false" as empty for conditionals.
-#/ --help        - This message.
-#/ --source=FILE - Load FILE into the environment before processing templates.
+#/ --fail-not-set - Fail upon expansion of an unset variable.
+#/ --false        - Treat the string "false" as empty for conditionals.
+#/ --help         - This message.
+#/ --source=FILE  - Load FILE into the environment before processing templates.
 #
 # Mo is under a MIT style licence with an additional non-advertising clause.
 # See LICENSE.md for the full text.
@@ -27,19 +28,23 @@
 
 # Public: Template parser function.  Writes templates to stdout.
 #
-# $0            - Name of the mo file, used for getting the help message.
-# --false       - Treat "false" as an empty value.  You may set the
-#                 MO_FALSE_IS_EMPTY environment variable instead to a non-empty
-#                 value to enable this behavior.
-# --help        - Display a help message.
-# --source=FILE - Source a file into the environment before processint
-#                 template files.
-# --            - Used to indicate the end of options.  You may optionally
-#                 use this when filenames may start with two hyphens.
-# $@            - Filenames to parse.
+# $0             - Name of the mo file, used for getting the help message.
+# --fail-not-set - Fail upon expansion of an unset variable.  Default behavior
+#                  is to silently ignore and expand into empty string.
+# --false        - Treat "false" as an empty value.  You may set the
+#                  MO_FALSE_IS_EMPTY environment variable instead to a non-empty
+#                  value to enable this behavior.
+# --help         - Display a help message.
+# --source=FILE  - Source a file into the environment before processint
+#                  template files.
+# --             - Used to indicate the end of options.  You may optionally
+#                  use this when filenames may start with two hyphens.
+# $@             - Filenames to parse.
 #
 # Mo uses the following environment variables:
 #
+# MO_FAIL_ON_UNSET    - When set to a non-empty value, expansion of an unset
+#                       env variable will be aborted with an error.
 # MO_FALSE_IS_EMPTY   - When set to a non-empty value, the string "false"
 #                       will be treated as an empty value for the purposes
 #                       of conditionals.
@@ -67,6 +72,11 @@ mo() (
                     -h|--h|--he|--hel|--help|-\?)
                         moUsage "$0"
                         exit 0
+                        ;;
+
+                    --fail-not-set)
+                        # shellcheck disable=SC2030
+                        MO_FAIL_ON_UNSET=true
                         ;;
 
                     --false)
@@ -100,7 +110,7 @@ mo() (
         done
     fi
 
-    moGetContent moContent "${files[@]}"
+    moGetContent moContent "${files[@]}" || return 1
     moParse "$moContent" "" true
 )
 
@@ -236,7 +246,7 @@ moGetContent() {
             content="$content"'{{>'"$filename"'}}'
         done
     else
-        moLoadFile content /dev/stdin
+        moLoadFile content /dev/stdin || return 1
     fi
 
     local "$target" && moIndirect "$target" "$content"
@@ -255,7 +265,7 @@ moIndentLines() {
     local content fragment len posN posR result trimmed
 
     result=""
-    
+
     #: Remove the period from the end of the string.
     len=$((${#3} - 1))
     content=${3:0:$len}
@@ -454,15 +464,20 @@ moIsStandalone() {
     char=$((${#beforeTrimmed} - 1))
     char=${beforeTrimmed:$char}
 
+    # If the content before didn't end in a newline
     if [[ "$char" != $'\n' ]] && [[ "$char" != $'\r' ]]; then
+        # and there was content or this didn't start the file
         if [[ -n "$char" ]] || ! $4; then
+            # then this is not a standalone tag.
             return 1
         fi
     fi
 
     char=${afterTrimmed:0:1}
 
+    # If the content after doesn't start with a newline and it is something
     if [[ "$char" != $'\n' ]] && [[ "$char" != $'\r' ]] && [[ -n "$char" ]]; then
+        # then this is not a standalone tag.
         return 2
     fi
 
@@ -508,9 +523,10 @@ moLoadFile() {
 
     # The subshell removes any trailing newlines.  We forcibly add
     # a dot to the content to preserve all newlines.
-    # TODO: remove cat and replace with read loop?
+    # As a future optimization, it would be worth considering removing
+    # cat and replacing this with a read loop.
 
-    content=$(cat -- "$2"; echo '.')
+    content=$(cat -- "$2" && echo '.') || return 1
     len=$((${#content} - 1))
     content=${content:0:$len}  # Remove last dot
 
@@ -551,7 +567,7 @@ moLoop() {
 moParse() {
     # Keep naming variables mo* here to not overwrite needed variables
     # used in the string replacements
-    local moBlock moContent moCurrent moIsBeginning moTag
+    local moBlock moContent moCurrent moIsBeginning moNextIsBeginning moTag
 
     moCurrent=$2
     moIsBeginning=$3
@@ -561,6 +577,7 @@ moParse() {
 
     while [[ "${#moContent[@]}" -gt 1 ]]; do
         moTrimWhitespace moTag "${moContent[1]}"
+        moNextIsBeginning=false
 
         case $moTag in
             '#'*)
@@ -574,7 +591,7 @@ moParse() {
                 if moTest "$moTag"; then
                     # Show / loop / pass through function
                     if moIsFunction "$moTag"; then
-                        #: TODO: Consider piping the output to moGetContent
+                        #: Consider piping the output to moGetContent
                         #: so the lambda does not execute in a subshell?
                         moContent=$($moTag "${moBlock[0]}")
                         moParse "$moContent" "$moCurrent" false
@@ -582,7 +599,7 @@ moParse() {
                     elif moIsArray "$moTag"; then
                         eval "moLoop \"\${moBlock[0]}\" \"$moTag\" \"\${!${moTag}[@]}\""
                     else
-                        moParse "${moBlock[0]}" "$moCurrent" false
+                        moParse "${moBlock[0]}" "$moCurrent" true
                     fi
                 fi
 
@@ -592,6 +609,8 @@ moParse() {
             '>'*)
                 # Load partial - get name of file relative to cwd
                 moPartial moContent "${moContent[@]}" "$moIsBeginning" "$moCurrent"
+                moNextIsBeginning=${moContent[1]}
+                moContent=${moContent[0]}
                 ;;
 
             '/'*)
@@ -629,7 +648,7 @@ moParse() {
             '=')
                 # Change delimiters
                 # Any two non-whitespace sequences separated by whitespace.
-                # TODO
+                # This tag is ignored.
                 moStandaloneAllowed moContent "${moContent[@]}" "$moIsBeginning"
                 ;;
 
@@ -662,7 +681,7 @@ moParse() {
                 ;;
         esac
 
-        moIsBeginning=false
+        moIsBeginning=$moNextIsBeginning
         moSplit moContent "$moContent" '{{' '}}'
     done
 
@@ -672,11 +691,18 @@ moParse() {
 
 # Internal: Process a partial.
 #
-# Indentation should be applied to the entire partial
+# Indentation should be applied to the entire partial.
+#
+# This sends back the "is beginning" flag because the newline after a
+# standalone partial is consumed. That newline is very important in the middle
+# of content. We send back this flag to reset the processing loop's
+# `moIsBeginning` variable, so the software thinks we are back at the
+# beginning of a file and standalone processing continues to work.
 #
 # Prefix all variables.
 #
-# $1 - Name of destination "content" variable.
+# $1 - Name of destination variable. Element [0] is the content, [1] is the
+#      true/false flag indicating if we are at the beginning of content.
 # $2 - Content before the tag that was not yet written
 # $3 - Tag content
 # $4 - Content after the tag
@@ -686,37 +712,47 @@ moParse() {
 # Returns nothing.
 moPartial() {
     # Namespace variables here to prevent conflicts.
-    local moContent moFilename moIndent moPartial moStandalone
+    local moContent moFilename moIndent moIsBeginning moPartial moStandalone moUnindented
 
     if moIsStandalone moStandalone "$2" "$4" "$5"; then
         moStandalone=( $moStandalone )
         echo -n "${2:0:${moStandalone[0]}}"
         moIndent=${2:${moStandalone[0]}}
         moContent=${4:${moStandalone[1]}}
+        moIsBeginning=true
     else
         moIndent=""
         echo -n "$2"
         moContent=$4
+        moIsBeginning=$5
     fi
 
     moTrimWhitespace moFilename "${3:1}"
 
     # Execute in subshell to preserve current cwd and environment
     (
-        # TODO:  Remove dirname and use a function instead
+        # It would be nice to remove `dirname` and use a function instead,
+        # but that's difficult when you're only given filenames.
         cd "$(dirname -- "$moFilename")" || exit 1
-        moIndentLines moPartial "$moIndent" "$(
-            moLoadFile moPartial "${moFilename##*/}"
+        moUnindented="$(
+            moLoadFile moPartial "${moFilename##*/}" || exit 1
             moParse "${moPartial}" "$6" true
 
             # Fix bash handling of subshells and keep trailing whitespace.
             # This is removed in moIndentLines.
             echo -n "."
-        )"
+        )" || exit 1
+        moIndentLines moPartial "$moIndent" "$moUnindented"
         echo -n "$moPartial"
-    )
+    ) || exit 1
 
-    local "$1" && moIndirect "$1" "$moContent"
+    # If this is a standalone tag, the trailing newline after the tag is
+    # removed and the contents of the partial are added, which typically
+    # contain a newline. We need to send a signal back to the processing
+    # loop that the moIsBeginning flag needs to be turned on again.
+    #
+    # [0] is the content, [1] is that flag.
+    local "$1" && moIndirectArray "$1" "$moContent" "$moIsBeginning"
 }
 
 
@@ -746,7 +782,13 @@ moShow() {
             eval moJoin moJoined "," "\${$1[@]}"
             echo -n "$moJoined"
         else
-            echo -n "${!1}"
+            # shellcheck disable=SC2031
+            if [[ -z "$MO_FAIL_ON_UNSET" ]] || moTestVarSet "$1"; then
+                echo -n "${!1}"
+            else
+                echo "Env variable not set: $1" >&2
+                exit 1
+            fi
         fi
     else
         # Further subindexes are disallowed
@@ -861,6 +903,16 @@ moTest() {
     fi
 
     return 1
+}
+
+# Internal: Determine if a variable is assigned, even if it is assigned an empty
+# value.
+#
+# $1 - Variable name to check.
+#
+# Returns true (0) if the variable is set, 1 if the variable is unset.
+moTestVarSet() {
+    [[ "${!1-a}" == "${!1-b}" ]]
 }
 
 
