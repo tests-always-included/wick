@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Public: Determines the IP address associated with a given network interface.
-# If no interface is provided, this returns the first IP address listed by
-# `ifconfig`.
+# If no interface is provided, this returns the IP address of the interface
+# for the default route. If that does not work, the first IP address is
+# returned, picked arbitrarily.
 #
 # $1 - Name of the variable that should receive the result.
 # $2 - Optional, network interface name.  If not specified, defaults to the
@@ -26,6 +27,16 @@ wickGetIfaceIp() {
 
     list=()
     allInterfaces=false
+
+    # Try to detect the default interface via `ip`.
+    if [[ -z "$interface" ]]; then
+        interface=$(ip route get 255.255.255.255 | awk '{print $4}' || :)
+    fi
+
+    # Try to detect the default interface via `route`.
+    if [[ -z "$interface" ]]; then
+        interface=$(route -n | grep '^0\.0\.0\.0' | head -n 1 | awk '{print $8}' || :)
+    fi
 
     if [[ "$interface" == "*" ]]; then
         interface=""
