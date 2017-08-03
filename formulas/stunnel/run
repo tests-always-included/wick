@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Installs stunnel and starts it at boot. Provides functions to install
+# service specific configurations.
+#
+# --start - Also start the daemon at the end of the script.
+#
+# Examples
+#
+#   wickFormula stunnel
+#
+# Returns nothing.
+declare start
+
+wickGetOption start --start "$@"
+
+wickInfo "Installing the stunnel package"
+wickPackage stunnel
+
+# Stop the package while we reconfigure things if it is running.
+wickService stop stunnel4 || :
+
+wickInfo "Creating stunnel4 user if it doesn't already exist."
+wickMakeUser --daemon --home=/var/run/stunnel4 --name="stunnel4" stunnel4
+
+wickInfo "Creating chroot jail and PID file location."
+wickMakeDir /var/run/stunnel4 --owner=stunnel4 --group=stunnel4
+
+# The package can install an init script on Debian/Ubuntu as stunnel4.
+# However, that init script is slightly broken. It calls "echo -n" when
+# using POSIX sh, which does not specifically state that "echo -n" works.
+# On CentOS there is no problem; there is no init script.
+#
+# For consistency, remove any stunnel service and then forcibly add our
+# own so it works the same across platforms.
+wickInfo "Removing stunnel service, if one exists"
+wickServiceRemove stunnel || :
+
+wickInfo "Installing fixed init script"
+wickServiceAdd --force stunnel4 stunnel4.init
+
+wickInfo "Enabling stunnel at boot"
+wickSetConfigLine /etc/default/stunnel4 "ENABLED=1"
+wickSetConfigLine /etc/default/stunnel4 "FILES=\"/etc/stunnel/*.conf\""
+wickSetConfigLine /etc/default/stunnel4 "OPTIONS=\"\""
+wickService enable stunnel4
+
+if [[ -n "$start" ]]; then
+    wickInfo "Starting stunnel"
+    wickService start stunnel4
+fi

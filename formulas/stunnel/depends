@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+declare os
+
+wickFormula mo
+wickExplorer os wick-base os
+
+case "$os" in
+    centos|redhat)
+        wickFormula redhat-lsb-core
+        ;;
+esac

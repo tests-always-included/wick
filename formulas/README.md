@@ -65,6 +65,7 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [Screen](screen/README.md) - Installs GNU screen package.
 * [SELinux](selinux/README.md) - Configures SELinux into a given state.
 * [SSHD Tweak](sshd-tweak/README.md) - Alters the SSH server's settings.
+* [Stunnel](stunnel/README.md) - Installs stunnel and starts it at boot. Provides functions to install service specific configurations.
 * [Sysctl](sysctl/README.md) - This adds a function to Wick to set a system configuration setting.
 * [Telnet](telnet/README.md) - Installs `telnet` if it is not already installed.  Consider netcat instead.
 * [Timezone](timezone/README.md) - Sets the time zone to a specified zone, defaulting to UTC.
