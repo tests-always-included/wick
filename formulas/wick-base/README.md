@@ -501,7 +501,7 @@ Remove the action from the unparsed items. The IFS setting is required for this 
 `wickServiceAdd()`
 ------------------
 
-Internal: Add a service and inform chkconfig.
+Internal: Add a service and inform the system.
 
 * --force - Force a service to be written even if it already exists.
 * $1      - Service name.
@@ -780,6 +780,23 @@ Internal: Reloads a service.
 Examples
 
     wickServiceReload nginx
+
+Returns nothing.
+
+
+`wickServiceRemove()`
+---------------------
+
+Internal: Remove a service and inform the system.
+
+* $1      - Service name.
+
+Examples
+
+    wickServiceRemove redis
+
+    # No errors are produced if the service doesn't exist.
+    wickServiceRemove a-bad-service-name || :
 
 Returns nothing.
 

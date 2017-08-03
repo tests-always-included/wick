@@ -338,7 +338,7 @@ Returns true if the name was resolved, non-zero on any error.
 `wickGetIfaceIp()`
 ------------------
 
-Public: Determines the IP address associated with a given network interface. If no interface is provided, this returns the first IP address listed by `ifconfig`.
+Public: Determines the IP address associated with a given network interface. If no interface is provided, this returns the IP address of the interface for the default route. If that does not work, the first IP address is returned, picked arbitrarily.
 
 * $1 - Name of the variable that should receive the result.
 * $2 - Optional, network interface name.  If not specified, defaults to the first one returned by `ifconfig`.

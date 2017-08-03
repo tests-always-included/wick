@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Internal: Remove a service and inform the system.
+#
+# $1      - Service name.
+#
+# Examples
+#
+#   wickServiceRemove redis
+#
+#   # No errors are produced if the service doesn't exist.
+#   wickServiceRemove a-bad-service-name || :
+#
+# Returns nothing.
+wickServiceRemove() {
+    local initType service
+
+    wickGetArgument service 0 "$@" || return $?
+    wickInfo "Removing service: $service" || return $?
+
+    wickExplorer initType wick-base init-system || return $?
+
+    if [[ -f "/etc/init.d/$service" ]]; then
+        if wickCommandExists chkconfig; then
+            chkconfig --del "$service" || return $?
+        fi
+
+        rm -f "/etc/init.d/$service" "/etc/chkconfig.d/$service"
+
+        if [[ "$initType" == systemd ]]; then
+            systemctl daemon-reload || return $?
+        fi
+    else
+        wickWarn "Service does not exist"
+    fi
+}
