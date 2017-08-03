@@ -9,7 +9,7 @@ wickOnLoad wickAddCommand run wickRun "Execute the formulas for a given role"
 #
 # Returns true on success, 1 if there are problems with the role.
 wickRun() {
-    local formula i
+    local formula formulaNumber i
 
     if [[ -z "${1-}" ]]; then
         echo "You must specify a role to execute." >&2
@@ -40,9 +40,12 @@ wickRun() {
         i=$((i + 1))
     done
 
+    formulaNumber=1
+
     for formula in "${WICK_FORMULA_COMMANDS[@]}"; do
         # CAREFUL - keep the formula quoted here.
-        wickRunFormula "$formula"
+        wickRunFormula "$formula" "$formulaNumber"
+        formulaNumber=$((formulaNumber + 1))
     done
 
     echo "Done."

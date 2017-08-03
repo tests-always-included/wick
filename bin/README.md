@@ -191,6 +191,7 @@ Returns true on success, 1 if there are problems with the role.
 Public: This exists so arguments passed to wickRun are not passed to formulas.
 
 * $1 - Formula command to execute, including arguments.  Already escaped.
+* $2 - Number of the formula, for logging purposes.
 
 *Escaping note:* Formulas that are passed in are already quoted and must not be quoted again if you want this to run properly.  See `wickFormula` for quoting.
 

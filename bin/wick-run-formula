@@ -4,6 +4,7 @@
 # formulas.
 #
 # $1 - Formula command to execute, including arguments.  Already escaped.
+# $2 - Number of the formula, for logging purposes.
 #
 # *Escaping note:* Formulas that are passed in are already quoted and must not
 # be quoted again if you want this to run properly.  See `wickFormula` for
@@ -15,15 +16,16 @@
 #
 # Returns the status code from the formula.
 wickRunFormula() {
-    local formula result WICK_FORMULA_DIR WICK_FORMULA_NAME
+    local formula formulaNumber result WICK_FORMULA_DIR WICK_FORMULA_NAME
 
     formula=$1
-    shift
+    formulaNumber=$2
+    shift 2
 
     # Only use echo - do not log this to the file because the arguments
     # may contain secret keys.  Logging just the formula's name would be
     # acceptable.
-    echo "Executing formula: $formula"
+    echo "Executing formula $formulaNumber: $formula"
 
     # See escaping note above
     eval "WICK_FORMULA_DIR=($formula)"
@@ -31,7 +33,7 @@ wickRunFormula() {
     export WICK_FORMULA_NAME=${WICK_FORMULA_DIR##*/}
 
     # This one is safe to log because arguments have been removed.
-    wickDebug "Executing formula (arguments not shown): $WICK_FORMULA_NAME"
+    wickDebug "Executing formula $formulaNumber (arguments not shown): $WICK_FORMULA_NAME"
 
     # See escaping note in function header
     # Can't use `. $formula` by itself because parameters get
@@ -50,7 +52,7 @@ wickRunFormula() {
     wickStrictRun result eval ". $formula"
 
     # This one is safe to log because arguments have been removed.
-    wickDebug "Done running formula (result $result): $WICK_FORMULA_NAME"
+    wickDebug "Done running formula $formulaNumber (result $result): $WICK_FORMULA_NAME"
 
     if [[ "$result" -ne 0 ]]; then
         # The formula name is safe to log.
