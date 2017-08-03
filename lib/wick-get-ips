@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Public: Returns all IP addresses associated with the machine.
+#
+# $1 - Name of the variable that should receive the array of IP addresses.
+#
+# The order of IP addresses in the list is random.
+#
+# Examples
+#
+#   wickGetIps allIps
+#   set | grep ^allIps= # Displays all IP addresses
+#
+# Returns 0 on success, including when no IP addresses are found. Returns
+# non-zero on failure.
+wickGetIps() {
+    local list target
+
+    wickGetArgument target 0 "$@" || return $?
+
+    if wickCommandExists ip; then
+        cmd=(ip addr show)
+        list=$("${cmd[@]}" 2>/dev/null | grep -oe "inet [0-9.]\+") || return $?
+    elif wickCommandExists ifconfig; then
+        cmd=(ifconfig -v)
+        list=$("${cmd[@]}" 2>/dev/null | grep -oe "inet\s\+[addr:]*[0-9\.]\+") || return $?
+    else
+        wickError "Couldn't find a command to look up ip addresses"
+
+        return 2
+    fi
+
+    # Keep only the IP address from each line
+    list=( $(echo "$list" | grep -oe "[0-9\.]\+") ) || return $?
+
+    # shellcheck disable=SC2068
+    local "$target" && wickIndirectArray "$target" ${list[@]+"${list[@]}"}
+}
+

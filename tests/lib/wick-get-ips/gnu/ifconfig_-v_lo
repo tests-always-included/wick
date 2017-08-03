@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+cat <<EOF
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:7281178 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:7281178 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:1316875535 (1.3 GB)  TX bytes:1316875535 (1.3 GB)
+
+EOF

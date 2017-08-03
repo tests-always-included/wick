@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+cat <<EOF
+noip: flags=8802<BROADCAST,SIMPLEX,MULTICAST> metric 0 mtu 1500
+  options=8209b<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM,WOL_MAGIC,LINKSTATE>
+  ether b8:97:5a:23:26:32
+  media: Ethernet autoselect (none)
+  status: no carrier
+EOF

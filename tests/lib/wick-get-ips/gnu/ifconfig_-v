@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+cat <<EOF
+docker0   Link encap:Ethernet  HWaddr 56:84:7a:fe:97:99
+          inet addr:172.17.42.1  Bcast:0.0.0.0  Mask:255.255.0.0
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:7281178 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:7281178 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:1316875535 (1.3 GB)  TX bytes:1316875535 (1.3 GB)
+
+wlan0     Link encap:Ethernet  HWaddr bc:85:56:a5:87:17
+          inet addr:192.168.0.32  Bcast:192.168.0.255  Mask:255.255.255.0
+          inet6 addr: fe80::be85:56ff:fea5:8717/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:35999229 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:12155186 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:9270970766 (9.2 GB)  TX bytes:5250935997 (5.2 GB)
+
+EOF

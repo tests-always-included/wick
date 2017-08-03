@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+echo "asdf: error fetching interface information: Device not found" >&2
+exit 1
