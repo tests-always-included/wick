@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Internal: Add a service and inform chkconfig.
+# Internal: Add a service and inform the system.
 #
 # --force - Force a service to be written even if it already exists.
 # $1      - Service name.
@@ -30,7 +30,7 @@ wickServiceAdd() {
 
         if [[ "$initType" == systemd ]]; then
             systemctl daemon-reload || return $?
-        else
+        elif wickCommandExists chkconfig; then
             chkconfig --add "$service" || return $?
         fi
     else
