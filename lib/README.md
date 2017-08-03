@@ -356,6 +356,23 @@ Examples
 Returns 0 on success, non-zero on failure.
 
 
+`wickGetIps()`
+--------------
+
+Public: Returns all IP addresses associated with the machine.
+
+* $1 - Name of the variable that should receive the array of IP addresses.
+
+The order of IP addresses in the list is random.
+
+Examples
+
+    wickGetIps allIps
+    set | grep ^allIps= # Displays all IP addresses
+
+Returns 0 on success, including when no IP addresses are found. Returns non-zero on failure.
+
+
 `wickGetOption()`
 -----------------
 

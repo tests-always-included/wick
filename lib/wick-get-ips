@@ -29,7 +29,7 @@ wickGetIps() {
         return 2
     fi
 
-    # Keep only the IP address from each line
+    #: Keep only the IP address from each line
     list=( $(echo "$list" | grep -oe "[0-9\.]\+") ) || return $?
 
     # shellcheck disable=SC2068
