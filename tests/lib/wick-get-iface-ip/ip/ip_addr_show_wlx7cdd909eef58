@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+cat <<'EOF'
+3: wlx7cdd909eef58: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 7c:dd:90:9e:ef:58 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.80/24 brd 192.168.0.255 scope global dynamic wlx7cdd909eef58
+       valid_lft 73319sec preferred_lft 73319sec
+    inet6 fe80::c6cd:2481:d348:8ecd/64 scope link
+       valid_lft forever preferred_lft forever
+EOF

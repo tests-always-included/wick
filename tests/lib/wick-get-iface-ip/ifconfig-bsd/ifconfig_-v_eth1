@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+cat <<EOF
+eth1: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+    options=b<RXCSUM,TXCSUM,VLAN_HWTAGGING>
+    ether d4:9a:20:d0:05:4f
+    inet6 fe80::d69a:20ff:fed0:54f%en0 prefixlen 64 scopeid 0x4
+    inet 201.6.5.4 netmask 0xffffff00 broadcast 192.168.254.255
+    nd6 options=1<PERFORMNUD>
+    media: autoselect (1000baseT <full-duplex,flow-control>)
+    status: active
+EOF

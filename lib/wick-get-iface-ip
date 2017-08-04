@@ -20,57 +20,42 @@
 #
 # Returns 0 on success, non-zero on failure.
 wickGetIfaceIp() {
-    local allInterfaces interface list target
+    local interface list target
 
     wickGetArgument target 0 "$@" || return $?
     wickGetArgument interface 1 "$@" || return $?
 
     list=()
-    allInterfaces=false
 
-    # Try to detect the default interface via `ip`.
     if [[ -z "$interface" ]]; then
-        interface=$(ip route get 255.255.255.255 | awk '{print $4}' || :)
+        # Try to detect the default interface.
+        wickGetDefaultIface interface || :
     fi
 
-    # Try to detect the default interface via `route`.
-    if [[ -z "$interface" ]]; then
-        interface=$(route -n | grep '^0\.0\.0\.0' | head -n 1 | awk '{print $8}' || :)
-    fi
-
-    if [[ "$interface" == "*" ]]; then
-        interface=""
-        allInterfaces=true
-    fi
-
-    if wickCommandExists ifconfig; then
-        cmd=(ifconfig -v)
-
-        if [[ -n "$interface" ]]; then
-            cmd[${#cmd[@]}]="$interface"
-        fi
-
-        list=( $("${cmd[@]}" 2>/dev/null | grep -oe "inet\s\+[addr:]*[0-9\.]\+" | grep -oe "[0-9\.]\+") ) || return $?
-    elif wickCommandExists ip; then
+    if wickCommandExists ip; then
         cmd=(ip addr show)
 
         if [[ -n "$interface" ]]; then
             cmd[${#cmd[@]}]="$interface"
         fi
 
-        list=( $("${cmd[@]}" 2>/dev/null | grep -oe "inet [0-9.]\+" | grep -oe "[0-9\.]\+") ) || return $?
+        list=$("${cmd[@]}" 2>/dev/null | grep -oe "inet [0-9.]\+") || return $?
+    elif wickCommandExists ifconfig; then
+        cmd=(ifconfig -v)
+
+        if [[ -n "$interface" ]]; then
+            cmd[${#cmd[@]}]="$interface"
+        fi
+
+        list=$("${cmd[@]}" 2>/dev/null | grep -oe "inet\s\+[addr:]*[0-9\.]\+") || return $?
     else
-        wickError "Couldn't find a command to look up ip addresses" || return $?
+        wickDebug "Couldn't find a command to look up ip addresses" || return $?
 
         return 2
     fi
 
-    if [[ "$allInterfaces" == true ]]; then
-        # shellcheck disable=SC2068
-        local "$target" && wickIndirectArray "$target" ${list[@]+"${list[@]}"}
-
-        return 0
-    fi
+    #: Filter to only keep the IP addresses.
+    list=( $(echo "$list" | grep -oe "[0-9\.]\+") )
 
     if [[ "${#list[@]}" -lt 1 ]]; then
         return 1
