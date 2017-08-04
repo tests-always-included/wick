@@ -279,6 +279,21 @@ Examples
 Returns nothing.
 
 
+`wickGetDefaultIface()`
+-----------------------
+
+Public: Determines the IP address used by default for outgoing traffic that is destined for the internet.
+
+* $1 - Name of the variable that should receive the result.
+
+Examples
+
+    wickGetDefaultIface iface
+    echo "$iface"
+
+Returns 0 on success, non-zero on failure.
+
+
 `wickGetDest()`
 ---------------
 
@@ -333,6 +348,23 @@ Examples:
     wickGetDest $out /some/thing/here
 
 Returns true if the name was resolved, non-zero on any error.
+
+
+`wickGetIfaceForIp()`
+---------------------
+
+Public: Looks up the IP address route and provides the network interface that would handle traffic for that destination.
+
+* $1 - Name of the variable that should receive the result.
+* $2 - The IP address to route.
+
+Examples
+
+    # Find the default network device, RFC 7200
+    wickGetIfaceForIp iface 192.0.0.8
+    echo "Network interface: $iface"
+
+Returns 0 on success, non-zero on failure. When there is a failure, the destination variable is not altered.
 
 
 `wickGetIfaceIp()`
