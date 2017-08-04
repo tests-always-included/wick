@@ -19,7 +19,7 @@ wickPackageApt() {
     case "$state" in
         clean)
             for loop in {1..3}; do
-                wickInfo "Cleaning (try $loop of 3)"
+                wickDebug "Cleaning (try $loop of 3)"
                 wickWaitFor 600 wickIsAptAvailable || return $?
                 apt-get clean && return 0
             done
@@ -43,7 +43,7 @@ wickPackageApt() {
 
         install)
             for loop in {1..3}; do
-                wickInfo "Installing (try $loop of 3)"
+                wickDebug "Installing (try $loop of 3)"
                 wickWaitFor 600 wickIsAptAvailable || return $?
                 apt-get install -y "$@" && return 0
             done
@@ -55,7 +55,7 @@ wickPackageApt() {
 
         uninstall)
             for loop in {1..3}; do
-                wickInfo "Uninstalling (try $loop of 3)"
+                wickDebug "Uninstalling (try $loop of 3)"
                 wickWaitFor 600 wickIsAptAvailable || return $?
                 apt-get purge -y "$@" && return 0
             done
