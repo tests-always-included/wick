@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+cat <<'EOF'
+   route to: 192.0.0.8
+destination: 128.0.0.0
+       mask: 128.0.0.0
+    gateway: 10.86.13.5
+  interface: utun2
+      flags: <UP,GATEWAY,DONE,STATIC,PRCLONING>
+ recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire
+       0         0         0         0         0         0      1500         0
+EOF

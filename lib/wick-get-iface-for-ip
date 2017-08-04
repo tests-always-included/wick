@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Public: Looks up the IP address route and provides the network interface
+# that would handle traffic for that destination.
+#
+# $1 - Name of the variable that should receive the result.
+# $2 - The IP address to route.
+#
+# Examples
+#
+#   # Find the default network device, RFC 7200
+#   wickGetIfaceForIp iface 192.0.0.8
+#   echo "Network interface: $iface"
+#
+# Returns 0 on success, non-zero on failure. When there is a failure, the
+# destination variable is not altered.
+wickGetIfaceForIp() {
+    local iface ip target
+
+    wickGetArgument target 0 "$@" || return $?
+    wickGetArgument ip 1 "$@" || return $?
+    iface=
+
+    if wickCommandExists ip; then
+        wickDebug "Using 'ip' to get route for IP: $ip"
+        iface=$(ip route get "$ip" | grep "^${ip:0:1}" | awk '{print $5}' || :)
+    elif wickCommandExists route; then
+        # BSD
+        wickDebug "Trying 'route' to get route for IP: $ip"
+        iface=$(route -n get "$ip" 2> /dev/null | grep "^  interface:" || :)
+
+        if [[ -n "$iface" ]]; then
+            iface=$(echo "$iface" | awk '{print $2}')
+        fi
+    fi
+
+    if [[ -z "$iface" ]]; then
+        wickDebug "Could not determine iface for IP: $ip"
+
+        return 1
+    fi
+
+    local "$target" && wickIndirect "$target" "$iface"
+}
+
