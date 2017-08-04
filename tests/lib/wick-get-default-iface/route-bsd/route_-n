@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+echo "usage: route [-dnqtv] command [[modifiers] args]" >&2
+exit 64

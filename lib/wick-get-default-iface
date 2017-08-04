@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Public: Determines the IP address used by default for outgoing traffic that
+# is destined for the internet.
+#
+# $1 - Name of the variable that should receive the result.
+#
+# Examples
+#
+#   wickGetDefaultIface iface
+#   echo "$iface"
+#
+# Returns 0 on success, non-zero on failure.
+wickGetDefaultIface() {
+    local iface target
+
+    wickGetArgument target 0 "$@" || return $?
+    iface=
+
+    wickGetIfaceForIp iface 192.0.0.8 || :
+
+    if [[ -z "$iface" ]] && wickCommandExists route; then
+        # Linux
+        wickDebug "Looking for default route in routing table (route -n)"
+        iface=$(route -n | grep "^0\\.0\\.0\\.0" | head -n 1 | awk '{print $8}' || :)
+    fi
+
+    if [[ -z "$iface" ]] && wickCommandExists netstat; then
+        # Linux
+        wickDebug "Looking for default route in routing table (netstat -r -n 0.0.0.0)"
+        iface=$(netstat -r -n | grep "^0\\.0\\.0\\.0" | head -n 1 | awk '{print $8}' || :)
+    fi
+
+    if [[ -z "$iface" ]] && wickCommandExists netstat; then
+        # BSD
+        wickDebug "Looking for default route in routing table (netstat -r -n 0.0.0.0)"
+        iface=$(netstat -r -n | grep "^default" | grep -v '::' | head -n 1 | awk '{print $6}' || :)
+    fi
+
+    if [[ -z "$iface" ]]; then
+        wickDebug "No default interface found."
+
+        return 1
+    fi
+
+    local "$target" && wickIndirect "$target" "$iface"
+}
+
