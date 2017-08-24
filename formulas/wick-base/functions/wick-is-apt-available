@@ -10,18 +10,6 @@
 # values returned correspond to this version of the function ONLY and should
 # not be used to determine what was detected.
 wickIsAptAvailable() {
-    wickInfo "$(
-        echo "PS LIST"
-        ps aux || :
-    )"
-
-    for FN in /var/lib/dpkg/lock /var/cache/apt/archives/lock /var/cache/debconf/config.dat; do
-        wickInfo "$(
-            echo "TEST: $FN"
-            fuser -u "$FN" && echo "clean" || echo "fuser error $?"
-        )"
-    done
-
     pidof dpkg > /dev/null 2>&1 && return 1
     pidof apt-get > /dev/null 2>&1 && return 2
     pidof synaptic > /dev/null 2>&1 && return 3
