@@ -49,7 +49,7 @@ wickExplorer() {
     wickDebug "Explorer stdout:"
     wickDebug "$(<"$tempdir/stdout")"
     wickDebug "Explorer stderr:"
-    wickDebug "$(<"$tempdir/stdout")"
+    wickDebug "$(<"$tempdir/stderr")"
     wickDebug "End of explorer output"
     wickKvSet "$cacheKey" "$(<"$tempdir/stdout")"
 
