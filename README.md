@@ -52,11 +52,11 @@ This one is pretty easy.  You simply need to install a package.  The formula's `
 
     #!/usr/bin/env bash
 
-    wick-package git
+    wickPackage git
 
 And you're done.
 
-`wick-package` is a function that the `wick-base` formula exposes.  It provides an OS-agnostic way to install packages.  Just list the name of the package afterwards and you're set.
+`wickPackage` is a function that the `wick-base` formula exposes.  It provides an OS-agnostic way to install packages.  Just list the name of the package afterwards and you're set.
 
 
 ### Apache Virtual Host
