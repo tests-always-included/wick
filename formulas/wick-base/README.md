@@ -351,7 +351,7 @@ Intentionally append to state to flag errors
 
 Internal: Helper function to take action on apt-based systems.
 
-* $1 - Desired package state.  One of "clean", "install", "uninstall" or "exists".
+* $1 - Desired package state.  One of "clean", "install", "uninstall", "update", or "exists".
 * $2 - Package name, required if state is not "clean".
 
 Examples
@@ -366,7 +366,7 @@ Return true on success.
 
 Internal: Helper function to take action on pacman-based systems.
 
-* $1 - Desired package state.  One of "clean", "install", "uninstall" or "exists".
+* $1 - Desired package state.  One of "clean", "install", "uninstall", "update", or "exists".
 * $2 - Package name, required if state is not "clean".
 
 Examples
@@ -381,7 +381,7 @@ Return true on success.
 
 Internal: Helper function to take action on yum-based systems.
 
-* $1               - Desired package state.  One of "clean", "install", "uninstall" or "exists".
+* $1               - Desired package state.  One of "clean", "install", "uninstall", "update", or "exists".
 * $2               - Package name, required if state is not "clean".
 * $YUM_ENABLE_REPO - Enable additional repositories.
 
