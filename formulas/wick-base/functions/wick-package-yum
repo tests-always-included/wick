@@ -2,7 +2,7 @@
 # Internal: Helper function to take action on yum-based systems.
 #
 # $1               - Desired package state.  One of "clean", "install",
-#                    "uninstall" or "exists".
+#                    "uninstall", "update", or "exists".
 # $2               - Package name, required if state is not "clean".
 # $YUM_ENABLE_REPO - Enable additional repositories.
 #
@@ -49,6 +49,13 @@ wickPackageYum() {
 
         uninstall)
             yum remove -y "$@" || return $?
+            ;;
+
+        update)
+            wickDebug "Cleaning all yum cached information"
+            yum clean all || return $?
+            wickDebug "Updating the yum cache"
+            yum makecache || return $?
             ;;
 
         *)

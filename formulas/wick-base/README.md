@@ -317,6 +317,7 @@ Public: Install or remove packages on the target system.  This handles the OS-sp
 * --clean          - Cleans the cache of packages on the system.
 * --exists         - When set, returns true if the package exists.  Does not install nor uninstall any package.
 * --uninstall      - When set, this will uninstall the package instead.
+* --update         - When set, this updates the package lists. No packages will be installed or uninstalled.
 * $YUM_ENABLE_REPO - Allows additional yum repositories.
 
 Uses the `YUM_ENABLE_REPO` environment variable if you need to enable additional yum repositories, such as [Remi's Repository](../yum-remi/README.md), which can sometimes be a little dangerous.  This is only used with yum-based systems.

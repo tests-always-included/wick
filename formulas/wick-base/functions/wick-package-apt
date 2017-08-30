@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Internal: Helper function to take action on apt-based systems.
 #
-# $1 - Desired package state.  One of "clean", "install", "uninstall" or
-#      "exists".
+# $1 - Desired package state.  One of "clean", "install", "uninstall",
+#      "update", or "exists".
 # $2 - Package name, required if state is not "clean".
 #
 # Examples

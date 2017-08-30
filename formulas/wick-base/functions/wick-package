@@ -9,6 +9,8 @@
 # --exists         - When set, returns true if the package exists.  Does not
 #                    install nor uninstall any package.
 # --uninstall      - When set, this will uninstall the package instead.
+# --update         - When set, this updates the package lists. No packages
+#                    will be installed or uninstalled.
 # $YUM_ENABLE_REPO - Allows additional yum repositories.
 #
 # Uses the `YUM_ENABLE_REPO` environment variable if you need to enable
@@ -34,11 +36,12 @@
 # Returns true on success for normal execution.  When `--exists` is used, this
 # returns true if the specified package exists and is installed on the system.
 wickPackage() {
-    local clean exists os state uninstall unparsed
+    local clean exists os state uninstall unparsed update
 
-    wickGetOption clean clean "$@" || return $?
-    wickGetOption exists exists "$@" || return $?
-    wickGetOption uninstall uninstall "$@" || return $?
+    wickGetOption clean --clean "$@" || return $?
+    wickGetOption exists --exists "$@" || return $?
+    wickGetOption uninstall --uninstall "$@" || return $?
+    wickGetOption update --update "$@" || return $?
     wickGetArguments unparsed "$@" || return $?
 
     # Intentionally append to state to flag errors
@@ -54,6 +57,10 @@ wickPackage() {
 
     if [[ -n "$uninstall" ]]; then
         state="uninstall$state"
+    fi
+
+    if [[ -n "$update" ]]; then
+        state="update$state"
     fi
 
     : "${state:=install}"
