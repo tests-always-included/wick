@@ -4,6 +4,8 @@
 # $1            - Username to create on the system
 # --daemon      - Optional; flag to indicate reasonable settings should be
 #                 assigned for a daemon account.  See the examples.
+# --groups      - Optional; a group (or comma separated list of groups) to 
+#                 associate with this user.
 # --home=HOME   - Optional; set the home directory for the user.
 # --move-home   - Optional; move a home directory for a user that already
 #                 exists when this flag is used.
@@ -39,7 +41,7 @@
 #
 # Returns 0 on success, 1 if required arguments are not passed in.
 wickMakeUser() {
-    local args daemonFlag moveHomeFlag noSkelFlag passwd setHome setName setShell systemFlag userhome username
+    local args daemonFlag moveHomeFlag noSkelFlag passwd setHome setName setShell systemFlag userhome setGroups username
 
     wickGetOption daemonFlag daemon "$@" || return $?
     wickGetOption setHome home "$@" || return $?
@@ -48,6 +50,7 @@ wickMakeUser() {
     wickGetOption noSkelFlag no-skel "$@" || return $?
     wickGetOption setShell shell "$@" || return $?
     wickGetOption systemFlag system "$@" || return $?
+    wickGetOption setGroups groups "$@" || return $?
     wickGetArgument username 0 "$@" || return $?
 
     if [[ -z "$username" ]]; then
@@ -89,6 +92,11 @@ wickMakeUser() {
             args[${#args[@]}]=$setShell
         fi
 
+        if [[ -n "$setGroups" ]]; then
+            args[${#args[@]}]=-G
+            args[${#args[@]}]=$setGroups
+        fi
+
         if [[ -n "$systemFlag" ]]; then
             args[${#args[@]}]=-r
         fi
@@ -117,6 +125,11 @@ wickMakeUser() {
         if [[ -n "$setShell" ]]; then
             args[${#args[@]}]=-s
             args[${#args[@]}]=$setShell
+        fi
+
+        if [[ -n "$setGroups" ]]; then
+            args[${#args[@]}]=-G
+            args[${#args[@]}]=$setGroups
         fi
 
         if [[ "${#args[@]}" -gt 1 ]]; then
