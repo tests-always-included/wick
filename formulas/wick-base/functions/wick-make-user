@@ -5,7 +5,7 @@
 # --daemon      - Optional; flag to indicate reasonable settings should be
 #                 assigned for a daemon account.  See the examples.
 # --groups      - Optional; a group (or comma separated list of groups) to 
-#                 associate with this user.
+#                 associate with this user. 
 # --home=HOME   - Optional; set the home directory for the user.
 # --move-home   - Optional; move a home directory for a user that already
 #                 exists when this flag is used.
@@ -20,6 +20,10 @@
 # and the ownership of the home directory is always set to `USERNAME:USERNAME`.
 # If the given user already exists and no options are given `usermod` will not
 # be run.
+#
+# When `--groups` is specified the list of groups specified is added to the
+# existing group memberships. The user's initial group is still automatically
+# created. See useradd or usermod for further information.
 #
 # Examples
 #
@@ -50,7 +54,7 @@ wickMakeUser() {
     wickGetOption noSkelFlag no-skel "$@" || return $?
     wickGetOption setShell shell "$@" || return $?
     wickGetOption systemFlag system "$@" || return $?
-    wickGetOption setGroups groups "$@" || return $?
+    wickGetOption groups groups "$@" || return $?
     wickGetArgument username 0 "$@" || return $?
 
     if [[ -z "$username" ]]; then
@@ -92,9 +96,14 @@ wickMakeUser() {
             args[${#args[@]}]=$setShell
         fi
 
-        if [[ -n "$setGroups" ]]; then
+	if [[ -n "$groups" ]]; then
+	    wickStringSplit groupsAsArray "$groups"
+            for group in "${groupsAsArray[@]}"; do
+                wickMakeGroup "$group"
+            done
+
             args[${#args[@]}]=-G
-            args[${#args[@]}]=$setGroups
+            args[${#args[@]}]=$groups
         fi
 
         if [[ -n "$systemFlag" ]]; then
@@ -127,9 +136,14 @@ wickMakeUser() {
             args[${#args[@]}]=$setShell
         fi
 
-        if [[ -n "$setGroups" ]]; then
+	if [[ -n "$groups" ]]; then
+	    wickStringSplit groupsAsArray "$groups"
+            for group in "${groupsAsArray[@]}"; do
+                wickMakeGroup "$group"
+            done
+
             args[${#args[@]}]=-G
-            args[${#args[@]}]=$setGroups
+            args[${#args[@]}]=$groups
         fi
 
         if [[ "${#args[@]}" -gt 1 ]]; then

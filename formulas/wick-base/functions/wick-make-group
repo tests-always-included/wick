@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # Create or manage a group on the system.
 #
-# $1            - Groupname to create on the system
+# $1 - Groupname to create on the system
 #
-# If the given group already exists `groupadd` will not  be run.
-# This can be used in conjunction with wickMakeUser to assign
+# If the given group already exists `groupadd` will not be run.
+# This can be used in conjunction with `wickMakeUser` to assign
 # users to common groups.
 #
 # Examples
 #
-#   # Create a normal group.
+#   # Create a unix group.
 #   wickMakeGroup newgroup
 #
 # Returns 0 on success, 1 if required arguments are not passed in.
@@ -28,10 +28,7 @@ wickMakeGroup() {
 
     if [[ -z "$group" ]]; then
         wickInfo "Creating group: $groupname" || return $?
-        args=(groupadd)
-
-        args[${#args[@]}]=$groupname
-        wickDebug "Command:" "${args[@]}" || return $?
+	args=(groupadd "$groupname")
         "${args[@]}" || return $?
     fi
 }
