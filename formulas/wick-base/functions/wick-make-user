@@ -21,7 +21,7 @@
 # If the given user already exists and no options are given `usermod` will not
 # be run.
 #
-# When `--groups` is specified the list of groups specified is added to the
+# When `--groups` is used the list of groups specified is added to the
 # existing group memberships. The user's initial group is still automatically
 # created. See useradd or usermod for further information.
 #
@@ -45,7 +45,7 @@
 #
 # Returns 0 on success, 1 if required arguments are not passed in.
 wickMakeUser() {
-    local args daemonFlag moveHomeFlag noSkelFlag passwd setHome setName setShell systemFlag userhome setGroups username
+    local args daemonFlag moveHomeFlag noSkelFlag passwd setHome setName setShell systemFlag userhome groups username
 
     wickGetOption daemonFlag daemon "$@" || return $?
     wickGetOption setHome home "$@" || return $?
@@ -73,6 +73,14 @@ wickMakeUser() {
 
     passwd=$(getent passwd "$username" || :)
 
+    # Ensure any referenced groups are present.
+    if [[ -n "$groups" ]]; then
+        wickStringSplit groupsAsArray "$groups"
+        for group in "${groupsAsArray[@]}"; do
+            wickMakeGroup "$group"
+        done
+    fi
+
     if [[ -z "$passwd" ]]; then
         wickInfo "Creating user: $username" || return $?
         args=(useradd)
@@ -97,11 +105,6 @@ wickMakeUser() {
         fi
 
 	if [[ -n "$groups" ]]; then
-	    wickStringSplit groupsAsArray "$groups"
-            for group in "${groupsAsArray[@]}"; do
-                wickMakeGroup "$group"
-            done
-
             args[${#args[@]}]=-G
             args[${#args[@]}]=$groups
         fi
@@ -137,11 +140,6 @@ wickMakeUser() {
         fi
 
 	if [[ -n "$groups" ]]; then
-	    wickStringSplit groupsAsArray "$groups"
-            for group in "${groupsAsArray[@]}"; do
-                wickMakeGroup "$group"
-            done
-
             args[${#args[@]}]=-G
             args[${#args[@]}]=$groups
         fi

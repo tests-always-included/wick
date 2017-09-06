@@ -28,7 +28,7 @@ wickMakeGroup() {
 
     if [[ -z "$group" ]]; then
         wickInfo "Creating group: $groupname" || return $?
-	args=(groupadd "$groupname")
+        args=(groupadd "$groupname")
         "${args[@]}" || return $?
     fi
 }
