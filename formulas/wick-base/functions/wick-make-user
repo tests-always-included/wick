@@ -4,6 +4,8 @@
 # $1            - Username to create on the system
 # --daemon      - Optional; flag to indicate reasonable settings should be
 #                 assigned for a daemon account.  See the examples.
+# --groups      - Optional; a group (or comma separated list of groups) to 
+#                 associate with this user. 
 # --home=HOME   - Optional; set the home directory for the user.
 # --move-home   - Optional; move a home directory for a user that already
 #                 exists when this flag is used.
@@ -18,6 +20,10 @@
 # and the ownership of the home directory is always set to `USERNAME:USERNAME`.
 # If the given user already exists and no options are given `usermod` will not
 # be run.
+#
+# When `--groups` is used the list of groups specified is added to the
+# existing group memberships. The user's initial group is still automatically
+# created. See useradd or usermod for further information.
 #
 # Examples
 #
@@ -39,7 +45,7 @@
 #
 # Returns 0 on success, 1 if required arguments are not passed in.
 wickMakeUser() {
-    local args daemonFlag moveHomeFlag noSkelFlag passwd setHome setName setShell systemFlag userhome username
+    local args daemonFlag moveHomeFlag noSkelFlag passwd setHome setName setShell systemFlag userhome groups username
 
     wickGetOption daemonFlag daemon "$@" || return $?
     wickGetOption setHome home "$@" || return $?
@@ -48,6 +54,7 @@ wickMakeUser() {
     wickGetOption noSkelFlag no-skel "$@" || return $?
     wickGetOption setShell shell "$@" || return $?
     wickGetOption systemFlag system "$@" || return $?
+    wickGetOption groups groups "$@" || return $?
     wickGetArgument username 0 "$@" || return $?
 
     if [[ -z "$username" ]]; then
@@ -65,6 +72,14 @@ wickMakeUser() {
     fi
 
     passwd=$(getent passwd "$username" || :)
+
+    # Ensure any referenced groups are present.
+    if [[ -n "$groups" ]]; then
+        wickStringSplit groupsAsArray "$groups"
+        for group in "${groupsAsArray[@]}"; do
+            wickMakeGroup "$group"
+        done
+    fi
 
     if [[ -z "$passwd" ]]; then
         wickInfo "Creating user: $username" || return $?
@@ -87,6 +102,11 @@ wickMakeUser() {
         if [[ -n "$setShell" ]]; then
             args[${#args[@]}]=-s
             args[${#args[@]}]=$setShell
+        fi
+
+	if [[ -n "$groups" ]]; then
+            args[${#args[@]}]=-G
+            args[${#args[@]}]=$groups
         fi
 
         if [[ -n "$systemFlag" ]]; then
@@ -117,6 +137,11 @@ wickMakeUser() {
         if [[ -n "$setShell" ]]; then
             args[${#args[@]}]=-s
             args[${#args[@]}]=$setShell
+        fi
+
+	if [[ -n "$groups" ]]; then
+            args[${#args[@]}]=-G
+            args[${#args[@]}]=$groups
         fi
 
         if [[ "${#args[@]}" -gt 1 ]]; then
