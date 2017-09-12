@@ -4,6 +4,8 @@
 # $1            - Username to create on the system
 # --daemon      - Optional; flag to indicate reasonable settings should be
 #                 assigned for a daemon account.  See the examples.
+# --group=GROUP - Optional; a group or a comma-separated list of groups that
+#                 the user belongs to.
 # --home=HOME   - Optional; set the home directory for the user.
 # --move-home   - Optional; move a home directory for a user that already
 #                 exists when this flag is used.
@@ -19,6 +21,10 @@
 # If the given user already exists and no options are given `usermod` will not
 # be run.
 #
+# The list of groups are added to the user, and will not replace any existing
+# groups the user may already have or the groups the user gets automatically
+# upon creation.
+#
 # Examples
 #
 #   # Create a normal user.
@@ -26,6 +32,9 @@
 #
 #   # Update that same user with a new shell.
 #   wickMakeUser fidian --shell=/bin/zsh
+#
+#   # Create a user that's also in the 'sudoers' and 'special' groups.
+#   wickMakeUser fidian --group=sudoers,special
 #
 #   # Create a system account that can't login.  It is used to
 #   # run a special server that's installed in /opt/myserver.
@@ -39,15 +48,16 @@
 #
 # Returns 0 on success, 1 if required arguments are not passed in.
 wickMakeUser() {
-    local args daemonFlag moveHomeFlag noSkelFlag passwd setHome setName setShell systemFlag userhome username
+    local args daemonFlag group groupArray groupList moveHomeFlag noSkelFlag passwd setHome setName setShell systemFlag userhome username
 
-    wickGetOption daemonFlag daemon "$@" || return $?
-    wickGetOption setHome home "$@" || return $?
-    wickGetOption moveHomeFlag move-home "$@" || return $?
-    wickGetOption setName name "$@" || return $?
-    wickGetOption noSkelFlag no-skel "$@" || return $?
-    wickGetOption setShell shell "$@" || return $?
-    wickGetOption systemFlag system "$@" || return $?
+    wickGetOption daemonFlag --daemon "$@" || return $?
+    wickGetOption groupList --group "$@" || return $?
+    wickGetOption moveHomeFlag --move-home "$@" || return $?
+    wickGetOption noSkelFlag --no-skel "$@" || return $?
+    wickGetOption setHome --home "$@" || return $?
+    wickGetOption setName --name "$@" || return $?
+    wickGetOption setShell --shell "$@" || return $?
+    wickGetOption systemFlag --system "$@" || return $?
     wickGetArgument username 0 "$@" || return $?
 
     if [[ -z "$username" ]]; then
@@ -62,6 +72,15 @@ wickMakeUser() {
         noSkelFlag=true
         setShell=/bin/false
         systemFlag=true
+    fi
+
+    # Ensure any referenced groups are present.
+    if [[ -n "$groupList" ]]; then
+        wickStringSplit groupArray "$groupList" ,
+
+        for group in "${groupArray[@]}"; do
+            wickMakeGroup "$group"
+        done
     fi
 
     passwd=$(getent passwd "$username" || :)
@@ -93,6 +112,11 @@ wickMakeUser() {
             args[${#args[@]}]=-r
         fi
 
+        if [[ -n "$groupList" ]]; then
+            args[${args[@]}]=-G
+            args[${args[@]}]=$groupList
+        fi
+
         args[${#args[@]}]=$username
         wickDebug "Command:" "${args[@]}" || return $?
         "${args[@]}" || return $?
@@ -119,12 +143,17 @@ wickMakeUser() {
             args[${#args[@]}]=$setShell
         fi
 
+        if [[ -n "$groupList" ]]; then
+            args[${args[@]}]=-G
+            args[${args[@]}]=$groupList
+        fi
+
         if [[ "${#args[@]}" -gt 1 ]]; then
             args[${#args[@]}]=$username
             wickDebug "Command:" "${args[@]}" || return $?
             "${args[@]}" || return $?
         else
-            wickInfo "Provided user exists and no options were given, continuing on without altering user." || return $?
+            wickInfo "Provided user exists and no options were given. Not altering user." || return $?
         fi
     fi
 

@@ -271,6 +271,23 @@ Examples:
 Returns true on success.
 
 
+`wickMakeGroup()`
+-----------------
+
+Create a group on the system.
+
+* $1 - Group name to create.
+
+The group will be created if it does not already exist.
+
+Examples
+
+    # Create a group for a Tomcat server
+    wickMakeGroup tomcat
+
+Returns 0 on success, 1 if the required arguments are not passed in.
+
+
 `wickMakeUser()`
 ----------------
 
@@ -278,6 +295,7 @@ Create or manage a user on the system.
 
 * $1            - Username to create on the system
 * --daemon      - Optional; flag to indicate reasonable settings should be assigned for a daemon account.  See the examples.
+* --group=GROUP - Optional; a group or a comma-separated list of groups that the user belongs to.
 * --home=HOME   - Optional; set the home directory for the user.
 * --move-home   - Optional; move a home directory for a user that already exists when this flag is used.
 * --name=NAME   - Optional; full name for the account.
@@ -287,6 +305,8 @@ Create or manage a user on the system.
 
 For consistency, the home directory is always created if it does not exist and the ownership of the home directory is always set to `USERNAME:USERNAME`. If the given user already exists and no options are given `usermod` will not be run.
 
+The list of groups are added to the user, and will not replace any existing groups the user may already have or the groups the user gets automatically upon creation.
+
 Examples
 
     # Create a normal user.
@@ -294,6 +314,9 @@ Examples
 
     # Update that same user with a new shell.
     wickMakeUser fidian --shell=/bin/zsh
+
+    # Create a user that's also in the 'sudoers' and 'special' groups.
+    wickMakeUser fidian --group=sudoers,special
 
     # Create a system account that can't login.  It is used to
     # run a special server that's installed in /opt/myserver.
