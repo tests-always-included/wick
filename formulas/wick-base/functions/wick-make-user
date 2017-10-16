@@ -113,8 +113,8 @@ wickMakeUser() {
         fi
 
         if [[ -n "$groupList" ]]; then
-            args[${args[@]}]=-G
-            args[${args[@]}]=$groupList
+            args[${#args[@]}]=-G
+            args[${#args[@]}]=$groupList
         fi
 
         args[${#args[@]}]=$username
