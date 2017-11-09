@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Installs Graphviz graph visualization software.
+#
+# Examples
+#
+#   wickFormula graphviz
+#
+# Returns nothing.
+wickPackage graphviz
