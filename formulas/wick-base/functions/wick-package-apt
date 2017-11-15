@@ -45,7 +45,7 @@ wickPackageApt() {
             for loop in {1..3}; do
                 wickDebug "Installing (try $loop of 3)"
                 wickWaitFor 600 wickIsAptAvailable || return $?
-                apt-get install -y "$@" && return 0
+                DEBIAN_FRONTEND=noninteractive apt-get install -y "$@" && return 0
             done
 
             wickError "Could not install package."
@@ -57,7 +57,7 @@ wickPackageApt() {
             for loop in {1..3}; do
                 wickDebug "Uninstalling (try $loop of 3)"
                 wickWaitFor 600 wickIsAptAvailable || return $?
-                apt-get purge -y "$@" && return 0
+                DEBIAN_FRONTEND=noninteractive apt-get purge -y "$@" && return 0
             done
 
             wickError "Could not uninstall package."
@@ -69,7 +69,7 @@ wickPackageApt() {
             for loop in {1..3}; do
                 wickDebug "Update package lists (try $loop of 3)"
                 wickWaitFor 600 wickIsAptAvailable || return $?
-                apt-get update && return 0
+                DEBIAN_FRONTEND=noninteractive apt-get update && return 0
             done
 
             wickError "Could not update package lists."
