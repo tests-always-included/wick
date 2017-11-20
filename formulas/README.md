@@ -45,7 +45,6 @@ See the formula-specific documentation that explain what each of these do.  Form
 * [MySQL Client](mysql-client/README.md) - Installs the mysql client for mysql-server
 * [MySQL Server](mysql-server/README.md) - Installs the MySQL relational database server.
 * [Nano](nano/README.md) - Installs `nano`, a tiny clone of Pico.
-* [Netcat](nc/README.md) - Installs `nc`, the netcat package.
 * [Netcat](netcat/README.md) - Installs the netcat (`nc`) package.
 * [network-layer](network-layer/README.md) - Provides a library that allows you to include services into the network layer. Your service would be added after the rest of the network is up but before the rest of the services that depend on the network.
 * [Node.js](nodejs/README.md) - Installs Node.js from their website, not a distribution's packaged version.

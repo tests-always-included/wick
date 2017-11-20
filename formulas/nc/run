@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-# Installs `nc`, the netcat package.
-#
-# Examples
-#
-#   wickFormula nc
-#
-# Returns nothing
-wickPackage nc
