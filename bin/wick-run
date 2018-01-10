@@ -34,11 +34,10 @@ wickRun() {
     i=0
 
     while [[ $i -lt ${#WICK_FORMULA_COMMANDS[@]} ]]; do
-        i=$((i + 1))
-
         # Use echo here - do not log this list to a file because the commands
         # may have arguments that contain sensitive information.
-        echo "Order of formulas to execute [$i]: ${WICK_FORMULA_COMMANDS[$i]}"
+        echo "Order of formulas to execute [$((i + 1))]: ${WICK_FORMULA_COMMANDS[$i]}"
+        i=$((i + 1))
     done
 
     formulaNumber=1
