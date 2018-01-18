@@ -22,7 +22,7 @@
 #   wickFormula redis --password="My password" --master-password="Master password for replication"
 #
 # Returns nothing.
-declare masterPassword password start
+declare masterPassword os password start
 
 wickInfo "Installing redis"
 wickGetOption start start "$@"
@@ -30,12 +30,42 @@ wickGetOption password password "$@"
 wickGetOption masterPassword master-password "$@"
 sysctlSet vm.overcommit_memory 1
 sysctlSet net.core.somaxconn 512
-YUM_ENABLE_REPO=remi wickPackage redis
+
+wickExplorer os wick-base os
+
+case "$os" in
+    arch)
+        wickPackage redis
+        ;;
+
+    centos|redhat)
+        YUM_ENABLE_REPO=remi wickPackage redis
+        ;;
+
+    debian|ubuntu)
+        wickPackage redis-server
+        ;;
+
+    *)
+        wickError "Unsupported OS: $os"
+
+        return 1
+        ;;
+esac
 
 # Listen on all interfaces
 redisSetConfigLine "bind"
 redisSetConfigLine "requirepass" "$password"
 redisSetConfigLine "masterauth" "$masterPassword"
 
-wickService enable redis
-wickService force-state redis "$start"
+case "$os" in
+    arch|centos|redhat)
+        wickService enable redis
+        wickService force-state redis "$start"
+        ;;
+
+    debian|ubuntu)
+        wickService enable redis-server
+        wickService force-state redis-server
+        ;;
+esac
