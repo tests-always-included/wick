@@ -10,7 +10,7 @@
 wickFind() {
     local base file full
 
-    base="."
+    base=$WICK_ROOT
 
     while [[ ! -e "$base/$2" ]] && [[ -d "$base/parent/" ]]; do
         base="$base/parent"

@@ -8,8 +8,8 @@
 set -euo pipefail
 
 # Public: Location of the `wick` binary.  Available any time that `wick` is
-# running.
-WICK_DIR="${0%/*}"
+# running. Absolute path.
+WICK_DIR="$(cd "${0%/*}"; echo "$PWD")"
 
 # Public: Run wick commands.  These are provided by the other `wick-*`
 # functions in the [`bin/`](./) folder.
@@ -29,13 +29,19 @@ wick() {
     # Wick commands need library functions to use `wickOnLoad`.
     # These commands CAN RUN like this without worry about strict
     # mode being disabled because strict mode is not enabled yet.
-    if ! wickLoadLib .; then
-        if ! wickLoadLib ..; then
-            echo "Unable to load library functions." >&2
+    if wickLoadLib .; then
+        # Location of top-level folder where Wick formulas, functions, and
+        # other config is stored.
+        WICK_ROOT="$PWD"
+    elif wickLoadLib ..; then
+        WICK_ROOT="$(cd ..; echo "$PWD")"
+    else
+        echo "Unable to load library functions." >&2
 
-            exit 1
-        fi
+        exit 1
     fi
+
+    export WICK_ROOT
 
     # Enable the full strict mode.
     wickStrictMode
@@ -100,17 +106,19 @@ wickIsValidScript() {
 #
 # $1 - Directory to process.
 #
-# Returns nothing.
+# Returns true (0) when something was loaded. Returns 1 if nothing was found to
+# load.
 wickLoadLib() {
     local file loaded
 
-    loaded=false
+    #: Default to an error code
+    loaded=1
 
     if [[ -d "$1/parent" ]]; then
         # Strict mode is NOT enabled here and neither are libraries.
         # Do not worry about the "exit on error" being disabled.
         if wickLoadLib "$1/parent"; then
-            loaded=true
+            loaded=0
         fi
     fi
 
@@ -122,12 +130,12 @@ wickLoadLib() {
                 fi
 
                 . "$file"
-                loaded=true
+                loaded=0
             fi
         done
     fi
 
-    $loaded
+    return $loaded
 }
 
 

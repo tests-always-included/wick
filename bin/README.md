@@ -13,7 +13,7 @@ At the moment, Wick does not have a lot of commands that it can perform, but the
 `WICK_DIR`
 ----------
 
-Public: Location of the `wick` binary.  Available any time that `wick` is running.
+Public: Location of the `wick` binary.  Available any time that `wick` is running. Absolute path.
 
 
 `wick()`
@@ -25,6 +25,12 @@ Public: Run wick commands.  These are provided by the other `wick-*` functions i
 * $2-@ - Passed to the command.
 
 Returns the result of the command.
+
+
+`WICK_ROOT`
+-----------
+
+Location of top-level folder where Wick formulas, functions, and other config is stored.
 
 
 `wickIsValidScript()`
@@ -44,7 +50,7 @@ Internal: Load library functions.  Starting at the highest parent, load all scri
 
 * $1 - Directory to process.
 
-Returns nothing.
+Returns true (0) when something was loaded. Returns 1 if nothing was found to load.
 
 
 `wickOnLoad()`
