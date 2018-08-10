@@ -53,7 +53,7 @@ case "$OS" in
                 exit 1
             fi
 
-            if DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" apt-get upgrade -y; then
+            if DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" upgrade -y; then
                 tryNumber=100
             fi
         done
