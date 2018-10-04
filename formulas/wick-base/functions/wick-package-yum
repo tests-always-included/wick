@@ -55,7 +55,7 @@ wickPackageYum() {
             wickDebug "Cleaning all yum cached information"
             yum clean all || return $?
             wickDebug "Updating the yum cache"
-            yum makecache || return $?
+            yum makecache -y || return $?
             ;;
 
         *)
