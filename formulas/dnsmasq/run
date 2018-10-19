@@ -31,10 +31,21 @@
 #   wickFormula dnsmasq --protect-dns
 #
 # Returns nothing.
-declare start protectDns
+declare os osVersion start protectDns
 
 wickGetOption start --start "$@"
 wickGetOption protectDns --protect-dns "$@"
+
+# In Ubuntu dnsmasq uses resolvconf to enable dnsmasq after starting the service
+# if it is installed. In newer versions of Ubuntu it doesn't install resolvconf
+# and as a result dnsmasq is installed and started but not used.
+wickExplorer os wick-base os
+wickExplorer osVersion wick-base os-version
+
+if [[ "$os" == "ubuntu" && "${osVersion:0:2}" -gt "16" ]]; then
+    wickPackage resolvconf
+fi
+
 wickPackage dnsmasq
 wickMakeDir /etc/dnsmasq.d/
 wickSetConfigLine /etc/dnsmasq.conf "conf-dir=/etc/dnsmasq.d"
