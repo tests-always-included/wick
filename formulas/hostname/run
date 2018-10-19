@@ -36,27 +36,28 @@
 #   wickFormula hostname --dynamic app1-{{IP}} --iface=eth0
 #
 # Returns nothing.
-declare desired dynamic iface
+declare DESIRED dynamic IFACE initSystem
 
+wickExplorer initSystem wick-base init-system
 wickGetOption dynamic --dynamic "$@"
-wickGetOption iface --iface "$@"
-wickGetArgument desired 0 "$@"
+wickGetOption IFACE --iface "$@"
+wickGetArgument DESIRED 0 "$@"
 
 if [[ -z "$dynamic" ]]; then
-    wickInfo "Setting the hostname: $desired"
-    "$WICK_FORMULA_DIR/files/set-hostname" --verbose "$desired"
+    wickInfo "Setting the hostname: $DESIRED"
+    "$WICK_FORMULA_DIR/files/set-hostname" --verbose "$DESIRED"
 else
-    wickInfo "Setting a dynamic hostname: $desired"
+    wickInfo "Setting a dynamic hostname: $DESIRED"
     wickMakeFile set-hostname /usr/local/bin/ --mode=0755
 
     hookFile="/etc/dhcp/dhclient-exit-hooks"
     wickInfo "Creating/updating hook file: $hookFile"
     :>> "$hookFile"
     chmod 755 "$hookFile"
-    wickSetConfigLine "$hookFile" "/usr/local/bin/set-hostname '$desired' --iface=\"$iface\""
+    wickSetConfigLine "$hookFile" "/usr/local/bin/set-hostname '$DESIRED' --iface=\"$IFACE\""
 
-    wickInfo "Setting the hostname: $desired"
-    /usr/local/bin/set-hostname --verbose "$desired" --iface="$iface"
+    wickInfo "Setting the hostname: $DESIRED"
+    /usr/local/bin/set-hostname --verbose "$DESIRED" --iface="$IFACE"
 
     cloudFile="/etc/cloud/cloud.cfg"
 
@@ -65,5 +66,10 @@ else
         wickSetConfigLine "$cloudFile" "preserve_hostname: true"
     else
         wickInfo "Cloud-init not detected"
+    fi
+
+    if [[ "$initSystem" == "systemd" ]]; then
+        wickMakeFile --template set-hostname.service.mo /etc/systemd/system/set-hostname.service --mode=0644
+        wickServiceEnable set-hostname
     fi
 fi
