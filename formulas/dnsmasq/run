@@ -69,6 +69,13 @@ if [[ -n "$protectDns" ]]; then
     wickMakeFile protect-dns-resolver-config - | wickAddConfigSection /etc/dhcp/dhclient-enter-hooks protect-dns-resolver-config
 fi
 
+# If systemd-resolved is used we need to this to prevent looping of dns queries.
+if [[ -e "/etc/systemd/resolved.conf" ]]; then
+    if grep -E "^.?DNS=" "/etc/systemd/resolved.conf" &> /dev/null; then
+        sed -i -r -e 's/^.?DNS=.*/DNS=""/' "/etc/systemd/resolved.conf"
+    fi
+fi
+
 # When --start is used, enable dnsmasq.
 if [[ -n "$start" ]]; then
     RESOLV=$(
