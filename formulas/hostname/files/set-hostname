@@ -88,6 +88,16 @@ wickDebug "Setting hostname to $full"
 #
 reload=false
 
+if which hostnamectl &> /dev/null; then
+    if [[ "$(hostnamectl status --static)" != "$host" ]]; then
+        hostnamectl set-hostname "$host"
+        reload=true
+    elif [[ "$(hostnamectl status --transient)" != "$host" ]]; then
+        hostnamectl set-hostname "$host"
+        reload=true
+    fi
+fi
+
 if [[ -f /etc/hostname ]]; then
     if [[ "$(cat /etc/hostname)" !=  "$host" ]]; then
         wickDebug "Setting /etc/hostname to $host"
